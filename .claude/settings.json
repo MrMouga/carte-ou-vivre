@@ -1,0 +1,18 @@
+{
+  "enabledPlugins": { "studio@ai-workflow": true, "frontend-design@claude-plugins-official": true },
+  "permissions": {
+    "allow": [
+      "Read(~/git-repository/ai-workflow/plugins/studio/**)",
+      "Read(~/git-repository/ideas/**)",
+      "Read(~/.claude/studio/**)",
+      "WebSearch", "WebFetch", "Bash(studio-browse:*)",
+      "mcp__claude_ai_Mobbin__search_screens", "mcp__claude_ai_Mobbin__search_flows", "mcp__claude_ai_Mobbin__search_sections"
+    ],
+    "ask": [ "Bash(git push *)", "Bash(gh repo create *)", "Bash(npm publish *)", "Bash(npx wrangler *)", "Bash(vercel *)", "Bash(netlify *)" ],
+    "deny": [
+      "Read(./.env)", "Read(./.env.*)", "Read(~/.ssh/**)", "Read(~/.aws/**)", "Read(~/.config/gh/**)",
+      "Bash(curl * -d *)", "Bash(curl * --data*)", "Bash(curl * -F *)", "Bash(wget --post*)",
+      "Bash(gh repo edit * --visibility *)", "Bash(gh secret *)"
+    ]
+  }
+}
