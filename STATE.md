@@ -58,6 +58,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-12 | Validation : sautée | Choix de Vincent au lancement de /validate, sans raison donnée. Claude recommandait 5 entretiens et un service à la main face à ChatGPT. Le test de demande du plan de distribution reste une hypothèse à vérifier ; aucune hypothèse ne change de statut. |
 | 2026-10-12 | Spec validée : loyer-mer | Plafond de loyer et de mer (sans poids), score = marge sous les plafonds, 5 couleurs absolues, liste des 10, plafonds dans l'adresse, aucun service extérieur ; 9 décisions, 13 critères, au-dessus de la taille perso (liste incluse par choix de Vincent). |
 | 2026-10-12 | Spec loyer-mer révisée (D10–D12) : la carte colore les communes, plus les 675 aires ; réglage « taille de ville » en pastilles ; fiabilité du loyer dans la fiche | Choix de Vincent au vu du prototype /ui (aires trop grandes, Ville de rêve est à la commune). Claude déconseillait (liste de villages, loyers estimés par secteur pour 86 % des communes, quota ORS des proches) : les deux premiers sont traités par D11 et D12, le troisième devient l'hypothèse « isochrone ». Remplace la décision « 675 aires » du 2026-10-11. |
+| 2026-10-12 | Spec loyer-mer révisée (D13–D14) : mer, fleuves et pays voisins sur la carte ; zoom sur la commune choisie ; mer en temps de trajet reportée à la tranche 2 | Retours de Vincent sur le prototype fusionné. Aucun critère d'acceptation ne change. |
 
 ## Hypothèses à vérifier
 
@@ -101,6 +102,7 @@ Autres questions :
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
+- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12).
 - Tranche 1 : spécifiée et validée le 2026-10-12 (loyer + mer, plafonds sans poids), voir Documents. Les proches viennent en tranche 2, à spécifier avant la mise en ligne de la tranche 1.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 

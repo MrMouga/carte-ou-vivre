@@ -1,5 +1,5 @@
 # Loyer et mer
-2026-10-12 · validée · révisée 2026-10-12 (D10–D12) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-12 · validée · révisée 2026-10-12 (D10–D14) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : on fixe un loyer maximum, une distance maximum à la mer et les tailles de ville voulues ; la carte des communes de métropole se colore aussitôt et montre les 10 meilleures.
 **Pourquoi** : on choisit sa ville avec des anecdotes, et les comparateurs partent d'un nom de ville. Ici, tout le pays d'un coup. Les proches arrivent en tranche 2.
@@ -20,8 +20,10 @@
 - **D10** — La carte colore les communes de métropole, chacune avec ses propres chiffres ; Paris, Lyon et Marseille d'un seul tenant (moyenne simple de leurs arrondissements). Remplace D2 et la décision « 675 aires » du 2026-10-11. *Pourquoi* : choix de Vincent au vu du prototype, les aires faisaient des zones trop grandes ; Ville de rêve montre une carte à la commune. *Écarté* : les 675 aires (moins visuelles). Coût accepté : carte plus lourde, loyers souvent estimés par secteur (D12), proches de la tranche 2 à recalculer (hypothèse « isochrone » dans STATE.md).
 - **D11** — Réglage « taille de ville » en pastilles cumulables : Petite commune (< 10 000 habitants), Petite ville (10 000–49 999), Ville moyenne (50 000–199 999), Grande ville (200 000 et plus) ; aucune cochée = « Peu importe ». Une commune hors des tailles cochées est grisée, avec la raison. *Pourquoi* : choix de Vincent ; à la commune, la liste se remplirait de villages. *Écarté* : un seuil fixe (≥ 10 000) ; filtrer la liste seulement.
 - **D12** — La fiche dit « Estimation du secteur (communes voisines) » quand la commune n'a pas d'estimation de loyer propre. *Pourquoi* : c'est le cas de 86 % des communes ; la carte paraît plus précise que la donnée. *Écarté* : ne rien dire.
+- **D13** — La mer, les grands fleuves et les lacs en bleu, les pays voisins en ton de terre, d'après des formes fixes embarquées dans le site (Natural Earth, domaine public). Précise D9. *Pourquoi* : choix de Vincent, la carte « faisait vide » ; on reconnaît la France. *Écarté* : un fond en tuiles (service extérieur) ; le fond uni.
+- **D14** — Choisir une commune, dans la liste ou sur la carte, zoome la carte sur elle ; « ← Les 10 premières » revient à la France entière. Remplace « la carte ne bouge pas ». *Pourquoi* : choix de Vincent ; à la commune, une ville choisie est un point à l'échelle du pays. *Écarté* : une carte fixe.
 
-**Pas maintenant** : proches, montagne, emploi, achat, poids, recherche par nom, bouton « Copier le lien », image à partager.
+**Pas maintenant** : mer en temps de trajet en voiture (tranche 2, avec les proches), proches, montagne, emploi, achat, poids, recherche par nom, bouton « Copier le lien », image à partager.
 **Hypothèses** : 9 choix par défaut (plafonds de départ, pas, arrondis…) dans [détails](details.md#hypothèses).
 **Taille** : au-dessus du gabarit perso (3 réglages, 7 règles, 14 critères, ~8 tâches), par choix de Vincent.
 **Le risque** : sans proches ni poids, ça ressemble à villeideale.fr ; ça ne vaut que si la tranche 2 suit vite. À mesurer en tâche 0 de /breakdown : la carte de ~35 000 communes réagit-elle en ≤ 100 ms et pèse-t-elle un poids raisonnable ; si non, retour à Vincent.

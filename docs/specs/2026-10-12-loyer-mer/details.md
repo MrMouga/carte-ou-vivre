@@ -1,5 +1,5 @@
 # Détails — loyer et mer
-Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12).
+Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14).
 
 ## Parcours
 1. L'utilisateur ouvre la page, avec ou sans réglages dans l'adresse.
@@ -10,7 +10,7 @@ Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : commu
 
 ## Écrans et états
 ### Carte — route `/` · dans l'URL : `loyer` (euros ou `aucun`), `mer` (km ou `aucun`), `taille` (liste de tailles, absente = peu importe)
-Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un seul tenant), sans fond (D9), cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, le gris « ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
+Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un seul tenant), sur la mer, les fleuves, les lacs et les pays voisins (D13), sans fond en tuiles (D9), cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, le gris « ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
 
 États de la page :
 - **chargement** (ouverture) → indicateur « Chargement de la carte… » (H9) ; réglages inactifs ; sort vers **classée**, **aucune commune**, **sans plafond** ou **erreur**.
@@ -26,7 +26,7 @@ Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un
 - **commune sans plafond** (page **sans plafond**) → nom, taille, loyer, mer, et la raison de taille si elle ne passe pas ; ni score ni rang.
 Depuis tout état ouvert : un changement de réglage fait passer la fiche dans l'état qui correspond, dans les deux sens ; choisir une autre commune remplace la fiche ; fermer → **fermée**.
 
-Interactions : bouger un plafond ou cocher une taille → carte, liste, fiche et adresse à jour (H9) · choisir une ligne de la liste → fiche ouverte, commune en évidence, la carte ne bouge pas · choisir une commune sur la carte → fiche ouverte.
+Interactions : bouger un plafond ou cocher une taille → carte, liste, fiche et adresse à jour (H9) · choisir une commune, dans la liste ou sur la carte → fiche ouverte, commune en évidence, la carte zoome sur elle en ≤ 500 ms (D14) · « ← Les 10 premières » → liste, la carte revient à la France entière.
 
 ## Règles
 - **R1** — Une commune passe si, pour chaque plafond actif, sa valeur affichée (loyer à l'euro, mer au km) est inférieure ou égale au plafond, et si sa taille fait partie des tailles cochées (toutes si aucune n'est cochée). Sinon elle est grisée, et sa fiche donne une raison par critère non tenu : « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € », « Taille : grande ville (260 000 habitants) ». *Pourquoi* : voir D3, D11 ; comparer la valeur affichée évite « Mer 60 km : au-dessus de ton plafond de 60 km ».
