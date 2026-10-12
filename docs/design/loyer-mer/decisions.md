@@ -46,3 +46,16 @@ Correctifs de la revue appliqués :
 - **Ronds du top 10 qui se chevauchent** quand deux communes sont voisines (Outreau et Boulogne) : les décaler légèrement.
 - **Contour de la France (Natural Earth) trop grossier au zoom** : il est masqué au-delà de ×3. En production, prendre le contour issu des communes.
 - **Distance à la mer approximative dans le prototype** : la vraie viendra de la Limite terre-mer Shom-IGN, calculée en tâche 0.
+
+## Après la relecture du design Figma (2026-10-12)
+Relecture : [review-figma.md](review-figma.md), 0 Bloquant, 4 Majeurs, 7 Mineurs. Mesure refaite par Claude : `score-4` à 40 % sur blanc = #A2C0BC, plus clair que `score-1` (#76B8A9).
+
+Corrigé sans décision (vérifiable contre la spec ou le brief) : « Sans limite » au dernier cran (H2) ; états de focus de la ligne et du rond (WCAG 2.4.7) ; pastille du palier dans la fiche ; cibles de 44 px à 390 px ; Natural Earth retiré du brief.
+
+**Décidé par Claude, à la demande de Vincent** (« je te laisse décider selon les best practices UX/UI », « à toi de voir, je testerai ensuite ») — à contester après ses tests :
+- **Fiche à 390 px** : elle remplace les réglages en haut de la feuille ; « ← Les 10 premières » les ramène. *Écarté* : faire défiler la feuille jusqu'à la fiche (repère perdu, animation à construire) ; une feuille repliée avec un résumé (élément et texte nouveaux).
+- **Opacité au zoom 70 %** (H10, D17). *Écarté* : 40 % (la légende ment) ; légende atténuée au zoom (paliers 4 et 5 presque identiques).
+- **Ronds du top 10 regroupés** au-delà de 50 % de chevauchement (« 3 · 10 », un clic zoome). *Écarté* : éventail avec traits (chargé sur le Pas-de-Calais) ; décalage léger au build (sans garantie).
+- **Mineurs appliqués** (D17) : fond de secours lisible (R8) ; compte « Aucune commune ne passe tes critères » ; intitulé « Ne passe pas tes critères » ; sable « sans plafond » à 70 %.
+
+Non fait : l'écran « Bureau — sans plafond » (le navigateur de test n'avait plus WebGL pour la capture) ; à juger sur le build. Logos Shom et IGN : emplacements, vrais fichiers en tâche 0.

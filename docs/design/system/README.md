@@ -21,9 +21,9 @@
 ## Jetons de données (carte, liste, fiche)
 | Jeton | Valeur | Rôle |
 |---|---|---|
-| `score-1` … `score-5` | #76B8A9 · #4C9D8D · #2C8072 · #176258 · #0A433D | paliers de score [0,20) … [80,100] (R3) ; opacité des communes 88 % à l'échelle de la France, ~40 % au zoom d'une ville (H10) |
-| `area-unranked` | #D8C08A | page « sans plafond » : communes de la bonne taille, opacité 45 % |
-| `area-excluded`, `map-sea`, `map-river`, `map-neighbour`, `map-border` | #E0DBD2 · #BFD6E4 · #8DB3CA · #EFECE6 · #8E9896 | **fond uni de secours seulement** (R8) ; avec le fond IGN, une commune qui ne passe pas n'est pas peinte |
+| `score-1` … `score-5` | #76B8A9 · #4C9D8D · #2C8072 · #176258 · #0A433D | paliers de score [0,20) … [80,100] (R3) ; opacité des communes 88 % à l'échelle de la France, 70 % au zoom d'une ville (H10, D17) |
+| `area-unranked` | #D8C08A | page « sans plafond » : communes de la bonne taille, opacité 70 % (D17) |
+| `area-excluded`, `map-sea`, `map-river`, `map-neighbour`, `map-border` | #E0DBD2 · #BFD6E4 · #8DB3CA · #EFECE6 · #8E9896 | **fond uni de secours seulement** (R8, D17) : communes qui ne passent pas en `area-excluded`, mer, voisins, trait de côte ; avec le fond IGN, une commune qui ne passe pas n'est pas peinte |
 | commune choisie | double contour : 4 px `card` sous 1,8 px `foreground` | lisible sur les paliers foncés |
 
 Fond de carte (D16) : Plan IGN « atténué » + estompage IGN `estompage_grayscale` à 45 %, sous les communes. La couleur n'est jamais le seul indice : score et rang écrits dans la liste, la fiche et les ronds.
@@ -47,17 +47,18 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Figma | shadcn / code | Variantes |
 |---|---|---|
 | Bouton | Button | Principal (« Réessayer ») · Icône (zoom + −, 32×32) · Lien (« ← Les 10 premières ») × Repos/Focus |
-| Curseur | Slider (input range natif possible) | Position 51 % / 27 % / Sans limite × Repos/Focus ; textes Libellé, Valeur, Sous-texte |
+| Curseur | Slider (input range natif possible) | Position 51 % / 27 % / Sans limite (valeur « Sans limite », sous-texte masqué) × Repos/Focus ; textes Libellé, Valeur, Sous-texte |
 | Pastille | Toggle (`aria-pressed`) | Cochée Oui/Non × Repos/Focus |
-| Ligne de liste | bouton dans un `ol` | Palier 1–5 × Repos/Survol ; nom sur plusieurs lignes si long |
-| Fiche | (composé) | Passe · Ne passe pas · Sans plafond ; booléen « Estimation du secteur » |
-| Légende | (composé) | Classée · Sans plafond |
+| Ligne de liste | bouton dans un `ol` | Palier 1–5 × Repos/Survol/Focus ; nom sur plusieurs lignes si long |
+| Fiche | (composé) | Passe (pastille du palier avant le score) · Ne passe pas (intitulé « Ne passe pas tes critères ») · Sans plafond ; booléen « Estimation du secteur » |
+| Légende | (composé) | Classée · Sans plafond · Fond indisponible |
 | Message carte | (composé) | Chargement · Erreur · Fond indisponible |
-| Rond du top 10 | marqueur MapLibre (élément HTML) | Choisi Oui/Non |
+| Rond du top 10 | marqueur MapLibre (élément HTML) | Choisi Non/Oui/Focus · Groupe (« 3 · 10 », au-delà de 50 % de chevauchement ; un clic zoome) |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Règles
 - Jetons seulement ; lint « pas de valeur arbitraire » en tâche 0. Le style MapLibre lit le même module TS que le CSS.
 - Un seul mode (clair). Pas de couleur de donnée sur un bouton ou un réglage.
-- Cibles : ≥ 24 px en bureau, 44 px au toucher (poignée de curseur et pastilles à 390 px).
+- Cibles : ≥ 24 px en bureau, 44 px au toucher : à 390 px, pastilles avec padding vertical `space-2` (49 px), zoom 44 × 44, zone de toucher de la poignée 44 px.
+- 390 px : la feuille montre réglages, compte et liste ; une fiche ouverte **remplace les réglages** en haut de la feuille, la carte zoome au centre de la bande visible au-dessus.
 - Figma fait foi jusqu'à ce qu'un écran soit construit ; ensuite, c'est le code.
