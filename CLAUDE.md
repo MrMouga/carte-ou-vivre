@@ -23,7 +23,7 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 ## Données (décidé pendant la discovery, ne pas redécider)
 - La carte colore les 675 aires d'attraction des villes de métropole (INSEE AAV 2020), pas les communes. Joindre toujours par code INSEE, jamais par nom (il y a deux « La Rochelle »).
 - Loyer : Carte des loyers 2025, au m² ; affiché pour 52 m² par défaut.
-- Mentions obligatoires sur le site : « Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin » ; « © Shom-IGN, 2021 » avec les logos Shom et IGN et leurs liens ; openrouteservice et « © OpenStreetMap contributors ».
+- Mentions obligatoires sur le site : « Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin » ; « © Shom-IGN, 2021 » avec les logos Shom et IGN et leurs liens ; openrouteservice et « © OpenStreetMap contributors » ; « Source : Insee, zonage en aires d'attraction des villes 2020 » (Licence Ouverte : citer la source).
 - Fichier des ventes (DVF) : le fichier de données servi par le site doit être exclu de l'indexation des moteurs de recherche.
 - ORS : clé dans `~/.config/openrouteservice/key`, jamais dans le repo ni dans le navigateur ; 40 requêtes par minute et 500 par jour, d'où un cache. Les requêtes POST sont lancées par Vincent (envoi interdit à l'agent).
 

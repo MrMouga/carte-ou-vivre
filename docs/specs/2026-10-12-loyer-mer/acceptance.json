@@ -1,0 +1,299 @@
+{
+  "slice": "loyer-mer",
+  "fixture": {
+    "description": "Fixture inventée « 5 aires » : 5 aires et 1 commune hors aire, aux valeurs connues, à la place des 675 aires réelles. Codes INSEE et noms inventés (99xxx, F0x), pour ne jamais confondre fixture et vraies données ; la jointure se fait par code. loyer_m2 = loyer au m² de la commune-centre (entrée) ; mer_km = distance à vol d'oiseau, non arrondie (entrée). Formes : carrés de 0,5° côte à côte, en longitude/latitude. Nom affiché attendu = libellé + « (département) », par ex. « Portmer (17) ».",
+    "items": [
+      {
+        "id": "A",
+        "code_aav": "F01",
+        "libelle": "Portmer",
+        "commune_centre": "99001",
+        "dep_centre": "17",
+        "loyer_m2": 12.5,
+        "mer_km": 0.9,
+        "forme": [
+          [
+            0,
+            0
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.5,
+            0.5
+          ],
+          [
+            0,
+            0.5
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "B",
+        "code_aav": "F02",
+        "libelle": "Grandeville",
+        "commune_centre": "99002",
+        "dep_centre": "33",
+        "loyer_m2": 16.0,
+        "mer_km": 39.9,
+        "forme": [
+          [
+            1,
+            0
+          ],
+          [
+            1.5,
+            0
+          ],
+          [
+            1.5,
+            0.5
+          ],
+          [
+            1,
+            0.5
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "C",
+        "code_aav": "F03",
+        "libelle": "Montcher",
+        "commune_centre": "99003",
+        "dep_centre": "75",
+        "loyer_m2": 30.0,
+        "mer_km": 148.2,
+        "forme": [
+          [
+            2,
+            0
+          ],
+          [
+            2.5,
+            0
+          ],
+          [
+            2.5,
+            0.5
+          ],
+          [
+            2,
+            0.5
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "D",
+        "code_aav": "F04",
+        "libelle": "Terrebasse",
+        "commune_centre": "99004",
+        "dep_centre": "23",
+        "loyer_m2": 8.0,
+        "mer_km": 180.3,
+        "forme": [
+          [
+            0,
+            1
+          ],
+          [
+            0.5,
+            1
+          ],
+          [
+            0.5,
+            1.5
+          ],
+          [
+            0,
+            1.5
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      {
+        "id": "E",
+        "code_aav": "F05",
+        "libelle": "Quaibleu",
+        "commune_centre": "99005",
+        "dep_centre": "13",
+        "loyer_m2": 21.0,
+        "mer_km": 7.0,
+        "forme": [
+          [
+            1,
+            1
+          ],
+          [
+            1.5,
+            1
+          ],
+          [
+            1.5,
+            1.5
+          ],
+          [
+            1,
+            1.5
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "id": "H",
+        "code_commune": "99099",
+        "libelle": "Hameau-Perdu",
+        "dep": "48",
+        "hors_aire": true,
+        "forme": [
+          [
+            2,
+            1
+          ],
+          [
+            2.5,
+            1
+          ],
+          [
+            2.5,
+            1.5
+          ],
+          [
+            2,
+            1.5
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "services": {}
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R3",
+      "given": "Fixture « 5 aires », page ouverte sur / (plafonds de départ)",
+      "when": "la carte est affichée",
+      "then": "A a le score 72 et la couleur de la tranche 60–80 de la légende, E 49 (tranche 40–60), B 32 (tranche 20–40) ; C et D ont le gris « au-dessus d'un plafond » ; H a le gris « hors aire »",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R2",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "l'utilisateur règle la mer sur « Sans limite »",
+      "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C reste grise",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R1",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "l'utilisateur règle la mer sur 40 km",
+      "then": "B passe avec le score 15 (39,9 km affiché 40 km, égal au plafond) ; A a 72, E 46 ; C et D sont grises",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R5",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "la liste est affichée",
+      "then": "la liste montre « 3 aires passent tes plafonds » puis, dans l'ordre : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R1",
+      "given": "Fixture « 5 aires »",
+      "when": "l'utilisateur règle le loyer sur 300 € et la mer sur 5 km",
+      "then": "A, B, C, D et E ont le gris « au-dessus d'un plafond » et la liste affiche « Aucune aire ne passe tes plafonds. Relâche le loyer ou la mer. »",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R3",
+      "given": "Fixture « 5 aires »",
+      "when": "l'utilisateur règle le loyer et la mer sur « Sans limite »",
+      "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende, distincte des deux gris ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les aires. »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R4",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "l'utilisateur choisit Grandeville (33) dans la liste",
+      "then": "la fiche affiche « Grandeville (33) », le score 32, « 3e sur 3 aires qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » et « 40 km de la mer à vol d'oiseau »",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R4",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "l'utilisateur choisit Portmer (17)",
+      "then": "la fiche affiche « Portmer (17) », « 1re sur 3 aires qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) » et « moins d'1 km de la mer »",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R1",
+      "given": "Fixture « 5 aires », plafonds loyer 1 200 € et mer 60 km",
+      "when": "l'utilisateur choisit Montcher (75) sur la carte",
+      "then": "la fiche affiche « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » et « Mer 148 km : au-dessus de ton plafond de 60 km », sans score ni rang",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R3",
+      "given": "Fixture « 5 aires », fiche fermée",
+      "when": "l'utilisateur choisit Hameau-Perdu (48) sur la carte",
+      "then": "aucune fiche ne s'ouvre",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R7",
+      "given": "Fixture « 5 aires »",
+      "when": "l'utilisateur ouvre /?loyer=800&mer=60",
+      "then": "les réglages affichent 800 € et 60 km ; la liste montre « 1 aire passe tes plafonds » puis « 1 · Portmer (17) · 59 · 650 € · moins d'1 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R7",
+      "given": "Fixture « 5 aires »",
+      "when": "l'utilisateur ouvre /?loyer=abc&mer=aucun",
+      "then": "les réglages affichent 1 200 € et « Sans limite » ; l'adresse devient /?loyer=1200&mer=aucun ; la liste montre dans l'ordre Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
+      "passes": false
+    },
+    {
+      "id": "AC-13",
+      "rule": "R7",
+      "given": "Fixture « 5 aires », page ouverte sur /",
+      "when": "l'utilisateur règle le loyer sur 800 €",
+      "then": "l'adresse de la page est /?loyer=800&mer=60, et l'historique du navigateur n'a pas gagné d'entrée",
+      "passes": false
+    }
+  ]
+}
