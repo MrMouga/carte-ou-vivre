@@ -294,7 +294,7 @@
       "given": "Fixture « 5 communes », réglages de départ, fond IGN en panne (service simulé)",
       "when": "la page s'ouvre",
       "then": "A (72), E (49) et B (32) sont colorées sur le fond uni, la mention « Fond de carte indisponible » est visible, et la liste montre « 3 communes passent tes critères »",
-      "passes": false
+      "passes": true
     }
   ]
 }
