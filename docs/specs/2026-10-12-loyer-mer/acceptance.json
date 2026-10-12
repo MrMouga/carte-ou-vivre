@@ -182,7 +182,7 @@
       "given": "Fixture « 5 communes », page ouverte sur / (réglages de départ)",
       "when": "la carte est affichée",
       "then": "A a le score 72 et la couleur de la tranche 60–80 de la légende, E 49 (tranche 40–60), B 32 (tranche 20–40) ; C et D ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -190,7 +190,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur règle la mer sur « Sans limite »",
       "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C n'est pas colorée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -198,7 +198,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur règle la mer sur 40 km",
       "then": "B passe avec le score 15 (39,9 km affiché 40 km, égal au plafond) ; A a 72, E 46 ; C et D ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
