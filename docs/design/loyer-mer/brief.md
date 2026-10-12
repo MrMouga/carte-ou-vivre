@@ -36,6 +36,8 @@ Score des communes qui passent, séquentielle à une teinte (vert d'eau), du cla
 | `map-river` | #8DB3CA | fleuves, trait de 0,9 à 1,6 px selon le zoom |
 | `map-neighbour` | #EFECE6 | pays voisins |
 | `map-border` | #8E9896 | trait de côte et frontières, 0,6 à 0,8 px ; masqué au-delà d'un zoom ×3 (le contour Natural Earth est trop grossier) |
+| `map-relief` | ombrage multiplié sur toute la carte (lumière nord-ouest, 45°), assombrissement au plus 50 % | relief (D15) ; image fixe en production |
+| `map-label` | villes #2F3B3A, 600–700, 12–13 px, halo blanc 3 px ; pays #7A8583 petites capitales espacées 1,5 px ; mers #5E7F92 Source Serif 4 italique 13 px | noms (D15), écartés des ronds du top 10 |
 | `rank-marker` | rond `foreground` de 22 px (26 px si choisi), anneau blanc de 2 px, rang en blanc 12 px gras | les 10 premières, posées sur la carte, cliquables |
 Les couches de contexte (mer, voisins) ne sont pas des catégories de la légende : elles se distinguent du gris « ne passe pas » par le trait de côte et de frontière (l'écart de couleur seul est trop faible, ΔE 3,9). Légende : 5 pastilles « Score 0 → 100 », « Ne passe pas » ; « Sans plafond » remplace les pastilles dans cet état. La couleur n'est jamais le seul indice : score et rang écrits dans la liste, la fiche et les ronds.
 

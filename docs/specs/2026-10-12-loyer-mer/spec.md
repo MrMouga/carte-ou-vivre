@@ -1,5 +1,5 @@
 # Loyer et mer
-2026-10-12 · validée · révisée 2026-10-12 (D10–D14) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-12 · validée · révisée 2026-10-12 (D10–D15) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : on fixe un loyer maximum, une distance maximum à la mer et les tailles de ville voulues ; la carte des communes de métropole se colore aussitôt et montre les 10 meilleures.
 **Pourquoi** : on choisit sa ville avec des anecdotes, et les comparateurs partent d'un nom de ville. Ici, tout le pays d'un coup. Les proches arrivent en tranche 2.
@@ -22,6 +22,7 @@
 - **D12** — La fiche dit « Estimation du secteur (communes voisines) » quand la commune n'a pas d'estimation de loyer propre. *Pourquoi* : c'est le cas de 86 % des communes ; la carte paraît plus précise que la donnée. *Écarté* : ne rien dire.
 - **D13** — La mer, les grands fleuves et les lacs en bleu, les pays voisins en ton de terre, d'après des formes fixes embarquées dans le site (Natural Earth, domaine public). Précise D9. *Pourquoi* : choix de Vincent, la carte « faisait vide » ; on reconnaît la France. *Écarté* : un fond en tuiles (service extérieur) ; le fond uni.
 - **D14** — Choisir une commune, dans la liste ou sur la carte, zoome la carte sur elle ; « ← Les 10 premières » revient à la France entière. Remplace « la carte ne bouge pas ». *Pourquoi* : choix de Vincent ; à la commune, une ville choisie est un point à l'échelle du pays. *Écarté* : une carte fixe.
+- **D15** — Des repères sur la carte : noms des pays, des mers et des villes (plus de 150 000 habitants à l'échelle de la France, davantage au zoom), et un ombrage du relief sur toute la carte, d'après une image fixe précalculée (source et licence choisies en tâche 0). *Pourquoi* : choix de Vincent, pour se repérer comme sur une vraie carte. *Écarté* : relief seulement hors des communes colorées (proposé par Claude) ; pas de relief avant le critère montagne. Coût accepté : une commune de montagne paraît plus foncée qu'une commune de plaine au même score (hypothèse dans STATE.md).
 
 **Pas maintenant** : mer en temps de trajet en voiture (tranche 2, avec les proches), proches, montagne, emploi, achat, poids, recherche par nom, bouton « Copier le lien », image à partager.
 **Hypothèses** : 9 choix par défaut (plafonds de départ, pas, arrondis…) dans [détails](details.md#hypothèses).

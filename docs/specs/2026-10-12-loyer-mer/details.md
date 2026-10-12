@@ -1,5 +1,5 @@
 # Détails — loyer et mer
-Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14).
+Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14), noms et relief (D15).
 
 ## Parcours
 1. L'utilisateur ouvre la page, avec ou sans réglages dans l'adresse.
@@ -10,7 +10,7 @@ Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : commu
 
 ## Écrans et états
 ### Carte — route `/` · dans l'URL : `loyer` (euros ou `aucun`), `mer` (km ou `aucun`), `taille` (liste de tailles, absente = peu importe)
-Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un seul tenant), sur la mer, les fleuves, les lacs et les pays voisins (D13), sans fond en tuiles (D9), cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, le gris « ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
+Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un seul tenant), sur la mer, les fleuves, les lacs et les pays voisins (D13), avec le relief ombré et les noms des pays, des mers et des villes (D15), sans fond en tuiles (D9), cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, le gris « ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
 
 États de la page :
 - **chargement** (ouverture) → indicateur « Chargement de la carte… » (H9) ; réglages inactifs ; sort vers **classée**, **aucune commune**, **sans plafond** ou **erreur**.

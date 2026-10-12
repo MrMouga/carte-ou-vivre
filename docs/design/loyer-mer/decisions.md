@@ -24,6 +24,7 @@ Ajouté pendant la fusion, sur les retours de Vincent :
 - **Numéros du top 10 posés sur la carte** : à la commune, 269 communes deviennent des points minuscules.
 - **Mer, fleuves, lacs et pays voisins** (D13) : « la carte fait un peu vide ».
 - **Zoom sur la commune choisie** (D14).
+- **Noms des pays, mers et villes, et relief ombré partout** (D15). Trois modes de relief comparés dans le prototype ; Vincent a choisi « partout » contre la recommandation « hors communes colorées » (captures `F-relief-large`, `F-relief-gris-large`, `F-sans-relief-large`).
 
 Correctifs de la revue appliqués :
 - **Double contour** sur la commune choisie ;
