@@ -9,9 +9,9 @@ export const TAILLES: { id: Taille; libelle: string; habitants: string }[] = [
   { id: 'grande-ville', libelle: 'Grande ville', habitants: 'plus de 200 000 hab.' },
 ];
 
-type Props = { tailles: Taille[]; onChange: (t: Taille[]) => void };
+type Props = { tailles: Taille[]; onChange: (t: Taille[]) => void; disabled?: boolean };
 
-export function SizeChips({ tailles, onChange }: Props) {
+export function SizeChips({ tailles, onChange, disabled = false }: Props) {
   const basculer = (id: Taille, on: boolean) => onChange(TAILLES.map((t) => t.id).filter((t) => (t === id ? on : tailles.includes(t))));
   return (
     <div className="flex flex-col gap-2">
@@ -20,7 +20,7 @@ export function SizeChips({ tailles, onChange }: Props) {
       </h2>
       <div role="group" aria-labelledby="titre-taille" className="flex flex-wrap gap-2">
         {TAILLES.map((t) => (
-          <Toggle key={t.id} pressed={tailles.includes(t.id)} onPressedChange={(on) => basculer(t.id, on)}>
+          <Toggle key={t.id} pressed={tailles.includes(t.id)} onPressedChange={(on) => basculer(t.id, on)} disabled={disabled}>
             <span>{t.libelle}</span>
             <span className="text-mentions">{t.habitants}</span>
           </Toggle>

@@ -12,7 +12,7 @@ export function Slider({
   ...props
 }: ComponentProps<typeof SliderPrimitive.Root>) {
   return (
-    <SliderPrimitive.Root className={cn('relative flex h-cible w-full touch-none select-none items-center', className)} {...props}>
+    <SliderPrimitive.Root className={cn('relative flex h-cible w-full touch-none select-none items-center data-disabled:opacity-50', className)} {...props}>
       <SliderPrimitive.Track className="relative h-rail w-full grow overflow-hidden rounded-full bg-border">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>

@@ -109,6 +109,7 @@ export const map = {
   'choisie-trait': 1.8,
   'zoom-commune-max': 12,
   'duree-zoom-ms': 500,
+  'trait-cote': 1, // fond de secours : trait de côte et frontières (R8)
 } as const;
 
 function rgba(hex: string, alpha: number): string {

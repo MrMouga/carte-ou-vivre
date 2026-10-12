@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Map as MapLibreMap, type GeoJSONSourceSpecification } from './maplibre';
-import { CHOISIE_LAYERS, COMMUNES_LAYER, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, IGN_STYLE_URL, SOURCE_COMMUNES } from './style';
+import { Map as MapLibreMap, type GeoJSONSourceSpecification, type StyleSpecification } from './maplibre';
+import { CHOISIE_LAYERS, COMMUNES_LAYER, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES } from './style';
+import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
 import { emprise, paddingBureau, type Formes } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
 import { Button } from '@/components/ui/button';
@@ -14,55 +15,105 @@ type Props = {
   choisie: number | null;
   ronds: Rond[];
   onChoisir: (index: number) => void;
+  /** Première image dessinée. */
+  onPrete: () => void;
+  /** La carte ne peut pas s'afficher (pas de WebGL). */
+  onErreur: () => void;
+  onFond: (fond: Fond) => void;
 };
 
-// La carte : fond IGN, estompage, communes recolorées par état (tâche 1b : seulement celles qui changent),
-// commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
-export function MapView({ formes, couleurs, choisie, ronds, onChoisir }: Props) {
+export type Fond = 'ign' | 'secours';
+
+// La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
+// celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
+export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
   const peintes = useRef<(string | null | undefined)[]>([]);
-  const etat = useRef({ couleurs, choisie, ronds, onChoisir });
-  etat.current = { couleurs, choisie, ronds, onChoisir };
+  const etat = useRef({ couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond });
+  etat.current = { couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond };
 
   useEffect(() => {
-    const [w, s, e, n] = emprise(formes.features);
-    const map = new MapLibreMap({
-      container: container.current!,
-      style: IGN_STYLE_URL,
-      bounds: [[w, s], [e, n]],
-      fitBoundsOptions: { padding: paddingBureau() },
-      attributionControl: { compact: false },
-      dragRotate: false,
-      pitchWithRotate: false,
-    });
-    map.touchZoomRotate.disableRotation();
-    mapRef.current = map;
-    map.on('load', () => {
-      const premierTexte = map.getStyle().layers.find((l) => l.type === 'symbol')?.id;
-      map.addSource(SOURCE_COMMUNES, { type: 'geojson', data: formes as unknown as GeoJSONSourceSpecification['data'] });
-      map.addLayer(COMMUNES_LAYER, premierTexte);
-      CHOISIE_LAYERS.forEach((l) => map.addLayer(l, premierTexte));
-      map.addSource('estompage', ESTOMPAGE_SOURCE);
-      map.addLayer(ESTOMPAGE_LAYER, COMMUNES_LAYER.id);
-      map.on('click', COMMUNES_LAYER.id, (ev) => {
-        const id = ev.features?.[0]?.id;
-        if (typeof id === 'number') etat.current.onChoisir(id);
+    let fini = false;
+    let map: MapLibreMap | null = null;
+    let essai: ReturnType<typeof setInterval> | undefined;
+    const fond = (f: Fond) => {
+      container.current?.setAttribute('data-fond', f);
+      etat.current.onFond(f);
+    };
+    // R8 : le style IGN d'abord ; s'il ne répond pas, le fond de secours, puis un nouvel essai toutes les 60 s.
+    void chargerStyleIgn().then(
+      (style) => demarrer(style, 'ign'),
+      () => demarrer(styleSecours(), 'secours'),
+    );
+
+    function demarrer(style: StyleSpecification, f: Fond) {
+      if (fini) return;
+      const [w, s, e, n] = emprise(formes.features);
+      try {
+        map = new MapLibreMap({
+          container: container.current!,
+          style,
+          bounds: [[w, s], [e, n]],
+          fitBoundsOptions: { padding: paddingBureau() },
+          attributionControl: false, // les mentions sont dans le pied de page (Mentions)
+          dragRotate: false,
+          pitchWithRotate: false,
+        });
+      } catch {
+        etat.current.onErreur(); // pas de WebGL : la carte ne peut pas s'afficher (details.md, erreur)
+        return;
+      }
+      const m = map;
+      m.touchZoomRotate.disableRotation();
+      mapRef.current = m;
+      fond(f);
+      if (f === 'secours') essai = setInterval(reessayer, NOUVEL_ESSAI_MS);
+      // Les couches des communes sont reposées à chaque style (setStyle les efface, avec l'état des formes).
+      m.on('style.load', () => {
+        poserCouches(m, formes, container.current?.getAttribute('data-fond') === 'secours');
+        peintes.current = [];
+        peindre(m, etat.current.couleurs, peintes.current);
+        if (etat.current.choisie != null) m.setFeatureState({ source: SOURCE_COMMUNES, id: etat.current.choisie }, { choisie: true });
+        m.triggerRepaint();
       });
-      map.on('mouseenter', COMMUNES_LAYER.id, () => (map.getCanvas().style.cursor = 'pointer'));
-      map.on('mouseleave', COMMUNES_LAYER.id, () => (map.getCanvas().style.cursor = ''));
-      marqueurs.current = new RankMarkers(map, (i) => etat.current.onChoisir(i));
-      peindre(map, etat.current.couleurs, peintes.current);
-      marqueurs.current.update(etat.current.ronds, etat.current.choisie);
-      // Sans image demandée ici, MapLibre peut ne plus redessiner après l'ajout des couches, et `idle` n'arrive pas.
-      map.once('idle', () => container.current?.setAttribute('data-carte-prete', '1'));
-      map.triggerRepaint();
-    });
+      m.on('load', () => {
+        m.on('click', COMMUNES_LAYER.id, (ev) => {
+          const id = ev.features?.[0]?.id;
+          if (typeof id === 'number') etat.current.onChoisir(id);
+        });
+        m.on('mouseenter', COMMUNES_LAYER.id, () => (m.getCanvas().style.cursor = 'pointer'));
+        m.on('mouseleave', COMMUNES_LAYER.id, () => (m.getCanvas().style.cursor = ''));
+        marqueurs.current = new RankMarkers(m, (i) => etat.current.onChoisir(i));
+        marqueurs.current.update(etat.current.ronds, etat.current.choisie);
+        // Sans image demandée ici, MapLibre peut ne plus redessiner après l'ajout des couches, et `idle` n'arrive pas.
+        m.once('idle', () => {
+          container.current?.setAttribute('data-carte-prete', '1');
+          etat.current.onPrete();
+        });
+        m.triggerRepaint();
+      });
+    }
+
+    function reessayer() {
+      void chargerStyleIgn().then(
+        (style) => {
+          if (fini || !map) return;
+          clearInterval(essai);
+          fond('ign');
+          map.setStyle(style, { diff: false });
+        },
+        () => {},
+      );
+    }
+
     return () => {
+      fini = true;
+      clearInterval(essai);
       marqueurs.current?.remove();
       marqueurs.current = null;
-      map.remove();
+      map?.remove();
       mapRef.current = null;
       peintes.current = [];
     };
@@ -119,6 +170,19 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir }: Props) 
       </div>
     </>
   );
+}
+
+/** Communes sous la première couche de texte de l'IGN (ou sous le trait de côte du fond de secours), estompage dessous. */
+function poserCouches(map: MapLibreMap, formes: Formes, secours: boolean) {
+  const dessus = map.getStyle().layers.find((l) => l.type === 'symbol' || l.id === COUCHE_COTE)?.id;
+  map.addSource(SOURCE_COMMUNES, { type: 'geojson', data: formes as unknown as GeoJSONSourceSpecification['data'] });
+  if (secours) map.addLayer(SOCLE_LAYER, dessus);
+  map.addLayer(COMMUNES_LAYER, dessus);
+  CHOISIE_LAYERS.forEach((l) => map.addLayer(l, dessus));
+  if (!secours) {
+    map.addSource('estompage', ESTOMPAGE_SOURCE);
+    map.addLayer(ESTOMPAGE_LAYER, COMMUNES_LAYER.id);
+  }
 }
 
 function peindre(map: MapLibreMap, couleurs: (string | null)[], peintes: (string | null | undefined)[]) {

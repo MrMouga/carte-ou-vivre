@@ -12,9 +12,10 @@ type CurseurProps = {
   valeur: number | null;
   texte: (v: number | null) => string;
   onChange: (v: number | null) => void;
+  disabled: boolean;
 };
 
-function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange }: CurseurProps) {
+function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange, disabled }: CurseurProps) {
   const id = useId();
   const sansLimite = bornes.max + bornes.pas;
   return (
@@ -33,16 +34,18 @@ function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange }: Curseu
         step={bornes.pas}
         value={[valeur ?? sansLimite]}
         onValueChange={([v]) => onChange(v >= sansLimite ? null : v)}
+        disabled={disabled}
       />
       {valeur != null && <p className="text-secondaire text-muted-foreground">{sousTexte}</p>}
     </div>
   );
 }
 
-type Props = { reglages: Reglages; onChange: (r: Reglages) => void; children?: React.ReactNode };
+/** `inactif` : pendant le chargement (details.md), les curseurs ne bougent pas. */
+type Props = { reglages: Reglages; onChange: (r: Reglages) => void; inactif?: boolean; children?: React.ReactNode };
 
 // Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, plafond de loyer, plafond de mer.
-export function Settings({ reglages, onChange, children }: Props) {
+export function Settings({ reglages, onChange, inactif = false, children }: Props) {
   return (
     <section aria-label="Réglages" className="flex flex-col gap-3 rounded-panel border border-border bg-card p-4 shadow-panneau">
       <h1 className="font-serif text-marque">Carte où vivre</h1>
@@ -55,6 +58,7 @@ export function Settings({ reglages, onChange, children }: Props) {
           valeur={reglages.loyer}
           texte={plafondLoyer}
           onChange={(loyer) => onChange({ ...reglages, loyer })}
+          disabled={inactif}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -66,6 +70,7 @@ export function Settings({ reglages, onChange, children }: Props) {
           valeur={reglages.mer}
           texte={plafondMer}
           onChange={(mer) => onChange({ ...reglages, mer })}
+          disabled={inactif}
         />
       </div>
       {children}

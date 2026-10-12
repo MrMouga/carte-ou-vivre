@@ -9,6 +9,7 @@ export function Toggle({ className, ...props }: ComponentProps<typeof TogglePrim
       className={cn(
         'flex min-h-pastille cursor-pointer flex-col items-start rounded-chip border border-border bg-card px-3 py-1 text-left text-pastille text-foreground',
         'aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground',
+        'disabled:cursor-default disabled:opacity-50',
         className,
       )}
       {...props}
