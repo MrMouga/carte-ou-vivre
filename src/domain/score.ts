@@ -1,4 +1,4 @@
-// Règles de la spec loyer-mer : passage (R1), note et score (R2, D4), palier de couleur (R3, D5), classement (R5, H4).
+// Règles de la spec loyer-mer : passage (R1, D11), note et score (R2, D4), palier de couleur (R3, D5), classement (R5, H4).
 // Tout se compare sur les valeurs affichées : loyer à l'euro pour 52 m², mer au km (sous 1 km : comparée comme 1 km).
 
 export const SURFACE_M2 = 52;
@@ -23,8 +23,10 @@ export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: 60, tailles: [] }; 
 export type Raison =
   | { critere: 'loyer'; valeur: number; plafond: number }
   | { critere: 'mer'; valeur: number; plafond: number }
+  | { critere: 'taille'; taille: Taille; population: number }
   | { critere: 'loyer-inconnu' }
-  | { critere: 'mer-inconnue' };
+  | { critere: 'mer-inconnue' }
+  | { critere: 'taille-inconnue' };
 
 export type Evaluation = {
   commune: Commune;
@@ -49,6 +51,15 @@ export const merAffichee = (c: Commune) => (c.merKm == null ? null : Math.round(
 /** Distance utilisée pour comparer et noter : « moins d'1 km » vaut 1 km. */
 const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.round(c.merKm)));
 
+/** D11 : population exactement sur un seuil → la taille du dessus (10 000 = petite ville). */
+export function tailleDe(population: number | null): Taille | null {
+  if (population == null) return null;
+  if (population < 10000) return 'petite-commune';
+  if (population < 50000) return 'petite-ville';
+  if (population < 200000) return 'ville-moyenne';
+  return 'grande-ville';
+}
+
 export function palier(score: number): 1 | 2 | 3 | 4 | 5 {
   return Math.min(5, Math.floor(score / 20) + 1) as 1 | 2 | 3 | 4 | 5;
 }
@@ -71,6 +82,11 @@ export function evaluer(communes: Commune[], r: Reglages): Resultat {
       if (v == null) raisons.push({ critere: 'mer-inconnue' });
       else if (v > r.mer) raisons.push({ critere: 'mer', valeur: v, plafond: r.mer });
       else notes.push(100 * (1 - v / r.mer));
+    }
+    if (r.tailles.length) {
+      const t = tailleDe(c.population);
+      if (t == null) raisons.push({ critere: 'taille-inconnue' });
+      else if (!r.tailles.includes(t)) raisons.push({ critere: 'taille', taille: t, population: c.population! });
     }
     const passe = raisons.length === 0;
     const score = passe && actif ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : null;

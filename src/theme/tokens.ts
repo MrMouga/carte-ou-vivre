@@ -44,6 +44,7 @@ export const radius = {
   'radius-panel': 12,
   'radius-sheet': 16,
   'radius-echantillon': 3,
+  'radius-pastille-score': 2,
 } as const;
 
 /**
@@ -61,6 +62,8 @@ export const size = {
   'taille-liste': 320,
   'taille-echantillon': 14,
   'taille-ecart-echantillon': 2,
+  'taille-rang': 22,
+  'taille-pastille-score': 10,
   'trait-focus': 2,
   'ecart-focus': 2,
 } as const;

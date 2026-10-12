@@ -31,7 +31,12 @@ export const COMMUNES_LAYER: FillLayerSpecification = {
   paint: {
     'fill-color': ['coalesce', ['feature-state', 'c'], 'transparent'] as ExpressionSpecification,
     // H10 : 88 % à l'échelle de la France (jusqu'au zoom 7), 70 % au zoom d'une ville (dès le zoom 11).
-    'fill-opacity': ['interpolate', ['linear'], ['zoom'], carte['zoom-france'], carte['opacite-france'], carte['zoom-ville'], carte['opacite-zoom']],
+    // « Sans plafond » (sable) : 70 % à toutes les échelles (D17).
+    'fill-opacity': [
+      'interpolate', ['linear'], ['zoom'],
+      carte['zoom-france'], ['case', ['==', ['feature-state', 'c'], color['area-unranked']], carte['opacite-sans-plafond'], carte['opacite-france']],
+      carte['zoom-ville'], ['case', ['==', ['feature-state', 'c'], color['area-unranked']], carte['opacite-sans-plafond'], carte['opacite-zoom']],
+    ] as ExpressionSpecification,
   },
 };
 

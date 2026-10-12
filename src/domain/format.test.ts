@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { euros, eurosM2, km, merTexte, nomAffiche, population, plafondLoyer, plafondMer } from './format';
+import { chiffresListe, compte, euros, eurosM2, km, ligneListe, merTexte, nomAffiche, population, plafondLoyer, plafondMer } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -41,5 +41,20 @@ describe('H3 — formats', () => {
 
   it('nom affiché : nom (département)', () => {
     expect(nomAffiche({ nom: 'Portmer', dep: '17' })).toBe('Portmer (17)');
+  });
+});
+
+describe('R5 — compte et lignes de la liste', () => {
+  it('compte : pluriel, singulier, aucune', () => {
+    expect(compte(3)).toBe('3 communes passent tes critères');
+    expect(compte(1)).toBe('1 commune passe tes critères');
+    expect(compte(0)).toBe('Aucune commune ne passe tes critères');
+    expect(s(compte(1269))).toBe('1 269 communes passent tes critères');
+  });
+
+  it('AC-4 (format) : « 1 · Portmer (17) · 72 · 650 € · moins d’1 km »', () => {
+    const portmer = { nom: 'Portmer', dep: '17', loyerM2: 12.5, merKm: 0.9 };
+    expect(s(ligneListe(1, portmer, 72))).toBe("1 · Portmer (17) · 72 · 650 € · moins d'1 km");
+    expect(s(chiffresListe(portmer))).toBe("650 € · moins d'1 km");
   });
 });

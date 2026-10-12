@@ -57,7 +57,7 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)
-Valeurs que le contrat cite comme règles ou que Figma dessine sans variable ; à reporter dans Figma. `taille-cible` 24 · `taille-toucher` 44 · `taille-bouton-icone` 32 · `taille-pastille` 28 (hauteur min.) · `taille-poignee` 18 · `taille-rail` 4 · `taille-reglages` 300 (panneau de réglages) · `taille-liste` 320 (panneau de liste et de fiche) · `taille-echantillon` 14 et `taille-ecart-echantillon` 2 (pastilles de couleur de la légende) · `radius-echantillon` 3 · `trait-focus` 2 · `ecart-focus` 2.
+Valeurs que le contrat cite comme règles ou que Figma dessine sans variable ; à reporter dans Figma. `taille-cible` 24 · `taille-toucher` 44 · `taille-bouton-icone` 32 · `taille-pastille` 28 (hauteur min.) · `taille-poignee` 18 · `taille-rail` 4 · `taille-reglages` 300 (panneau de réglages) · `taille-liste` 320 (panneau de liste et de fiche) · `taille-echantillon` 14 et `taille-ecart-echantillon` 2 (pastilles de couleur de la légende) · `radius-echantillon` 3 · `taille-rang` 22 (colonne du rang dans la liste) · `taille-pastille-score` 10 et `radius-pastille-score` 2 (pastille du palier dans la liste et la fiche) · `trait-focus` 2 · `ecart-focus` 2.
 
 ## Dans le code
 Source unique : `src/theme/tokens.ts` (variables CSS sur `:root` sous les noms ci-dessus, thème Tailwind, couleurs du style MapLibre). Le thème par défaut de Tailwind est **vidé** : une classe hors de cette liste ne produit aucun style. Contrôle : `npm run check-tokens`.

@@ -80,7 +80,7 @@ export async function attendreCouleurs(page: Page, attendu: Partial<Record<Id, k
   const px = await readPixels(page, ids.map(centre));
   ids.forEach((id, k) => {
     const j = attendu[id];
-    const cible = j == null ? rgb(color.background) : melange(j, opacite);
+    const cible = j == null ? rgb(color.background) : melange(j, j === 'area-unranked' ? carte['opacite-sans-plafond'] : opacite);
     const ecart = Math.max(...px[k].map((v, i) => Math.abs(v - cible[i])));
     expect(ecart, `${id} : lu ${px[k]} , attendu ${cible} (${j ?? 'fond'})`).toBeLessThanOrEqual(3);
   });

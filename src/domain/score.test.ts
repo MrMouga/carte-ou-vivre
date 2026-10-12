@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
-import { evaluer, palier, REGLAGES_DEPART, type Commune, type Reglages } from './score';
+import { evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type Reglages } from './score';
 
 // Fixture « 5 communes » d'acceptance.json, au format du domaine.
 const fixture: Commune[] = acceptance.fixture.items.map((it) => ({
@@ -75,5 +75,39 @@ describe('R1, R2, R3 — passage, score et palier', () => {
     expect(res.actif).toBe(false);
     expect(by('A').score).toBeNull();
     expect(res.classement).toEqual([]);
+  });
+});
+
+describe('D11 — taille de ville', () => {
+  it('seuils : la population exactement sur un seuil prend la taille du dessus', () => {
+    expect([9999, 10000, 49999, 50000, 199999, 200000].map(tailleDe)).toEqual([
+      'petite-commune', 'petite-ville', 'petite-ville', 'ville-moyenne', 'ville-moyenne', 'grande-ville',
+    ]);
+    expect(tailleDe(null)).toBeNull();
+  });
+
+  it('AC-10 (règle) : « Petite ville » cochée, seule A passe (72) ; Grandeville a la raison de taille', () => {
+    const { res, by } = scores({ loyer: 1200, mer: 60, tailles: ['petite-ville'] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 72]]);
+    expect(by('B').raisons).toEqual([{ critere: 'taille', taille: 'grande-ville', population: 260000 }]);
+  });
+
+  it('AC-14 (règle) : Petite ville + Ville moyenne → Portmer 72, Quaibleu 49', () => {
+    const { res } = scores({ loyer: 1200, mer: 60, tailles: ['petite-ville', 'ville-moyenne'] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 72], ['Quaibleu', 49]]);
+  });
+
+  it('sans plafond : les communes de la bonne taille passent, sans score', () => {
+    const { res, by } = scores({ loyer: null, mer: null, tailles: ['petite-commune'] });
+    expect(res.actif).toBe(false);
+    expect(by('D').passe).toBe(true);
+    expect(by('D').score).toBeNull();
+    expect(by('A').passe).toBe(false);
+  });
+
+  it('taille inconnue : ne passe pas quand une taille est cochée, avec cette raison', () => {
+    const sans: Commune = { ...fixture[0], code: '99999', population: null };
+    const res = evaluer([sans], { loyer: null, mer: null, tailles: ['petite-ville'] });
+    expect(res.parCode.get('99999')!.raisons).toEqual([{ critere: 'taille-inconnue' }]);
   });
 });
