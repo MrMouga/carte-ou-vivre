@@ -1,5 +1,5 @@
 # Plan — loyer-mer
-2026-10-12 · brouillon (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-12-loyer-mer/spec.md) (D1–D17) · Critères : [acceptance.json](../../specs/2026-10-12-loyer-mer/acceptance.json) · Design : [README](../../design/loyer-mer/README.md) · Système : [contrat](../../design/system/README.md)
+2026-10-12 · validé (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-12-loyer-mer/spec.md) (D1–D17) · Critères : [acceptance.json](../../specs/2026-10-12-loyer-mer/acceptance.json) · Design : [README](../../design/loyer-mer/README.md) · Système : [contrat](../../design/system/README.md)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici.) La « tâche 0 » de la spec (sources, mesure, Adour) correspond aux tâches 1a et 1b de ce plan.
 
 ## Ce que /build fera seul, et ce qu'il demandera
