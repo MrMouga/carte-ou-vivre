@@ -19,6 +19,8 @@ SOURCES = {
     # Contours des communes 2025 d'Etalab (issus d'Admin Express IGN), deux finesses.
     'communes-1000m.geojson.gz': 'https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/2025/geojson/communes-1000m.geojson.gz',
     'communes-100m.geojson.gz': 'https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/2025/geojson/communes-100m.geojson.gz',
+    # Pays voisins du fond de secours (R8) : Natural Earth admin-0, 1:10 m, domaine public.
+    'ne_10m_admin_0_countries.geojson': 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_countries.geojson',
     # Limite terre-mer Shom-IGN 2021, France métropolitaine (7z, ~255 Mo).
     'Limite_terre_mer_France_metropolitaine.7z': 'https://services.data.shom.fr/INSPIRE/telechargement/prepackageGroup/LIMTM_PACK_DL/prepackage/Limite_terre_mer_France_metropolitaine/file/Limite_terre_mer_France_metropolitaine.7z',
 }

@@ -49,4 +49,5 @@ Début : 2026-10-12 21:40 · Plan : plan.md · Suite au départ : 0 tests, 0 ver
 
 ## Reprise
 Arrêt le 2026-10-12 à 23:50 : contexte long. Reprendre `/build` dans une session neuve à la **tâche 5b** (états de la page, fond de secours, mentions ; AC-15), puis 6, simplification, relectures, démo.
+Tâche 5b commencée (2026-10-13, ~00:05), rien de construit encore : Figma 5:314 et mentions 5:147 lus ; conditions d'usage des logos Shom et IGN introuvables en ligne → texte et liens à la place des logos (repli du plan), question à poser à Vincent dans la démo ; `scripts/data/sources.py` télécharge Natural Earth admin-0 1:10 m (v5.1.2, 13,3 Mo, dans data-raw/) pour `voisins.py`, encore à écrire.
 Réponses de Vincent (2026-10-12, 23:55) : (1) **test sur l'iPhone sauté** — la tâche 1b et la tâche 3 n'ont que les mesures de bureau (86 ms), à écrire « non vérifié sur téléphone » dans la démo ; (2) **La Rochelle « moins d'1 km » accepté** — à reporter dans la spec à l'acceptation de la démo (phrase « C'est réussi si » et étape 1 de la vérification de bout en bout de details.md).
