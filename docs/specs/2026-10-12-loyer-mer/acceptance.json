@@ -230,7 +230,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Grandeville (33) dans la liste",
       "then": "la fiche affiche « Grandeville (33) », « Grande ville · 260 000 habitants », le score 32, « 3e sur 3 communes qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » sans la ligne « Estimation du secteur », et « 40 km de la mer à vol d'oiseau »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -238,7 +238,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Portmer (17)",
       "then": "la fiche affiche « Portmer (17) », « Petite ville · 23 000 habitants », « 1re sur 3 communes qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) », « Estimation du secteur (communes voisines) » et « moins d'1 km de la mer »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -246,7 +246,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Montcher (75) sur la carte",
       "then": "la fiche affiche « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » et « Mer 148 km : au-dessus de ton plafond de 60 km », sans score ni rang",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -254,7 +254,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur coche la taille « Petite ville »",
       "then": "seule A passe (score 72) et la liste affiche « 1 commune passe tes critères » ; la fiche de Grandeville (33) affiche « Taille : grande ville (260 000 habitants) » ; D, E, B et C ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
