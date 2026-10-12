@@ -8,7 +8,11 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 - Design : Figma [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (page « Système » = jetons et composants) ; contrat des jetons : `docs/design/system/README.md` (module TS unique pour le CSS et le style MapLibre, en tâche 0)
 
 ## Commandes
-À remplir quand le projet est initialisé (/breakdown, tâche 0).
+- Installer : `npm ci` (`.npmrc` : sans scripts, versions exactes, `legacy-peer-deps` à cause d'un bug de npm 10.9) ; navigateur de test : `npx playwright install chromium`
+- Lancer : `npm run dev` (http://localhost:5173) ; sur le Wi-Fi local : `npx vite --host`
+- Tester : `npm test` (Vitest puis Playwright ; Playwright lance son propre serveur sur le port 4173) ; séparément : `npm run test:unit`, `npm run test:e2e`
+- Types : `npm run typecheck`
+- Construire : `npm run build` (sortie `dist/`, avec `dist/version.txt` = hash du commit) ; vérifier la version construite : `npx vite preview`
 
 ## Où sont les choses
 - `docs/distribution/plan.md` — positionnement, canal, test de demande, seuils (/distribution, /growth)

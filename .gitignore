@@ -4,3 +4,7 @@ dist/
 .env*
 .claude/settings.local.json
 .gstack/
+data-raw/
+probe/
+test-results/
+playwright-report/
