@@ -68,6 +68,16 @@ export const size = {
   'taille-rond-choisi': 26,
   'trait-focus': 2,
   'ecart-focus': 2,
+  'taille-poignee-feuille': 40, // poignée de la feuille mobile, 40 × 4 (Figma 7:363)
+} as const;
+
+/**
+ * Mise en page (tâche 6) : en dessous de `largeur-bureau`, la page passe en feuille mobile ; la feuille (liste)
+ * couvre `part-feuille` de la hauteur (Figma 7:362, « 56 % de la hauteur »). Classes : `bureau:`, `max-bureau:`, `h-feuille`.
+ */
+export const layout = {
+  'largeur-bureau': 1024,
+  'part-feuille': 0.56,
 } as const;
 
 export const shadow = {
@@ -146,6 +156,8 @@ export function themeCss(): string {
     root.push(`--${k}: ${s.x}px ${s.y}px ${s.blur}px ${rgba(s.color, s.alpha)};`);
     theme.push(`--shadow-${k.replace('ombre-', '')}: ${s.x}px ${s.y}px ${s.blur}px ${rgba(s.color, s.alpha)};`);
   }
+  theme.push(`--breakpoint-bureau: ${layout['largeur-bureau']}px;`);
+  theme.push(`--spacing-feuille: ${layout['part-feuille'] * 100}dvh;`);
   for (const [k, v] of Object.entries(fontFamily)) theme.push(`--font-${k}: ${v};`);
   for (const [k, t] of Object.entries(text)) {
     theme.push(`--text-${k}: ${t.size}px;`);

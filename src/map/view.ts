@@ -1,5 +1,5 @@
-// Cadrage de la carte en bureau : la zone utile est entre le panneau de réglages (gauche) et la liste (droite).
-import { size, space } from '@/theme/tokens';
+// Cadrage de la carte : en bureau, la zone utile est entre le panneau de réglages (gauche) et la liste (droite).
+import { layout, size, space } from '@/theme/tokens';
 
 /** Formes des communes (public/data/formes-1000m.json) : l'identifiant d'une forme est l'index de sa commune. */
 export type Formes = {
@@ -17,6 +17,16 @@ export function paddingBureau(): Padding {
     right: s4 + size['taille-liste'] + s4,
     bottom: space['space-8'] + space['space-4'], // légende et mentions
   };
+}
+
+/**
+ * Cadrage selon la largeur : en bureau, entre les panneaux ; à 390 px, dans la bande visible au-dessus de la feuille,
+ * dont on donne la hauteur (sinon celle de la feuille de la liste).
+ */
+export function paddingCarte(largeur: number, hauteur: number, feuille?: number): Padding {
+  if (largeur >= layout['largeur-bureau']) return paddingBureau();
+  const s4 = space['space-4'];
+  return { top: s4, left: s4, right: s4, bottom: (feuille ?? hauteur * layout['part-feuille']) + s4 };
 }
 
 /** Emprise [ouest, sud, est, nord] des formes chargées. */

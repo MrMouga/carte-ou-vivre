@@ -14,7 +14,11 @@ export default defineConfig({
       args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
     },
   },
-  projects: [{ name: 'bureau', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } }],
+  // Tâche 6 : chaque test passe en bureau et à 390 px (feuille mobile).
+  projects: [
+    { name: 'bureau', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
+    { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 } } },
+  ],
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,

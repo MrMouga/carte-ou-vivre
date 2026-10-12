@@ -1,0 +1,32 @@
+Tab  1 : canvas[region] « Map » à (0, 0) — contour solid 2px
+Tab  2 : button « Communes 5, 6, 7, 8, 9, 10 : zoomer pour les séparer » à (464, 258) — contour solid 2px
+Tab  3 : button « 4e : Plouezoc'h (29) » à (389, 256) — contour solid 2px
+Tab  4 : button « 3e : Flocques (76) » à (656, 145) — contour solid 2px
+Tab  5 : button « 2e : Saint-Jean-de-la-Rivière (50) » à (496, 199) — contour solid 2px
+Tab  6 : button « 1re : Lessay (50) » à (507, 210) — contour solid 2px
+Tab  7 : button « Zoomer » à (1056, 816) — contour solid 2px
+Tab  8 : button « Dézoomer » à (1056, 852) — contour solid 2px
+Tab  9 : span[slider] « 1 200 € par mois pour 52 m² » à (161, 125) — contour solid 2px
+Tab 10 : span[slider] « 60 km à vol d'oiseau » à (101, 231) — contour solid 2px
+Tab 11 : button « Petite communemoins de 10 000 hab. » à (33, 307) — contour solid 2px
+Tab 12 : button « Petite ville10 000 – 50 000 hab. » à (163, 307) — contour solid 2px
+Tab 13 : button « Ville moyenne50 000 – 200 000 hab. » à (33, 356) — contour solid 2px
+Tab 14 : button « Grande villeplus de 200 000 hab. » à (164, 356) — contour solid 2px
+Tab 15 : button « 1 · Lessay (50) · 80 · 433 € · 2 km » à (1121, 78) — contour solid 2px
+Tab 16 : button « 2 · Saint-Jean-de-la-Rivière (50) · 80 · 433 € · 2 km » à (1121, 130) — contour solid 2px
+Tab 17 : button « 3 · Flocques (76) · 80 · 436 € · 2 km » à (1121, 183) — contour solid 2px
+Tab 18 : button « 4 · Plouezoc'h (29) · 80 · 469 € · 1 km » à (1121, 235) — contour solid 2px
+Tab 19 : button « 5 · Beauvoir (50) · 80 · 470 € · 1 km » à (1121, 288) — contour solid 2px
+Tab 20 : button « 6 · Céaux (50) · 80 · 470 € · 1 km » à (1121, 341) — contour solid 2px
+Tab 21 : button « 7 · Courtils (50) · 80 · 470 € · moins d'1 km » à (1121, 393) — contour solid 2px
+Tab 22 : button « 8 · Huisnes-sur-Mer (50) · 80 · 470 € · 1 km » à (1121, 446) — contour solid 2px
+Tab 23 : button « 9 · Le Mont-Saint-Michel (50) · 80 · 470 € · moins d'1 km » à (1121, 498) — contour solid 2px
+Tab 24 : button « 10 · Pontaubault (50) · 80 · 470 € · moins d'1 km » à (1121, 551) — contour solid 2px
+Tab 25 : a « Shom » à (457, 848) — contour solid 2px
+Tab 26 : a « IGN » à (496, 848) — contour solid 2px
+Tab 27 : a « © IGN – Géoplateforme » à (135, 864) — contour solid 2px
+sur la 1re ligne : button « 1 · Lessay (50) · 80 · 433 € · 2 km » à (1121, 78) — contour solid 2px
+après Entrée : h2 « Lessay (50) » à (1121, 65) — contour solid 2px
+Maj+Tab : button « ← Les 10 premières » à (1121, 33) — contour solid 2px
+après Entrée sur le retour : button « 1 · Lessay (50) · 80 · 433 € · 2 km » à (1121, 78) — contour solid 2px
+loyer au clavier : span[slider] « 800 € par mois pour 52 m² » à (104, 125) — contour solid 2px | adresse : ?loyer=800&mer=60 | 7 810 communes passent tes critères

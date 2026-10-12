@@ -5,16 +5,17 @@ export type Message = 'chargement' | 'erreur' | 'fond-indisponible' | null;
 // Message carte (Figma « Message carte » : Chargement · Erreur · Fond indisponible ; tableau des états 9:514).
 // Une zone annoncée (aria-live), toujours présente, pour que les lecteurs d'écran lisent chaque changement ;
 // sans le rôle `status`, déjà porté par le compte des communes.
-// Chargement et erreur au centre de la zone de carte ; fond indisponible en haut.
+// Chargement et erreur au centre de la zone de carte ; fond indisponible en haut (à 390 px, en bas de la bande
+// visible, au-dessus de la feuille : le haut est pris par la légende et le zoom).
 export function Status({ message, onReessayer }: { message: Message; onReessayer: () => void }) {
   return (
-    <div className="pointer-events-none absolute inset-4 flex gap-4">
-      <div className="w-reglages shrink-0" />
+    <div className="pointer-events-none absolute inset-4 flex gap-4 max-bureau:bottom-feuille">
+      <div className="w-reglages shrink-0 max-bureau:hidden" />
       <div
         aria-live="polite"
         data-testid="message-carte"
         className={
-          message === 'fond-indisponible' ? 'flex flex-1 items-start justify-center' : 'flex flex-1 flex-col items-center justify-center gap-2'
+          message === 'fond-indisponible' ? 'flex flex-1 items-start justify-center max-bureau:items-end' : 'flex flex-1 flex-col items-center justify-center gap-2'
         }
       >
         {message === 'chargement' && <p className="rounded-base border border-border bg-card px-4 py-2 text-texte text-muted-foreground">Chargement de la carte…</p>}
@@ -30,7 +31,7 @@ export function Status({ message, onReessayer }: { message: Message; onReessayer
           <p className="rounded-base border border-border bg-card px-2 py-1 text-secondaire text-muted-foreground">Fond de carte indisponible</p>
         )}
       </div>
-      <div className="w-liste shrink-0" />
+      <div className="w-liste shrink-0 max-bureau:hidden" />
     </div>
   );
 }

@@ -54,7 +54,8 @@ test('AC-10 cocher « Petite ville » : seule A passe (72), « 1 commune passe t
   expect(await texte(page)).toContain('Taille : grande ville (260 000 habitants)');
 });
 
-test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste', async ({ page }) => {
+test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile', 'à 390 px, la fiche remplace les réglages (Figma 11:667) : on ne règle pas avec une fiche ouverte');
   await ouvrir(page);
   await ligne(page, 'Grandeville').click();
   await expect(fiche(page)).toContainText('3e sur 3 communes qui passent');

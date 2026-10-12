@@ -15,7 +15,7 @@ export function List({ resultat, onChoisir, focusCode }: Props) {
     if (focusCode) section.current?.querySelector<HTMLElement>(`[data-code="${focusCode}"]`)?.focus();
   }, [focusCode]);
   return (
-    <section ref={section} aria-labelledby="titre-liste" className="flex flex-col gap-2 rounded-panel border border-border bg-card p-4 shadow-panneau">
+    <section ref={section} aria-labelledby="titre-liste" className="flex flex-col gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
       <div className="flex flex-col">
         <h2 id="titre-liste" className="text-categorie uppercase text-muted-foreground">
           Les 10 premières

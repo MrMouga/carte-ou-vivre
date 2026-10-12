@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
-import { paddingBureau } from '../../../src/map/view';
+import { paddingCarte } from '../../../src/map/view';
 import { readPixels } from './pixels';
 
 // Fixture « 5 communes » servie à la place de public/data, et fond IGN remplacé par un style local uni (aucun appel réseau).
@@ -42,13 +42,13 @@ export async function apresRendu(page: Page) {
 }
 
 // Où tombe le centre de chaque carré à l'ouverture : même calcul que fitBounds de MapLibre (tuiles de 512 px, Mercator),
-// sur l'emprise de la fixture et avec le cadrage du bureau.
+// sur l'emprise de la fixture et avec le cadrage de la largeur testée (bureau ou 390 px).
 const mx = (lon: number) => (lon + 180) / 360;
 const my = (lat: number) => (1 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / Math.PI) / 2;
 
 export function vue(page: Page) {
   const { width: W, height: H } = page.viewportSize()!;
-  const p = paddingBureau();
+  const p = paddingCarte(W, H); // à 390 px : la bande au-dessus de la feuille de la liste
   const lons = items.flatMap((it) => it.forme.map((c) => c[0]));
   const lats = items.flatMap((it) => it.forme.map((c) => c[1]));
   const [x0, x1, y0, y1] = [mx(Math.min(...lons)), mx(Math.max(...lons)), my(Math.max(...lats)), my(Math.min(...lats))];

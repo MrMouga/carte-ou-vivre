@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/cn';
 
-// shadcn Slider, rethémé (Figma « Curseur ») : rail border, rempli et poignée primary.
+// shadcn Slider, rethémé (Figma « Curseur ») : rail border, rempli et poignée primary ; zone de toucher 44 px à 390 px.
 // Le rôle `slider` est sur la poignée (Radix) : le nom et le texte de la valeur y sont posés.
 export function Slider({
   className,
@@ -12,7 +12,7 @@ export function Slider({
   ...props
 }: ComponentProps<typeof SliderPrimitive.Root>) {
   return (
-    <SliderPrimitive.Root className={cn('relative flex h-cible w-full touch-none select-none items-center data-disabled:opacity-50', className)} {...props}>
+    <SliderPrimitive.Root className={cn('relative flex h-cible max-bureau:h-toucher w-full touch-none select-none items-center data-disabled:opacity-50', className)} {...props}>
       <SliderPrimitive.Track className="relative h-rail w-full grow overflow-hidden rounded-full bg-border">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Map as MapLibreMap, type GeoJSONSourceSpecification, type StyleSpecification } from './maplibre';
 import { CHOISIE_LAYERS, COMMUNES_LAYER, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES } from './style';
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
-import { emprise, paddingBureau, type Formes } from './view';
+import { emprise, type Formes, type Padding } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
 import { Button } from '@/components/ui/button';
 import { map as carte } from '@/theme/tokens';
@@ -20,19 +20,21 @@ type Props = {
   /** La carte ne peut pas s'afficher (pas de WebGL). */
   onErreur: () => void;
   onFond: (fond: Fond) => void;
+  /** Marges du cadrage, lues au moment de cadrer (la feuille mobile change de hauteur). */
+  padding: () => Padding;
 };
 
 export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
 // celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
-export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond }: Props) {
+export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
   const peintes = useRef<(string | null | undefined)[]>([]);
-  const etat = useRef({ couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond });
-  etat.current = { couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond };
+  const etat = useRef({ couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding });
+  etat.current = { couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding };
 
   useEffect(() => {
     let fini = false;
@@ -56,7 +58,7 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
           container: container.current!,
           style,
           bounds: [[w, s], [e, n]],
-          fitBoundsOptions: { padding: paddingBureau() },
+          fitBoundsOptions: { padding: etat.current.padding() },
           attributionControl: false, // les mentions sont dans le pied de page (Mentions)
           dragRotate: false,
           pitchWithRotate: false,
@@ -138,13 +140,13 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
     if (choisie == null) {
       if (etaitChoisie) {
         const [w, s, e, n] = emprise(formes.features);
-        map.fitBounds([[w, s], [e, n]], { padding: paddingBureau(), duration: carte['duree-zoom-ms'] });
+        map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), duration: carte['duree-zoom-ms'] });
       }
       return;
     }
     map.setFeatureState({ source: SOURCE_COMMUNES, id: choisie }, { choisie: true });
     const [w, s, e, n] = emprise([formes.features[choisie]]);
-    map.fitBounds([[w, s], [e, n]], { padding: paddingBureau(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
+    map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
     return () => {
       map.setFeatureState({ source: SOURCE_COMMUNES, id: choisie }, { choisie: false });
     };
@@ -156,17 +158,17 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
       <div className="absolute inset-0">
         <div ref={container} className="h-full w-full" data-testid="carte" />
       </div>
-      {/* Zoom (H8) : en bas, contre le bord gauche du panneau de liste. */}
-      <div className="pointer-events-none absolute bottom-4 right-4 flex items-end gap-4">
+      {/* Zoom (H8) : en bureau, en bas contre le bord gauche du panneau de liste ; à 390 px, en haut à droite, 44 × 44. */}
+      <div className="pointer-events-none absolute bottom-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:right-3 max-bureau:top-3">
         <div className="pointer-events-auto flex flex-col gap-1">
-          <Button variant="icone" aria-label="Zoomer" onClick={() => mapRef.current?.zoomIn()}>
+          <Button variant="icone" className="max-bureau:size-toucher" aria-label="Zoomer" onClick={() => mapRef.current?.zoomIn()}>
             +
           </Button>
-          <Button variant="icone" aria-label="Dézoomer" onClick={() => mapRef.current?.zoomOut()}>
+          <Button variant="icone" className="max-bureau:size-toucher" aria-label="Dézoomer" onClick={() => mapRef.current?.zoomOut()}>
             −
           </Button>
         </div>
-        <div className="w-liste" />
+        <div className="w-liste max-bureau:hidden" />
       </div>
     </>
   );

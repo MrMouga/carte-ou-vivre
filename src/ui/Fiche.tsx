@@ -15,7 +15,7 @@ export function Fiche({ evaluation: e, resultat, onRetour }: Props) {
   // Le focus suit la commune choisie (la liste qui avait le focus a disparu).
   useEffect(() => titre.current?.focus(), [c.code]);
   return (
-    <section aria-labelledby="titre-fiche" className="flex flex-col items-start gap-2 rounded-panel border border-border bg-card p-4 shadow-panneau">
+    <section aria-labelledby="titre-fiche" className="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
       <Button variant="lien" onClick={onRetour}>
         ← Les 10 premières
       </Button>

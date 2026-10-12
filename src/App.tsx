@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapView, type Fond } from './map/MapView';
 import { PALIERS } from './map/style';
-import { centre, type Formes } from './map/view';
+import { centre, paddingCarte, type Formes } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
 import { evaluer, type Commune, type Reglages } from './domain/score';
@@ -15,6 +15,7 @@ import { color } from './theme/tokens';
 import { avecDelai, DELAI_DONNEES_MS, indicateur } from './domain/chargement';
 import { Status, type Message } from './ui/Status';
 import { Mentions } from './ui/Mentions';
+import { cn } from './lib/cn';
 
 type Donnees = { communes: Commune[]; formes: Formes };
 type Ligne = [string, string, string, number | null, number | null, boolean, number | null];
@@ -67,6 +68,12 @@ export function App() {
   const ind = useMemo(() => indicateur(setIndicateurVisible), []);
   useEffect(() => (prete || erreur ? ind.fin() : ind.debut()), [ind, prete, erreur]);
   useEffect(() => () => ind.arreter(), [ind]);
+  // Cadrage de la carte : à 390 px, la bande au-dessus de la feuille (sa hauteur réelle, fiche ou liste).
+  const feuille = useRef<HTMLDivElement>(null);
+  const padding = () => {
+    const f = feuille.current?.getBoundingClientRect();
+    return paddingCarte(innerWidth, innerHeight, f && f.height > 0 ? innerHeight - f.top : undefined);
+  };
   const message: Message = erreur ? 'erreur' : indicateurVisible ? 'chargement' : prete && fond === 'secours' ? 'fond-indisponible' : null;
 
   const [choisie, setChoisie] = useState<string | null>(null);
@@ -106,35 +113,52 @@ export function App() {
           onPrete={() => setPrete(true)}
           onErreur={() => setErreur(true)}
           onFond={setFond}
+          padding={padding}
         />
       )}
-      <div className="absolute left-4 top-4 w-reglages">
-        <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
-          <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
-          {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. */}
-          <p role="status" className="text-texte-fort">
-            {resultat?.actif ? compte(resultat.classement.length) : ''}
-          </p>
-        </Settings>
-      </div>
-      {resultat && (
-        <div className="absolute right-4 top-4 w-liste">
-          {choisie ? (
-            <Fiche evaluation={resultat.parCode.get(choisie)!} resultat={resultat} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
-          ) : (
-            <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} />
-          )}
+      {/* Bureau : panneaux posés sur la carte (la boîte s'efface). 390 px : une feuille en bas qui défile, à 56 % de la
+          hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667). */}
+      <div
+        ref={feuille}
+        data-testid="feuille"
+        className={cn(
+          'bureau:contents',
+          'max-bureau:absolute max-bureau:inset-x-0 max-bureau:bottom-0 max-bureau:flex max-bureau:flex-col max-bureau:overflow-y-auto',
+          'max-bureau:rounded-t-sheet max-bureau:bg-card max-bureau:pt-2 max-bureau:shadow-feuille',
+          choisie ? 'max-bureau:max-h-feuille' : 'max-bureau:h-feuille',
+        )}
+      >
+        <div className="mx-4 h-rail w-poignee-feuille shrink-0 rounded-full bg-border bureau:hidden" aria-hidden="true" />
+        <div className={cn('bureau:absolute bureau:left-4 bureau:top-4 bureau:w-reglages', choisie && 'max-bureau:hidden')}>
+          <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
+            <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
+            {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
+            <p role="status" className="text-texte-fort max-bureau:sr-only">
+              {resultat?.actif ? compte(resultat.classement.length) : ''}
+            </p>
+          </Settings>
         </div>
-      )}
+        {resultat && (
+          <div className="bureau:absolute bureau:right-4 bureau:top-4 bureau:w-liste">
+            {choisie ? (
+              <Fiche evaluation={resultat.parCode.get(choisie)!} resultat={resultat} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
+            ) : (
+              <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} />
+            )}
+          </div>
+        )}
+        {!choisie && <Mentions className="mx-4 mb-4 bureau:hidden" />}
+      </div>
       <Status message={message} onReessayer={() => setEssai((n) => n + 1)} />
-      {/* Légende puis mentions, en bas à gauche, sans passer sous le zoom ni la liste. */}
-      <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4">
+      {/* Après la feuille, pour qu'au clavier les réglages et la liste passent avant les mentions. Légende puis mentions,
+          en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
+      <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
           <Legend sansPlafond={resultat ? !resultat.actif : false} fondIndisponible={fond === 'secours'} />
-          <Mentions />
+          <Mentions className="max-bureau:hidden" />
         </div>
-        <div className="w-bouton-icone shrink-0" />
-        <div className="w-liste shrink-0" />
+        <div className="w-bouton-icone shrink-0 max-bureau:hidden" />
+        <div className="w-liste shrink-0 max-bureau:hidden" />
       </div>
     </main>
   );
