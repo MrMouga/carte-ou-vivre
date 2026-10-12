@@ -1,7 +1,7 @@
 2026-10-12 · brouillon
 # Design — loyer-mer
 
-Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.md) · Temps convenu : 4 h, 2 sessions · Figma : nouveau fichier, après connexion du connecteur (`/mcp`, session interactive).
+Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.md) · Temps convenu : 4 h, 2 sessions · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (compte perso), pages « Système » et « loyer-mer ».
 
 ## Grille d'évaluation (les directions sont jugées là-dessus, pas au goût)
 1. **Lire la France d'un coup d'œil** : où sont les aires qui passent et lesquelles sont les meilleures ; 5 tranches distinctes, deux gris distincts (au-dessus d'un plafond / hors aire), la couleur n'est jamais le seul indice (score et rang en texte dans la liste et la fiche). AC-1, AC-6.
@@ -11,4 +11,4 @@ Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.
 5. **Des chiffres crédibles** : sources visibles (ANIL, Shom-IGN avec logos, Insee), unités explicites, aucun habillage qui fasse « gadget ».
 
 ## Avancement
-- [x] Grille · [x] Références Mobbin (refs/) · [x] Direction de Vincent (décrite) · [x] Annotations · [x] Brief ([brief.md](brief.md)) · [x] Directions A, B, C ([directions/](directions/)) · [x] Revue à l'aveugle ([review-directions.md](review-directions.md)) · [x] Fusion ([decisions.md](decisions.md)) · [ ] Figma : système et écran
+- [x] Grille · [x] Références Mobbin (refs/) · [x] Direction de Vincent (décrite) · [x] Annotations · [x] Brief ([brief.md](brief.md)) · [x] Directions A, B, C ([directions/](directions/)) · [x] Revue à l'aveugle ([review-directions.md](review-directions.md)) · [x] Fusion ([decisions.md](decisions.md)) · [x] Figma : système ([docs/design/system/](../system/README.md)), 5 écrans, tableau des états · [ ] Images de carte posées dans Figma (à la main, captures `directions/figma-carte-*.png`) · [ ] Relecture ([review-figma.md](review-figma.md)) · [ ] Validation de Vincent
