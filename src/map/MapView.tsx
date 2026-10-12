@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { Map as MapLibreMap, type GeoJSONSourceSpecification, type StyleSpecification } from './maplibre';
-import { CHOISIE_LAYERS, COMMUNES_LAYER, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES } from './style';
+import { Map as MapLibreMap, type StyleSpecification } from './maplibre';
+import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES, sourceCommunes } from './style';
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
-import { emprise, type Formes, type Padding } from './view';
+import { cadreDe, emprise, type Padding, type Repere } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
 import { Button } from '@/components/ui/button';
 import { map as carte } from '@/theme/tokens';
 
 type Props = {
-  formes: Formes;
+  /** Repères des communes (centre, cadre), dans l'ordre de communes.json. */
+  reperes: Repere[];
   /** Couleur de chaque commune, indexée par l'identifiant de sa forme ; null = non peinte. */
   couleurs: (string | null)[];
   /** Index de la commune choisie (fiche ouverte), ou null. */
@@ -28,7 +29,7 @@ export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
 // celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
-export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
+export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
@@ -52,7 +53,7 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
 
     function demarrer(style: StyleSpecification, f: Fond) {
       if (fini) return;
-      const [w, s, e, n] = emprise(formes.features);
+      const [w, s, e, n] = emprise(reperes);
       try {
         map = new MapLibreMap({
           container: container.current!,
@@ -74,10 +75,10 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
       if (f === 'secours') essai = setInterval(reessayer, NOUVEL_ESSAI_MS);
       // Les couches des communes sont reposées à chaque style (setStyle les efface, avec l'état des formes).
       m.on('style.load', () => {
-        poserCouches(m, formes, container.current?.getAttribute('data-fond') === 'secours');
+        poserCouches(m, emprise(reperes), container.current?.getAttribute('data-fond') === 'secours');
         peintes.current = [];
         peindre(m, etat.current.couleurs, peintes.current);
-        if (etat.current.choisie != null) m.setFeatureState({ source: SOURCE_COMMUNES, id: etat.current.choisie }, { choisie: true });
+        if (etat.current.choisie != null) m.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: etat.current.choisie }, { choisie: true });
         m.triggerRepaint();
       });
       m.on('load', () => {
@@ -119,7 +120,7 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
       mapRef.current = null;
       peintes.current = [];
     };
-  }, [formes]);
+  }, [reperes]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -139,18 +140,18 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
     avant.current = choisie;
     if (choisie == null) {
       if (etaitChoisie) {
-        const [w, s, e, n] = emprise(formes.features);
+        const [w, s, e, n] = emprise(reperes);
         map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), duration: carte['duree-zoom-ms'] });
       }
       return;
     }
-    map.setFeatureState({ source: SOURCE_COMMUNES, id: choisie }, { choisie: true });
-    const [w, s, e, n] = emprise([formes.features[choisie]]);
+    map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: true });
+    const [w, s, e, n] = cadreDe(reperes[choisie]);
     map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
     return () => {
-      map.setFeatureState({ source: SOURCE_COMMUNES, id: choisie }, { choisie: false });
+      map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: false });
     };
-  }, [choisie, formes]);
+  }, [choisie, reperes]);
 
   return (
     <>
@@ -175,9 +176,9 @@ export function MapView({ formes, couleurs, choisie, ronds, onChoisir, onPrete, 
 }
 
 /** Communes sous la première couche de texte de l'IGN (ou sous le trait de côte du fond de secours), estompage dessous. */
-function poserCouches(map: MapLibreMap, formes: Formes, secours: boolean) {
+function poserCouches(map: MapLibreMap, cadre: [number, number, number, number], secours: boolean) {
   const dessus = map.getStyle().layers.find((l) => l.type === 'symbol' || l.id === COUCHE_COTE)?.id;
-  map.addSource(SOURCE_COMMUNES, { type: 'geojson', data: formes as unknown as GeoJSONSourceSpecification['data'] });
+  map.addSource(SOURCE_COMMUNES, sourceCommunes(cadre));
   if (secours) map.addLayer(SOCLE_LAYER, dessus);
   map.addLayer(COMMUNES_LAYER, dessus);
   CHOISIE_LAYERS.forEach((l) => map.addLayer(l, dessus));
@@ -191,6 +192,6 @@ function peindre(map: MapLibreMap, couleurs: (string | null)[], peintes: (string
   for (let i = 0; i < couleurs.length; i++) {
     if (peintes[i] === couleurs[i]) continue;
     peintes[i] = couleurs[i];
-    map.setFeatureState({ source: SOURCE_COMMUNES, id: i }, { c: couleurs[i] });
+    map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: i }, { c: couleurs[i] });
   }
 }

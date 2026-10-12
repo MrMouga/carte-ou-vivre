@@ -1,0 +1,11 @@
+1. normal — fond : ign | message : «  »
+   mentions : Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme
+   erreurs console : 0
+2. chargement — indicateur vu à 1570 ms après goto ; curseur inactif : 
+   après chargement — message : «  » ; curseur inactif : null
+3. erreur — message : « La carte n'a pas pu se charger.
+
+Réessayer »
+   après « Réessayer » : carte prête, compte : 8 035 communes passent tes critères
+4. fond indisponible — fond : secours | message : « Fond de carte indisponible » | compte : 8 035 communes passent tes critères
+   fiche ouverte sur le fond de secours : LOYER

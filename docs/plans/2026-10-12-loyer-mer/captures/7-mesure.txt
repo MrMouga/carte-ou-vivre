@@ -1,0 +1,2 @@
+(b) première carte colorée, Fast 4G : 5.6 s, 5.6 s, 5.6 s — médiane 5.6 s ; téléchargé 2.7 Mo (dernier essai)
+(a) réglage → carte redessinée, CPU ×4 (10 essais) : médiane 176 ms, max 184 ms

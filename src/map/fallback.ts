@@ -4,7 +4,7 @@
 import type { ExpressionSpecification, FillLayerSpecification, StyleSpecification } from 'maplibre-gl';
 import { avecDelai } from '@/domain/chargement';
 import { color, map as carte } from '@/theme/tokens';
-import { IGN_STYLE_URL, SOURCE_COMMUNES } from './style';
+import { COUCHE_TUILES, IGN_STYLE_URL, SOURCE_COMMUNES } from './style';
 
 /** Panne du fond = style IGN non reçu : erreur réseau, réponse ≥ 400, ou rien après 8 s (plan, tâche 5b). */
 export const DELAI_STYLE_MS = 8_000;
@@ -39,6 +39,7 @@ export const SOCLE_LAYER: FillLayerSpecification = {
   id: 'communes-socle',
   type: 'fill',
   source: SOURCE_COMMUNES,
+  'source-layer': COUCHE_TUILES,
   paint: {
     'fill-color': ['case', ['==', ['feature-state', 'c'], null], color['area-excluded'], color.background] as ExpressionSpecification,
   },

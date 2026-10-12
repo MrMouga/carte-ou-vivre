@@ -1,11 +1,12 @@
 // Cadrage de la carte : en bureau, la zone utile est entre le panneau de réglages (gauche) et la liste (droite).
 import { layout, size, space } from '@/theme/tokens';
 
-/** Formes des communes (public/data/formes-1000m.json) : l'identifiant d'une forme est l'index de sa commune. */
-export type Formes = {
-  type: 'FeatureCollection';
-  features: { type: 'Feature'; id: number; properties: object; geometry: { type: string; coordinates: unknown } }[];
-};
+/**
+ * Repère d'une commune (public/data/reperes.json, dans l'ordre de communes.json) : [lon, lat] du centre de son rond,
+ * puis son cadre [ouest, sud, est, nord]. Les formes, elles, viennent des tuiles (tâche 7).
+ */
+export type Repere = [number, number, number, number, number, number];
+export type Cadre = [number, number, number, number];
 
 export type Padding = { top: number; right: number; bottom: number; left: number };
 
@@ -29,40 +30,16 @@ export function paddingCarte(largeur: number, hauteur: number, feuille?: number)
   return { top: s4, left: s4, right: s4, bottom: (feuille ?? hauteur * layout['part-feuille']) + s4 };
 }
 
-/** Emprise [ouest, sud, est, nord] des formes chargées. */
-export function emprise(features: { geometry: { type: string; coordinates: unknown } }[]): [number, number, number, number] {
+export const cadreDe = (r: Repere): Cadre => [r[2], r[3], r[4], r[5]];
+
+/** Emprise [ouest, sud, est, nord] des communes chargées. */
+export function emprise(reperes: Repere[]): Cadre {
   let w = Infinity, s = Infinity, e = -Infinity, n = -Infinity;
-  const walk = (c: unknown): void => {
-    if (typeof (c as number[])[0] === 'number') {
-      const [x, y] = c as number[];
-      if (x < w) w = x;
-      if (x > e) e = x;
-      if (y < s) s = y;
-      if (y > n) n = y;
-    } else (c as unknown[]).forEach(walk);
-  };
-  for (const f of features) walk(f.geometry.coordinates);
-  return [w, s, e, n];
-}
-
-type Geometrie = { type: string; coordinates: unknown };
-
-/** Centre où poser le rond d'une commune : barycentre de l'anneau extérieur de son plus grand polygone. */
-export function centre(g: Geometrie): [number, number] {
-  const polys = (g.type === 'Polygon' ? [g.coordinates] : g.coordinates) as number[][][][];
-  let best: [number, number] = [0, 0], bestAire = -1;
-  for (const [anneau] of polys) {
-    let a = 0, cx = 0, cy = 0;
-    for (let i = 0, j = anneau.length - 1; i < anneau.length; j = i++) {
-      const f = anneau[j][0] * anneau[i][1] - anneau[i][0] * anneau[j][1];
-      a += f;
-      cx += (anneau[j][0] + anneau[i][0]) * f;
-      cy += (anneau[j][1] + anneau[i][1]) * f;
-    }
-    if (Math.abs(a) > bestAire) {
-      bestAire = Math.abs(a);
-      best = [cx / (3 * a), cy / (3 * a)];
-    }
+  for (const r of reperes) {
+    if (r[2] < w) w = r[2];
+    if (r[3] < s) s = r[3];
+    if (r[4] > e) e = r[4];
+    if (r[5] > n) n = r[5];
   }
-  return best;
+  return [w, s, e, n];
 }

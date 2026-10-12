@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapView, type Fond } from './map/MapView';
 import { PALIERS } from './map/style';
-import { centre, paddingCarte, type Formes } from './map/view';
+import { paddingCarte, type Repere } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
 import { evaluer, type Commune, type Reglages } from './domain/score';
@@ -17,7 +17,7 @@ import { Status, type Message } from './ui/Status';
 import { Mentions } from './ui/Mentions';
 import { cn } from './lib/cn';
 
-type Donnees = { communes: Commune[]; formes: Formes };
+type Donnees = { communes: Commune[]; reperes: Repere[] };
 type Ligne = [string, string, string, number | null, number | null, boolean, number | null];
 
 async function lire<T>(url: string): Promise<T> {
@@ -27,7 +27,7 @@ async function lire<T>(url: string): Promise<T> {
 }
 
 async function charger(): Promise<Donnees> {
-  const [c, formes] = await Promise.all([lire<{ communes: Ligne[] }>('/data/communes.json'), lire<Formes>('/data/formes-1000m.json')]);
+  const [c, r] = await Promise.all([lire<{ communes: Ligne[] }>('/data/communes.json'), lire<{ reperes: Repere[] }>('/data/reperes.json')]);
   const communes = c.communes.map(([code, nom, dep, population, loyerM2, estimationPropre, merKm]) => ({
     code,
     nom,
@@ -37,7 +37,7 @@ async function charger(): Promise<Donnees> {
     estimationPropre,
     merKm,
   }));
-  return { communes, formes };
+  return { communes, reperes: r.reperes };
 }
 
 export function App() {
@@ -86,7 +86,7 @@ export function App() {
       donnees && resultat
         ? resultat.classement.slice(0, 10).map((e) => {
             const i = index.get(e.commune.code)!;
-            return { index: i, rang: e.rang!, nom: `${e.commune.nom} (${e.commune.dep})`, lngLat: centre(donnees.formes.features[i].geometry) };
+            return { index: i, rang: e.rang!, nom: `${e.commune.nom} (${e.commune.dep})`, lngLat: [donnees.reperes[i][0], donnees.reperes[i][1]] };
           })
         : [],
     [donnees, resultat, index],
@@ -105,7 +105,7 @@ export function App() {
     <main className="fixed inset-0 overflow-hidden bg-background text-foreground">
       {donnees && !erreur && (
         <MapView
-          formes={donnees.formes}
+          reperes={donnees.reperes}
           couleurs={couleurs}
           choisie={choisie == null ? null : index.get(choisie)!}
           ronds={ronds}

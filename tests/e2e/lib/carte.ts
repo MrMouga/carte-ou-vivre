@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
@@ -12,16 +13,26 @@ const communesJson = {
   champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km'],
   communes: items.map((it) => [it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km]),
 };
-const formesJson = {
-  type: 'FeatureCollection',
-  features: items.map((it, i) => ({ type: 'Feature', id: i, properties: {}, geometry: { type: 'Polygon', coordinates: [it.forme] } })),
+// Formes : tuiles de la fixture (python3 scripts/data/tuiles.py --fixture) ; repères : centre et cadre de chaque carré.
+const TUILES = new URL('../../fixtures/tuiles/', import.meta.url);
+const reperesJson = {
+  champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
+  reperes: items.map(({ forme }) => {
+    const [xs, ys] = [forme.map((c) => c[0]), forme.map((c) => c[1])];
+    const [w, s, e, n] = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+    return [(w + e) / 2, (s + n) / 2, w, s, e, n];
+  }),
 };
 const PNG_TRANSPARENT = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
 export const STYLE_LOCAL = { version: 8, sources: {}, layers: [{ id: 'fond', type: 'background', paint: { 'background-color': color.background } }] };
 
 export async function servirFixture(page: Page, { fondEnPanne = false } = {}) {
   await page.route('**/data/communes.json', (r) => r.fulfill({ json: communesJson }));
-  await page.route('**/data/formes-1000m.json', (r) => r.fulfill({ json: formesJson }));
+  await page.route('**/data/reperes.json', (r) => r.fulfill({ json: reperesJson }));
+  await page.route('**/tuiles/**', (r) => {
+    const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), TUILES);
+    return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });
+  });
   await page.route('https://data.geopf.fr/**', (r) => {
     if (fondEnPanne) return r.abort();
     if (r.request().url().includes('/styles/')) return r.fulfill({ json: STYLE_LOCAL });

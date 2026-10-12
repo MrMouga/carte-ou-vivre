@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-13 | Tuiles vectorielles avec tippecanoe : compter les communes à chaque zoom, et écrire les tuiles vides | data, perf, build | — | [2026-10-13-tuiles-vectorielles-tippecanoe.md](2026-10-13-tuiles-vectorielles-tippecanoe.md) |
 | 2026-10-12 | Avec des styles de texte nommés (`text-pastille`), configurer tailwind-merge, sinon il efface la taille ou la couleur | build, design | — | [2026-10-12-tailwind-merge-styles-de-texte.md](2026-10-12-tailwind-merge-styles-de-texte.md) |
 | 2026-10-12 | Avec studio-browse, viser « localhost » et enregistrer les captures sous /private/tmp | outil, design | Revu le 2026-10-12 : une page WebGL (Map | [2026-10-12-studio-browse-localhost-et-captures.md](2026-10-12-studio-browse-localhost-et-captures.md) |
 | 2026-10-12 | Dans une spec à seuils, dire si l'on compare la valeur affichée ou la valeur exacte, et donner un état à chaque zone quand aucun critère n'est actif | spec, process | — | [2026-10-12-spec-valeurs-affichees-et-etats-vides.md](2026-10-12-spec-valeurs-affichees-et-etats-vides.md) |

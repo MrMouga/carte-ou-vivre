@@ -1,4 +1,4 @@
-"""Fichiers servis par le site : public/data/communes.json et les formes aux deux finesses.
+"""Fichier servi par le site : public/data/communes.json ; formes aux deux finesses dans data-raw/ (tuiles : tuiles.py).
 
 Jointure toujours par code INSEE (jamais par nom). Communes de métropole du COG 2025 (TYPECOM = COM, hors 97x) :
 Paris, Lyon et Marseille y sont déjà d'un seul tenant ; leurs 45 arrondissements (ARM) sont exclus des formes,
@@ -118,8 +118,8 @@ def main():
                 'geometry': round_coords(ft['geometry'], nd)}
                for ft in feats if ft['properties']['code'] in index]
         out.sort(key=lambda ft: ft['id'])
-        # Tâche 1b : seul le 1 000 m est servi ; le 100 m (28,6 Mo) reste dans data-raw/ pour de futures tuiles vectorielles.
-        dest = OUT if finesse == '1000m' else RAW
+        # Tâche 7 : aucune forme n'est servie telle quelle ; le 100 m devient les tuiles (scripts/data/tuiles.py).
+        dest = RAW
         with open(os.path.join(dest, f'formes-{finesse}.json'), 'w') as f:
             json.dump({'type': 'FeatureCollection', 'features': out}, f, separators=(',', ':'))
 
