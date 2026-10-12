@@ -1,0 +1,10 @@
+1. adresse après ouverture : /?loyer=1200&mer=60
+   fiche Bordeaux : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 32 | / 100 | 7412e sur 8 035 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 40 km de la mer à vol d'oiseau — adresse : /?loyer=1200&mer=60
+   fiche La Rochelle : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | 67 | / 100 | 1848e sur 8 035 communes qui passent | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer
+2. loyer 800 € — adresse : /?loyer=800&mer=60 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | 832 € par mois pour 52 m² (16,0 €/m²) | 40 km de la mer à vol d'oiseau
+3. Petite ville — adresse : /?loyer=800&mer=60&taille=petite-ville 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | Taille : grande ville (268 000 habitants) | 832 € par mois pour 52 m² (16,0 €/m²) | 40 km de la mer à vol d'oiseau
+4. adresse copiée : /?loyer=800&mer=60&taille=petite-ville
+   réglages ailleurs : 800 € par mois pour 52 m² | 60 km à vol d'oiseau | pastille Petite ville : true
+   même liste : true (10 lignes, 1re : 1 · La Hague (50) · 64 · 532 € · 3 km)

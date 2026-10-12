@@ -4,7 +4,8 @@ import { PALIERS } from './map/style';
 import { centre, type Formes } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
-import { evaluer, REGLAGES_DEPART, type Commune, type Reglages } from './domain/score';
+import { evaluer, type Commune, type Reglages } from './domain/score';
+import { ecrireAdresse, lireAdresse } from './domain/url';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
@@ -34,7 +35,9 @@ async function charger(): Promise<Donnees> {
 
 export function App() {
   const [donnees, setDonnees] = useState<Donnees | null>(null);
-  const [reglages, setReglages] = useState<Reglages>(REGLAGES_DEPART);
+  const [reglages, setReglages] = useState<Reglages>(() => lireAdresse(location.search));
+  // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique.
+  useEffect(() => history.replaceState(null, '', ecrireAdresse(reglages)), [reglages]);
 
   useEffect(() => {
     void charger().then(setDonnees);

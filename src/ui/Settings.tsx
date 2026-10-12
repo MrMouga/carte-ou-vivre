@@ -2,14 +2,12 @@ import { useId } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { plafondLoyer, plafondMer } from '@/domain/format';
 import type { Reglages } from '@/domain/score';
-
-// H2 : loyer de 300 à 2 000 € par pas de 50 ; mer de 5 à 200 km par pas de 5 ; le cran après le maximum = « Sans limite ».
-export const LOYER = { min: 300, max: 2000, pas: 50 };
-export const MER = { min: 5, max: 200, pas: 5 };
+import { BORNES } from '@/domain/url';
 
 type CurseurProps = {
   libelle: string;
   sousTexte: string;
+  /** H2 ; le cran après le maximum = « Sans limite ». */
   bornes: { min: number; max: number; pas: number };
   valeur: number | null;
   texte: (v: number | null) => string;
@@ -53,7 +51,7 @@ export function Settings({ reglages, onChange, children }: Props) {
         <Curseur
           libelle="Loyer maximum"
           sousTexte="par mois pour 52 m²"
-          bornes={LOYER}
+          bornes={BORNES.loyer}
           valeur={reglages.loyer}
           texte={plafondLoyer}
           onChange={(loyer) => onChange({ ...reglages, loyer })}
@@ -64,7 +62,7 @@ export function Settings({ reglages, onChange, children }: Props) {
         <Curseur
           libelle="Mer à moins de"
           sousTexte="à vol d'oiseau"
-          bornes={MER}
+          bornes={BORNES.mer}
           valeur={reglages.mer}
           texte={plafondMer}
           onChange={(mer) => onChange({ ...reglages, mer })}
