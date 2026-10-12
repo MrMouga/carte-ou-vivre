@@ -6,7 +6,14 @@
       "Read(~/git-repository/ideas/**)",
       "Read(~/.claude/studio/**)",
       "WebSearch", "WebFetch", "Bash(studio-browse:*)",
-      "mcp__claude_ai_Mobbin__search_screens", "mcp__claude_ai_Mobbin__search_flows", "mcp__claude_ai_Mobbin__search_sections"
+      "mcp__claude_ai_Mobbin__search_screens", "mcp__claude_ai_Mobbin__search_flows", "mcp__claude_ai_Mobbin__search_sections",
+      "Bash(npm test)", "Bash(npm test *)", "Bash(npm run *)", "Bash(npm ci)", "Bash(npm ls *)", "Bash(npm view *)",
+      "Bash(npx vite *)", "Bash(npx vitest *)", "Bash(npx playwright test *)", "Bash(npx tsc *)",
+      "Bash(node scripts/*)", "Bash(python3 scripts/data/*)", "Bash(gitleaks *)",
+      "Bash(git status *)", "Bash(git status)", "Bash(git log *)", "Bash(git diff *)", "Bash(git show *)", "Bash(git add *)", "Bash(git commit *)",
+      "Bash(ls *)", "Bash(cat *)", "Bash(head *)", "Bash(tail *)", "Bash(grep *)", "Bash(wc *)", "Bash(du *)", "Bash(gzip -c *)",
+      "Bash(curl -s *)", "Bash(curl -sS *)", "Bash(curl -sSL *)", "Bash(curl -I *)",
+      "Bash(pkill -f vite *)"
     ],
     "ask": [ "Bash(git push *)", "Bash(gh repo create *)", "Bash(npm publish *)", "Bash(npx wrangler *)", "Bash(vercel *)", "Bash(netlify *)" ],
     "deny": [

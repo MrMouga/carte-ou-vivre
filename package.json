@@ -8,14 +8,22 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p .",
-    "test": "vitest run && playwright test",
+    "test": "vitest run && node scripts/check-tokens.mjs && playwright test",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check-tokens": "node scripts/check-tokens.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-slider": "1.4.7",
+    "@radix-ui/react-toggle": "1.1.18",
+    "@tailwindcss/vite": "4.3.3",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
     "maplibre-gl": "6.12.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "tailwind-merge": "3.7.0",
+    "tailwindcss": "4.3.3"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -26,5 +34,18 @@
     "typescript": "7.0.2",
     "vite": "8.3.2",
     "vitest": "5.0.3"
+  },
+  "overrides": {
+    "@mapbox/tiny-sdf": "2.2.0",
+    "nanoid": "3.3.19",
+    "postcss": "8.5.28",
+    "rolldown": "1.2.12",
+    "tinybench": "6.2.0",
+    "vitest": {
+      "magic-string": "1.4.2"
+    },
+    "@vitest/mocker": {
+      "magic-string": "1.4.2"
+    }
   }
 }

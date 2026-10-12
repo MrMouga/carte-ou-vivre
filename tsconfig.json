@@ -7,12 +7,14 @@
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node"],
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src", "tests", "scripts", "vite.config.ts", "playwright.config.ts"]
 }

@@ -28,7 +28,7 @@
 
 Fond de carte (D16) : Plan IGN « atténué » + estompage IGN `estompage_grayscale` à 45 %, sous les communes. La couleur n'est jamais le seul indice : score et rang écrits dans la liste, la fiche et les ronds.
 
-## Texte (Google Fonts)
+## Texte (polices hébergées dans le site, `public/fonts/`, licence OFL ; pas de Google Fonts, D1)
 Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: tabular-nums`) pour loyers, distances et scores ; Source Serif 4 pour la marque et le nom de commune.
 | Style | Police | Usage |
 |---|---|---|
@@ -55,6 +55,26 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Message carte | (composé) | Chargement · Erreur · Fond indisponible |
 | Rond du top 10 | marqueur MapLibre (élément HTML) | Choisi Non/Oui/Focus · Groupe (« 3 · 10 », au-delà de 50 % de chevauchement ; un clic zoome) |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
+
+## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)
+Valeurs que le contrat cite comme règles ou que Figma dessine sans variable ; à reporter dans Figma. `taille-cible` 24 · `taille-toucher` 44 · `taille-bouton-icone` 32 · `taille-pastille` 28 (hauteur min.) · `taille-poignee` 18 · `taille-rail` 4 · `taille-reglages` 300 (panneau de réglages) · `taille-liste` 320 (panneau de liste et de fiche) · `trait-focus` 2 · `ecart-focus` 2.
+
+## Dans le code
+Source unique : `src/theme/tokens.ts` (variables CSS sur `:root` sous les noms ci-dessus, thème Tailwind, couleurs du style MapLibre). Le thème par défaut de Tailwind est **vidé** : une classe hors de cette liste ne produit aucun style. Contrôle : `npm run check-tokens`.
+| Jeton | Classes Tailwind |
+|---|---|
+| couleurs | `bg-<nom>`, `text-<nom>`, `border-<nom>`, `ring-<nom>` (ex. `bg-card`, `text-muted-foreground`, `bg-score-3`) |
+| `space-1` … `space-8` | le chiffre seul : `p-4`, `gap-3`, `mt-1`, `px-2`… (seulement 1, 2, 3, 4, 6, 8) |
+| tailles | le nom sans `taille-` : `h-cible`, `size-bouton-icone`, `min-h-pastille`, `size-poignee`, `h-rail`, `w-reglages`, `w-liste`, `min-h-toucher` |
+| rayons | `rounded-base` (radius), `rounded-chip`, `rounded-panel`, `rounded-sheet`, `rounded-full` |
+| ombres | `shadow-panneau`, `shadow-feuille` |
+| texte | `text-<style>` donne taille, interligne, graisse et approche (ex. `text-texte-fort`, `text-valeur`) ; ajouter `font-serif` pour `marque` et `titre-fiche`, `uppercase` pour `categorie`, `tabular-nums` pour les chiffres |
+Composants (shadcn copiés, déjà stylés : ne pas leur redonner rayon, padding ni couleurs) :
+- `Button` de `@/components/ui/button` — `variant` : `principal` (défaut, « Réessayer »), `icone` (32 × 32, zoom), `lien` (« ← Les 10 premières »).
+- `Toggle` de `@/components/ui/toggle` (Pastille, Radix) — `pressed`, `onPressedChange` ; enfants : le libellé puis `<span className="text-mentions">10 000 – 50 000 hab.</span>` (la couleur suit l'état cochée).
+- `Slider` de `@/components/ui/slider` (Curseur, Radix) — `value={[n]}`, `onValueChange`, `min`, `max`, `step`, `aria-label` ou `aria-labelledby`, `aria-valuetext` ; le libellé, la valeur (`text-valeur tabular-nums`) et le sous-texte (`text-secondaire text-muted-foreground`) sont écrits autour.
+- `cn()` de `@/lib/cn` pour assembler des classes.
+Focus : rien à écrire, l'outline `ring` 2 px décalé de 2 px est global. Classes sans valeur, toujours permises : `flex`, `grid`, `items-*`, `justify-*`, `border` (1 px), `border-2`, `sr-only`, `uppercase`, `w-full`, `h-full`, `w-1/2`, `inset-0`, `absolute`, `relative`, `overflow-*`…
 
 ## Règles
 - Jetons seulement ; lint « pas de valeur arbitraire » en tâche 0. Le style MapLibre lit le même module TS que le CSS.

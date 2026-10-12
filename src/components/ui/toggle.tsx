@@ -1,0 +1,17 @@
+import type { ComponentProps } from 'react';
+import * as TogglePrimitive from '@radix-ui/react-toggle';
+import { cn } from '@/lib/cn';
+
+// shadcn Toggle, rethémé (Figma « Pastille ») : aria-pressed ; cochée = primary.
+export function Toggle({ className, ...props }: ComponentProps<typeof TogglePrimitive.Root>) {
+  return (
+    <TogglePrimitive.Root
+      className={cn(
+        'flex min-h-pastille cursor-pointer flex-col items-start rounded-chip border border-border bg-card px-3 py-1 text-left text-pastille text-foreground',
+        'aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
