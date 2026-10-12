@@ -1,5 +1,5 @@
 # Détails — loyer et mer
-Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14), noms et relief (D15).
+Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14), noms et relief (D15), fond Plan IGN en direct (D16).
 
 ## Parcours
 1. L'utilisateur ouvre la page, avec ou sans réglages dans l'adresse.
@@ -10,32 +10,34 @@ Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : commu
 
 ## Écrans et états
 ### Carte — route `/` · dans l'URL : `loyer` (euros ou `aucun`), `mer` (km ou `aucun`), `taille` (liste de tailles, absente = peu importe)
-Zones : carte — formes des communes de métropole (Paris, Lyon, Marseille d'un seul tenant), sur la mer, les fleuves, les lacs et les pays voisins (D13), avec le relief ombré et les noms des pays, des mers et des villes (D15), sans fond en tuiles (D9), cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, le gris « ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
+Zones : carte — fond Plan IGN atténué et estompage IGN (D16), et par-dessus les communes de métropole qui passent, colorées (Paris, Lyon, Marseille d'un seul tenant) ; une commune qui ne passe pas laisse voir le fond ; cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, « Non colorée : ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee, IGN – Géoplateforme (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
 
 États de la page :
 - **chargement** (ouverture) → indicateur « Chargement de la carte… » (H9) ; réglages inactifs ; sort vers **classée**, **aucune commune**, **sans plafond** ou **erreur**.
-- **erreur** (données non chargées, ou délai de H9 dépassé) → « La carte n'a pas pu se charger. » et un bouton « Réessayer » ; sort vers **chargement**.
+- **fond indisponible** (le fond IGN ne répond pas) → communes et scores sur fond uni `background`, mention « Fond de carte indisponible » sur la carte ; tout le reste marche ; sort vers l'état normal si le fond revient (R8).
+- **erreur** (données des communes non chargées, délai de H9 dépassé, ou carte impossible à afficher faute de WebGL) → « La carte n'a pas pu se charger. » et un bouton « Réessayer » ; sort vers **chargement**.
 - **classée** (≥ 1 plafond actif, ≥ 1 commune passe) → communes colorées (R3), liste de 1 à 10 lignes (R5) ; sort vers **aucune commune** ou **sans plafond** selon les réglages.
-- **aucune commune** (≥ 1 plafond actif, aucune commune ne passe) → toutes les communes au gris « ne passe pas » ; la liste dit « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. » ; sort vers **classée** ou **sans plafond**.
-- **sans plafond** (loyer et mer sur « Sans limite ») → les communes de la bonne taille (toutes si « Peu importe ») en couleur neutre, les autres au gris « ne passe pas », sans score ; la liste dit « Fixe un loyer ou une distance à la mer pour classer les communes. » ; sort vers **classée** ou **aucune commune**.
+- **aucune commune** (≥ 1 plafond actif, aucune commune ne passe) → aucune commune n'est colorée ; la liste dit « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. » ; sort vers **classée** ou **sans plafond**.
+- **sans plafond** (loyer et mer sur « Sans limite ») → les communes de la bonne taille (toutes si « Peu importe ») en couleur neutre, les autres non colorées, sans score ; la liste dit « Fixe un loyer ou une distance à la mer pour classer les communes. » ; sort vers **classée** ou **aucune commune**.
 
 États de la fiche (initial : **fermée**) :
 - **fermée** → rien n'est affiché, aucune commune en évidence.
 - **commune qui passe** → nom, score, rang, taille, loyer, mer (R4, R6) ; la commune est en évidence sur la carte.
-- **commune grisée** → nom, taille, loyer, mer, et une raison par critère non tenu (R1) ; pas de score.
+- **commune qui ne passe pas** → nom, taille, loyer, mer, et une raison par critère non tenu (R1) ; pas de score.
 - **commune sans plafond** (page **sans plafond**) → nom, taille, loyer, mer, et la raison de taille si elle ne passe pas ; ni score ni rang.
 Depuis tout état ouvert : un changement de réglage fait passer la fiche dans l'état qui correspond, dans les deux sens ; choisir une autre commune remplace la fiche ; fermer → **fermée**.
 
 Interactions : bouger un plafond ou cocher une taille → carte, liste, fiche et adresse à jour (H9) · choisir une commune, dans la liste ou sur la carte → fiche ouverte, commune en évidence, la carte zoome sur elle en ≤ 500 ms (D14) · « ← Les 10 premières » → liste, la carte revient à la France entière.
 
 ## Règles
-- **R1** — Une commune passe si, pour chaque plafond actif, sa valeur affichée (loyer à l'euro, mer au km) est inférieure ou égale au plafond, et si sa taille fait partie des tailles cochées (toutes si aucune n'est cochée). Sinon elle est grisée, et sa fiche donne une raison par critère non tenu : « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € », « Taille : grande ville (260 000 habitants) ». *Pourquoi* : voir D3, D11 ; comparer la valeur affichée évite « Mer 60 km : au-dessus de ton plafond de 60 km ».
+- **R1** — Une commune passe si, pour chaque plafond actif, sa valeur affichée (loyer à l'euro, mer au km) est inférieure ou égale au plafond, et si sa taille fait partie des tailles cochées (toutes si aucune n'est cochée). Sinon elle n'est pas colorée, et sa fiche donne une raison par critère non tenu : « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € », « Taille : grande ville (260 000 habitants) ». *Pourquoi* : voir D3, D11 ; comparer la valeur affichée évite « Mer 60 km : au-dessus de ton plafond de 60 km ».
 - **R2** — La note et le score suivent D4, avec les valeurs affichées de R1 ; seuls le loyer et la mer donnent une note, la taille ne fait que filtrer ; le score s'affiche arrondi (H3). *Pourquoi* : voir D4.
 - **R3** — La couleur d'une commune qui passe suit la tranche de son score affiché : [0, 20), [20, 40), [40, 60), [60, 80), [80, 100]. *Pourquoi* : voir D5.
 - **R4** — Chiffres et noms d'une commune (D8, D10, D12, et les 52 m² de STATE.md) : « Bordeaux (33) », c'est-à-dire le nom de la commune suivi de son département ; taille « Grande ville · 260 000 habitants » ; « 832 € par mois pour 52 m² (16,0 €/m²) », où le loyer est le loyer au m² exact × 52 arrondi à l'euro, de sorte que le €/m² arrondi × 52 peut différer de quelques euros ; en dessous, « Estimation du secteur (communes voisines) » quand la commune n'a pas d'estimation propre ; « 40 km de la mer à vol d'oiseau », ou « moins d'1 km de la mer » quand la distance est sous 1 km. *Pourquoi* : D8, D10, D12.
 - **R5** — La liste montre au plus 10 communes qui passent, triées par score affiché décroissant (égalité : H4), sous le compte « 3 communes passent tes critères » (« 1 commune passe tes critères » au singulier). Format d'une ligne : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km ». *Pourquoi* : voir D6.
 - **R6** — Le rang de la fiche s'écrit « 1re sur 1 commune qui passe », « 3e sur 3 communes qui passent ». *Pourquoi* : situer une commune sans regarder la liste.
 - **R7** — À l'ouverture, les réglages sont lus dans l'adresse ; une valeur absente ou invalide (H7) prend la valeur de départ de ce réglage (H1). L'adresse est alors réécrite avec les réglages effectifs, puis à chaque changement, en remplaçant l'entrée courante de l'historique sans en ajouter. `taille` liste les tailles cochées dans l'ordre de D11, séparées par des virgules : `petite-commune`, `petite-ville`, `ville-moyenne`, `grande-ville` ; elle est absente quand aucune n'est cochée. *Pourquoi* : voir D7. Un lien garde son sens même si H1 change.
+- **R8** — Si le fond IGN ne répond pas, la carte affiche les communes colorées sur un fond uni et la mention « Fond de carte indisponible » ; réglages, liste, fiche et adresse marchent comme d'habitude. *Pourquoi* : voir D16, le service extérieur ne doit pas casser le produit.
 
 ## Cas limites
 - Valeur affichée égale au plafond → la commune passe avec une note de 0 pour ce critère (AC-3).
@@ -44,7 +46,7 @@ Interactions : bouger un plafond ou cocher une taille → carte, liste, fiche et
 - Adresse avec une valeur invalide → valeur de départ pour ce réglage seulement ; un nom de taille inconnu est ignoré (AC-12).
 - Distance sous 1 km → « moins d'1 km », comparée au plafond comme 1 km (AC-8).
 - Population exactement sur un seuil (10 000, 50 000, 200 000) → la taille du dessus (10 000 = petite ville).
-- Commune sans loyer, sans distance ou sans population → la fiche affiche « Loyer inconnu », « Distance à la mer inconnue » ou « Taille inconnue » ; si ce critère est actif, la commune est grisée avec cette raison. Nombre attendu : 0 en métropole, mesuré en tâche 0.
+- Commune sans loyer, sans distance ou sans population → la fiche affiche « Loyer inconnu », « Distance à la mer inconnue » ou « Taille inconnue » ; si ce critère est actif, la commune ne passe pas, avec cette raison. Nombre attendu : 0 en métropole, mesuré en tâche 0.
 - Défaut de l'Adour : Port-de-Lanne, Saint-Étienne-d'Orthe et Sames sortent à tort à moins de 2 km de la mer → corrigé en tâche 0, avant toute mise en ligne.
 - Homonymes (deux « La Rochelle ») → le département les distingue à l'écran ; les données se joignent par code INSEE (CLAUDE.md).
 
@@ -63,6 +65,7 @@ Première tranche.
 - **H6** — Population : la dernière population légale de l'Insee disponible en tâche 0.
 - **H7** — Une valeur `loyer` ou `mer` est invalide si elle n'est ni `aucun` ni un nombre de la plage et du pas de H2 (`loyer=1234` est invalide).
 - **H8** — La carte se zoome et se déplace (molette, pincement, boutons + et −). Le zoom ne fait pas partie de l'adresse.
+- **H10** — Opacité des communes colorées : 88 % à l'échelle de la France, 40 % environ au zoom d'une ville, pour lire le plan IGN dessous ; « sans plafond » à 45 %.
 - **H9** — Budgets : la page réagit à un réglage en ≤ 100 ms ; l'indicateur de chargement apparaît après 300 ms et reste au moins 300 ms ; au bout de 15 s sans données, on passe en **erreur**.
 
 ## Exceptions

@@ -164,7 +164,16 @@
         ]
       }
     ],
-    "services": {}
+    "services": {
+      "fond IGN (Géoplateforme)": {
+        "normal": {
+          "réponse": "tuiles servies"
+        },
+        "panne": {
+          "réponse": "erreur réseau sur le style et les tuiles"
+        }
+      }
+    }
   },
   "criteria": [
     {
@@ -172,7 +181,7 @@
       "rule": "R3",
       "given": "Fixture « 5 communes », page ouverte sur / (réglages de départ)",
       "when": "la carte est affichée",
-      "then": "A a le score 72 et la couleur de la tranche 60–80 de la légende, E 49 (tranche 40–60), B 32 (tranche 20–40) ; C et D ont le gris « ne passe pas »",
+      "then": "A a le score 72 et la couleur de la tranche 60–80 de la légende, E 49 (tranche 40–60), B 32 (tranche 20–40) ; C et D ne sont pas colorées",
       "passes": false
     },
     {
@@ -180,7 +189,7 @@
       "rule": "R2",
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur règle la mer sur « Sans limite »",
-      "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C reste grise",
+      "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C n'est pas colorée",
       "passes": false
     },
     {
@@ -188,7 +197,7 @@
       "rule": "R1",
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur règle la mer sur 40 km",
-      "then": "B passe avec le score 15 (39,9 km affiché 40 km, égal au plafond) ; A a 72, E 46 ; C et D sont grises",
+      "then": "B passe avec le score 15 (39,9 km affiché 40 km, égal au plafond) ; A a 72, E 46 ; C et D ne sont pas colorées",
       "passes": false
     },
     {
@@ -204,7 +213,7 @@
       "rule": "R1",
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur règle le loyer sur 300 € et la mer sur 5 km",
-      "then": "A, B, C, D et E ont le gris « ne passe pas » et la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
+      "then": "aucune des communes A, B, C, D et E n'est colorée et la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
       "passes": false
     },
     {
@@ -212,7 +221,7 @@
       "rule": "R3",
       "given": "Fixture « 5 communes », taille « Peu importe »",
       "when": "l'utilisateur règle le loyer et la mer sur « Sans limite »",
-      "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende, distincte du gris ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. »",
+      "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. »",
       "passes": false
     },
     {
@@ -244,7 +253,7 @@
       "rule": "R1",
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "l'utilisateur coche la taille « Petite ville »",
-      "then": "seule A passe (score 72) et la liste affiche « 1 commune passe tes critères » ; la fiche de Grandeville (33) affiche « Taille : grande ville (260 000 habitants) » ; D, E, B et C sont grises",
+      "then": "seule A passe (score 72) et la liste affiche « 1 commune passe tes critères » ; la fiche de Grandeville (33) affiche « Taille : grande ville (260 000 habitants) » ; D, E, B et C ne sont pas colorées",
       "passes": false
     },
     {
@@ -277,6 +286,14 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?taille=petite-ville,ville-moyenne",
       "then": "les pastilles « Petite ville » et « Ville moyenne » sont cochées ; l'adresse devient /?loyer=1200&mer=60&taille=petite-ville,ville-moyenne ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 72 et Quaibleu (13) 49",
+      "passes": false
+    },
+    {
+      "id": "AC-15",
+      "rule": "R8",
+      "given": "Fixture « 5 communes », réglages de départ, fond IGN en panne (service simulé)",
+      "when": "la page s'ouvre",
+      "then": "A (72), E (49) et B (32) sont colorées sur le fond uni, la mention « Fond de carte indisponible » est visible, et la liste montre « 3 communes passent tes critères »",
       "passes": false
     }
   ]

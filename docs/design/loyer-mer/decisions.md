@@ -24,7 +24,8 @@ Ajouté pendant la fusion, sur les retours de Vincent :
 - **Numéros du top 10 posés sur la carte** : à la commune, 269 communes deviennent des points minuscules.
 - **Mer, fleuves, lacs et pays voisins** (D13) : « la carte fait un peu vide ».
 - **Zoom sur la commune choisie** (D14).
-- **Noms des pays, mers et villes, et relief ombré partout** (D15). Trois modes de relief comparés dans le prototype ; Vincent a choisi « partout » contre la recommandation « hors communes colorées » (captures `F-relief-large`, `F-relief-gris-large`, `F-sans-relief-large`).
+- **Fond Plan IGN « atténué » et estompage IGN en direct** (D16) : prototype `ign.html`, essayé dans un vrai navigateur ; recoloration mesurée à 20 ms ; une commune qui ne passe pas laisse voir le fond ; communes plus transparentes au zoom (H10). Fond « gris » écarté par Vincent (« le fond atténué est bien meilleur »). Captures `I-tailles`, `I-zoom`.
+- **Noms des pays, mers et villes, et relief ombré partout** (D15, aujourd'hui fournis par le fond IGN). Trois modes de relief comparés dans le prototype ; Vincent a choisi « partout » contre la recommandation « hors communes colorées » (captures `F-relief-large`, `F-relief-gris-large`, `F-sans-relief-large`).
 
 Correctifs de la revue appliqués :
 - **Double contour** sur la commune choisie ;

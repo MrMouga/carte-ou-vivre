@@ -1,5 +1,5 @@
 # Brief de design — loyer-mer
-2026-10-12 · validé · mis à jour après la fusion (spec révisée D10–D14) · Spec : [loyer-mer](../../specs/2026-10-12-loyer-mer/spec.md) · Grille : [README](README.md) · Décision : [decisions.md](decisions.md)
+2026-10-12 · validé · mis à jour après la fusion (spec révisée D10–D16) · Spec : [loyer-mer](../../specs/2026-10-12-loyer-mer/spec.md) · Grille : [README](README.md) · Décision : [decisions.md](decisions.md)
 
 ## Ressenti
 La carte d'abord, visuelle, pas un outil technique (Vincent, à propos de Profound : « trop technique, pas assez centré sur la carte, pas assez visuel »). Calme et crédible : une carte qu'on regarde à deux sur un canapé, pas un tableau de bord. Une vraie géographie : la mer, les fleuves, les voisins (Vincent : « la carte fait un peu vide, faudrait rajouter l'eau »).
@@ -23,6 +23,9 @@ La carte d'abord, visuelle, pas un outil technique (Vincent, à propos de Profou
 | `primary` / `primary-foreground` | #1F2A2A / #FFFFFF | curseurs, pastilles cochées, bouton « Réessayer » : l'encre, jamais une couleur de donnée |
 
 Typographie (Google Fonts) : **Source Sans 3** pour l'interface, chiffres tabulaires pour les loyers et les scores ; **Source Serif 4** pour le nom du site et le nom de la commune dans la fiche. Rayon 8 px (panneaux 12 px, pastilles 10 px). Gouttière 16 px. Espacements 4 · 8 · 12 · 16 · 24 · 32.
+
+## Fond de carte (D16)
+Plan IGN, style « atténué » (`https://data.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/attenue.json`), estompage IGN (`ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW`, style `estompage_grayscale`, opacité 45 %) sous les communes. Les noms, l'eau, les routes et les pays voisins viennent du fond : les jetons `map-sea`, `map-river`, `map-neighbour`, `map-border`, `map-relief` et `map-label` ci-dessous ne servent plus qu'au fond uni de secours (R8). Une commune qui ne passe pas n'est pas peinte (`area-excluded` n'est plus utilisé sur la carte). Opacité des communes colorées : H10.
 
 ## Échelles de données et couches de carte
 Score des communes qui passent, séquentielle à une teinte (vert d'eau), du clair au foncé. Vérifiée par le script de contrôle `validate_palette.js` le 2026-10-12 sur #F7F4EE : luminosité qui décroît d'un palier à l'autre, écarts visibles, palier le plus clair à 2,08:1.
