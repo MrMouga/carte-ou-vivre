@@ -13,7 +13,7 @@
 - **Solution** : tu entres tes critères (emploi, prix location ou achat, proximité mer, proximité montagne, proximité d'un lieu ou de proches) et le poids de chacun. La carte colore toute la France et te sort une liste courte de villes à aller voir, avec les raisons, que tu peux partager en un lien.
 - **Différence** : les sites existants partent d'un nom de ville et comparent des statistiques identiques pour tout le monde. Ici on part de tes contraintes, dont des adresses que personne d'autre ne connaît, et on voit tout le pays d'un coup.
 - **Ce que j'en retire** : une pièce de portfolio racontable à la première personne (« on a vécu ça »). Manipuler des données géographiques publiques et une carte interactive. Rejouer tout le workflow studio, du pitch au lancement.
-- **Canal principal** : les amis par lien direct, puis r/france. Hacker News et Product Hunt en doute (outil en français sur la France). Précisé par /distribution.
+- **Canal principal** : r/france sous pseudo (à confirmer le 15/11), après les amis par lien direct ; secours : Indie Makers FR. Pas de Hacker News ni de Product Hunt (français seulement). Voir docs/distribution/plan.md.
 
 ## Évaluation
 
@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : spec — en attente : /distribution puis /validate
+- Étape : validate (puis /spec reprend)
 - Statut : active
 
 ## Décisions
@@ -54,6 +54,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-11 | La carte colore les 675 aires d'attraction des villes de métropole, pas les communes | Recommandation de Claude, acceptée par Vincent. Une requête ORS par adresse au lieu d'une dizaine, donc 500 adresses par jour au lieu de 50 pour le lancement ; c'est aussi l'unité de « quelle ville aller voir ». Coût accepté : 8 875 communes hors aire (6,6 % de la population) en gris. |
 | 2026-10-11 | Projet créé | repo carte-ou-vivre, GitHub privé MrMouga |
 | 2026-10-12 | /distribution puis /validate avant la spec de la tranche 1 | Choix de Vincent au lancement de /spec : le moment de partage et ce que demandent les premières personnes peuvent changer la première tranche. |
+| 2026-10-12 | Plan de distribution validé | r/france (pseudo) après les amis — test de demande : 5 personnes de la cible essaient et répondent avant le 25/10 — seuils au 20/12 : ≥ 30 inconnus, 1 write-up. Accroche actuelle gardée contre l'avis de Claude (catégorie par défaut) ; 1 h/semaine de distribution jusqu'au 8/11, puis la moitié. |
 
 ## Hypothèses à vérifier
 
@@ -74,6 +75,8 @@ Classées de la plus risquée à la moins risquée. Point de départ de `/discov
 - L'emploi sert la cible (B1 : données) — risque : 302 zones d'emploi seulement, un taux estimé, peu utile à une cible en télétravail ; du temps pris au 8 novembre — test peu coûteux : sur les 30 premiers inconnus, part de ceux qui donnent un poids non nul à l'emploi, avant le 20 décembre. Données : chômage INSEE par zone d'emploi, T2 2026, licence ouverte — statut : non réfutée — confiance : faible — preuve : documentaire — source : /Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/synthesis.md
 - L'accroche écrite pour « qui quittent une grande ville » parle encore à quelqu'un — risque : trop floue, personne ne se reconnaît — test peu coûteux : avant le 1er novembre, 3 personnes hors projet la répètent de mémoire avec ses trois mots clés (carte, proches, grande ville) — statut : à vérifier
 - r/france est le bon endroit pour la montrer — risque : le lancement tombe à plat — test peu coûteux : 3 posts d'outils cartographiques français à plus de 100 votes trouvés sur r/france avant le 15 novembre — statut : à vérifier
+- Des gens de la cible essaient la carte et répondent (test de demande) — risque : personne en dehors de Vincent ne s'en sert — test : 5 personnes de la cible essaient une maquette ou la carte loyer + mer et répondent, dont « ChatGPT ou la carte ? », avant le 25/10 (/validate) — statut : à vérifier
+- 1 h par semaine de distribution suffit jusqu'au 8/11 — risque : lancement dans le vide — test : au 8/11, 4 réponses utiles sur r/france et la liste de 10 à 30 personnes écrite — statut : à vérifier
 - La réassurance vaut plus qu'un jouet de cinq minutes — risque : non bloquant pour l'ambition perso, mais personne ne s'en sert vraiment — test peu coûteux : 3 inconnus reviennent une deuxième fois avant le 20 décembre — statut : à vérifier
 
 ## Questions ouvertes
@@ -87,6 +90,9 @@ Tests avant de coder, à faire avant le 25 octobre 2026, heures notées. Si ce n
 - Différence : gardée telle quelle le 2026-10-11 (décision de Vincent). À rouvrir si le test des 3 personnes donne ChatGPT gagnant
 
 Autres questions :
+- Test de demande : 5 personnes essaient et répondent avant le 25/10 (/validate). Test de l'accroche sur 3 personnes avant le 1/11.
+- Règles d'autopromotion de r/france : à lire et dater par Vincent avant le 15/11.
+- Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
 - Tranche 1 envisagée au lancement de /spec (2026-10-12) : loyer + mer avec deux curseurs de poids, données précalculées, aucun service extérieur. Les proches viennent en tranche 2. À confirmer après /validate.
@@ -94,6 +100,7 @@ Autres questions :
 
 ## Documents
 
+- [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
 - [Discovery « données des critères » — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/synthesis.md)
 - [Tests avant de coder : prix, mer, montagne — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/tests-avant-code/prix-mer-montagne-2026-10-11.md)

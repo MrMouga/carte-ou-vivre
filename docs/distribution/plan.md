@@ -1,5 +1,5 @@
 # Plan de distribution — Carte où vivre
-2026-10-12 · brouillon · Ambition : perso · Temps : 1 h/semaine jusqu'au 8/11, puis la moitié du temps jusqu'au 6/12 · Révision de : —
+2026-10-12 · validé · Ambition : perso · Temps : 1 h/semaine jusqu'au 8/11, puis la moitié du temps jusqu'au 6/12 · Révision de : —
 
 ## Positionnement
 Pour les trentenaires qui quittent une grande ville et ont déjà une ou deux villes en tête, qui décident avec des récits d'amis et partent avec le doute d'en avoir raté une, Carte où vivre est une carte de France qui colore les 675 aires urbaines selon leurs critères à eux (l'adresse de leurs proches, la mer, les prix). Contrairement à ChatGPT, qui propose 5 villes sur un axe, et aux palmarès comme villeideale.fr, qui ignorent les adresses perso, elle montre tout le pays d'un coup.
