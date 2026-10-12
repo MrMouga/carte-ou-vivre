@@ -44,16 +44,19 @@ async function charger(): Promise<Donnees> {
 export function App() {
   const [donnees, setDonnees] = useState<Donnees | null>(null);
   const [reglages, setReglages] = useState<Reglages>(() => lireAdresse(location.search));
-  // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique. Safari refuse plus de 100
-  // réécritures en 30 s (un curseur glissé) et lève une erreur : on réessaie plus tard au lieu de faire tomber la page.
+  // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique. Un curseur glissé dépasse
+  // les limites des navigateurs : Safari lève une erreur après 100 réécritures en 30 s, Chrome ignore sans rien dire
+  // au-delà de 200 en 10 s. On relit l'adresse et on réessaie plus tard, sans faire tomber la page.
   useEffect(() => {
+    const voulue = ecrireAdresse(reglages);
     let reprise: ReturnType<typeof setTimeout> | undefined;
     const ecrire = () => {
       try {
-        history.replaceState(null, '', ecrireAdresse(reglages));
+        history.replaceState(null, '', voulue);
       } catch {
-        reprise = setTimeout(ecrire, REPRISE_ADRESSE_MS);
+        // Safari : refusé, on réessaie ci-dessous.
       }
+      if (location.pathname + location.search !== voulue) reprise = setTimeout(ecrire, REPRISE_ADRESSE_MS);
     };
     ecrire();
     return () => clearTimeout(reprise);

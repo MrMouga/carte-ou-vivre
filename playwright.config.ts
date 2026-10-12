@@ -15,9 +15,11 @@ export default defineConfig({
     },
   },
   // Tâche 6 : chaque test passe en bureau et à 390 px (feuille mobile).
+  // `chrome.spec.ts` (limite de réécriture de l'adresse, propre à Chrome et sensible à la charge) tourne seul, après les autres.
   projects: [
-    { name: 'bureau', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
-    { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 } } },
+    { name: 'bureau', testIgnore: 'chrome.spec.ts', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
+    { name: 'mobile', testIgnore: 'chrome.spec.ts', use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 } } },
+    { name: 'limites', testMatch: 'chrome.spec.ts', dependencies: ['bureau', 'mobile'], use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,
