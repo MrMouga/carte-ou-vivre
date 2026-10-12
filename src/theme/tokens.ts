@@ -43,6 +43,7 @@ export const radius = {
   'radius-chip': 10,
   'radius-panel': 12,
   'radius-sheet': 16,
+  'radius-echantillon': 3,
 } as const;
 
 /**
@@ -58,6 +59,8 @@ export const size = {
   'taille-rail': 4,
   'taille-reglages': 300,
   'taille-liste': 320,
+  'taille-echantillon': 14,
+  'taille-ecart-echantillon': 2,
   'trait-focus': 2,
   'ecart-focus': 2,
 } as const;
@@ -118,6 +121,7 @@ export function themeCss(): string {
     root.push(`--${k}: ${v};`);
     theme.push(`--color-${k}: ${v};`);
   }
+  theme.push('--spacing-0: 0px;'); // inset-0, m-0… : zéro n'est pas une valeur arbitraire
   for (const [k, v] of Object.entries(space)) {
     root.push(`--${k}: ${v}px;`);
     theme.push(`--spacing-${k.replace('space-', '')}: ${v}px;`);

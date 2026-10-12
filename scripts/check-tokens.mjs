@@ -14,7 +14,7 @@ const RULES = [
   },
   { name: 'classe Tailwind hors thème', re: /\b(?:text-(?:xs|sm|base|lg|xl|\dxl)|font-(?:thin|light|normal|medium|semibold|bold|black)|rounded-(?:xs|sm|md|lg|xl|\dxl)|shadow-(?:xs|sm|md|lg|xl|2xl)|(?:bg|text|border|ring|fill|stroke)-(?:white|black|gray|slate|zinc|neutral|stone|red|green|blue|teal|emerald)(?:-\d+)?)\b/ },
   // Thème vidé : seuls les espacements 1, 2, 3, 4, 6, 8 (space-n) existent ; un autre nombre ne produit aucun style.
-  { name: 'espacement hors jetons', re: /(?<![\w-])-?(?:p[xytblrse]?|m[xytblrse]?|gap(?:-[xy])?|space-[xy]|w|h|size|min-[wh]|max-[wh]|top|left|right|bottom|inset(?:-[xy])?|translate-[xy]|basis)-(?!(?:1|2|3|4|6|8)\b)\d+(?:\.\d+)?(?![\w/.-])/ },
+  { name: 'espacement hors jetons', re: /(?<![\w-])-?(?:p[xytblrse]?|m[xytblrse]?|gap(?:-[xy])?|space-[xy]|w|h|size|min-[wh]|max-[wh]|top|left|right|bottom|inset(?:-[xy])?|translate-[xy]|basis)-(?!(?:0|1|2|3|4|6|8)\b)\d+(?:\.\d+)?(?![\w/.-])/ },
 ];
 
 const roots = process.argv.slice(2).length ? process.argv.slice(2) : ['src'];

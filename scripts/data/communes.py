@@ -118,7 +118,9 @@ def main():
                 'geometry': round_coords(ft['geometry'], nd)}
                for ft in feats if ft['properties']['code'] in index]
         out.sort(key=lambda ft: ft['id'])
-        with open(os.path.join(OUT, f'formes-{finesse}.json'), 'w') as f:
+        # Tâche 1b : seul le 1 000 m est servi ; le 100 m (28,6 Mo) reste dans data-raw/ pour de futures tuiles vectorielles.
+        dest = OUT if finesse == '1000m' else RAW
+        with open(os.path.join(dest, f'formes-{finesse}.json'), 'w') as f:
             json.dump({'type': 'FeatureCollection', 'features': out}, f, separators=(',', ':'))
 
     print('Fichiers')

@@ -8,3 +8,4 @@ data-raw/
 probe/
 test-results/
 playwright-report/
+__pycache__/

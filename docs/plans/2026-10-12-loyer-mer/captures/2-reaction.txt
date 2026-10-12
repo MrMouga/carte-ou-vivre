@@ -1,0 +1,4 @@
+carte prête (dev, sans ralentissement) : 2291 ms
+réglage → carte redessinée (10 essais) : médiane 86 ms, max 89 ms
+valeur du curseur à la fin : 1 200 € par mois pour 52 m²
+erreurs console : 0 []
