@@ -5,7 +5,7 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 ## Stack
 - À décider dans /breakdown, tâche 0
 - Hébergement : à décider dans /breakdown, tâche 0
-- Design : à remplir par /ui
+- Design : Figma [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (page « Système » = jetons et composants) ; contrat des jetons : `docs/design/system/README.md` (module TS unique pour le CSS et le style MapLibre, en tâche 0)
 
 ## Commandes
 À remplir quand le projet est initialisé (/breakdown, tâche 0).
