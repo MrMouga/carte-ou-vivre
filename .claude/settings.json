@@ -13,7 +13,8 @@
       "Bash(git status *)", "Bash(git status)", "Bash(git log *)", "Bash(git diff *)", "Bash(git show *)", "Bash(git add *)", "Bash(git commit *)",
       "Bash(ls *)", "Bash(cat *)", "Bash(head *)", "Bash(tail *)", "Bash(grep *)", "Bash(wc *)", "Bash(du *)", "Bash(gzip -c *)",
       "Bash(curl -s *)", "Bash(curl -sS *)", "Bash(curl -sSL *)", "Bash(curl -I *)",
-      "Bash(pkill -f vite *)"
+      "Bash(pkill -f vite *)",
+      "Bash(npm install *)", "Bash(npm install)", "Bash(npx playwright install *)", "Bash(git worktree *)", "mcp__plugin_figma_figma__get_*"
     ],
     "ask": [ "Bash(git push *)", "Bash(gh repo create *)", "Bash(npm publish *)", "Bash(npx wrangler *)", "Bash(vercel *)", "Bash(netlify *)" ],
     "deny": [
