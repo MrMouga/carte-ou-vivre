@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-// Contrôles du fichier servi (tâche 1a) : les chiffres de référence de la discovery, par code INSEE.
+// Contrôles du fichier servi (tâche 1a) : les chiffres de référence de la discovery, par code INSEE ; distances depuis
+// la mairie depuis D18 (tâche 8).
 const { champs, communes } = JSON.parse(readFileSync(new URL('../../public/data/communes.json', import.meta.url), 'utf8')) as {
   champs: string[];
   communes: unknown[][];
@@ -16,15 +17,14 @@ describe('public/data/communes.json', () => {
     for (const name of ['population', 'loyer_m2', 'mer_km']) expect(communes.filter((r) => r[col(name)] == null)).toEqual([]);
   });
 
-  it('Bordeaux (33063) : 832 € pour 52 m², 16,0 €/m², 40 km de la mer', () => {
+  it('Bordeaux (33063) : 832 € pour 52 m², 16,0 €/m², 39 km de la mer (D18)', () => {
     expect(Math.round(get('33063', 'loyer_m2') * 52)).toBe(832);
     expect(get('33063', 'loyer_m2').toFixed(1)).toBe('16.0');
-    expect(Math.round(get('33063', 'mer_km'))).toBe(40);
+    expect(Math.round(get('33063', 'mer_km'))).toBe(39);
   });
 
-  it('La Rochelle (17300) au bord de la mer, la homonyme de Haute-Saône (70450) loin', () => {
-    expect(get('17300', 'mer_km')).toBeGreaterThan(0.9);
-    expect(get('17300', 'mer_km')).toBeLessThan(1.5);
+  it("La Rochelle (17300) à moins d'1 km de la mer (D18), la homonyme de Haute-Saône (70450) loin", () => {
+    expect(get('17300', 'mer_km')).toBeLessThan(1);
     expect(get('70450', 'mer_km')).toBeGreaterThan(300);
   });
 

@@ -1,0 +1,26 @@
+mer-km.csv : 34746 communes
+COG 2025, métropole et Corse : 34746 communes (COM, dont Paris, Lyon et Marseille d'un seul tenant) ; exclus : 45 arrondissements (ARM), 2152 communes déléguées, 476 communes associées
+Contrôles
+  ok   34746 communes de métropole (attendu 34 746 = COM du COG 2025 hors 97x)
+  ok   0 commune sans population (manquent : 0 [])
+  ok   0 commune sans loyer (manquent : 0 [])
+  ok   0 commune sans distance à la mer (manquent : 0 [])
+  ok   arrondissements moyennés : {'75056': 20, '69123': 9, '13055': 16}
+  ok   Bordeaux (33063) : 832 € pour 52 m² (attendu 832)
+  ok   Bordeaux : 16.0 €/m² (attendu 16,0)
+  ok   Bordeaux : 39.07 km, affiché 39 km (attendu 39, depuis la mairie : D18)
+  ok   La Rochelle (17300) : 0.2 km (attendu « moins d'1 km », D18)
+  ok   Port-de-Lanne (40231) : 22.52 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Saint-Étienne-d'Orthe (40256) : 21.56 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Sames (64502) : 26.32 km (attendu au-delà de 2 km, Adour corrigé)
+  info Paris : 1721 € pour 52 m², estimation propre True, 2103778 habitants ; estimations propres : 4765 communes
+  ok   formes 100m : 0 code orphelin (en trop : 0, sans forme : 0)
+Fichiers
+  communes.json : 1.88 Mo brut, 0.59 Mo compressé (gzip)
+  reperes.json : 1.63 Mo brut, 0.59 Mo compressé (gzip)
+  voisins.json : 0.26 Mo brut, 0.08 Mo compressé (gzip)
+Contrôles
+  ok   34746 repères (34 746 communes)
+  ok   9367 tuiles (limite de l'hébergeur : 20000)
+  ok   plus grosse tuile : 0.89 Mo (4/8/5.pbf)
+tuiles : 23.7 Mo au total, dont 4798 vides ; reperes.json : 1.63 Mo

@@ -1,4 +1,4 @@
-"""Distance à vol d'oiseau du centre de chaque commune à la mer (D8, H5), en km non arrondis.
+"""Distance à vol d'oiseau de la mairie de chaque commune à la mer (D8, H5, D18), en km non arrondis.
 
 Repris de la discovery (2026-10-11, tests-avant-code/scripts/mer.py). Source : Limite terre-mer Shom-IGN 2021.
 On garde les tronçons qui ne sont ni en amont de la limite transversale de la mer (limarc « 2 ») ni en amont de la
@@ -135,10 +135,10 @@ class Nearest:
 def distances(fix_adour=True):
     near = Nearest(coast_points(fix_adour))
     out = {}
-    for c in json.load(open(os.path.join(RAW, 'communes-centre.json'))):
-        if c['codeDepartement'] >= '97' or not c.get('centre'):
+    for c in json.load(open(os.path.join(RAW, 'communes-mairie.json'))):
+        if c['codeDepartement'] >= '97' or not c.get('mairie'):
             continue
-        out[c['code']] = near.km(*to_l93(*c['centre']['coordinates']))
+        out[c['code']] = near.km(*to_l93(*c['mairie']['coordinates']))
     return out
 
 

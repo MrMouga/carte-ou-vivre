@@ -5,10 +5,10 @@
   Options de tippecanoe : toutes les communes à tous les zooms (aucune supprimée, même minuscule à l'échelle de la
   France), frontières partagées simplifiées ensemble (pas de trou ni de chevauchement entre voisines),
   tuiles non compressées (servies telles quelles par un hébergeur statique).
-- public/data/reperes.json : pour chaque commune, [lon, lat] du centre de son rond (barycentre du plus grand polygone)
-  et son cadre [ouest, sud, est, nord], pour zoomer dessus.
+- public/data/reperes.json : pour chaque commune, [lon, lat] de son rond, sa mairie (D18, le point de la distance à la
+  mer), et son cadre [ouest, sud, est, nord], pour zoomer dessus. Fixture : barycentre de la forme (pas de mairie).
 
-Prérequis : python3 scripts/data/communes.py (écrit data-raw/formes-100m.json) ; tippecanoe (brew install tippecanoe).
+Prérequis : python3 scripts/data/sources.py et communes.py (écrit data-raw/formes-100m.json) ; tippecanoe (brew install tippecanoe).
 Usage : python3 scripts/data/tuiles.py  ·  python3 scripts/data/tuiles.py --fixture  (tuiles des tests)
 """
 import json
@@ -23,6 +23,8 @@ ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 FIXTURE = os.path.join(ROOT, 'tests', 'fixtures', 'tuiles')
 ACCEPTANCE = os.path.join(ROOT, 'docs', 'specs', '2026-10-12-loyer-mer', 'acceptance.json')
 SRC = os.path.join(ROOT, 'data-raw', 'formes-100m.json')
+MAIRIES = os.path.join(ROOT, 'data-raw', 'communes-mairie.json')
+COMMUNES = os.path.join(ROOT, 'public', 'data', 'communes.json')
 TUILES = os.path.join(ROOT, 'public', 'tuiles')
 REPERES = os.path.join(ROOT, 'public', 'data', 'reperes.json')
 ZOOM_MIN, ZOOM_MAX = 4, 11
@@ -119,11 +121,15 @@ def main():
         return fixture()
     with open(SRC) as f:
         feats = json.load(f)['features']
+    with open(COMMUNES, encoding='utf-8') as f:
+        codes = [r[0] for r in json.load(f)['communes']]  # l'index d'une forme est celui de sa commune
+    with open(MAIRIES, encoding='utf-8') as f:
+        mairie = {c['code']: c['mairie']['coordinates'] for c in json.load(f) if c.get('mairie')}
     reperes = []
     for i, ft in enumerate(feats):
         assert ft['id'] == i
-        cx, cy = centre(ft['geometry'])
-        reperes.append([round(cx, 4), round(cy, 4), *(round(v, 4) for v in cadre(ft['geometry']))])
+        mx, my = mairie[codes[i]]
+        reperes.append([round(mx, 4), round(my, 4), *(round(v, 4) for v in cadre(ft['geometry']))])
     with open(REPERES, 'w') as f:
         json.dump({'champs': ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'], 'reperes': reperes}, f, separators=(',', ':'))
 

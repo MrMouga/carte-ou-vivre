@@ -94,9 +94,9 @@ def main():
     bx = by['33063']
     check(round(bx[4] * 52) == 832, f'Bordeaux (33063) : {round(bx[4] * 52)} € pour 52 m² (attendu 832)')
     check(f'{bx[4]:.1f}' == '16.0', f'Bordeaux : {bx[4]:.1f} €/m² (attendu 16,0)')
-    check(round(bx[6]) == 40, f'Bordeaux : {bx[6]} km, affiché {round(bx[6])} km (attendu 40)')
+    check(round(bx[6]) == 39, f'Bordeaux : {bx[6]} km, affiché {round(bx[6])} km (attendu 39, depuis la mairie : D18)')
     lr = by['17300']
-    check(0.9 < lr[6] < 1.5, f'La Rochelle (17300) : {lr[6]} km (plan : entre 1 et 1,5 km ; voir progress.md, décision La Rochelle)')
+    check(lr[6] < 1, f'La Rochelle (17300) : {lr[6]} km (attendu « moins d\'1 km », D18)')
     for code, nom in (('40231', 'Port-de-Lanne'), ('40256', "Saint-Étienne-d'Orthe"), ('64502', 'Sames')):
         check(by[code][6] > 2, f'{nom} ({code}) : {by[code][6]} km (attendu au-delà de 2 km, Adour corrigé)')
     print(f"  info Paris : {by['75056'][4] * 52:.0f} € pour 52 m², estimation propre {by['75056'][5]},"

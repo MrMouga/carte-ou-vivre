@@ -14,8 +14,10 @@ SOURCES = {
     'v_commune_2025.csv': 'https://www.insee.fr/fr/statistiques/fichier/8377162/v_commune_2025.csv',
     # Carte des loyers 2025 (ANIL), appartements, €/m² charges comprises, logement de référence 52 m².
     'pred-app-mef-dhup.csv': 'https://static.data.gouv.fr/resources/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2025/20251211-145010/pred-app-mef-dhup.csv',
-    # Centres (H5) et populations légales Insee (H6), via geo.api.gouv.fr.
+    # Populations légales Insee (H6), via geo.api.gouv.fr (le centre n'est plus utilisé : D18).
     'communes-centre.json': 'https://geo.api.gouv.fr/communes?fields=code,nom,population,centre,codeDepartement&format=json',
+    # Mairie de chaque commune (H5, D18) : point de la distance à la mer et du rond du top 10.
+    'communes-mairie.json': 'https://geo.api.gouv.fr/communes?fields=code,codeDepartement,mairie&format=json',
     # Contours des communes 2025 d'Etalab (issus d'Admin Express IGN), à 100 m (tuiles : tuiles.py).
     'communes-100m.geojson.gz': 'https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/2025/geojson/communes-100m.geojson.gz',
     # Pays voisins du fond de secours (R8) : Natural Earth admin-0, 1:10 m, domaine public.

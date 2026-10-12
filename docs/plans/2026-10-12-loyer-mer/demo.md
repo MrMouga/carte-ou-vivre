@@ -4,6 +4,12 @@
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf ; une preuve = capture ou sortie de commande, datée.
 > Captures : `captures/` (le constructeur) et `captures/qa/` (le testeur neuf).
 
+**Pari de Vincent** (avant d'essayer, 2026-10-13) : satisfait du prototype ; il s'attend à un résultat encore plus fluide, le prototype « laggait un peu ». Non comparé en chiffres : le prototype n'a pas été mesuré avec le même script.
+
+**Retour de Vincent après essai** (2026-10-13, Mac) : fluidité bonne, résultat « top », globalement satisfait ; délimitation des communes et littoral bons. À voir plus tard : lisibilité des noms de lieux sur une zone colorée par les critères. Vu sur sa capture (Plouezoc'h, fiche « ne passe pas ») : contour de la commune choisie en pointillés — le Mineur QA, cause non vérifiée (notre contour ou la limite de commune du Plan IGN).
+
+**Question soulevée pendant la démo — position des communes** : le rond est posé au centre du plus grand morceau de la commune (calculé), la distance à la mer part du `centre` de geo.api.gouv.fr — deux points différents (médiane 242 m d'écart). Comptage (2026-10-13) : hors de leur commune, rond actuel 181, `centre` de l'API 560 (Granville en mer, à 4,3 km), `mairie` de l'API 32. Avec la mairie pour la distance : 17 673 communes changent d'1 km affiché environ, 38 d'au moins 5 km (Arles 13 → 26 km), 78 passent ou ne passent plus à 60 km, Bordeaux 40 → 39 km.
+
 ## Ce qui est construit
 
 | Tâche | Ce que tu peux faire maintenant |
@@ -17,6 +23,7 @@
 | 5b | La page tient le chargement, l'erreur (« Réessayer »), l'absence de WebGL et la panne du fond IGN (fond de secours) ; les mentions sont visibles. |
 | 6 | À 390 px, la carte en haut et une feuille en bas ; tout au clavier en bureau. |
 | 7 | Les communes suivent leurs vrais contours à tous les zooms (tuiles à 100 m). |
+| 8 (après la démo, D18) | Chaque commune a un seul point, sa mairie : la distance à la mer en part et le rond s'y pose (Bordeaux 39 km, La Rochelle « moins d'1 km »). |
 | Après relecture | Glisser un curseur sur iPhone ou Safari ne fait plus tomber la page ; sur Chrome, l'adresse rattrape les réglages ; à 390 px, une carte vide dit pourquoi. |
 
 **Essayer** : `npm run dev` puis http://localhost:5173 (le serveur tourne déjà) ; sur le téléphone, `npx vite --host` (le pare-feu du Mac doit laisser passer `node`). Version construite : `npm run build && npx vite preview`.

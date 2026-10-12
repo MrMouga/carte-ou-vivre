@@ -1,0 +1,24 @@
+=== 1440 px
+1. adresse après ouverture : ?loyer=1200&mer=60
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 33 | / 100 | 7270e sur 8 046 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+   fiche : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | 67 | / 100 | 1820e sur 8 046 communes qui passent | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer
+2. loyer 800 € — adresse : ?loyer=800&mer=60 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+3. Petite ville — adresse : ?loyer=800&mer=60&taille=petite-ville 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | Taille : grande ville (268 000 habitants) | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+4. adresse copiée : ?loyer=800&mer=60&taille=petite-ville 
+   réglages ailleurs : 800 € par mois pour 52 m² | 60 km à vol d'oiseau | Petite ville : true 
+   même liste : true (10 lignes)
+5. mentions visibles : true — Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme
+=== 390 px
+1. adresse après ouverture : ?loyer=1200&mer=60
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 33 | / 100 | 7270e sur 8 046 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+   fiche : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | 67 | / 100 | 1820e sur 8 046 communes qui passent | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer
+2. loyer 800 € — adresse : ?loyer=800&mer=60 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+3. Petite ville — adresse : ?loyer=800&mer=60&taille=petite-ville 
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Loyer 832 € : au-dessus de ton plafond de 800 € | Taille : grande ville (268 000 habitants) | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+4. adresse copiée : ?loyer=800&mer=60&taille=petite-ville 
+   réglages ailleurs : 800 € par mois pour 52 m² | 60 km à vol d'oiseau | Petite ville : true 
+   même liste : true (10 lignes)
+5. mentions visibles : true — Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme

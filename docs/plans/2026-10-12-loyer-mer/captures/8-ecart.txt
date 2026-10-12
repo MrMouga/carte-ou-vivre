@@ -1,0 +1,9 @@
+Tâche 8 — écart avant / après (mairie au lieu du centre), 2026-10-13
+  colonnes autres que la distance : inchangées ; cadres des repères : inchangés
+  distance affichée qui change : 17680 communes ; écart ≥ 5 km : 39 ; passent ou plus à 60 km : 78
+  ronds hors de leur commune : 32 (avant : 181) — Pech (09), Suzan (09), Charmoy (10), Les Monceaux (14), Rouvres-sous-Meilly (21), Sagelat (24), Richeville (27), Saint-Denis-des-Puits (28), Île-Tudy (29), Lanildut (29), L'Île-Rousse (2B), Lescuns (31)…
+  La Hague : 2.76 → 2.54 km ; rond [-1.814, 49.6524] → [-1.8302, 49.6615]
+  Granville : 0.03 → 0.21 km ; rond [-1.566, 48.833] → [-1.5971, 48.8376]
+  Bordeaux : 39.93 → 39.07 km ; rond [-0.5733, 44.8577] → [-0.5794, 44.8379]
+  La Rochelle : 0.96 → 0.2 km ; rond [-1.1732, 46.1624] → [-1.1513, 46.1596]
+  Arles : 13.36 → 26.09 km ; rond [4.6617, 43.5471] → [4.6274, 43.6768]
