@@ -1,0 +1,26 @@
+  65348 Ourdis-Cotdoussan            avant 110.04  après 136.36
+  65334 Omex                         avant  99.11  après 125.43
+  65237 Juncalas                     avant 107.71  après 134.03
+  64427 Orion                        avant  26.30  après  52.62
+  64393 Monein                       avant  54.65  après  80.97
+  65351 Ousté                        avant 106.87  après 133.19
+  65123 Campan                       avant 129.29  après 155.61
+  65291 Lugagnan                     avant 104.32  après 130.64
+  65116 Cadéac                       avant 139.99  après 166.31
+  31242 Jurvielle                    avant 153.61  après 179.93
+  64139 Bosdarros                    avant  74.17  après 100.49
+  31125 Cathervielle                 avant 156.24  après 182.56
+  65255 Lançon                       avant 143.04  après 169.36
+  64149 Bugnein                      avant  36.88  après  63.20
+  31434 Poubeau                      avant 154.81  après 181.13
+contrôle 64024 Anglet 2.23 -> 2.23
+contrôle 64122 Biarritz 1.1 -> 1.1
+contrôle 40312 Tarnos 3.44 -> 3.44
+contrôle 40210 Onesse-Laharie 23.78 -> 23.78
+contrôle 40133 Labenne 2.72 -> 2.72
+contrôle 40065 Capbreton 1.8 -> 1.8
+contrôle 64140 Boucau 3.16 -> 3.16
+contrôle 64102 Bayonne 3.95 -> 6.65
+contrôle 40230 Pontonx-sur-l'Adour 31.31 -> 36.94
+contrôle 40255 Saint-Cricq-Villeneuve 76.03 -> 80.19
+contrôle 64502 Sames 1.87 -> 25.48

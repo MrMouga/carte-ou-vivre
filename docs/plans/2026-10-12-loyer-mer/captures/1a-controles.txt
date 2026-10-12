@@ -1,0 +1,21 @@
+COG 2025, métropole et Corse : 34746 communes (COM, dont Paris, Lyon et Marseille d'un seul tenant) ; exclus : 45 arrondissements (ARM), 2152 communes déléguées, 476 communes associées
+Contrôles
+  ok   34746 communes de métropole (attendu 34 746 = COM du COG 2025 hors 97x)
+  ok   0 commune sans population (manquent : 0 [])
+  ok   0 commune sans loyer (manquent : 0 [])
+  ok   0 commune sans distance à la mer (manquent : 0 [])
+  ok   arrondissements moyennés : {'75056': 20, '69123': 9, '13055': 16}
+  ok   Bordeaux (33063) : 832 € pour 52 m² (attendu 832)
+  ok   Bordeaux : 16.0 €/m² (attendu 16,0)
+  ok   Bordeaux : 39.93 km, affiché 40 km (attendu 40)
+  ok   La Rochelle (17300) : 0.96 km (plan : entre 1 et 1,5 km ; voir progress.md, décision La Rochelle)
+  ok   Port-de-Lanne (40231) : 21.52 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Saint-Étienne-d'Orthe (40256) : 20.57 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Sames (64502) : 25.48 km (attendu au-delà de 2 km, Adour corrigé)
+  info Paris : 1721 € pour 52 m², estimation propre True, 2103778 habitants ; estimations propres : 4765 communes
+  ok   formes 1000m : 0 code orphelin (en trop : 0, sans forme : 0)
+  ok   formes 100m : 0 code orphelin (en trop : 0, sans forme : 0)
+Fichiers
+  communes.json : 1.88 Mo brut, 0.59 Mo compressé (gzip)
+  formes-1000m.json : 7.24 Mo brut, 1.09 Mo compressé (gzip)
+  formes-100m.json : 28.61 Mo brut, 7.36 Mo compressé (gzip)
