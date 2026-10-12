@@ -262,7 +262,7 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?loyer=800&mer=60",
       "then": "les réglages affichent 800 € et 60 km ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 59 · 650 € · moins d'1 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -270,7 +270,7 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?loyer=abc&mer=aucun&taille=village",
       "then": "les réglages affichent 1 200 €, « Sans limite » et « Peu importe » ; l'adresse devient /?loyer=1200&mer=aucun ; la liste montre dans l'ordre Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",
@@ -278,7 +278,7 @@
       "given": "Fixture « 5 communes », page ouverte sur /",
       "when": "l'utilisateur règle le loyer sur 800 €",
       "then": "l'adresse de la page est /?loyer=800&mer=60, et l'historique du navigateur n'a pas gagné d'entrée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",
@@ -286,7 +286,7 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?taille=petite-ville,ville-moyenne",
       "then": "les pastilles « Petite ville » et « Ville moyenne » sont cochées ; l'adresse devient /?loyer=1200&mer=60&taille=petite-ville,ville-moyenne ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 72 et Quaibleu (13) 49",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-15",
