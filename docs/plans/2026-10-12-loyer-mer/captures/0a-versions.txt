@@ -1,0 +1,20 @@
+# Paquets installés — version et date de publication (règle : dernière version publiée avant le 2026-10-05)
+@radix-ui/react-slider	1.4.7	2026-07-24T23:51:33.649Z
+@radix-ui/react-toggle	1.1.18	2026-07-24T23:51:38.484Z
+@tailwindcss/vite	4.3.3	2026-07-16T12:04:06.316Z
+class-variance-authority	0.7.1	2024-11-26T08:20:34.604Z
+clsx	2.1.1	2024-04-23T05:26:04.645Z
+maplibre-gl	6.12.0	2026-10-03T21:45:26.768Z
+react	19.3.0	2026-09-09T17:21:30.071Z
+react-dom	19.3.0	2026-09-09T17:17:39.744Z
+tailwind-merge	3.7.0	2026-09-12T20:10:15.257Z
+tailwindcss	4.3.3	2026-07-16T12:03:35.267Z
+@playwright/test	1.63.0	2026-09-04T22:44:00.304Z
+@types/node	26.6.4	2026-10-01T22:39:22.769Z
+@types/react	19.3.0	2026-09-09T18:08:49.750Z
+@types/react-dom	19.3.0	2026-09-09T18:07:51.886Z
+@vitejs/plugin-react	6.1.1	2026-08-28T03:30:56.619Z
+typescript	7.0.2	2026-07-08T15:55:18.431Z
+vite	8.3.2	2026-10-01T10:17:44.767Z
+vitest	5.0.3	2026-09-30T11:30:42.429Z
+gitleaks (Homebrew) 8.30.1

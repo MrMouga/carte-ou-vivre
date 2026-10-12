@@ -12,6 +12,7 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 - Lancer : `npm run dev` (http://localhost:5173) ; sur le Wi-Fi local : `npx vite --host`
 - Tester : `npm test` (Vitest puis Playwright ; Playwright lance son propre serveur sur le port 4173) ; séparément : `npm run test:unit`, `npm run test:e2e`
 - Types : `npm run typecheck`
+- Garde-fou secrets : `brew install gitleaks` puis `cp scripts/hooks/pre-commit .git/hooks/` (le crochet refuse un commit qui contient une clé)
 - Construire : `npm run build` (sortie `dist/`, avec `dist/version.txt` = hash du commit) ; vérifier la version construite : `npx vite preview`
 
 ## Où sont les choses
