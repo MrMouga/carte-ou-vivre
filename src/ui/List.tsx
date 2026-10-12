@@ -1,16 +1,21 @@
+import { useEffect, useRef } from 'react';
 import { chiffresListe, compte, ligneListe, nomAffiche } from '@/domain/format';
 import type { Resultat } from '@/domain/score';
 import { cn } from '@/lib/cn';
 
 const PALIER = ['', 'bg-score-1', 'bg-score-2', 'bg-score-3', 'bg-score-4', 'bg-score-5'];
 
-type Props = { resultat: Resultat; onChoisir?: (code: string) => void };
+type Props = { resultat: Resultat; onChoisir?: (code: string) => void; /** Au retour de la fiche : la ligne qui reprend le focus. */ focusCode?: string | null };
 
 // Les 10 premières (frame Figma 5:2, « Les 10 premières ») : compte, puis une ligne-bouton par commune (R5).
-export function List({ resultat, onChoisir }: Props) {
+export function List({ resultat, onChoisir, focusCode }: Props) {
   const { actif, classement } = resultat;
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (focusCode) section.current?.querySelector<HTMLElement>(`[data-code="${focusCode}"]`)?.focus();
+  }, [focusCode]);
   return (
-    <section aria-labelledby="titre-liste" className="flex flex-col gap-2 rounded-panel border border-border bg-card p-4 shadow-panneau">
+    <section ref={section} aria-labelledby="titre-liste" className="flex flex-col gap-2 rounded-panel border border-border bg-card p-4 shadow-panneau">
       <div className="flex flex-col">
         <h2 id="titre-liste" className="text-categorie uppercase text-muted-foreground">
           Les 10 premières
@@ -27,6 +32,7 @@ export function List({ resultat, onChoisir }: Props) {
             <li key={e.commune.code}>
               <button
                 type="button"
+                data-code={e.commune.code}
                 aria-label={ligneListe(e.rang!, e.commune, e.score!)}
                 onClick={() => onChoisir?.(e.commune.code)}
                 className="flex w-full cursor-pointer items-center gap-2 rounded-base p-2 text-left hover:bg-background"

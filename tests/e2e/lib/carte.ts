@@ -55,14 +55,15 @@ export function vue(page: Page) {
   const z = Math.log2(Math.min((W - p.left - p.right) / ((x1 - x0) * 512), (H - p.top - p.bottom) / ((y1 - y0) * 512)));
   const monde = 512 * 2 ** z;
   const cx = p.left + (W - p.left - p.right) / 2, cy = p.top + (H - p.top - p.bottom) / 2;
-  const centre = (id: Id) => {
-    const f = items.find((it) => it.id === id)!.forme;
-    const lon = (f[0][0] + f[2][0]) / 2, lat = (f[0][1] + f[2][1]) / 2;
-    return { x: cx + (mx(lon) - (x0 + x1) / 2) * monde, y: cy + (my(lat) - (y0 + y1) / 2) * monde };
-  };
+  const ecran = (lon: number, lat: number) => ({ x: cx + (mx(lon) - (x0 + x1) / 2) * monde, y: cy + (my(lat) - (y0 + y1) / 2) * monde });
+  const forme = (id: Id) => items.find((it) => it.id === id)!.forme;
+  /** Centre du carré : là où l'on clique (et où se pose le rond d'une commune du top 10). */
+  const centre = (id: Id) => ecran((forme(id)[0][0] + forme(id)[2][0]) / 2, (forme(id)[0][1] + forme(id)[2][1]) / 2);
+  /** Point de lecture de la couleur : à 0,1° du coin sud-ouest, loin du rond et des bords. */
+  const lecture = (id: Id) => ecran(forme(id)[0][0] + 0.1, forme(id)[0][1] + 0.1);
   const opacite = Math.max(carte['opacite-zoom'], Math.min(carte['opacite-france'],
     carte['opacite-france'] + ((z - carte['zoom-france']) / (carte['zoom-ville'] - carte['zoom-france'])) * (carte['opacite-zoom'] - carte['opacite-france'])));
-  return { z, centre, opacite };
+  return { z, centre, lecture, opacite };
 }
 
 const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
@@ -73,11 +74,11 @@ export function melange(jeton: keyof typeof color, opacite: number) {
   return a.map((v, i) => Math.round(v * opacite + b[i] * (1 - opacite)));
 }
 
-/** Vérifie la couleur au centre de chaque carré (± 3 par canal) ; null = non peinte (pixel = fond). */
+/** Vérifie la couleur de chaque carré (± 3 par canal) ; null = non peinte (pixel = fond). */
 export async function attendreCouleurs(page: Page, attendu: Partial<Record<Id, keyof typeof color | null>>) {
-  const { centre, opacite } = vue(page);
+  const { lecture, opacite } = vue(page);
   const ids = Object.keys(attendu) as Id[];
-  const px = await readPixels(page, ids.map(centre));
+  const px = await readPixels(page, ids.map(lecture));
   ids.forEach((id, k) => {
     const j = attendu[id];
     const cible = j == null ? rgb(color.background) : melange(j, j === 'area-unranked' ? carte['opacite-sans-plafond'] : opacite);

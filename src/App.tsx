@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MapView } from './map/MapView';
 import { PALIERS } from './map/style';
-import type { Formes } from './map/view';
+import { centre, type Formes } from './map/view';
+import type { Rond } from './map/RankMarkers';
+import { Fiche } from './ui/Fiche';
 import { evaluer, REGLAGES_DEPART, type Commune, type Reglages } from './domain/score';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
@@ -38,7 +40,21 @@ export function App() {
     void charger().then(setDonnees);
   }, []);
 
+  const [choisie, setChoisie] = useState<string | null>(null);
+  const [retour, setRetour] = useState<string | null>(null);
+  const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
+
   const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages) : null), [donnees, reglages]);
+  const ronds = useMemo<Rond[]>(
+    () =>
+      donnees && resultat
+        ? resultat.classement.slice(0, 10).map((e) => {
+            const i = index.get(e.commune.code)!;
+            return { index: i, rang: e.rang!, nom: `${e.commune.nom} (${e.commune.dep})`, lngLat: centre(donnees.formes.features[i].geometry) };
+          })
+        : [],
+    [donnees, resultat, index],
+  );
   // Couleur de chaque commune : palier de son score ; page « sans plafond » : sable si elle a la bonne taille (D5, D17).
   const couleurs = useMemo(() => {
     if (!donnees || !resultat) return [];
@@ -51,7 +67,15 @@ export function App() {
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-background text-foreground">
-      {donnees && <MapView formes={donnees.formes} couleurs={couleurs} />}
+      {donnees && (
+        <MapView
+          formes={donnees.formes}
+          couleurs={couleurs}
+          choisie={choisie == null ? null : index.get(choisie)!}
+          ronds={ronds}
+          onChoisir={(i) => setChoisie(donnees.communes[i].code)}
+        />
+      )}
       <div className="absolute left-4 top-4 w-reglages">
         <Settings reglages={reglages} onChange={setReglages}>
           <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} />
@@ -63,7 +87,11 @@ export function App() {
       </div>
       {resultat && (
         <div className="absolute right-4 top-4 w-liste">
-          <List resultat={resultat} />
+          {choisie ? (
+            <Fiche evaluation={resultat.parCode.get(choisie)!} resultat={resultat} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
+          ) : (
+            <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} />
+          )}
         </div>
       )}
       <Legend className="absolute bottom-4 left-4" sansPlafond={resultat ? !resultat.actif : false} />

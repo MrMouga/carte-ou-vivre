@@ -34,3 +34,25 @@ export function emprise(features: { geometry: { type: string; coordinates: unkno
   for (const f of features) walk(f.geometry.coordinates);
   return [w, s, e, n];
 }
+
+type Geometrie = { type: string; coordinates: unknown };
+
+/** Centre où poser le rond d'une commune : barycentre de l'anneau extérieur de son plus grand polygone. */
+export function centre(g: Geometrie): [number, number] {
+  const polys = (g.type === 'Polygon' ? [g.coordinates] : g.coordinates) as number[][][][];
+  let best: [number, number] = [0, 0], bestAire = -1;
+  for (const [anneau] of polys) {
+    let a = 0, cx = 0, cy = 0;
+    for (let i = 0, j = anneau.length - 1; i < anneau.length; j = i++) {
+      const f = anneau[j][0] * anneau[i][1] - anneau[i][0] * anneau[j][1];
+      a += f;
+      cx += (anneau[j][0] + anneau[i][0]) * f;
+      cy += (anneau[j][1] + anneau[i][1]) * f;
+    }
+    if (Math.abs(a) > bestAire) {
+      bestAire = Math.abs(a);
+      best = [cx / (3 * a), cy / (3 * a)];
+    }
+  }
+  return best;
+}

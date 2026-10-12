@@ -1,6 +1,6 @@
 // Style de la carte : fond Plan IGN « atténué » et estompage IGN en direct (D16), communes posées sous les textes de l'IGN.
 // Couleurs et opacités lues dans les jetons (même module que le CSS).
-import type { ExpressionSpecification, FillLayerSpecification, RasterLayerSpecification, RasterSourceSpecification } from 'maplibre-gl';
+import type { ExpressionSpecification, FillLayerSpecification, LineLayerSpecification, RasterLayerSpecification, RasterSourceSpecification } from 'maplibre-gl';
 import { color, map as carte } from '@/theme/tokens';
 
 export const IGN_STYLE_URL = 'https://data.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/attenue.json';
@@ -39,5 +39,12 @@ export const COMMUNES_LAYER: FillLayerSpecification = {
     ] as ExpressionSpecification,
   },
 };
+
+/** Commune choisie : double contour, 4 px `card` sous 1,8 px `foreground` (contrat). */
+const siChoisie = (v: number): ExpressionSpecification => ['case', ['boolean', ['feature-state', 'choisie'], false], v, 0];
+export const CHOISIE_LAYERS: LineLayerSpecification[] = [
+  { id: 'choisie-halo', type: 'line', source: SOURCE_COMMUNES, paint: { 'line-color': color.card, 'line-width': siChoisie(carte['choisie-halo']) } },
+  { id: 'choisie-trait', type: 'line', source: SOURCE_COMMUNES, paint: { 'line-color': color.foreground, 'line-width': siChoisie(carte['choisie-trait']) } },
+];
 
 export const PALIERS = [color['score-1'], color['score-2'], color['score-3'], color['score-4'], color['score-5']] as const;

@@ -64,6 +64,8 @@ export const size = {
   'taille-ecart-echantillon': 2,
   'taille-rang': 22,
   'taille-pastille-score': 10,
+  'taille-rond': 22,
+  'taille-rond-choisi': 26,
   'trait-focus': 2,
   'ecart-focus': 2,
 } as const;
@@ -105,6 +107,8 @@ export const map = {
   'opacite-estompage': 0.45,
   'choisie-halo': 4,
   'choisie-trait': 1.8,
+  'zoom-commune-max': 12,
+  'duree-zoom-ms': 500,
 } as const;
 
 function rgba(hex: string, alpha: number): string {

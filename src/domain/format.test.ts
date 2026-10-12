@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chiffresListe, compte, euros, eurosM2, km, ligneListe, merTexte, nomAffiche, population, plafondLoyer, plafondMer } from './format';
+import { chiffresListe, compte, euros, eurosM2, km, ligneListe, loyerTexte, merFiche, merTexte, nomAffiche, population, plafondLoyer, plafondMer, raisonTexte, rangTexte, tailleTexte } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -56,5 +56,37 @@ describe('R5 — compte et lignes de la liste', () => {
     const portmer = { nom: 'Portmer', dep: '17', loyerM2: 12.5, merKm: 0.9 };
     expect(s(ligneListe(1, portmer, 72))).toBe("1 · Portmer (17) · 72 · 650 € · moins d'1 km");
     expect(s(chiffresListe(portmer))).toBe("650 € · moins d'1 km");
+  });
+});
+
+describe('R4, R6, R1 — textes de la fiche', () => {
+  it('taille, loyer, mer (AC-7, AC-8)', () => {
+    expect(s(tailleTexte(260000))).toBe('Grande ville · 260 000 habitants');
+    expect(s(tailleTexte(23000))).toBe('Petite ville · 23 000 habitants');
+    expect(s(loyerTexte(16.0))).toBe('832 € par mois pour 52 m² (16,0 €/m²)');
+    expect(s(loyerTexte(12.5))).toBe('650 € par mois pour 52 m² (12,5 €/m²)');
+    expect(s(merFiche(39.9))).toBe("40 km de la mer à vol d'oiseau");
+    expect(s(merFiche(0.9))).toBe("moins d'1 km de la mer");
+  });
+
+  it('valeurs inconnues', () => {
+    expect(tailleTexte(null)).toBe('Taille inconnue');
+    expect(loyerTexte(null)).toBe('Loyer inconnu');
+    expect(merFiche(null)).toBe('Distance à la mer inconnue');
+  });
+
+  it('rang (R6) : 1re sur 1 commune qui passe, 3e sur 3 communes qui passent', () => {
+    expect(rangTexte(1, 1)).toBe('1re sur 1 commune qui passe');
+    expect(rangTexte(3, 3)).toBe('3e sur 3 communes qui passent');
+    expect(s(rangTexte(4, 1269))).toBe('4e sur 1 269 communes qui passent');
+  });
+
+  it('raisons (R1, AC-9, AC-10)', () => {
+    expect(s(raisonTexte({ critere: 'loyer', valeur: 1560, plafond: 1200 }))).toBe('Loyer 1 560 € : au-dessus de ton plafond de 1 200 €');
+    expect(s(raisonTexte({ critere: 'mer', valeur: 148, plafond: 60 }))).toBe('Mer 148 km : au-dessus de ton plafond de 60 km');
+    expect(s(raisonTexte({ critere: 'taille', taille: 'grande-ville', population: 260000 }))).toBe('Taille : grande ville (260 000 habitants)');
+    expect(raisonTexte({ critere: 'loyer-inconnu' })).toBe('Loyer inconnu');
+    expect(raisonTexte({ critere: 'mer-inconnue' })).toBe('Distance à la mer inconnue');
+    expect(raisonTexte({ critere: 'taille-inconnue' })).toBe('Taille inconnue');
   });
 });
