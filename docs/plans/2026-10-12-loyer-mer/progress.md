@@ -49,4 +49,4 @@ Début : 2026-10-12 21:40 · Plan : plan.md · Suite au départ : 0 tests, 0 ver
 
 ## Reprise
 Arrêt le 2026-10-12 à 23:50 : contexte long. Reprendre `/build` dans une session neuve à la **tâche 5b** (états de la page, fond de secours, mentions ; AC-15), puis 6, simplification, relectures, démo.
-En attente de Vincent : (1) autoriser `node` dans le pare-feu du Mac, puis mesurer sur l'iPhone 13 Pro (`node probe/server.mjs`, puis http://192.168.1.26:5300/?f=1000m&m=diff et la vraie page avec `npx vite --host`), ou dire « on saute » ; (2) La Rochelle à 0,956 km (« moins d'1 km » au lieu de « 1 km » dans la spec) : à trancher à la démo.
+Réponses de Vincent (2026-10-12, 23:55) : (1) **test sur l'iPhone sauté** — la tâche 1b et la tâche 3 n'ont que les mesures de bureau (86 ms), à écrire « non vérifié sur téléphone » dans la démo ; (2) **La Rochelle « moins d'1 km » accepté** — à reporter dans la spec à l'acceptation de la démo (phrase « C'est réussi si » et étape 1 de la vérification de bout en bout de details.md).
