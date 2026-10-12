@@ -30,6 +30,16 @@ export function sourceCommunes(bounds: [number, number, number, number]): Vector
   return { type: 'vector', tiles: [`${location.origin}/tuiles/{z}/{x}/{y}.pbf`], minzoom: 4, maxzoom: 11, bounds };
 }
 
+/**
+ * Opacité des communes, la même pour toutes : H10 (classées) : 88 % à l'échelle de la France (jusqu'au zoom 7),
+ * 70 % au zoom d'une ville (dès le zoom 11) ; « Sans plafond » (sable) : 70 % à toutes les échelles (D17).
+ * Elle ne dépend pas de l'état des formes : MapLibre ne la recalcule pas à chaque recoloriage (budget H9).
+ */
+export function opaciteCommunes(sansPlafond: boolean): ExpressionSpecification | number {
+  if (sansPlafond) return carte['opacite-sans-plafond'];
+  return ['interpolate', ['linear'], ['zoom'], carte['zoom-france'], carte['opacite-france'], carte['zoom-ville'], carte['opacite-zoom']];
+}
+
 /** Couleur d'une commune : état `c` posé par la carte (jeton de palier), sinon non peinte. */
 export const COMMUNES_LAYER: FillLayerSpecification = {
   id: 'communes',
@@ -38,21 +48,19 @@ export const COMMUNES_LAYER: FillLayerSpecification = {
   'source-layer': COUCHE_TUILES,
   paint: {
     'fill-color': ['coalesce', ['feature-state', 'c'], 'transparent'] as ExpressionSpecification,
-    // H10 : 88 % à l'échelle de la France (jusqu'au zoom 7), 70 % au zoom d'une ville (dès le zoom 11).
-    // « Sans plafond » (sable) : 70 % à toutes les échelles (D17).
-    'fill-opacity': [
-      'interpolate', ['linear'], ['zoom'],
-      carte['zoom-france'], ['case', ['==', ['feature-state', 'c'], color['area-unranked']], carte['opacite-sans-plafond'], carte['opacite-france']],
-      carte['zoom-ville'], ['case', ['==', ['feature-state', 'c'], color['area-unranked']], carte['opacite-sans-plafond'], carte['opacite-zoom']],
-    ] as ExpressionSpecification,
+    'fill-opacity': opaciteCommunes(false),
+    'fill-opacity-transition': { duration: 0 }, // changement de mode instantané, comme les couleurs
   },
 };
 
-/** Commune choisie : double contour, 4 px `card` sous 1,8 px `foreground` (contrat). */
-const siChoisie = (v: number): ExpressionSpecification => ['case', ['boolean', ['feature-state', 'choisie'], false], v, 0];
+/**
+ * Commune choisie : double contour, 4 px `card` sous 1,8 px `foreground` (contrat). Un filtre sur l'identifiant de la
+ * forme, et non un état : les contours ne sont pas recalculés à chaque recoloriage (budget H9).
+ */
+export const filtreChoisie = (index: number | null): ExpressionSpecification => ['==', ['id'], index ?? -1];
 export const CHOISIE_LAYERS: LineLayerSpecification[] = [
-  { id: 'choisie-halo', type: 'line', source: SOURCE_COMMUNES, 'source-layer': COUCHE_TUILES, paint: { 'line-color': color.card, 'line-width': siChoisie(carte['choisie-halo']) } },
-  { id: 'choisie-trait', type: 'line', source: SOURCE_COMMUNES, 'source-layer': COUCHE_TUILES, paint: { 'line-color': color.foreground, 'line-width': siChoisie(carte['choisie-trait']) } },
+  { id: 'choisie-halo', type: 'line', source: SOURCE_COMMUNES, 'source-layer': COUCHE_TUILES, filter: filtreChoisie(null), paint: { 'line-color': color.card, 'line-width': carte['choisie-halo'] } },
+  { id: 'choisie-trait', type: 'line', source: SOURCE_COMMUNES, 'source-layer': COUCHE_TUILES, filter: filtreChoisie(null), paint: { 'line-color': color.foreground, 'line-width': carte['choisie-trait'] } },
 ];
 
 export const PALIERS = [color['score-1'], color['score-2'], color['score-3'], color['score-4'], color['score-5']] as const;

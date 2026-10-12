@@ -108,6 +108,7 @@ export function App() {
           reperes={donnees.reperes}
           couleurs={couleurs}
           choisie={choisie == null ? null : index.get(choisie)!}
+          sansPlafond={resultat?.actif === false}
           ronds={ronds}
           onChoisir={(i) => setChoisie(donnees.communes[i].code)}
           onPrete={() => setPrete(true)}

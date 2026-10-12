@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Map as MapLibreMap, type StyleSpecification } from './maplibre';
-import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES, sourceCommunes } from './style';
+import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, filtreChoisie, opaciteCommunes, SOURCE_COMMUNES, sourceCommunes } from './style';
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
 import { cadreDe, emprise, type Padding, type Repere } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
@@ -14,6 +14,8 @@ type Props = {
   couleurs: (string | null)[];
   /** Index de la commune choisie (fiche ouverte), ou null. */
   choisie: number | null;
+  /** Page « sans plafond » : toutes les communes peintes sont en sable (D17). */
+  sansPlafond: boolean;
   ronds: Rond[];
   onChoisir: (index: number) => void;
   /** Première image dessinée. */
@@ -29,13 +31,13 @@ export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
 // celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
-export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
+export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
   const peintes = useRef<(string | null | undefined)[]>([]);
-  const etat = useRef({ couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding });
-  etat.current = { couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding };
+  const etat = useRef({ couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding });
+  etat.current = { couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding };
   const france = useMemo(() => emprise(reperes), [reperes]);
 
   useEffect(() => {
@@ -80,7 +82,8 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
         poserCouches(m, france, fondCourant === 'secours');
         peintes.current = [];
         peindre(m, etat.current.couleurs, peintes.current);
-        if (etat.current.choisie != null) m.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: etat.current.choisie }, { choisie: true });
+        m.setPaintProperty(COMMUNES_LAYER.id, 'fill-opacity', opaciteCommunes(etat.current.sansPlafond));
+        surligner(m, etat.current.choisie);
         m.triggerRepaint();
       });
       m.on('load', () => {
@@ -130,6 +133,11 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
   }, [couleurs]);
 
   useEffect(() => {
+    const map = mapRef.current;
+    if (map?.getSource(SOURCE_COMMUNES)) map.setPaintProperty(COMMUNES_LAYER.id, 'fill-opacity', opaciteCommunes(sansPlafond));
+  }, [sansPlafond]);
+
+  useEffect(() => {
     marqueurs.current?.update(ronds, choisie);
   }, [ronds, choisie]);
 
@@ -138,17 +146,14 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
   useEffect(() => {
     const map = mapRef.current;
     if (!map?.getSource(SOURCE_COMMUNES)) return;
+    surligner(map, choisie);
     const etaitChoisie = avant.current != null;
     avant.current = choisie;
     if (choisie == null) {
       if (etaitChoisie) map.fitBounds(france, { padding: etat.current.padding(), duration: carte['duree-zoom-ms'] });
       return;
     }
-    map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: true });
     map.fitBounds(cadreDe(reperes[choisie]), { padding: etat.current.padding(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
-    return () => {
-      map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: false });
-    };
   }, [choisie, reperes, france]);
 
   return (
@@ -184,6 +189,10 @@ function poserCouches(map: MapLibreMap, cadre: [number, number, number, number],
     map.addSource('estompage', ESTOMPAGE_SOURCE);
     map.addLayer(ESTOMPAGE_LAYER, COMMUNES_LAYER.id);
   }
+}
+
+function surligner(map: MapLibreMap, choisie: number | null) {
+  CHOISIE_LAYERS.forEach((l) => map.setFilter(l.id, filtreChoisie(choisie)));
 }
 
 function peindre(map: MapLibreMap, couleurs: (string | null)[], peintes: (string | null | undefined)[]) {
