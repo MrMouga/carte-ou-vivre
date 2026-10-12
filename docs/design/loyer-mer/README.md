@@ -11,4 +11,4 @@ Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.
 5. **Des chiffres crédibles** : sources visibles (ANIL, Shom-IGN avec logos, Insee), unités explicites, aucun habillage qui fasse « gadget ».
 
 ## Avancement
-- [x] Grille · [x] Références Mobbin proposées (refs/) · [ ] Croquis de Vincent · [ ] Annotations · [ ] Brief · [ ] Directions · [ ] Revue à l'aveugle · [ ] Fusion · [ ] Figma
+- [x] Grille · [x] Références Mobbin (refs/) · [x] Direction de Vincent (décrite) · [x] Annotations · [x] Brief ([brief.md](brief.md)) · [x] Directions A, B, C ([directions/](directions/)) · [x] Revue à l'aveugle ([review-directions.md](review-directions.md)) · [x] Fusion ([decisions.md](decisions.md)) · [ ] Figma : système et écran
