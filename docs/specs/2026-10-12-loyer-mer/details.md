@@ -1,5 +1,5 @@
 # Détails — loyer et mer
-Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14), noms et relief (D15), fond Plan IGN en direct (D16).
+Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : communes au lieu des aires (D10), taille de ville (D11), fiabilité du loyer (D12), mer, fleuves et pays voisins (D13), zoom sur la commune choisie (D14), noms et relief (D15), fond Plan IGN en direct (D16), retours de la relecture Figma (D17).
 
 ## Parcours
 1. L'utilisateur ouvre la page, avec ou sans réglages dans l'adresse.
@@ -14,16 +14,16 @@ Zones : carte — fond Plan IGN atténué et estompage IGN (D16), et par-dessus 
 
 États de la page :
 - **chargement** (ouverture) → indicateur « Chargement de la carte… » (H9) ; réglages inactifs ; sort vers **classée**, **aucune commune**, **sans plafond** ou **erreur**.
-- **fond indisponible** (le fond IGN ne répond pas) → communes et scores sur fond uni `background`, mention « Fond de carte indisponible » sur la carte ; tout le reste marche ; sort vers l'état normal si le fond revient (R8).
+- **fond indisponible** (le fond IGN ne répond pas) → communes et scores sur fond uni `background`, les communes qui ne passent pas en `area-excluded`, la mer, les pays voisins et le trait de côte avec leurs jetons (D17), légende « Ne passe pas » en gris, mention « Fond de carte indisponible » sur la carte ; tout le reste marche ; sort vers l'état normal si le fond revient (R8).
 - **erreur** (données des communes non chargées, délai de H9 dépassé, ou carte impossible à afficher faute de WebGL) → « La carte n'a pas pu se charger. » et un bouton « Réessayer » ; sort vers **chargement**.
 - **classée** (≥ 1 plafond actif, ≥ 1 commune passe) → communes colorées (R3), liste de 1 à 10 lignes (R5) ; sort vers **aucune commune** ou **sans plafond** selon les réglages.
-- **aucune commune** (≥ 1 plafond actif, aucune commune ne passe) → aucune commune n'est colorée ; la liste dit « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. » ; sort vers **classée** ou **sans plafond**.
-- **sans plafond** (loyer et mer sur « Sans limite ») → les communes de la bonne taille (toutes si « Peu importe ») en couleur neutre, les autres non colorées, sans score ; la liste dit « Fixe un loyer ou une distance à la mer pour classer les communes. » ; sort vers **classée** ou **aucune commune**.
+- **aucune commune** (≥ 1 plafond actif, aucune commune ne passe) → aucune commune n'est colorée ; la liste dit « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. » ; le compte (zone annoncée aux lecteurs d'écran) dit « Aucune commune ne passe tes critères » (D17) ; sort vers **classée** ou **sans plafond**.
+- **sans plafond** (loyer et mer sur « Sans limite ») → les communes de la bonne taille (toutes si « Peu importe ») en couleur neutre, les autres non colorées, sans score ; la liste dit « Fixe un loyer ou une distance à la mer pour classer les communes. » ; le compte n'est pas affiché (D17) ; sort vers **classée** ou **aucune commune**.
 
 États de la fiche (initial : **fermée**) :
 - **fermée** → rien n'est affiché, aucune commune en évidence.
 - **commune qui passe** → nom, score, rang, taille, loyer, mer (R4, R6) ; la commune est en évidence sur la carte.
-- **commune qui ne passe pas** → nom, taille, loyer, mer, et une raison par critère non tenu (R1) ; pas de score.
+- **commune qui ne passe pas** → nom, taille, l'intitulé « Ne passe pas tes critères » puis une raison par critère non tenu (R1, D17), loyer, mer ; pas de score.
 - **commune sans plafond** (page **sans plafond**) → nom, taille, loyer, mer, et la raison de taille si elle ne passe pas ; ni score ni rang.
 Depuis tout état ouvert : un changement de réglage fait passer la fiche dans l'état qui correspond, dans les deux sens ; choisir une autre commune remplace la fiche ; fermer → **fermée**.
 
@@ -37,7 +37,7 @@ Interactions : bouger un plafond ou cocher une taille → carte, liste, fiche et
 - **R5** — La liste montre au plus 10 communes qui passent, triées par score affiché décroissant (égalité : H4), sous le compte « 3 communes passent tes critères » (« 1 commune passe tes critères » au singulier). Format d'une ligne : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km ». *Pourquoi* : voir D6.
 - **R6** — Le rang de la fiche s'écrit « 1re sur 1 commune qui passe », « 3e sur 3 communes qui passent ». *Pourquoi* : situer une commune sans regarder la liste.
 - **R7** — À l'ouverture, les réglages sont lus dans l'adresse ; une valeur absente ou invalide (H7) prend la valeur de départ de ce réglage (H1). L'adresse est alors réécrite avec les réglages effectifs, puis à chaque changement, en remplaçant l'entrée courante de l'historique sans en ajouter. `taille` liste les tailles cochées dans l'ordre de D11, séparées par des virgules : `petite-commune`, `petite-ville`, `ville-moyenne`, `grande-ville` ; elle est absente quand aucune n'est cochée. *Pourquoi* : voir D7. Un lien garde son sens même si H1 change.
-- **R8** — Si le fond IGN ne répond pas, la carte affiche les communes colorées sur un fond uni et la mention « Fond de carte indisponible » ; réglages, liste, fiche et adresse marchent comme d'habitude. *Pourquoi* : voir D16, le service extérieur ne doit pas casser le produit.
+- **R8** — Si le fond IGN ne répond pas, la carte affiche les communes colorées sur un fond uni, les communes qui ne passent pas en gris `area-excluded` avec la mer, les pays voisins et le trait de côte (D17), et la mention « Fond de carte indisponible » ; réglages, liste, fiche et adresse marchent comme d'habitude. *Pourquoi* : voir D16, le service extérieur ne doit pas casser le produit.
 
 ## Cas limites
 - Valeur affichée égale au plafond → la commune passe avec une note de 0 pour ce critère (AC-3).
@@ -65,7 +65,7 @@ Première tranche.
 - **H6** — Population : la dernière population légale de l'Insee disponible en tâche 0.
 - **H7** — Une valeur `loyer` ou `mer` est invalide si elle n'est ni `aucun` ni un nombre de la plage et du pas de H2 (`loyer=1234` est invalide).
 - **H8** — La carte se zoome et se déplace (molette, pincement, boutons + et −). Le zoom ne fait pas partie de l'adresse.
-- **H10** — Opacité des communes colorées : 88 % à l'échelle de la France, 40 % environ au zoom d'une ville, pour lire le plan IGN dessous ; « sans plafond » à 45 %.
+- **H10** — Opacité des communes colorées : 88 % à l'échelle de la France, 70 % au zoom d'une ville (D17 : à 40 %, le palier 4 paraissait plus clair que le palier 1 de la légende) ; « sans plafond » à 70 % (D17 : à 45 %, 1,28:1 sur le fond).
 - **H9** — Budgets : la page réagit à un réglage en ≤ 100 ms ; l'indicateur de chargement apparaît après 300 ms et reste au moins 300 ms ; au bout de 15 s sans données, on passe en **erreur**.
 
 ## Exceptions
