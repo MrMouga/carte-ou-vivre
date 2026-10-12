@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : spec
+- Étape : ui (tranche loyer-mer)
 - Statut : active
 
 ## Décisions
@@ -56,6 +56,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-12 | /distribution puis /validate avant la spec de la tranche 1 | Choix de Vincent au lancement de /spec : le moment de partage et ce que demandent les premières personnes peuvent changer la première tranche. |
 | 2026-10-12 | Plan de distribution validé | r/france (pseudo) après les amis — test de demande : 5 personnes de la cible essaient et répondent avant le 25/10 — seuils au 20/12 : ≥ 30 inconnus, 1 write-up. Accroche actuelle gardée contre l'avis de Claude (catégorie par défaut) ; 1 h/semaine de distribution jusqu'au 8/11, puis la moitié. |
 | 2026-10-12 | Validation : sautée | Choix de Vincent au lancement de /validate, sans raison donnée. Claude recommandait 5 entretiens et un service à la main face à ChatGPT. Le test de demande du plan de distribution reste une hypothèse à vérifier ; aucune hypothèse ne change de statut. |
+| 2026-10-12 | Spec validée : loyer-mer | Plafond de loyer et de mer (sans poids), score = marge sous les plafonds, 5 couleurs absolues, liste des 10, plafonds dans l'adresse, aucun service extérieur ; 9 décisions, 13 critères, au-dessus de la taille perso (liste incluse par choix de Vincent). |
 
 ## Hypothèses à vérifier
 
@@ -78,6 +79,7 @@ Classées de la plus risquée à la moins risquée. Point de départ de `/discov
 - r/france est le bon endroit pour la montrer — risque : le lancement tombe à plat — test peu coûteux : 3 posts d'outils cartographiques français à plus de 100 votes trouvés sur r/france avant le 15 novembre — statut : à vérifier
 - Des gens de la cible essaient la carte et répondent (test de demande) — risque : personne en dehors de Vincent ne s'en sert — test : 5 personnes de la cible essaient une maquette ou la carte loyer + mer et répondent, dont « ChatGPT ou la carte ? », avant le 25/10 (/validate) — statut : à vérifier
 - 1 h par semaine de distribution suffit jusqu'au 8/11 — risque : lancement dans le vide — test : au 8/11, 4 réponses utiles sur r/france et la liste de 10 à 30 personnes écrite — statut : à vérifier
+- Des plafonds sans poids suffisent à rendre la carte utile (D3 de la spec loyer-mer, choix de Vincent contre l'avis de Claude) — risque : les poids sont dans la Solution et la Différence du pitch ; sans eux, la carte fait ce que villeideale.fr fait déjà avec ses filtres — test peu coûteux : sur les 5 premiers testeurs, combien demandent de pondérer un critère plutôt que de le plafonner, avant la spec de la tranche 2 — statut : à vérifier
 - La réassurance vaut plus qu'un jouet de cinq minutes — risque : non bloquant pour l'ambition perso, mais personne ne s'en sert vraiment — test peu coûteux : 3 inconnus reviennent une deuxième fois avant le 20 décembre — statut : à vérifier
 
 ## Questions ouvertes
@@ -96,12 +98,13 @@ Autres questions :
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
-- Tranche 1 envisagée au lancement de /spec (2026-10-12) : loyer + mer avec deux curseurs de poids, données précalculées, aucun service extérieur. Les proches viennent en tranche 2. /validate sauté : /spec reprend sur cette base.
+- Tranche 1 : spécifiée et validée le 2026-10-12 (loyer + mer, plafonds sans poids), voir Documents. Les proches viennent en tranche 2, à spécifier avant la mise en ligne de la tranche 1.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 
 ## Documents
 
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
+- [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
 - [Discovery « données des critères » — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/synthesis.md)
 - [Tests avant de coder : prix, mer, montagne — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/tests-avant-code/prix-mer-montagne-2026-10-11.md)
