@@ -1,5 +1,5 @@
 # Plan — loyer-mer
-2026-10-12 · validé (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-12-loyer-mer/spec.md) (D1–D17) · Critères : [acceptance.json](../../specs/2026-10-12-loyer-mer/acceptance.json) · Design : [README](../../design/loyer-mer/README.md) · Système : [contrat](../../design/system/README.md)
+2026-10-12 · validé (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-12-loyer-mer/spec.md) (D1–D18) · Critères : [acceptance.json](../../specs/2026-10-12-loyer-mer/acceptance.json) · Design : [README](../../design/loyer-mer/README.md) · Système : [contrat](../../design/system/README.md)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici.) La « tâche 0 » de la spec (sources, mesure, Adour) correspond aux tâches 1a et 1b de ce plan.
 
 ## Ce que /build fera seul, et ce qu'il demandera
@@ -114,6 +114,15 @@ Fichiers : `src/ui/Sheet.tsx`, `src/App.tsx`, `src/map/MapView.tsx`, `src/index.
 Tests : aucun nouveau critère ; tous les AC Playwright repassent à 390 px.
 **Preuve attendue** : captures à 390 px (liste, fiche), comparées aux frames ; « Vérification de bout en bout » à 390 px, en local ; parcours au clavier seul (capture de chaque focus).
 Demander d'abord : rien.
+
+### Tâche 8 — Un seul point par commune : la mairie (D18, ajoutée à la démo, 2026-10-13)
+But : la distance à la mer part de la mairie, et le rond du top 10 s'y pose (un seul point par commune).
+Entrées : D18, H5 révisée ; champ `mairie` de geo.api.gouv.fr (fichier à part, les populations ne bougent pas) ; comptage de la démo (32 mairies hors de leur commune).
+Sorties : `public/data/communes.json` (distances recalculées), `public/data/reperes.json` (point = mairie ; cadres inchangés) ; tuiles inchangées.
+Fichiers : `scripts/data/sources.py`, `scripts/data/mer.py`, `scripts/data/tuiles.py`, `scripts/data/communes.py`, `scripts/data/communes.test.ts`, `CLAUDE.md`.
+Tests : contrôles des scripts et `communes.test.ts` (Bordeaux 39 km, La Rochelle sous 1 km) ; tous les AC repassent (fixture inchangée).
+**Preuve attendue** : sortie des contrôles ; écart avant / après (communes qui changent de km, de passage à 60 km) ; « Vérification de bout en bout » étapes 1 à 4 à 1440 et 390 px, en local ; captures du rond de La Hague et de Granville.
+Demander d'abord : rien (accord de Vincent le 2026-10-13).
 
 ## Répartition des critères
 AC-1, 2, 3 → tâche 2 · AC-4, 5, 6 → tâche 3 · AC-7, 8, 9, 10 → tâche 4 · AC-11, 12, 13, 14 → tâche 5a · AC-15 → tâche 5b. Chaque critère dans une seule tâche ; les tests d'une tâche repassent à chaque tâche suivante.

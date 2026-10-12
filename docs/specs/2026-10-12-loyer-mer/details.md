@@ -61,7 +61,7 @@ Première tranche.
 - **H2** — Réglages : loyer de 300 à 2 000 € par pas de 50 € ; mer de 5 à 200 km par pas de 5 km ; le cran après le maximum est « Sans limite » (`aucun` dans l'adresse).
 - **H3** — Arrondis et formats : score à l'entier le plus proche (0,5 vers le haut) ; loyer à l'euro ; €/m² à une décimale avec une virgule ; km à l'entier ; population au millier pour les communes de 10 000 habitants et plus, à la centaine en dessous ; espace insécable avant les milliers et avant « € » (les tests comparent après avoir remplacé les espaces insécables par des espaces).
 - **H4** — À égalité de score affiché : loyer croissant, puis nom dans l'ordre alphabétique.
-- **H5** — Point d'une commune pour la mer : son centre tel que l'a utilisé la discovery (geo.api.gouv.fr).
+- **H5** — Point d'une commune, pour la mer et pour le rond du top 10 : sa mairie (D18), telle que la donne geo.api.gouv.fr. *Remplace* : son centre tel que l'a utilisé la discovery.
 - **H6** — Population : la dernière population légale de l'Insee disponible en tâche 0.
 - **H7** — Une valeur `loyer` ou `mer` est invalide si elle n'est ni `aucun` ni un nombre de la plage et du pas de H2 (`loyer=1234` est invalide).
 - **H8** — La carte se zoome et se déplace (molette, pincement, boutons + et −). Le zoom ne fait pas partie de l'adresse.
@@ -73,7 +73,7 @@ Première tranche.
 
 ## Vérification de bout en bout
 Sur la version en ligne, en largeur bureau et à 390 px :
-1. Ouvrir `/` : l'adresse devient `/?loyer=1200&mer=60`. La fiche de Bordeaux affiche « Grande ville », « 832 € par mois pour 52 m² (16,0 €/m²) » et « 40 km de la mer à vol d'oiseau » ; celle de La Rochelle « 1 km de la mer à vol d'oiseau » (chiffres de la discovery du 2026-10-11).
+1. Ouvrir `/` : l'adresse devient `/?loyer=1200&mer=60`. La fiche de Bordeaux affiche « Grande ville », « 832 € par mois pour 52 m² (16,0 €/m²) » et « 39 km de la mer à vol d'oiseau » ; celle de La Rochelle « moins d'1 km de la mer » (mesurées depuis la mairie, D18 ; la discovery du 2026-10-11 mesurait depuis le centre : 40 km et 1 km).
 2. Passer le loyer à 800 € : Bordeaux devient grise et sa fiche dit « Loyer 832 € : au-dessus de ton plafond de 800 € » ; l'adresse contient `loyer=800`.
 3. Cocher « Petite ville » : Bordeaux est grisée avec « Taille : grande ville » ; l'adresse contient `taille=petite-ville`.
 4. Copier l'adresse, l'ouvrir dans une fenêtre privée : mêmes réglages, même liste.
