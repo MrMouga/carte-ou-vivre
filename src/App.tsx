@@ -18,6 +18,7 @@ import { Mentions } from './ui/Mentions';
 import { cn } from './lib/cn';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
+const REPRISE_ADRESSE_MS = 1000;
 type Ligne = [string, string, string, number | null, number | null, boolean, number | null];
 
 async function lire<T>(url: string): Promise<T> {
@@ -43,8 +44,20 @@ async function charger(): Promise<Donnees> {
 export function App() {
   const [donnees, setDonnees] = useState<Donnees | null>(null);
   const [reglages, setReglages] = useState<Reglages>(() => lireAdresse(location.search));
-  // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique.
-  useEffect(() => history.replaceState(null, '', ecrireAdresse(reglages)), [reglages]);
+  // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique. Safari refuse plus de 100
+  // réécritures en 30 s (un curseur glissé) et lève une erreur : on réessaie plus tard au lieu de faire tomber la page.
+  useEffect(() => {
+    let reprise: ReturnType<typeof setTimeout> | undefined;
+    const ecrire = () => {
+      try {
+        history.replaceState(null, '', ecrireAdresse(reglages));
+      } catch {
+        reprise = setTimeout(ecrire, REPRISE_ADRESSE_MS);
+      }
+    };
+    ecrire();
+    return () => clearTimeout(reprise);
+  }, [reglages]);
 
   // États de la page (details.md) : chargement → prête ou erreur ; « Réessayer » relance tout (H9).
   const [essai, setEssai] = useState(0);
