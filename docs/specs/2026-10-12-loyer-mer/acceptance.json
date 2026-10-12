@@ -206,7 +206,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
       "when": "la liste est affichée",
       "then": "la liste montre « 3 communes passent tes critères » puis, dans l'ordre : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -214,7 +214,7 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur règle le loyer sur 300 € et la mer sur 5 km",
       "then": "aucune des communes A, B, C, D et E n'est colorée et la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -222,7 +222,7 @@
       "given": "Fixture « 5 communes », taille « Peu importe »",
       "when": "l'utilisateur règle le loyer et la mer sur « Sans limite »",
       "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
