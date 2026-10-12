@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : validate (puis /spec reprend)
+- Étape : spec
 - Statut : active
 
 ## Décisions
@@ -55,6 +55,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-11 | Projet créé | repo carte-ou-vivre, GitHub privé MrMouga |
 | 2026-10-12 | /distribution puis /validate avant la spec de la tranche 1 | Choix de Vincent au lancement de /spec : le moment de partage et ce que demandent les premières personnes peuvent changer la première tranche. |
 | 2026-10-12 | Plan de distribution validé | r/france (pseudo) après les amis — test de demande : 5 personnes de la cible essaient et répondent avant le 25/10 — seuils au 20/12 : ≥ 30 inconnus, 1 write-up. Accroche actuelle gardée contre l'avis de Claude (catégorie par défaut) ; 1 h/semaine de distribution jusqu'au 8/11, puis la moitié. |
+| 2026-10-12 | Validation : sautée | Choix de Vincent au lancement de /validate, sans raison donnée. Claude recommandait 5 entretiens et un service à la main face à ChatGPT. Le test de demande du plan de distribution reste une hypothèse à vérifier ; aucune hypothèse ne change de statut. |
 
 ## Hypothèses à vérifier
 
@@ -90,12 +91,12 @@ Tests avant de coder, à faire avant le 25 octobre 2026, heures notées. Si ce n
 - Différence : gardée telle quelle le 2026-10-11 (décision de Vincent). À rouvrir si le test des 3 personnes donne ChatGPT gagnant
 
 Autres questions :
-- Test de demande : 5 personnes essaient et répondent avant le 25/10 (/validate). Test de l'accroche sur 3 personnes avant le 1/11.
+- Test de demande : 5 personnes essaient et répondent avant le 25/10. /validate sauté : à mener à la main ou à reporter, sans quoi l'hypothèse reste à vérifier. Test de l'accroche sur 3 personnes avant le 1/11.
 - Règles d'autopromotion de r/france : à lire et dater par Vincent avant le 15/11.
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
-- Tranche 1 envisagée au lancement de /spec (2026-10-12) : loyer + mer avec deux curseurs de poids, données précalculées, aucun service extérieur. Les proches viennent en tranche 2. À confirmer après /validate.
+- Tranche 1 envisagée au lancement de /spec (2026-10-12) : loyer + mer avec deux curseurs de poids, données précalculées, aucun service extérieur. Les proches viennent en tranche 2. /validate sauté : /spec reprend sur cette base.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 
 ## Documents
