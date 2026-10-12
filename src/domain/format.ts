@@ -1,4 +1,4 @@
-import { SURFACE_M2, tailleDe, type Raison, type Taille } from './score';
+import { SURFACE_M2, loyerPour, tailleDe, type Raison, type Taille } from './score';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
 const NBSP = ' ';
@@ -30,13 +30,13 @@ type PourListe = { nom: string; dep: string; loyerM2: number | null; merKm: numb
 
 /** Sous-texte d'une ligne : « 650 € · moins d'1 km ». */
 export const chiffresListe = (c: PourListe) =>
-  [c.loyerM2 == null ? 'Loyer inconnu' : euros(Math.round(c.loyerM2 * 52)), c.merKm == null ? 'Distance à la mer inconnue' : merTexte(c.merKm)].join(' · ');
+  [c.loyerM2 == null ? 'Loyer inconnu' : euros(loyerPour(c.loyerM2)), c.merKm == null ? 'Distance à la mer inconnue' : merTexte(c.merKm)].join(' · ');
 
 /** Ligne de liste (R5) : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km ». */
 export const ligneListe = (rang: number, c: PourListe, score: number) => `${rang} · ${nomAffiche(c)} · ${score} · ${chiffresListe(c)}`;
 
-// Fiche (R4, R6, R1).
-const LIBELLE_TAILLE: Record<Taille, string> = {
+// Fiche (R4, R6, R1) et pastilles de taille.
+export const LIBELLE_TAILLE: Record<Taille, string> = {
   'petite-commune': 'Petite commune',
   'petite-ville': 'Petite ville',
   'ville-moyenne': 'Ville moyenne',
@@ -47,13 +47,16 @@ export const tailleTexte = (pop: number | null) =>
   pop == null ? 'Taille inconnue' : `${LIBELLE_TAILLE[tailleDe(pop)!]} · ${population(pop)}${NBSP}habitants`;
 
 export const loyerTexte = (m2: number | null) =>
-  m2 == null ? 'Loyer inconnu' : `${euros(Math.round(m2 * SURFACE_M2))} par mois pour ${SURFACE_M2}${NBSP}m² (${eurosM2(m2)})`;
+  m2 == null ? 'Loyer inconnu' : `${euros(loyerPour(m2))} par mois pour ${SURFACE_M2}${NBSP}m² (${eurosM2(m2)})`;
 
 export const merFiche = (k: number | null) =>
   k == null ? 'Distance à la mer inconnue' : k < 1 ? `moins d'1${NBSP}km de la mer` : `${km(k)} de la mer à vol d'oiseau`;
 
+/** « 1re », « 2e »… */
+export const ordinal = (n: number) => `${n}${n === 1 ? 're' : 'e'}`;
+
 export const rangTexte = (rang: number, n: number) =>
-  `${rang}${rang === 1 ? 're' : 'e'} sur ${entier(n)} ${n === 1 ? 'commune qui passe' : 'communes qui passent'}`;
+  `${ordinal(rang)} sur ${entier(n)} ${n === 1 ? 'commune qui passe' : 'communes qui passent'}`;
 
 export function raisonTexte(r: Raison): string {
   switch (r.critere) {

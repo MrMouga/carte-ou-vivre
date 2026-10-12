@@ -1,7 +1,7 @@
 import { useId } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { plafondLoyer, plafondMer } from '@/domain/format';
-import type { Reglages } from '@/domain/score';
+import { SURFACE_M2, type Reglages } from '@/domain/score';
 import { BORNES } from '@/domain/url';
 
 type CurseurProps = {
@@ -53,7 +53,7 @@ export function Settings({ reglages, onChange, inactif = false, children }: Prop
         <h2 className="text-categorie uppercase text-muted-foreground">Loyer</h2>
         <Curseur
           libelle="Loyer maximum"
-          sousTexte="par mois pour 52 m²"
+          sousTexte={`par mois pour ${SURFACE_M2} m²`}
           bornes={BORNES.loyer}
           valeur={reglages.loyer}
           texte={plafondLoyer}

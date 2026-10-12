@@ -1,4 +1,4 @@
-"""Fichier servi par le site : public/data/communes.json ; formes aux deux finesses dans data-raw/ (tuiles : tuiles.py).
+"""Fichier servi par le site : public/data/communes.json ; formes à 100 m dans data-raw/ (tuiles : tuiles.py).
 
 Jointure toujours par code INSEE (jamais par nom). Communes de métropole du COG 2025 (TYPECOM = COM, hors 97x) :
 Paris, Lyon et Marseille y sont déjà d'un seul tenant ; leurs 45 arrondissements (ARM) sont exclus des formes,
@@ -17,7 +17,7 @@ RAW = os.path.join(ROOT, 'data-raw')
 OUT = os.path.join(ROOT, 'public', 'data')
 
 PLM = {'75056': '751', '69123': '6938', '13055': '132'}  # commune → préfixe des codes d'arrondissement
-FINESSES = {'1000m': 4, '100m': 4}  # finesse Etalab → décimales gardées (≈ 10 m)
+DECIMALES = 4  # décimales gardées dans les formes (≈ 10 m)
 CHAMPS = ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km']
 
 
@@ -107,21 +107,19 @@ def main():
     with open(os.path.join(OUT, 'communes.json'), 'w', encoding='utf-8') as f:
         json.dump({'champs': CHAMPS, 'communes': rows}, f, ensure_ascii=False, separators=(',', ':'))
 
-    for finesse, nd in FINESSES.items():
-        src = json.load(gzip.open(os.path.join(RAW, f'communes-{finesse}.geojson.gz')))
-        feats = [ft for ft in src['features'] if 'commune' not in ft['properties']]  # sans les arrondissements
-        fcodes = {ft['properties']['code'] for ft in feats}
-        metro_f = {c for c in fcodes if c[:2] not in ('97', '98')}  # sans l'outre-mer (DROM et collectivités)
-        check(metro_f == set(codes), f'formes {finesse} : 0 code orphelin (en trop : {len(metro_f - set(codes))},'
-                                     f' sans forme : {len(set(codes) - metro_f)})')
-        out = [{'type': 'Feature', 'id': index[ft['properties']['code']], 'properties': {},
-                'geometry': round_coords(ft['geometry'], nd)}
-               for ft in feats if ft['properties']['code'] in index]
-        out.sort(key=lambda ft: ft['id'])
-        # Tâche 7 : aucune forme n'est servie telle quelle ; le 100 m devient les tuiles (scripts/data/tuiles.py).
-        dest = RAW
-        with open(os.path.join(dest, f'formes-{finesse}.json'), 'w') as f:
-            json.dump({'type': 'FeatureCollection', 'features': out}, f, separators=(',', ':'))
+    # Tâche 7 : les formes ne sont pas servies telles quelles ; elles deviennent les tuiles (scripts/data/tuiles.py).
+    src = json.load(gzip.open(os.path.join(RAW, 'communes-100m.geojson.gz')))
+    feats = [ft for ft in src['features'] if 'commune' not in ft['properties']]  # sans les arrondissements
+    fcodes = {ft['properties']['code'] for ft in feats}
+    metro_f = {c for c in fcodes if c[:2] not in ('97', '98')}  # sans l'outre-mer (DROM et collectivités)
+    check(metro_f == set(codes), f'formes 100m : 0 code orphelin (en trop : {len(metro_f - set(codes))},'
+                                 f' sans forme : {len(set(codes) - metro_f)})')
+    out = [{'type': 'Feature', 'id': index[ft['properties']['code']], 'properties': {},
+            'geometry': round_coords(ft['geometry'], DECIMALES)}
+           for ft in feats if ft['properties']['code'] in index]
+    out.sort(key=lambda ft: ft['id'])
+    with open(os.path.join(RAW, 'formes-100m.json'), 'w') as f:
+        json.dump({'type': 'FeatureCollection', 'features': out}, f, separators=(',', ':'))
 
     print('Fichiers')
     for name in sorted(os.listdir(OUT)):

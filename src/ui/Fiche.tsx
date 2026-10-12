@@ -1,15 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { loyerTexte, merFiche, nomAffiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
-import type { Evaluation, Resultat } from '@/domain/score';
+import type { Evaluation } from '@/domain/score';
 import { cn } from '@/lib/cn';
+import { CLASSES_PALIER } from './Legend';
 
-const PALIER = ['', 'bg-score-1', 'bg-score-2', 'bg-score-3', 'bg-score-4', 'bg-score-5'];
-
-type Props = { evaluation: Evaluation; resultat: Resultat; onRetour: () => void };
+type Props = { evaluation: Evaluation; /** Nombre de communes qui passent (R6). */ total: number; onRetour: () => void };
 
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond.
-export function Fiche({ evaluation: e, resultat, onRetour }: Props) {
+export function Fiche({ evaluation: e, total, onRetour }: Props) {
   const c = e.commune;
   const titre = useRef<HTMLHeadingElement>(null);
   // Le focus suit la commune choisie (la liste qui avait le focus a disparu).
@@ -28,11 +27,11 @@ export function Fiche({ evaluation: e, resultat, onRetour }: Props) {
       {e.score != null && (
         <div className="flex flex-col">
           <p className="flex items-baseline gap-2">
-            <span className={cn('size-echantillon rounded-echantillon', PALIER[e.palier!])} aria-hidden="true" />
+            <span className={cn('size-echantillon rounded-echantillon', CLASSES_PALIER[e.palier! - 1])} aria-hidden="true" />
             <span className="text-score-grand tabular-nums">{e.score}</span>
             <span className="text-texte text-muted-foreground">/ 100</span>
           </p>
-          <p className="text-texte text-muted-foreground tabular-nums">{rangTexte(e.rang!, resultat.classement.length)}</p>
+          <p className="text-texte text-muted-foreground tabular-nums">{rangTexte(e.rang!, total)}</p>
         </div>
       )}
       {!e.passe && (

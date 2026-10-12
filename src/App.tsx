@@ -10,7 +10,7 @@ import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
 import { SizeChips } from './ui/SizeChips';
-import { compte } from './domain/format';
+import { compte, nomAffiche } from './domain/format';
 import { color } from './theme/tokens';
 import { avecDelai, DELAI_DONNEES_MS, indicateur } from './domain/chargement';
 import { Status, type Message } from './ui/Status';
@@ -86,7 +86,7 @@ export function App() {
       donnees && resultat
         ? resultat.classement.slice(0, 10).map((e) => {
             const i = index.get(e.commune.code)!;
-            return { index: i, rang: e.rang!, nom: `${e.commune.nom} (${e.commune.dep})`, lngLat: [donnees.reperes[i][0], donnees.reperes[i][1]] };
+            return { index: i, rang: e.rang!, nom: nomAffiche(e.commune), lngLat: [donnees.reperes[i][0], donnees.reperes[i][1]] };
           })
         : [],
     [donnees, resultat, index],
@@ -141,7 +141,7 @@ export function App() {
         {resultat && (
           <div className="bureau:absolute bureau:right-4 bureau:top-4 bureau:w-liste">
             {choisie ? (
-              <Fiche evaluation={resultat.parCode.get(choisie)!} resultat={resultat} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
+              <Fiche evaluation={resultat.parCode.get(choisie)!} total={resultat.classement.length} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
             ) : (
               <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} />
             )}
@@ -154,7 +154,7 @@ export function App() {
           en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
       <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
-          <Legend sansPlafond={resultat ? !resultat.actif : false} fondIndisponible={fond === 'secours'} />
+          <Legend sansPlafond={resultat?.actif === false} fondIndisponible={fond === 'secours'} />
           <Mentions className="max-bureau:hidden" />
         </div>
         <div className="w-bouton-icone shrink-0 max-bureau:hidden" />

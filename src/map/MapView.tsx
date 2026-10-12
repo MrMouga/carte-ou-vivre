@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Map as MapLibreMap, type StyleSpecification } from './maplibre';
 import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, SOURCE_COMMUNES, sourceCommunes } from './style';
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
@@ -36,12 +36,15 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
   const peintes = useRef<(string | null | undefined)[]>([]);
   const etat = useRef({ couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding });
   etat.current = { couleurs, choisie, ronds, onChoisir, onPrete, onErreur, onFond, padding };
+  const france = useMemo(() => emprise(reperes), [reperes]);
 
   useEffect(() => {
     let fini = false;
     let map: MapLibreMap | null = null;
     let essai: ReturnType<typeof setInterval> | undefined;
+    let fondCourant: Fond = 'ign';
     const fond = (f: Fond) => {
+      fondCourant = f;
       container.current?.setAttribute('data-fond', f);
       etat.current.onFond(f);
     };
@@ -53,12 +56,11 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
 
     function demarrer(style: StyleSpecification, f: Fond) {
       if (fini) return;
-      const [w, s, e, n] = emprise(reperes);
       try {
         map = new MapLibreMap({
           container: container.current!,
           style,
-          bounds: [[w, s], [e, n]],
+          bounds: france,
           fitBoundsOptions: { padding: etat.current.padding() },
           attributionControl: false, // les mentions sont dans le pied de page (Mentions)
           dragRotate: false,
@@ -75,7 +77,7 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
       if (f === 'secours') essai = setInterval(reessayer, NOUVEL_ESSAI_MS);
       // Les couches des communes sont reposées à chaque style (setStyle les efface, avec l'état des formes).
       m.on('style.load', () => {
-        poserCouches(m, emprise(reperes), container.current?.getAttribute('data-fond') === 'secours');
+        poserCouches(m, france, fondCourant === 'secours');
         peintes.current = [];
         peindre(m, etat.current.couleurs, peintes.current);
         if (etat.current.choisie != null) m.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: etat.current.choisie }, { choisie: true });
@@ -120,7 +122,7 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
       mapRef.current = null;
       peintes.current = [];
     };
-  }, [reperes]);
+  }, [france]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -139,19 +141,15 @@ export function MapView({ reperes, couleurs, choisie, ronds, onChoisir, onPrete,
     const etaitChoisie = avant.current != null;
     avant.current = choisie;
     if (choisie == null) {
-      if (etaitChoisie) {
-        const [w, s, e, n] = emprise(reperes);
-        map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), duration: carte['duree-zoom-ms'] });
-      }
+      if (etaitChoisie) map.fitBounds(france, { padding: etat.current.padding(), duration: carte['duree-zoom-ms'] });
       return;
     }
     map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: true });
-    const [w, s, e, n] = cadreDe(reperes[choisie]);
-    map.fitBounds([[w, s], [e, n]], { padding: etat.current.padding(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
+    map.fitBounds(cadreDe(reperes[choisie]), { padding: etat.current.padding(), maxZoom: carte['zoom-commune-max'], duration: carte['duree-zoom-ms'] });
     return () => {
       map.setFeatureState({ source: SOURCE_COMMUNES, sourceLayer: COUCHE_TUILES, id: choisie }, { choisie: false });
     };
-  }, [choisie, reperes]);
+  }, [choisie, reperes, france]);
 
   return (
     <>

@@ -2,6 +2,7 @@
 // Deux ronds qui se chevauchent à plus de 50 % (centres à moins d'un demi-diamètre) forment un groupe « 3 · 10 » ;
 // un clic sur le groupe zoome juste assez pour les séparer (D17).
 import { Marker, type Map as MapLibreMap } from './maplibre';
+import { ordinal } from '@/domain/format';
 import { map as carte, size } from '@/theme/tokens';
 
 export type Rond = { index: number; rang: number; nom: string; lngLat: [number, number] };
@@ -47,7 +48,7 @@ export class RankMarkers {
         const choisi = r.index === this.choisie;
         el.className = `${CLASSE_ROND} ${choisi ? 'size-rond-choisi border-3' : 'size-rond border-2'} border-card`;
         el.textContent = String(r.rang);
-        el.setAttribute('aria-label', `${r.rang}${r.rang === 1 ? 're' : 'e'} : ${r.nom}`);
+        el.setAttribute('aria-label', `${ordinal(r.rang)} : ${r.nom}`);
         if (choisi) el.setAttribute('aria-current', 'true');
         el.addEventListener('click', (ev) => {
           ev.stopPropagation();

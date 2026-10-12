@@ -44,9 +44,11 @@ ADOUR_L93 = []
 
 
 def _adour_l93():
+    boites = []
     for lon0, lat0, lon1, lat1 in ADOUR:
         xs, ys = zip(*(to_l93(lo, la) for lo in (lon0, lon1) for la in (lat0, lat1)))
-        ADOUR_L93.append((min(xs), min(ys), max(xs), max(ys)))
+        boites.append((min(xs), min(ys), max(xs), max(ys)))
+    ADOUR_L93[:] = boites  # remplace, n'ajoute pas : la fonction peut être rappelée
 
 
 def adour_amont(x, y):

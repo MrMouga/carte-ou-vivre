@@ -25,8 +25,6 @@ export const color = {
   'map-border': '#8E9896',
 } as const;
 
-export type ColorToken = keyof typeof color;
-
 /** Espacements, en px. */
 export const space = {
   'space-1': 4,

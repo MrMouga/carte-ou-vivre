@@ -2,10 +2,9 @@ import { useEffect, useRef } from 'react';
 import { chiffresListe, compte, ligneListe, nomAffiche } from '@/domain/format';
 import type { Resultat } from '@/domain/score';
 import { cn } from '@/lib/cn';
+import { CLASSES_PALIER } from './Legend';
 
-const PALIER = ['', 'bg-score-1', 'bg-score-2', 'bg-score-3', 'bg-score-4', 'bg-score-5'];
-
-type Props = { resultat: Resultat; onChoisir?: (code: string) => void; /** Au retour de la fiche : la ligne qui reprend le focus. */ focusCode?: string | null };
+type Props = { resultat: Resultat; onChoisir: (code: string) => void; /** Au retour de la fiche : la ligne qui reprend le focus. */ focusCode?: string | null };
 
 // Les 10 premières (frame Figma 5:2, « Les 10 premières ») : compte, puis une ligne-bouton par commune (R5).
 export function List({ resultat, onChoisir, focusCode }: Props) {
@@ -34,7 +33,7 @@ export function List({ resultat, onChoisir, focusCode }: Props) {
                 type="button"
                 data-code={e.commune.code}
                 aria-label={ligneListe(e.rang!, e.commune, e.score!)}
-                onClick={() => onChoisir?.(e.commune.code)}
+                onClick={() => onChoisir(e.commune.code)}
                 className="flex w-full cursor-pointer items-center gap-2 rounded-base p-2 text-left hover:bg-background"
               >
                 <span className="w-rang shrink-0 text-texte-fort text-muted-foreground tabular-nums">{e.rang}</span>
@@ -43,7 +42,7 @@ export function List({ resultat, onChoisir, focusCode }: Props) {
                   <span className="text-secondaire text-muted-foreground tabular-nums">{chiffresListe(e.commune)}</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1">
-                  <span className={cn('size-pastille-score rounded-pastille-score', PALIER[e.palier!])} />
+                  <span className={cn('size-pastille-score rounded-pastille-score', CLASSES_PALIER[e.palier! - 1])} />
                   <span className="text-texte-fort tabular-nums">{e.score}</span>
                 </span>
               </button>

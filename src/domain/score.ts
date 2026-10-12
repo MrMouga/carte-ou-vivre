@@ -46,8 +46,9 @@ export type Resultat = {
   classement: Evaluation[];
 };
 
-export const loyerAffiche = (c: Commune) => (c.loyerM2 == null ? null : Math.round(c.loyerM2 * SURFACE_M2));
-export const merAffichee = (c: Commune) => (c.merKm == null ? null : Math.round(c.merKm));
+/** Loyer affiché pour 52 m², à l'euro. */
+export const loyerPour = (m2: number) => Math.round(m2 * SURFACE_M2);
+export const loyerAffiche = (c: Commune) => (c.loyerM2 == null ? null : loyerPour(c.loyerM2));
 /** Distance utilisée pour comparer et noter : « moins d'1 km » vaut 1 km. */
 const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.round(c.merKm)));
 
