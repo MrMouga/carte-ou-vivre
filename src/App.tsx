@@ -167,6 +167,15 @@ export function App() {
         {!choisie && <Mentions className="mx-4 mb-4 bureau:hidden" />}
       </div>
       <Status message={message} onReessayer={() => setEssai((n) => n + 1)} />
+      {/* 390 px : la liste est sous les réglages, hors de l'écran ; la bande de carte dit pourquoi elle est vide (état
+          « aucune commune »), comme « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. */}
+      {resultat?.actif && resultat.classement.length === 0 && !choisie && message == null && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-4 bottom-feuille flex justify-center pb-2 bureau:hidden">
+          <p data-testid="carte-vide" className="rounded-base border border-border bg-card px-2 py-1 text-secondaire">
+            Aucune commune ne passe tes critères
+          </p>
+        </div>
+      )}
       {/* Après la feuille, pour qu'au clavier les réglages et la liste passent avant les mentions. Légende puis mentions,
           en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
       <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
