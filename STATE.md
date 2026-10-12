@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : ui (tranche loyer-mer)
+- Étape : ui (tranche loyer-mer) — directions faites et fusionnées (docs/design/loyer-mer/decisions.md) ; reste la phase Figma (système et écran)
 - Statut : active
 
 ## Décisions
@@ -97,6 +97,7 @@ Tests avant de coder, à faire avant le 25 octobre 2026, heures notées. Si ce n
 - Différence : gardée telle quelle le 2026-10-11 (décision de Vincent). À rouvrir si le test des 3 personnes donne ChatGPT gagnant
 
 Autres questions :
+- Figma : le connecteur est connecté au compte de travail (product@natix.io). Avant de reprendre /ui, se reconnecter avec le compte Figma perso (/mcp, session interactive) ; ne rien créer dans l'espace NATIX.
 - Test de demande : 5 personnes essaient et répondent avant le 25/10. /validate sauté : à mener à la main ou à reporter, sans quoi l'hypothèse reste à vérifier. Test de l'accroche sur 3 personnes avant le 1/11.
 - Règles d'autopromotion de r/france : à lire et dater par Vincent avant le 15/11.
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).

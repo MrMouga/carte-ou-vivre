@@ -4,6 +4,7 @@ Généré par studio (`scripts/journal.sh`) depuis l'historique git et le log de
 ## Commandes (depuis git)
 | Date | Commande | Objet | Commit |
 |---|---|---|---|
+| 2026-10-11 20:02 | /project | carte-ou-vivre — journal généré | 36e2ab9 |
 | 2026-10-11 20:01 | /project | création du projet carte-ou-vivre | 8d2cb62 |
 
 ## Agents (depuis le log, machine locale)
