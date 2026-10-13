@@ -71,37 +71,38 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   // Un « Réessayer » pendant le chargement attend les mairies.
   useEffect(() => suivant(), [points, suivant]);
 
+  /** Mairie d'une commune de la carte, par son code INSEE (D6) ; aucune tant que les mairies ne sont pas chargées. */
+  const mairie = useCallback(
+    (code: string): [number, number] | undefined => {
+      const i = index.get(code);
+      return i == null || !reperes ? undefined : [reperes[i][0], reperes[i][1]];
+    },
+    [reperes, index],
+  );
+
   const ajouter = useCallback(
     (lieu: Suggestion, nom: string) => {
       if (!reperes) return;
       const id = prochain.current++;
-      const depart = departDe(lieu, (code) => {
-        const i = index.get(code);
-        return i == null ? undefined : [reperes[i][0], reperes[i][1]];
-      });
+      const depart = departDe(lieu, mairie);
       const proche: Proche = { id, nom: nom.trim().slice(0, NOM_MAX) || nomPropose(lieu), lieu, depart, plafond: PROCHE.ajout, etat: 'attente', temps: null, empreinte: null };
       setProches((ps) => [...ps, proche]);
       file.current.push({ id, depart });
       suivant();
     },
-    [reperes, index, suivant],
+    [reperes, mairie, suivant],
   );
 
   /** Indisponible → en attente, puis calcul quand son tour vient (le délai de 45 s repart de zéro). */
   const reessayer = useCallback(
     (p: Proche) => {
       if (p.etat !== 'indisponible' || file.current.some((t) => t.id === p.id)) return;
-      const depart =
-        p.depart ??
-        departDe(p.lieu, (code) => {
-          const i = index.get(code);
-          return i == null || !reperes ? undefined : [reperes[i][0], reperes[i][1]];
-        });
+      const depart = p.depart ?? departDe(p.lieu, mairie);
       changer(p.id, { etat: 'attente', depart });
       file.current.push({ id: p.id, depart });
       suivant();
     },
-    [reperes, index, suivant],
+    [mairie, suivant],
   );
 
   const regler = useCallback((id: number, plafond: number) => changer(id, { plafond }), []);
