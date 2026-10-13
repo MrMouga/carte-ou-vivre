@@ -34,7 +34,10 @@ export function Pastilles({ proches, commune }: Props) {
           >
             <RepereEnPetit etat={p.etat} />
             <span className="text-texte-fort whitespace-nowrap">{p.nom}</span>
-            <span className="text-pastille text-muted-foreground whitespace-nowrap tabular-nums">{valeurPastille(p, commune)}</span>
+            {/* « Parents de Léa · 2 h au plus » (D10, R15) : le « · » est dessiné avant la valeur, lu aussi par les lecteurs d'écran. */}
+            <span className="text-pastille text-muted-foreground whitespace-nowrap tabular-nums before:mr-2 before:content-['·']" /* jetons-ok : caractère séparateur (R15), pas une valeur visuelle */>
+              {valeurPastille(p, commune)}
+            </span>
           </li>
         ))}
       </ul>

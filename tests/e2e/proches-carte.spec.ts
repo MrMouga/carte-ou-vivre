@@ -137,6 +137,18 @@ test('AC-16 pastille de Nantesville (44) : « 2 h au plus », puis « 2 h 15 · 
   await expect(pastilles(page)).toHaveCount(0);
 });
 
+// Hors AC (R15, D10 ; relecture proches) : « Nantesville (44) · 2 h au plus », le « · » dessiné entre le nom et la valeur.
+test('R15 pastille : un « · » sépare le nom de la valeur, à l’écran et pour les lecteurs d’écran', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 }); // les pastilles n'existent qu'en bureau (AC-16)
+  await ouvrir(page);
+  await servirIgn(page);
+  await ajouter(page, 'Nantesville');
+  await pret(page, 'Nantesville (44)');
+  const valeur = pastille(page, 'Nantesville (44)').getByText('2 h au plus');
+  expect(await valeur.evaluate((e) => getComputedStyle(e, '::before').content)).toBe('"·"');
+  await expect(pastille(page, 'Nantesville (44)')).toMatchAriaSnapshot('- listitem: /Nantesville \\(44\\) ·\\s*2 h au plus/');
+});
+
 // Hors AC (details.md « aucune commune ») : avec un proche prêt, le message de la liste cite le proche.
 test('aucune commune avec un proche prêt : « Relâche le loyer, la mer, la taille ou un proche. »', async ({ page }) => {
   await ouvrir(page);
