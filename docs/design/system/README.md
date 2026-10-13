@@ -1,5 +1,5 @@
 # Système de design — Carte où vivre
-2026-10-12 · créé par /ui loyer-mer · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
+2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
 
 **Le contrat de tout agent qui produit de l'interface.** Toute valeur visuelle (couleur, rayon, espacement, taille de texte) vient d'un jeton ci-dessous. Une valeur manque → on ajoute un jeton ici et dans Figma, et on le dit ; jamais de valeur arbitraire (`[13px]`, `#3a3a3a`).
 
@@ -25,6 +25,7 @@
 | `area-unranked` | #D8C08A | page « sans plafond » : communes de la bonne taille, opacité 70 % (D17) |
 | `area-excluded`, `map-sea`, `map-river`, `map-neighbour`, `map-border` | #E0DBD2 · #BFD6E4 · #8DB3CA · #EFECE6 · #8E9896 | **fond uni de secours seulement** (R8, D17) : communes qui ne passent pas en `area-excluded`, mer, voisins, trait de côte ; avec le fond IGN, une commune qui ne passe pas n'est pas peinte |
 | commune choisie | double contour : 4 px `card` sous 1,8 px `foreground` | lisible sur les paliers foncés |
+| `place-marker` / `place-marker-foreground` | #B4532A (primitive `terre-cuite/600`) / #FFFFFF | repère d'un proche, pastille et ligne de proche (tranche proches). Chaud contre une rampe froide ; contraste du blanc 4,99:1. **Sa luminance égale celle de `score-3` (1,05:1)** : toujours un contour `card` 2 px et `ombre-panneau`. Jamais une couleur de réglage ni de score |
 
 Fond de carte (D16) : Plan IGN « atténué » + estompage IGN `estompage_grayscale` à 45 %, sous les communes. La couleur n'est jamais le seul indice : score et rang écrits dans la liste, la fiche et les ronds.
 
@@ -54,6 +55,12 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Légende | (composé) | Classée · Sans plafond · Fond indisponible |
 | Message carte | (composé) | Chargement · Erreur · Fond indisponible |
 | Rond du top 10 | marqueur MapLibre (élément HTML) | Choisi Non/Oui/Focus · Groupe (« 3 · 10 », au-delà de 50 % de chevauchement ; un clic zoome) |
+| Repère proche | marqueur MapLibre (élément HTML), ne se clique pas | État : Prêt (goutte `place-marker`, maison) · Calcul (« … », anneau qui pulse 1,2 s) · Indisponible (goutte `card`, bord pointillé `place-marker`, « ! ») ; nom dans une étiquette à droite ; au-dessus des ronds du top 10 |
+| Pastille de temps | `li` d'une `ul` « Temps vers tes proches » (pas un bouton) | une seule ; textes Nom, Valeur (« 4 h au plus », « 3 h 30 », « 3 h 30 · au-dessus de 3 h », « calcul en cours », « trajets indisponibles ») ; bureau seulement |
+| Ligne de proche | `li` (composé) : repère en petit 24 px, nom, adresse, Slider 15 min → 6 h, Button lien « Retirer » | État : Prêt · En attente · Calcul · Indisponible (+ « Réessayer ») |
+| Catégorie repliable | `h2 > button[aria-expanded]` | Ouverte Oui/Non ; repliée : résumé à droite ; ouverte : l'action de la catégorie à droite (Bascule mer, « Effacer mes proches ») |
+| Bascule mer | deux `button[aria-pressed]` | Unité km / min ; segment actif `primary` |
+| Suggestion d'adresse | bouton dans la liste des suggestions | textes Ligne 1, Ligne 2 ; icône de lieu `muted-foreground` |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)
