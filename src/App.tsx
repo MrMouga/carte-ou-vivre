@@ -202,6 +202,7 @@ export function App() {
               memoireRefusee={proches.memoireRefusee}
               inactif={!prete}
               onAjout={setAjout}
+              monte={ajout}
             />
             {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
             <p role="status" className="text-texte-fort max-bureau:sr-only bureau:sticky bureau:bottom-0 bureau:-mx-4 bureau:border-t bureau:border-border bureau:bg-card bureau:p-4">

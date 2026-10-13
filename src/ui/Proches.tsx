@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { rechercher, type Suggestion } from '@/proches/ign';
 import { MAX_PROCHES, NOM_MAX, nomPropose, type Proche } from '@/proches/useProches';
@@ -54,6 +54,8 @@ type AjoutProps = {
   champ: React.RefObject<HTMLInputElement | null>;
   /** Le focus entre dans l'ajout (champ, suggestions, « Nom », « Ajouter ») ou en sort. */
   onAjout?: (actif: boolean) => void;
+  /** 390 px : la feuille est montée (App, en réponse à `onAjout`). */
+  monte: boolean;
 };
 
 /** Message sous le champ, à la place des suggestions (tableau des états Figma 23:1616). */
@@ -65,15 +67,18 @@ const AVIS = {
 } as const;
 
 /** Recherche, suggestions, champ « Nom » et « Ajouter » (R9, H20, R13). */
-function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutProps) {
+function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: AjoutProps) {
   const [texte, setTexte] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [choisie, setChoisie] = useState<Suggestion | null>(null);
   const [nom, setNom] = useState('');
   const [avis, setAvis] = useState<Avis>(null);
   const idListe = useId();
-  const idAdresse = useId();
-  const idNom = useId();
+  // « search » dans `id` et `name` : Safari ignore `autocomplete="off"` sur un champ qui ressemble à une adresse (libellé
+  // « Adresse ou ville ») et propose la fiche contact de l'utilisateur (« AutoFill Contact ») ; il ne la propose pas sur
+  // un champ de recherche. La seule suggestion attendue est celle de l'IGN.
+  const idAdresse = `search-lieu${useId()}`;
+  const idNom = `search-nom${useId()}`;
   const champNom = useRef<HTMLInputElement>(null);
   const liste = useRef<HTMLUListElement>(null);
   const bloc = useRef<HTMLDivElement>(null);
@@ -83,21 +88,26 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
     if (suggestions.length && enBureau()) liste.current?.scrollIntoView({ block: 'center' }); // « nearest » les laisse sous le compte collé
   }, [suggestions]);
   // 390 px : le focus entre dans l'ajout → la feuille monte (App), puis elle défile pour mettre le champ en haut, sous la
-  // poignée : sur un iPhone, il ne reste qu'environ 400 px au-dessus du clavier. Marge `scroll-mt-4` : la poignée collée
+  // poignée : sur un iPhone, il ne reste qu'environ 340 px au-dessus du clavier. Marge `scroll-mt-4` : la poignée collée
   // (12 px) et la moitié de l'écart qui précède, pour que rien de coupé ne dépasse sous la poignée.
-  const monter = () => {
-    onAjout?.(true);
-    if (!enBureau()) requestAnimationFrame(() => bloc.current?.scrollIntoView({ block: 'start' }));
-  };
+  // Le défilement se fait dans le rendu qui monte la feuille (`useLayoutEffect`), avant la fin de l'événement `focus` :
+  // c'est là que Safari sur iPhone relève où est le champ, pour faire glisser la page au-dessus du clavier. Un champ
+  // déplacé plus tard (une image plus tard) sort de la partie glissée : le clavier s'ouvrait sur la liste, champ caché.
+  useLayoutEffect(() => {
+    if (!monte) return;
+    if (!enBureau()) bloc.current?.scrollIntoView({ block: 'start' });
+    // Ouvert par « + Ajouter un proche » : le focus vient seulement maintenant, champ déjà en place (même raison).
+    if (focus && !bloc.current?.contains(document.activeElement)) champ.current?.focus();
+  }, [monte]);
   const entrer = (e: React.FocusEvent) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) monter();
+    if (!e.currentTarget.contains(e.relatedTarget)) onAjout?.(true);
   };
-  // Ouvert par « + Ajouter un proche » : le champ prend le focus. Lu ici plutôt que par l'événement, que React ne
-  // transmet pas pendant le rendu (`autoFocus`) et qui ne revient pas quand le champ a déjà le focus. L'ajout disparaît
-  // (proche ajouté) : la feuille redescend, même si le navigateur n'annonce pas la perte du focus.
+  // Ouvert par « + Ajouter un proche » : la feuille monte d'abord, le champ prend le focus ensuite (ci-dessus). Focus déjà
+  // dans l'ajout au montage (rendu de nouveau en mode strict) : lu ici plutôt que par l'événement, que React ne transmet
+  // pas pendant le rendu et qui ne revient pas quand le champ a déjà le focus. L'ajout disparaît (proche ajouté) : la
+  // feuille redescend, même si le navigateur n'annonce pas la perte du focus.
   useEffect(() => {
-    if (focus) champ.current?.focus();
-    if (bloc.current?.contains(document.activeElement)) monter();
+    if (focus || bloc.current?.contains(document.activeElement)) onAjout?.(true);
     return () => onAjout?.(false);
   }, []); // au montage seulement
   const sortir = (e: React.FocusEvent) => {
@@ -155,6 +165,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
       </label>
       <input
         id={idAdresse}
+        name="search-lieu"
         ref={champ}
         type="text"
         autoComplete="off"
@@ -201,6 +212,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
           </label>
           <input
             id={idNom}
+            name="search-nom"
             ref={champNom}
             type="text"
             autoComplete="off"
@@ -246,9 +258,11 @@ type Props = {
   inactif: boolean;
   /** Le focus entre dans l'ajout d'un proche ou en sort (390 px : la feuille monte, App). */
   onAjout?: (actif: boolean) => void;
+  /** 390 px : la feuille est montée pour l'ajout (App). */
+  monte?: boolean;
 };
 
-export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif, onAjout }: Props) {
+export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif, onAjout, monte = false }: Props) {
   // D13 : dès un proche, le champ est replié derrière « + Ajouter un proche ».
   const [ouvert, setOuvert] = useState(false);
   const vide = proches.length === 0;
@@ -320,6 +334,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
             inactif={inactif}
             focus={ouvert}
             onAjout={onAjout}
+            monte={monte}
             onAjouter={(lieu, nom) => {
               onAjouter(lieu, nom);
               refocus.current = true;
