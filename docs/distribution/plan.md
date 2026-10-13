@@ -1,4 +1,5 @@
 # Plan de distribution — Carte où vivre
+À revoir (2026-10-13) : le partage (« Copier le lien », adresses des proches hors du lien) est retiré de la tranche 2 par Vincent — le moment de partage attend une tranche suivante.
 2026-10-12 · validé · Ambition : perso · Temps : 1 h/semaine jusqu'au 8/11, puis la moitié du temps jusqu'au 6/12 · Révision de : —
 
 ## Positionnement

@@ -65,6 +65,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-12 | Design validé : loyer-mer | Carte plein écran, réglages à gauche et liste ou fiche à droite ; à 390 px, une feuille où la fiche remplace les réglages ; une teinte vert d'eau en 5 paliers, l'encre pour les réglages, Source Sans 3 / Source Serif 4. |
 | 2026-10-12 | Plan validé : loyer-mer | 10 tâches (0a socle, 0b jetons, 1a données, 1b mesure du risque, 2 carte, 3 liste, 4 fiche, 5a adresse, 5b états et mentions, 6 mobile), même périmètre que la spec ; Vite + React + TS + MapLibre, données statiques, Cloudflare Pages ; règle des dépendances : dernière version de plus de 7 jours (lecture confirmée par Vincent). |
 | 2026-10-13 | Tranche construite : loyer-mer | Démo acceptée par Vincent : carte des 34 746 communes en tuiles à 100 m, réglages, liste, fiche, adresse, états et 390 px ; 15 critères verts ; réaction 102 ms (jugée fluide sur Mac, téléphone non vérifié) ; spec révisée à la démo : la mairie comme point unique de chaque commune (D18), logos Shom et IGN en texte (D19), décisions du build gardées (H11–H18). |
+| 2026-10-13 | Tranche 2 sans le partage : « Copier le lien », commune choisie dans l'adresse et adresses des proches hors du lien reportés à une tranche suivante | Choix de Vincent (« on verra plus tard »). La tranche 2 garde les proches (temps de trajet) et la mer en minutes. Coût : le moment de partage du plan de distribution (la carte envoyée au conjoint) attend une tranche de plus ; l'adresse de la page garde déjà les réglages (tranche 1). |
 
 ## Hypothèses à vérifier
 
@@ -111,7 +112,7 @@ Autres questions :
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
-- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12).
+- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12). Sans le partage (« Copier le lien »), reporté (2026-10-13).
 - Tranche 1 : spécifiée et validée le 2026-10-12 (loyer + mer, plafonds sans poids), voir Documents. Les proches viennent en tranche 2, à spécifier avant la mise en ligne de la tranche 1.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 
