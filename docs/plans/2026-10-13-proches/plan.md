@@ -52,10 +52,10 @@ Demander d'abord : rien.
 
 ### Tâche 2a — Calculer les temps d'un proche
 But : à partir d'une adresse choisie, obtenir pour chaque commune la fin de sa tranche de temps, et des scores qui en tiennent compte (sans interface encore).
-Entrées : R10, R11, D2, D5, D6, D11, H21 (file, ≤ 5 requêtes par seconde), H22, H24, H28 ; décisions de la tâche 0 (ressource, paramètres, classement avec ou sans Web Worker, recherche inverse) ; rappel ci-dessus (faux service, code INSEE).
+Entrées : R10, R11, D2, D5, D6, D11, H21 (file, au plus 4 requêtes par seconde), H22, H24, H28 ; décisions de la tâche 0 (ressource, paramètres, classement avec ou sans Web Worker, recherche inverse) ; rappel ci-dessus (faux service, code INSEE).
 Sorties : un module IGN (recherche, recherche inverse, isochrones) ; le classement des mairies en fins de tranche ; `evaluer` accepte les proches prêts (R11) ; la raison « proche » et les formats de durée (H22) ; le faux service `tests/e2e/lib/ign.ts`.
 Fichiers : `src/proches/ign.ts`, `src/proches/temps.ts`, `src/domain/score.ts`, `src/domain/format.ts`, `tests/e2e/lib/ign.ts`, tests unitaires (≤ 3 fichiers).
-Tests : unitaires — fin de tranche d'une mairie dans des zones emboîtées ; « plus de 6 h » hors de toutes ; note et score avec les valeurs de la fixture (59, 62/21, 47/27, 43/0 : les valeurs d'AC-1, AC-2, AC-4, AC-6, mais ces tests unitaires ne portent pas leurs numéros, qui appartiennent à la tâche 2b) ; formats « 15 min », « 3 h 30 », « plus de 6 h ».
+Tests : unitaires — fin de tranche d'une mairie dans des zones emboîtées ; « plus de 3 h » hors de toutes ; note et score avec les valeurs de la fixture révisée (65, 67/21, 50/30, 56/0 : les valeurs d'AC-1, AC-2, AC-4, AC-6, mais ces tests unitaires ne portent pas leurs numéros, qui appartiennent à la tâche 2b) ; formats « 15 min », « 2 h 15 », « plus de 3 h ».
 **Preuve attendue** : un petit script lancé sur le vrai IGN depuis « 12 rue de la Paix, Nantes » qui écrit le temps de calcul et les fins de tranche de Bordeaux (33063) et La Rochelle (17300) ; `npm test` vert (les 15 AC de loyer-mer compris).
 Demander d'abord : rien (adresses publiques seulement).
 
