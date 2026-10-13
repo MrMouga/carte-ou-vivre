@@ -83,7 +83,8 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
     if (suggestions.length && enBureau()) liste.current?.scrollIntoView({ block: 'center' }); // « nearest » les laisse sous le compte collé
   }, [suggestions]);
   // 390 px : le focus entre dans l'ajout → la feuille monte (App), puis elle défile pour mettre le champ en haut, sous la
-  // poignée : sur un iPhone, il ne reste qu'environ 400 px au-dessus du clavier.
+  // poignée : sur un iPhone, il ne reste qu'environ 400 px au-dessus du clavier. Marge `scroll-mt-4` : la poignée collée
+  // (12 px) et la moitié de l'écart qui précède, pour que rien de coupé ne dépasse sous la poignée.
   const monter = () => {
     onAjout?.(true);
     if (!enBureau()) requestAnimationFrame(() => bloc.current?.scrollIntoView({ block: 'start' }));
@@ -148,7 +149,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
   };
 
   return (
-    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-2 max-bureau:scroll-mt-6">
+    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-2 max-bureau:scroll-mt-4">
       <label htmlFor={idAdresse} className="text-secondaire text-muted-foreground">
         Adresse ou ville
       </label>
