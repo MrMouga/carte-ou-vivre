@@ -5,7 +5,7 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 ## Stack
 - Site statique : Vite + React + TypeScript, Tailwind + composants shadcn/ui copiés à la main, MapLibre GL JS sur le fond Plan IGN ; polices hébergées dans le site ; données précalculées par des scripts Python 3 sans dépendance (`scripts/data/`), fichiers produits versionnés dans `public/data/` ; tests Vitest et Playwright (décidé le 2026-10-12, [plan loyer-mer](docs/plans/2026-10-12-loyer-mer/plan.md))
 - Hébergement : Cloudflare Pages, branché sur GitHub ; pousser sur `main` = mettre en ligne ; compte branché par Vincent pendant /ship
-- Design : Figma [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (page « Système » = jetons et composants ; une page par tranche : « loyer-mer », « proches ») ; contrat des jetons : `docs/design/system/README.md` (module TS unique pour le CSS et le style MapLibre, en tâche 0)
+- Design : Figma [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (page « Système » = jetons et composants ; une page par tranche : « loyer-mer », « proches », « interface-telephone ») ; contrat des jetons : `docs/design/system/README.md` (module TS unique pour le CSS et le style MapLibre, en tâche 0)
 
 ## Commandes
 - Installer : `npm ci` (`.npmrc` : sans scripts, versions exactes, `legacy-peer-deps` à cause d'un bug de npm 10.9) ; navigateur de test : `npx playwright install chromium`

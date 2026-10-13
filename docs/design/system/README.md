@@ -1,5 +1,5 @@
 # Système de design — Carte où vivre
-2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
+2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches et /ui interface-telephone · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
 
 **Le contrat de tout agent qui produit de l'interface.** Toute valeur visuelle (couleur, rayon, espacement, taille de texte) vient d'un jeton ci-dessous. Une valeur manque → on ajoute un jeton ici et dans Figma, et on le dit ; jamais de valeur arbitraire (`[13px]`, `#3a3a3a`).
 
@@ -61,6 +61,8 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Catégorie repliable | `h2 > button[aria-expanded]` | Ouverte Oui/Non ; repliée : résumé à droite ; ouverte : l'action de la catégorie à droite (Bascule mer, « Effacer mes proches ») |
 | Bascule mer | groupe `role=group` nommé « Unité de la mer », deux `button[aria-pressed]` « km » et « min » | Unité km / min ; segment actif `primary` ; 24 px de haut en bureau, 44 px à 390 px |
 | Suggestion d'adresse | bouton dans la liste des suggestions ; nom accessible « Ligne 1, Ligne 2 » ; le champ porte `aria-controls` vers la liste | textes Ligne 1, Ligne 2 ; icône de lieu `muted-foreground` |
+| Onglets de feuille | `role=tablist` de deux `button role=tab` (« Critères », « Les 10 premières »), flèches gauche/droite (tranche interface-telephone) | Actif Critères / Les 10 premières ; rail `background` en pilule, padding `space-1`, 44 px de haut ; actif `primary` / `primary-foreground`, inactif `muted-foreground` ; style `texte-fort` ; sous 1 024 px seulement |
+| Tête de feuille | `button[aria-expanded]` « Replier la feuille » / « Déplier la feuille » qui porte la poignée et le compte (style `valeur`, une ligne, annoncé à part en `role=status`) ; se touche et se glisse, sans chevron (D9 de interface-telephone) | État : Ouverte (≈ 47 px) · Repliée (barre entière ≈ 51 px, `ombre-feuille`, + marge du geste d'accueil) · Fiche (poignée seule) ; `card`, coins hauts `radius-sheet` |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)

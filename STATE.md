@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : spec (tranche interface-telephone) — validée le 2026-10-13 (docs/specs/2026-10-13-interface-telephone/spec.md) ; prochaine étape /ui. Loyer-mer et proches en ligne (/ship du 2026-10-13) ; correctif « repère au-dessus des panneaux » (855cd46) pas encore poussé
+- Étape : ui (tranche interface-telephone) — design validé le 2026-10-13 (docs/design/interface-telephone/) ; prochaine étape /breakdown. Correctif « repère au-dessus des panneaux » (855cd46) pas encore poussé
 - Statut : active
 
 ## Décisions
@@ -79,6 +79,8 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Tranche construite : proches | Démo acceptée : jusqu'à 5 proches nommés, temps en voiture par l'IGN jusqu'à 3 h (≈ 10–15 s par proche), repères, pastilles de temps, fiche, mémoire du navigateur ; 13 critères verts, 15 de loyer-mer toujours verts ; défaut iPhone (champ sous le clavier) reporté ; décisions du build gardées (H31–H40). |
 | 2026-10-13 | Nom affiché : « Où vivre en France » | Choix de Vincent à la démo (au lieu de « Carte où vivre ») ; le dépôt, les dossiers et les clés de mémoire gardent « carte-ou-vivre ». |
 | 2026-10-13 | Spec validée : interface-telephone | Retours de Vincent sur téléphone : feuille repliable (bouton et glisser, barre avec le compte), onglets Critères / Les 10 premières, fiche à la place des onglets, carte immobile au repli ; communes dessinées à l'ouverture (défaut mesuré : aucune tuile à 390 × 664 ; un niveau de zoom de plus dans les données, accepté) ; défaut du clavier iPhone inclus, preuve sur son iPhone. Téléphone à l'horizontale hors tranche. 8 décisions, 5 règles, 11 critères. |
+| 2026-10-13 | Spec interface-telephone révisée (D9) pendant /ui | Feuille ouverte à 45 % (au moins 272 px), compte en tête de feuille servant de bouton de repli, sans chevron ; H43, H46, H48 et AC-10 (« en haut de la feuille », mêmes valeurs) avec l'accord de Vincent. |
+| 2026-10-13 | Design validé : interface-telephone | Fusion F sur la base C (compte en tête, même ligne ouverte et repliée), onglets en pilule de 44 px, pas de chevron, fiche sous la poignée ; pari de Vincent : A, relecture à l'aveugle : C. Figma léger (captures du prototype, tableau des états, composants Onglets de feuille et Tête de feuille). Zoom 3 des tuiles essayé : la côte se lit à 390 × 664. Relecture des écrans finaux non faite (temps écoulé). |
 
 ## Hypothèses à vérifier
 
@@ -135,6 +137,7 @@ Autres questions :
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Spec « Interface téléphone » — 2026-10-13](docs/specs/2026-10-13-interface-telephone/spec.md)
+- [Design « Interface téléphone » — 2026-10-13](docs/design/interface-telephone/README.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
 - [Plan « Proches » — 2026-10-13](docs/plans/2026-10-13-proches/plan.md) · [dossier du build](docs/plans/2026-10-13-proches/) : [progression](docs/plans/2026-10-13-proches/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-13-proches/demo.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
