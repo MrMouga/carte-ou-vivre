@@ -74,6 +74,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Design validé : proches | Fusion des pistes A et B : proches réglés dans le panneau de gauche (catégories repliables, lien « + Ajouter un proche »), pastilles de temps en haut de la carte (bureau), repère goutte terre cuite nommé ; jeton place-marker ajouté au système. |
 | 2026-10-13 | Spec proches révisée (D14) : la mer en minutes sort de la tranche | Choix de Vincent à /breakdown (« on fera ça plus tard »). AC-12, AC-13, AC-15 gardés dans acceptance.json (liste « reportes ») ; la tranche ne garde que l'IGN comme service extérieur. |
 | 2026-10-13 | Plan validé : proches | 7 tâches (0 mesure IGN et recoloration, 1 catégories repliables, 2a calcul des temps, 2b ajout dans le panneau, 3 états et mémoire, 4 repères, pastilles et fiche, 5 390 px et bout en bout) ; aucun paquet ; requêtes IGN de test à adresses publiques autorisées ; seuil de réaction 100 ms + 20 ms de marge. |
+| 2026-10-13 | Spec proches révisée (D15, D16) après la mesure de la tâche 0 : plafond d'un proche de 15 min à 3 h ; temps « à quelques minutes près » | Jusqu'à 6 h, un proche prenait 60 s et l'IGN abandonnait 2 à 5 zones sur 24 ; jusqu'à 3 h, 14 à 16 s. Choix de Vincent contre la proposition de Claude (IGN jusqu'à 3 h + estimation au-delà). Coût : l'exemple du pitch (parents à Nantes et à Toulouse) ne se joue plus. AC-1 à AC-6, AC-8, AC-14, AC-16 recalés (fixture divisée par deux, plafond à l'ajout 2 h). |
 
 ## Hypothèses à vérifier
 

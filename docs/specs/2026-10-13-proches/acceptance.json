@@ -260,43 +260,6 @@
           "suggestions": []
         }
       },
-      "calcul de trajets (IGN) — fin de tranche en minutes par code de commune (null = plus de 6 h), par adresse choisie": {
-        "1 rue Test 44000 Nantesville": {
-          "99001": 120,
-          "99002": 210,
-          "99003": 240,
-          "99004": 300,
-          "99005": null
-        },
-        "2 place Test 31000 Toulouseville": {
-          "99001": 270,
-          "99002": 150,
-          "99003": null,
-          "99004": 195,
-          "99005": 240
-        },
-        "3 rue Test 69000 Lyonville": {
-          "99001": 360,
-          "99002": 345,
-          "99003": 30,
-          "99004": 150,
-          "99005": 210
-        },
-        "4 rue Test 29000 Brestville": {
-          "99001": 180,
-          "99002": 330,
-          "99003": null,
-          "99004": 285,
-          "99005": null
-        },
-        "5 rue Test 59000 Lilleville": {
-          "99001": null,
-          "99002": null,
-          "99003": 60,
-          "99004": 330,
-          "99005": null
-        }
-      },
       "pannes": {
         "recherche d'adresse": "erreur réseau sur toute recherche",
         "calcul de trajets": "erreur réseau sur tout calcul",
@@ -305,6 +268,43 @@
       "délais": {
         "calcul de trajets": "chaque proche répond 1 s après le début de son calcul, pour que l'état « calcul » s'observe",
         "recherche d'adresse": "réponse immédiate"
+      },
+      "calcul de trajets (IGN) — fin de tranche en minutes par code de commune (null = plus de 3 h), par adresse choisie": {
+        "1 rue Test 44000 Nantesville": {
+          "99001": 60,
+          "99002": 135,
+          "99003": 150,
+          "99004": 150,
+          "99005": null
+        },
+        "2 place Test 31000 Toulouseville": {
+          "99001": 165,
+          "99002": 75,
+          "99003": null,
+          "99004": 105,
+          "99005": 120
+        },
+        "3 rue Test 69000 Lyonville": {
+          "99001": null,
+          "99002": null,
+          "99003": 30,
+          "99004": 150,
+          "99005": null
+        },
+        "4 rue Test 29000 Brestville": {
+          "99001": 180,
+          "99002": null,
+          "99003": null,
+          "99004": null,
+          "99005": null
+        },
+        "5 rue Test 59000 Lilleville": {
+          "99001": null,
+          "99002": null,
+          "99003": 60,
+          "99004": null,
+          "99005": null
+        }
       }
     }
   },
@@ -314,47 +314,47 @@
       "rule": "R9",
       "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
       "when": "l'utilisateur tape « 1 rue Test », choisit « 1 rue Test 44000 Nantesville », garde le nom proposé et appuie sur « Ajouter »",
-      "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 3 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 59 · 650 € · moins d'1 km » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer=60",
+      "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 2 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer=60",
       "passes": false
     },
     {
       "id": "AC-2",
       "rule": "R11",
-      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
-      "when": "l'utilisateur règle le plafond de Nantesville (44) sur 3 h 30",
-      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 62 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 21 · 832 € · 40 km » (fin de tranche 3 h 30 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
+      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 2 h",
+      "when": "l'utilisateur règle le plafond de Nantesville (44) sur 2 h 15",
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 67 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 21 · 832 € · 40 km » (fin de tranche 2 h 15 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
       "passes": false
     },
     {
       "id": "AC-3",
       "rule": "R10",
-      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
+      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 2 h",
       "when": "l'utilisateur choisit Grandeville (33) sur la carte",
-      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 30 : au-dessus de ton plafond de 3 h » et « 40 km de la mer à vol d'oiseau », sans score ni rang",
+      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » et « 40 km de la mer à vol d'oiseau », sans score ni rang",
       "passes": false
     },
     {
       "id": "AC-4",
       "rule": "R11",
-      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30",
-      "when": "l'utilisateur ajoute « 2 place Test 31000 Toulouseville » et règle son plafond sur 4 h 30",
-      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 47 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 27 · 832 € · 40 km »",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 2 h 15",
+      "when": "l'utilisateur ajoute « 2 place Test 31000 Toulouseville » et règle son plafond sur 2 h 45",
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 50 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 30 · 832 € · 40 km »",
       "passes": false
     },
     {
       "id": "AC-5",
       "rule": "R10",
-      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30 puis Toulouseville (31) prêt à 4 h 30",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 2 h 15 puis Toulouseville (31) prêt à 2 h 45",
       "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
-      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 3 h 30 en voiture » et « Toulouseville (31) : 2 h 30 en voiture », le score 27 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 6 h : au-dessus de ton plafond de 3 h 30 », sans score",
+      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 2 h 15 en voiture » et « Toulouseville (31) : 1 h 15 en voiture », le score 30 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 3 h : au-dessus de ton plafond de 2 h 15 », sans score",
       "passes": false
     },
     {
       "id": "AC-6",
       "rule": "R11",
-      "given": "Fixture, loyer et mer sur « Sans limite », Nantesville (44) prêt à 3 h 30",
+      "given": "Fixture, loyer et mer sur « Sans limite », Nantesville (44) prêt à 2 h 15",
       "when": "la carte est affichée",
-      "then": "la liste montre « 2 communes passent tes critères » puis Portmer (17) avec le score 43 et Grandeville (33) avec le score 0 ; Portmer a la couleur de la tranche 40–60 et Grandeville celle de la tranche 0–20 ; Montcher (75), Terrebasse (23) et Quaibleu (13) ne sont pas colorées ; le message « Fixe un loyer ou une distance à la mer pour classer les communes. » n'est pas affiché",
+      "then": "la liste montre « 2 communes passent tes critères » puis Portmer (17) avec le score 56 et Grandeville (33) avec le score 0 ; Portmer a la couleur de la tranche 40–60 et Grandeville celle de la tranche 0–20 ; Montcher (75), Terrebasse (23) et Quaibleu (13) ne sont pas colorées ; le message « Fixe un loyer ou une distance à la mer pour classer les communes. » n'est pas affiché",
       "passes": false
     },
     {
@@ -368,9 +368,9 @@
     {
       "id": "AC-8",
       "rule": "R12",
-      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30 et gardé dans ce navigateur",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 2 h 15 et gardé dans ce navigateur",
       "when": "l'utilisateur ferme la page puis rouvre /",
-      "then": "Nantesville (44) est prêt avec le plafond 3 h 30, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 62 puis Grandeville (33) 21 ; l'adresse de la page est /?loyer=1200&mer=60",
+      "then": "Nantesville (44) est prêt avec le plafond 2 h 15, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 67 puis Grandeville (33) 21 ; l'adresse de la page est /?loyer=1200&mer=60",
       "passes": false
     },
     {
@@ -402,15 +402,15 @@
       "rule": "R9",
       "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
       "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) dans la liste une fois le calcul fini",
-      "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 3 h 30 : au-dessus de ton plafond de 3 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
+      "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 2 h 15 : au-dessus de ton plafond de 2 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
       "passes": false
     },
     {
       "id": "AC-16",
       "rule": "R15",
-      "given": "Fixture, largeur bureau (1 440 px), réglages de départ, Nantesville (44) prêt avec le plafond 3 h, aucune commune choisie",
+      "given": "Fixture, largeur bureau (1 440 px), réglages de départ, Nantesville (44) prêt avec le plafond 2 h, aucune commune choisie",
       "when": "l'utilisateur regarde le haut de la carte, puis choisit Grandeville (33) dans la liste",
-      "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 3 h au plus » ; après le choix, la même pastille affiche « 3 h 30 · au-dessus de 3 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
+      "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 2 h au plus » ; après le choix, la même pastille affiche « 2 h 15 · au-dessus de 2 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
       "passes": false
     }
   ],

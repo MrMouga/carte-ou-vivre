@@ -1,5 +1,5 @@
 # Détails — proches
-Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12), champ replié derrière « + Ajouter un proche » (D13), mer en minutes reportée (D14). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
+Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12), champ replié derrière « + Ajouter un proche » (D13), mer en minutes reportée (D14), plafond de 3 h (D15), précision (D16). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
 
 ## Parcours
 1. L'utilisateur ouvre la page : réglages lus dans l'adresse (R7) et proches gardés dans ce navigateur (R12).
@@ -23,7 +23,7 @@ Zones touchées (les autres restent celles de loyer-mer) : réglages — nouvell
 - **en attente** (ajouté pendant qu'un autre calcule) → « En attente… », « Retirer » ; sort vers **calcul** quand son tour vient.
 - **calcul** → « Calcul des trajets depuis Parents de Léa… », « Retirer » (le calcul s'arrête et le proche disparaît) ; il ne compte pas encore ; tout le reste marche ; sort vers **prêt** ou **indisponible** (H21).
 - **prêt** → nom, adresse, plafond, « Retirer » ; il compte dans le score (R11).
-- **indisponible** (le calcul échoue ou dépasse le délai de H21 ; ou, à la réouverture, un proche qui n'était pas prêt ou dont des temps manquent, R12) → « Trajets indisponibles depuis Parents de Léa. », « Réessayer » (vers **calcul**) et « Retirer » ; il ne compte pas.
+- **indisponible** (le calcul échoue ou dépasse le délai de H21 (45 s) ; ou, à la réouverture, un proche qui n'était pas prêt ou dont des temps manquent, R12) → « Trajets indisponibles depuis Parents de Léa. », « Réessayer » (vers **calcul**) et « Retirer » ; il ne compte pas.
 
 États de la page (loyer-mer, revus par D20) : **sans plafond** suppose aussi qu'aucun proche n'est **prêt**. Dès qu'un proche est prêt, la page est **classée** ou **aucune commune**. Dans **aucune commune** avec au moins un proche prêt, le message devient « Aucune commune ne passe tes critères. Relâche le loyer, la mer, la taille ou un proche. » ; sans proche prêt, il reste celui de loyer-mer.
 
@@ -35,18 +35,18 @@ Interactions : « Ajouter » → proche en **calcul** (ou **en attente**) et rep
 
 ## Règles
 - **R9** — Ajouter un proche (D3, D4, D6). Les suggestions proposent des adresses (numéro, rue, lieu-dit) et des communes de métropole (H20). Le nom proposé est la commune et son département, « Nantesville (44) » ; on peut le remplacer par un nom libre de 30 caractères au plus, et un nom vide reprend la commune. Au plus 5 proches, tous états confondus. Si le libellé de l'adresse choisie est déjà celui d'un proche, « Ajouter » ne l'ajoute pas et le message « Cette adresse est déjà dans tes proches. » s'affiche sous le champ. Deux proches peuvent porter le même nom. *Pourquoi* : D3, D4.
-- **R10** — Temps d'un proche (D2, D6, D11). C'est la fin de la tranche de 15 min qui contient le temps en voiture entre son point de départ (l'adresse, ou la mairie pour une commune choisie) et la mairie de chaque commune ; il s'affiche ainsi : « 3 h 30 », « 15 min », ou « plus de 6 h » au-delà de 6 h ou sans route (une île sans pont). Cette même valeur est comparée au plafond et notée (D5), et « plus de 6 h » ne passe aucun plafond. *Pourquoi* : D2, D5, D11.
-- **R11** — Plafond et score (D5). Le plafond d'un proche va de 15 min à 6 h par pas de 15 min ; il vaut 3 h à l'ajout (H19). Une commune tient un proche si la fin de sa tranche est inférieure ou égale au plafond ; pour passer, elle doit aussi tenir R1. La note d'un proche vaut 100 × (1 − fin de tranche / plafond). Le score est la moyenne des notes de tous les critères actifs : le loyer, la mer et chaque proche **prêt**. Un proche dans un autre état ne compte pas. *Pourquoi* : D5.
+- **R10** — Temps d'un proche (D2, D6, D11). C'est la fin de la tranche de 15 min qui contient le temps en voiture entre son point de départ (l'adresse, ou la mairie pour une commune choisie) et la mairie de chaque commune ; il s'affiche ainsi : « 3 h 30 », « 15 min », ou « plus de 3 h » au-delà de 3 h ou sans route (une île sans pont). Cette même valeur est comparée au plafond et notée (D5), et « plus de 3 h » ne passe aucun plafond. *Pourquoi* : D2, D5, D11.
+- **R11** — Plafond et score (D5). Le plafond d'un proche va de 15 min à 3 h par pas de 15 min (D15) ; il vaut 2 h à l'ajout (H19). Une commune tient un proche si la fin de sa tranche est inférieure ou égale au plafond ; pour passer, elle doit aussi tenir R1. La note d'un proche vaut 100 × (1 − fin de tranche / plafond). Le score est la moyenne des notes de tous les critères actifs : le loyer, la mer et chaque proche **prêt**. Un proche dans un autre état ne compte pas. *Pourquoi* : D5.
 - **R12** — Mémoire (D7). Pour chaque proche, ce navigateur garde l'adresse, le point de départ, le nom, le plafond et les temps rangés par code INSEE. À la réouverture, un proche qui était **prêt** revient **prêt**, sans nouveau calcul. Un proche qui n'était pas prêt, ou dont un code INSEE de la carte n'a pas de temps, revient **indisponible**. Les proches n'entrent jamais dans l'adresse de la page. « Retirer » efface un proche de cette mémoire ; « Effacer mes proches » les efface tous. Dès qu'un enregistrement échoue, parce que le navigateur refuse ou que sa mémoire est pleine, les proches marchent jusqu'à la fermeture de la page, et la zone dit « Tes proches ne seront pas gardés sur ce navigateur. ». *Pourquoi* : D7.
-- **R13** — Pannes (comme R8). Si la recherche ne répond pas, la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. ». Si le calcul d'un proche échoue ou dépasse le délai de H21, ce proche passe **indisponible**. Dans les deux cas, la carte, les autres proches et les réglages marchent comme d'habitude. *Pourquoi* : D16 de loyer-mer, un service extérieur ne casse pas la carte.
+- **R13** — Pannes (comme R8). Si la recherche ne répond pas, la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. ». Si le calcul d'un proche échoue ou dépasse le délai de H21 (45 s), ce proche passe **indisponible**. Dans les deux cas, la carte, les autres proches et les réglages marchent comme d'habitude. *Pourquoi* : D16 de loyer-mer, un service extérieur ne casse pas la carte.
 - **R14** — *Reportée par D14* (mer en minutes).
 - **R15** — Pastilles de temps (D10). En bureau, dès qu'il y a un proche, une pastille par proche en haut de la carte, dans l'ordre d'ajout, sans action au clic. Sans commune choisie : « Parents de Léa · 4 h au plus » pour un proche **prêt**, « calcul en cours » ou « trajets indisponibles » sinon. Avec une commune choisie : son temps depuis ce proche (R10), suivi de « · au-dessus de 4 h » quand il dépasse le plafond. Pas de pastilles sous la largeur bureau (H11 de loyer-mer). *Pourquoi* : D10.
 
 ## Cas limites
 - Fin de tranche égale au plafond → la commune passe avec une note de 0 pour ce proche (AC-2, Grandeville).
 - Loyer et mer sur « Sans limite », avec un proche prêt → la page classe sur ce proche seul ; ce n'est pas l'état **sans plafond** (AC-6).
-- Commune sans route depuis le proche (Ouessant, l'île d'Yeu, la Corse depuis le continent) → « plus de 6 h » ; elle ne passe pas avec ce proche. Un proche en Corse atteint les communes corses.
-- Plusieurs proches ajoutés d'affilée → les calculs se font l'un après l'autre ; le délai de H21 part du début du calcul de chaque proche.
+- Commune sans route depuis le proche (Ouessant, l'île d'Yeu, la Corse depuis le continent) → « plus de 3 h » ; elle ne passe pas avec ce proche. Un proche en Corse atteint les communes corses.
+- Plusieurs proches ajoutés d'affilée → les calculs se font l'un après l'autre ; le délai de H21 (45 s) part du début du calcul de chaque proche.
 - Adresse déjà présente → refusée (R9).
 - Lien ouvert dans un navigateur qui garde des proches → les proches de ce navigateur s'appliquent aussi (D7).
 
@@ -71,10 +71,10 @@ Interactions : « Ajouter » → proche en **calcul** (ou **en attente**) et rep
 Loyer-mer : AC-1 à AC-15, sur un navigateur sans proche gardé et avec la mer en km.
 
 ## Hypothèses
-- **H19** — Plafond d'un proche à l'ajout : 3 h. C'est un trajet qu'on fait un week-end.
+- **H19** — Plafond d'un proche à l'ajout : 2 h, le milieu de la plage de 15 min à 3 h (D15). *Remplace* : 3 h (avec l'ancienne plage jusqu'à 6 h).
 - **H20** — Recherche : à partir de 3 caractères, 300 ms après la dernière frappe ; au plus 5 suggestions, toutes en métropole.
-- **H21** — Budgets : « Calcul des trajets… » et le repère apparaissent aussitôt après « Ajouter ». On vise 10 s au plus par proche, à mesurer en tâche 0. Au-delà de 30 s depuis le début de son calcul, le proche passe **indisponible**. Changer un plafond ou retirer un proche ne relance aucun calcul. À la réouverture, les proches sont prêts dès que la carte est chargée.
-- **H22** — Formats des temps (D11) : proches « 15 min », « 45 min », « 1 h », « 1 h 15 », « 3 h 30 », « plus de 6 h » ; plafonds : « 45 min », « 3 h », « 3 h 30 ».
+- **H21** — Budgets : « Calcul des trajets… » et le repère apparaissent aussitôt après « Ajouter ». Un proche (12 zones, au plus 4 requêtes par seconde) se calcule en 14 à 16 s mesurées en tâche 0 ; on vise 20 s. Au-delà de 45 s depuis le début de son calcul, le proche passe **indisponible**. Changer un plafond ou retirer un proche ne relance aucun calcul. À la réouverture, les proches sont prêts dès que la carte est chargée. *Remplace* : 10 s visées, échec à 30 s (avant la mesure).
+- **H22** — Formats des temps (D11) : proches « 15 min », « 45 min », « 1 h », « 1 h 15 », « 2 h 15 », « plus de 3 h » ; plafonds : « 45 min », « 2 h », « 3 h ».
 - **H23** — *Reportée par D14* (mer en minutes).
 - **H24** — Les temps sont ceux du réseau routier, sans embouteillages ni heure de départ ; l'écran dit seulement « en voiture ».
 - **H25** — *Reportée par D14* (mer en minutes).
@@ -89,8 +89,8 @@ Aucune.
 
 ## Vérification de bout en bout
 Sur la version en ligne, en largeur bureau et à 390 px :
-1. Ouvrir `/`, choisir « 12 rue de la Paix, Nantes », nommer le proche « Parents de Léa », puis « Ajouter » : on voit « Calcul des trajets depuis Parents de Léa… » et le repère à Nantes, puis le proche avec 3 h. L'adresse de la page reste `/?loyer=1200&mer=60`.
-2. Régler ce proche sur 4 h, ajouter « Toulouse » (la commune) et le régler sur 5 h 30. Bordeaux et La Rochelle passent ; la fiche de Bordeaux affiche « Parents de Léa : 3 h 45 en voiture » (valeur relevée en tâche 0) et une ligne « Toulouse (31) » ; en haut de la carte, les pastilles donnent les mêmes temps.
-3. Fermer le navigateur, rouvrir le site : les deux proches et leurs repères sont là, prêts, sans « Calcul des trajets ».
+1. Ouvrir `/`, choisir « 12 rue de la Paix, Nantes », nommer le proche « Parents de Léa », puis « Ajouter » : on voit « Calcul des trajets depuis Parents de Léa… » et le repère à Nantes, puis le proche avec 2 h. L'adresse de la page reste `/?loyer=1200&mer=60`.
+2. Régler ce proche sur 2 h 30. La Rochelle passe et sa fiche affiche « Parents de Léa : 2 h 15 en voiture » ; Bordeaux ne passe pas et sa fiche affiche « Parents de Léa plus de 3 h : au-dessus de ton plafond de 2 h 30 » ; en haut de la carte, la pastille donne le même temps que la fiche de la ville choisie (temps relevés en tâche 0).
+3. Fermer le navigateur, rouvrir le site : le proche et son repère sont là, prêts, sans « Calcul des trajets ».
 4. « Effacer mes proches », puis recharger : aucun proche, aucun repère.
 Preuves : captures des étapes 1 à 4 aux deux largeurs ; temps de calcul mesuré à l'étape 1 ; liste des requêtes réseau de l'étape 1, qui ne contiennent pas « Parents de Léa ».
