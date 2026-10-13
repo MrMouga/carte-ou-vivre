@@ -1,0 +1,28 @@
+Tâche 5 — vérification de bout en bout · 2026-10-13T15:45:17.371Z · version construite (vite preview, http://localhost:4180/, dist/version.txt 4a4b29b) · Chromium (playwright-core), profil neuf, 390 × 844
+
+1. (17:45:20) Ouvrir « / », choisir « 12 rue de la Paix, Nantes », nommer « Parents de Léa », « Ajouter ».
+   adresse à l'ouverture : /?loyer=1200&mer=60 ; haut de la feuille : 371
+   champ au focus : haut de la feuille 40 ; champ y 80–124 ; 1re suggestion y 133–177 (Figma : clavier dès 553)
+   suggestions : 12 Rue de la Paix, 44000 Nantes | Rue de la Paix, 92000 Nanterre | Avenue de la Paix, 44300 Nantes | Impasse de la Paix, 24800 Nantheuil
+   nom saisi ; haut de la feuille 40 ; « Ajouter » y 207
+   « Calcul des trajets depuis Parents de Léa… » affiché ; repère : état calcul, point -1.554555, 47.215051 ; haut de la feuille 371
+   prêt en 11.8 s (de « Ajouter » au curseur) ; ligne : Parents de Léa | 2 h | 12 Rue de la Paix 44000 Nantes | Retirer
+   zones demandées : 12, durée de chacune (ms, Resource Timing ; 1 à 6 ms = cache) : 11666, 6575, 7179, 3553, 8021, 3129, 4898, 2647, 2929, 1185, 499, 690
+   repère : état pret ; pastilles : (aucune à 390 px : 0 liste)
+   compte : « 703 communes passent tes critères » ; adresse : /?loyer=1200&mer=60
+   requêtes de l'étape 1 : 43, dont 13 vers l'IGN ; contenant « Parents » ou « Léa » : 0 (liste : T5-390-requetes-etape1.txt)
+
+2. (17:45:34) Parents de Léa réglé sur 2 h 30, puis La Rochelle et Bordeaux choisies sur la carte.
+   plafond : 2 h 30 au plus ; compte : « 1 220 communes passent tes critères »
+   La Rochelle — fiche : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | 48 | / 100 | 467e sur 1 220 communes qui passent | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer | TES PROCHES | Parents de Léa : 2 h 15 en voiture
+   pastilles : (aucune à 390 px : 0 liste)
+   Bordeaux — fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Parents de Léa plus de 3 h : au-dessus de ton plafond de 2 h 30 | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | TES PROCHES | Parents de Léa : plus de 3 h en voiture
+   pastilles : (aucune à 390 px : 0 liste)
+
+3. (17:45:47) Navigateur fermé, puis relancé sur le même profil ; « / » rouvert.
+   ligne : Parents de Léa | 2 h 30 | 12 Rue de la Paix 44000 Nantes | Retirer
+   repère : 1 (état pret) ; « Calcul des trajets » vu depuis l'ouverture : false ; zones demandées : 0 ; adresse : /?loyer=1200&mer=60
+
+4. (17:45:51) « Effacer mes proches », puis rechargement.
+   zone : TES PROCHES | Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune. | Adresse ou ville | Ajouter
+   lignes de proche : 0 ; repères : 0 ; entrées en mémoire : 0 ; adresse : /?loyer=1200&mer=60
