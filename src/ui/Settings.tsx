@@ -48,7 +48,7 @@ type Props = { reglages: Reglages; onChange: (r: Reglages) => void; inactif?: bo
 // Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, plafond de loyer, plafond de mer, en catégories repliables.
 export function Settings({ reglages, onChange, inactif = false, children }: Props) {
   return (
-    <section aria-label="Réglages" className="flex flex-col gap-3 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
+    <section aria-label="Réglages" className="flex flex-col gap-3 p-4 max-bureau:pb-2 bureau:min-h-0 bureau:overflow-y-auto bureau:pb-0 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
       <h1 className="font-serif text-marque">Carte où vivre</h1>
       <Categorie titre="Loyer" resume={plafondLoyer(reglages.loyer)}>
         <Curseur

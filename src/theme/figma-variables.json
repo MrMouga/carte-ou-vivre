@@ -1,5 +1,5 @@
 {
-  "_source": "Sortie brute de get_variable_defs (Figma uJG30M95NtOV9eDkv8oF0q), lue le 2026-10-12 sur les nœuds 9:636 (planche Système), 7:343 (Mobile 390 — classée) et 5:2 (Bureau — classée), fusionnées. space-6 (24) et space-8 (32) ne sont liés à aucun nœud : valeurs du contrat docs/design/system/README.md.",
+  "_source": "Sortie brute de get_variable_defs (Figma uJG30M95NtOV9eDkv8oF0q), lue le 2026-10-12 sur les nœuds 9:636 (planche Système), 7:343 (Mobile 390 — classée) et 5:2 (Bureau — classée), fusionnées. place-marker et place-marker-foreground : get_variable_defs sur 20:168 (Ligne de proche), lu le 2026-10-13 (VariableID:17:680 et 17:681). space-6 (24) et space-8 (32) ne sont liés à aucun nœud : valeurs du contrat docs/design/system/README.md.",
   "var(--foreground)": "#1f2a2a",
   "var(--muted-foreground)": "#5b6664",
   "var(--background)": "#f7f4ee",
@@ -20,6 +20,8 @@
   "var(--map-river)": "#8db3ca",
   "var(--map-neighbour)": "#efece6",
   "var(--map-border)": "#8e9896",
+  "var(--place-marker)": "#b4532a",
+  "var(--place-marker-foreground)": "#ffffff",
   "var(--space-1)": "4",
   "var(--space-2)": "8",
   "var(--space-3)": "12",

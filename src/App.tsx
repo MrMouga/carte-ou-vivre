@@ -11,11 +11,13 @@ import { Legend } from './ui/Legend';
 import { List } from './ui/List';
 import { SizeChips } from './ui/SizeChips';
 import { compte, nomAffiche } from './domain/format';
-import { color } from './theme/tokens';
+import { color, space } from './theme/tokens';
 import { avecDelai, DELAI_DONNEES_MS, indicateur } from './domain/chargement';
 import { Status, type Message } from './ui/Status';
 import { Mentions } from './ui/Mentions';
 import { cn } from './lib/cn';
+import { useProches } from './proches/useProches';
+import { Proches } from './ui/Proches';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
 const REPRISE_ADRESSE_MS = 1000;
@@ -90,13 +92,30 @@ export function App() {
     const f = feuille.current?.getBoundingClientRect();
     return paddingCarte(innerWidth, innerHeight, f && f.height > 0 ? innerHeight - f.top : undefined);
   };
+  // Bureau : hauteur réservée sous le panneau de réglages = de la légende au bas de l'écran, plus l'écart des panneaux.
+  const pied = useRef<HTMLDivElement>(null);
+  const [basReglages, setBasReglages] = useState(0);
+  useEffect(() => {
+    const el = pied.current!;
+    const maj = () => setBasReglages(innerHeight - el.getBoundingClientRect().top + space['space-4']);
+    const ro = new ResizeObserver(maj);
+    ro.observe(el);
+    addEventListener('resize', maj);
+    return () => {
+      ro.disconnect();
+      removeEventListener('resize', maj);
+    };
+  }, []);
   const message: Message = erreur ? 'erreur' : indicateurVisible ? 'chargement' : prete && fond === 'secours' ? 'fond-indisponible' : null;
 
   const [choisie, setChoisie] = useState<string | null>(null);
   const [retour, setRetour] = useState<string | null>(null);
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
 
-  const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages) : null), [donnees, reglages]);
+  // Proches (spec proches) : hors de l'adresse de la page (D7) ; les prêts comptent dans le score (R11).
+  const codes = useMemo(() => donnees?.communes.map((c) => c.code) ?? null, [donnees]);
+  const proches = useProches(donnees?.reperes ?? null, codes);
+  const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages, proches.prets) : null), [donnees, reglages, proches.prets]);
   const ronds = useMemo<Rond[]>(
     () =>
       donnees && resultat
@@ -146,11 +165,19 @@ export function App() {
         )}
       >
         <div className="mx-4 h-rail w-poignee-feuille shrink-0 rounded-full bg-border bureau:hidden" aria-hidden="true" />
-        <div className={cn('bureau:absolute bureau:left-4 bureau:top-4 bureau:w-reglages', choisie && 'max-bureau:hidden')}>
+        {/* Bureau : le panneau s'arrête au-dessus de la légende et défile, le compte collé en bas (Figma 22:486). */}
+        <div
+          style={{ '--bas-reglages': `${basReglages}px` } as React.CSSProperties}
+          className={cn(
+            'bureau:pointer-events-none bureau:absolute bureau:left-4 bureau:top-4 bureau:bottom-(--bas-reglages) bureau:flex bureau:w-reglages bureau:flex-col bureau:*:pointer-events-auto',
+            choisie && 'max-bureau:hidden',
+          )}
+        >
           <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
             <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
+            <Proches proches={proches.proches} onAjouter={proches.ajouter} onPlafond={proches.regler} onRetirer={proches.retirer} inactif={!prete} />
             {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
-            <p role="status" className="text-texte-fort max-bureau:sr-only">
+            <p role="status" className="text-texte-fort max-bureau:sr-only bureau:sticky bureau:bottom-0 bureau:-mx-4 bureau:border-t bureau:border-border bureau:bg-card bureau:p-4">
               {resultat?.actif ? compte(resultat.classement.length) : ''}
             </p>
           </Settings>
@@ -178,7 +205,7 @@ export function App() {
       )}
       {/* Après la feuille, pour qu'au clavier les réglages et la liste passent avant les mentions. Légende puis mentions,
           en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
-      <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
+      <div ref={pied} className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
           <Legend sansPlafond={resultat?.actif === false} fondIndisponible={fond === 'secours'} />
           <Mentions className="max-bureau:hidden" />

@@ -23,6 +23,8 @@ export const color = {
   'map-river': '#8DB3CA',
   'map-neighbour': '#EFECE6',
   'map-border': '#8E9896',
+  'place-marker': '#B4532A', // repère d'un proche, ligne et pastille de proche (primitive Figma terre-cuite/600)
+  'place-marker-foreground': '#FFFFFF',
 } as const;
 
 /** Espacements, en px. */

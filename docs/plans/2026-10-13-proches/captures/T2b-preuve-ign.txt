@@ -1,0 +1,44 @@
+Tâche 2b — preuve sur les vraies données et le vrai IGN (2026-10-13, serveur de développement http://localhost:5173, Chromium avec fenêtre, 1 440 × 900)
+
+Parcours : page « / » ; « Tes proches » ; « 12 rue de la Paix, Nantes » → suggestion « 12 Rue de la Paix, 44000 Nantes » ; nom proposé « Nantes (44) »
+remplacé par « Parents de Léa » ; « Ajouter ». Puis « + Ajouter un proche » ; « Toulouse » → suggestion « Toulouse, Commune · départ de la mairie » ;
+nom proposé « Toulouse (31) » gardé ; « Ajouter ».
+
+1. Premier passage, cache du navigateur vide (≈ 15:27–15:29)
+   Temps de calcul (de l'apparition de « Calcul des trajets depuis … » à celle du curseur de plafond, MutationObserver dans la page) :
+   - Parents de Léa (adresse, point -1.554555,47.215051 rendu par l'IGN, sans arrondi) : 10,9 s
+   - Toulouse (31) (commune seule, départ de la mairie de reperes.json : 1.4442,43.6046) : 29,6 s
+   Zones (durée en minutes, départ en ms depuis l'ouverture, temps de réponse en ms, statut) — Resource Timing de la page :
+   Nantes   : [180,23935,10798,200] [165,24187,5670,200] [150,24441,4335,200] [135,24691,5339,200] [120,24941,5679,200] [105,25191,2398,200]
+              [90,25442,2066,200] [75,25693,4075,200] [60,25944,2002,200] [45,26195,2485,200] [30,26446,2191,200] [15,26697,989,200]
+   Toulouse : [180,64931,29453,200] [165,65182,23492,200] [150,65433,5151,200] [135,65685,4913,200] [120,65937,5302,200] [105,66189,2427,200]
+              [90,66440,4168,200] [75,66690,1197,200] [60,66940,1430,200] [45,67191,4689,200] [30,67442,3228,200] [15,67694,290,200]
+   → 12 zones sur 12 à chaque fois (200), une toutes les 250 ms. Les 29,6 s de Toulouse viennent de l'IGN : sa zone de 3 h a mis 29,5 s
+     à répondre (T2a : 10,5 s pour le même départ). Reste sous le délai d'échec de 45 s (H21, tâche 3).
+   Note : ce passage a été fait avant le dernier changement de la tâche (défilement du panneau en bureau, compte collé en bas) ;
+   le calcul (useProches, ign.ts, worker) n'a pas changé depuis.
+
+2. Second passage, code final (15:34–15:36) : mêmes adresses. Calculs en 2,9 s et 2,9 s : les 24 zones sont servies par le cache HTTP
+   du navigateur (1 à 6 ms chacune) ; le cache survit à un redémarrage du navigateur de test. À savoir : ré-ajouter une adresse déjà
+   calculée est presque immédiat (la file de 250 ms reste le seul délai).
+   Captures de ce passage : T2b-vide, T2b-suggestions, T2b-nom-propose, T2b-nom, T2b-calcul, T2b-pret-parents, T2b-suggestions-toulouse,
+   T2b-nom-toulouse, T2b-deux-proches, T2b-toulouse-seule, T2b-390-proche.
+
+Adresse de la page relue après chaque ajout : /?loyer=1200&mer=60 (inchangée).
+
+Requêtes envoyées à data.geopf.fr (second passage, toutes) : 2 recherches et 24 zones ; aucune ne contient « Parents » ni « Léa » :
+   /geocodage/search?q=12+rue+de+la+Paix,+Nantes&index=address&autocomplete=1&limit=10
+   /navigation/isochrone?resource=bdtopo-valhalla&point=-1.554555,47.215051&costType=time&costValue=180…15&timeUnit=minute&profile=car&direction=departure&geometryFormat=geojson&crs=EPSG:4326 (12)
+   /geocodage/search?q=Toulouse&index=address&autocomplete=1&limit=10
+   /navigation/isochrone?resource=bdtopo-valhalla&point=1.4442,43.6046&costType=time&costValue=180…15&… (12)
+
+Listes après calcul (loyer 1 200 €, mer 60 km) :
+   - Parents de Léa à 2 h : « 703 communes passent tes critères », 1 Marzan (56) 63, 2 Chaumes-en-Retz (44) 62, 3 Villeneuve-en-Retz (44) 61…
+   - + Toulouse (31) à 2 h : « Aucune commune ne passe tes critères » (Nantes–Toulouse : 5 h 34 ; attendu, spec D15) ; à 3 h chacun, et mer
+     « Sans limite », toujours aucune.
+   - Toulouse (31) seule à 2 h (après « Retirer Parents de Léa ») : « 209 communes », 1 Portel-des-Corbières (11) 56, 2 Sigean (11) 54, 3 Bages (11) 54.
+   - Changer un plafond ou retirer un proche : 24 zones demandées avant, 24 après (aucun nouveau calcul).
+
+Pas couvert : le téléphone ; Safari ; la mémoire du navigateur (tâche 3) ; les repères sur la carte et la fiche (tâche 4).
+Incident : vers 15:36, pendant la fin de la session, les curseurs Loyer et Mer de la fenêtre visible ont bougé sans commande de ma part
+(adresse /?loyer=350, puis 1000&mer=105, puis 1400&mer=65) : manipulation extérieure de la fenêtre ; aucune capture n'a été prise après.
