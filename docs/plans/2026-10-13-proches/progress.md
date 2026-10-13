@@ -14,6 +14,8 @@ Tâche 4 : faite — commits aae103d..bd732c0 — preuve : captures/T4-*.png, T4
 
 Tâche 5 : faite — commits 1cd955b..f9fd140 — preuve : captures/T5-bureau-*.png, T5-390-*.png, T5-preuve-*.txt, T5-*-requetes-etape1.txt (bout en bout sur la version construite en local, vrai IGN, profil neuf : 9,4 s bureau, 11,8 s à 390 px ; La Rochelle 2 h 15 ; Bordeaux plus de 3 h ; réouverture sans calcul ; effacer) (≈ 17:50) ; suite revérifiée (82 unitaires, 141 navigateur) — ≈ 44 min — agent : 231 k jetons — rapport : taches/T5.md — hors liste : src/theme/tokens.ts, docs/design/system/README.md, src/map/MapView.tsx (option sansZoom) — essai téléphone : à faire avec Vincent
 
+Correctif clavier iPhone : fait — commits 11c6bc5..0c352c2 — suite revérifiée (82 unitaires, 147 navigateur, --workers=2) — rapport : taches/fix-clavier-iphone.md — **essai de Vincent sur iPhone (18:05 puis ≈ 18:45) : le champ disparaît toujours sous le clavier** → choix de Vincent : on laisse, l'interface téléphone sera retravaillée plus tard (défaut connu, reporté). Le correctif est gardé (ne casse rien, retire « AutoFill Contact »).
+
 ## Décisions prises à la place de Vincent
 - T0 : recherche par `/geocodage/search` (rend le code INSEE) au lieu de `/completion` ; le faux service intercepte `search*`. Coût si faux : un aller-retour de plus par recherche (≈ 100–300 ms, 1,3 s mesuré sur le téléphone).
 - T0 : file d'appels à 4 requêtes par seconde (à 5 pile, l'IGN refuse la 6e et bloque 5 s). Coût : ≈ 0,5 s de plus par proche.
@@ -69,3 +71,4 @@ Tâche 5 : faite — commits 1cd955b..f9fd140 — preuve : captures/T5-bureau-*.
 - Signalé en tâche 2b : vers 15:36, les curseurs Loyer et Mer de la fenêtre visible du navigateur de test ont bougé sans commande de l'agent (manipulation extérieure probable) ; aucune capture n'a été prise après.
 - Signalé en tâche 3, pour Vincent : sur le vrai IGN, « La Rochelle » propose d'abord « la Rochelle, 35230 Orgères » (lieu-dit), pas la ville ; mettre les communes en tête des suggestions ?
 - Signalé en tâche 4 : le test « H21 délai de 45 s » (proches-etats.spec.ts, tâche 3) est instable en parallèle (9 échecs sur 12 isolé, 1 dans une suite) — à corriger avant la démo.
+- Capture de Vincent `captures/T5-iphone-vincent-bug-clavier.png` : contient une adresse personnelle (fiche contact) ; laissée hors de git, à Vincent de décider.
