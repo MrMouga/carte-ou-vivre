@@ -401,7 +401,7 @@
       "id": "AC-14",
       "rule": "R9",
       "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
-      "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) dans la liste une fois le calcul fini",
+      "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) sur la carte une fois le calcul fini",
       "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 2 h 15 : au-dessus de ton plafond de 2 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
       "passes": false
     },
