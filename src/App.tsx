@@ -116,6 +116,8 @@ export function App() {
   const [ajout, setAjout] = useState(false);
   const [retour, setRetour] = useState<string | null>(null);
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
+  /** Index de la commune choisie dans communes.json (ordre des repères et des temps des proches), ou null. */
+  const indexChoisie = choisie == null ? null : index.get(choisie)!;
 
   // Proches (spec proches) : gardés dans ce navigateur, hors de l'adresse de la page (D7, R12) ; les prêts comptent dans le score (R11).
   const codes = useMemo(() => donnees?.communes.map((c) => c.code) ?? null, [donnees]);
@@ -152,7 +154,7 @@ export function App() {
         <MapView
           reperes={donnees.reperes}
           couleurs={couleurs}
-          choisie={choisie == null ? null : index.get(choisie)!}
+          choisie={indexChoisie}
           sansPlafond={resultat?.actif === false}
           ronds={ronds}
           proches={reperesProches}
@@ -164,7 +166,7 @@ export function App() {
           sansZoom={ajout}
         />
       )}
-      {donnees && !erreur && <Pastilles proches={proches.proches} commune={choisie == null ? null : index.get(choisie)!} />}
+      {donnees && !erreur && <Pastilles proches={proches.proches} commune={indexChoisie} />}
       {/* Bureau : panneaux posés sur la carte (la boîte s'efface). 390 px : une feuille en bas qui défile, à 56 % de la
           hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667) ;
           pendant l'ajout d'un proche, elle monte jusqu'à la bande de carte du haut (27:1160). */}
@@ -217,7 +219,7 @@ export function App() {
                 evaluation={resultat.parCode.get(choisie)!}
                 total={resultat.classement.length}
                 proches={proches.proches}
-                index={index.get(choisie)!}
+                index={indexChoisie!}
                 onRetour={() => { setRetour(choisie); setChoisie(null); }}
               />
             ) : (
