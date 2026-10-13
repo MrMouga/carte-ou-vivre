@@ -12,6 +12,8 @@ Tâche 3 : faite — commits 5701053..6f5a906 — preuve : captures/T3-*.png, T3
 
 Tâche 4 : faite — commits aae103d..bd732c0 — preuve : captures/T4-*.png, T4-preuve-ign.txt (La Rochelle passe, « Parents de Léa : 2 h 15 », pastille « 2 h 15 » ; Bordeaux « plus de 3 h ») (≈ 16:50) ; suite revérifiée (82 unitaires, 129 navigateur) — ≈ 30 min — agent : 293 k jetons — rapport : taches/T4.md — AC-3, AC-5, AC-14, AC-16 — hors liste : tests/e2e/proches-carte.spec.ts, src/index.css, src/theme/tokens.ts, docs/design/system/README.md (expliqués) — AC-14 et AC-16 : « dans la liste » → « sur la carte » (Grandeville ne passe pas à 2 h ; erreur du recalage D15, corrigée avec l'accord de Vincent)
 
+Tâche 5 : faite — commits 1cd955b..f9fd140 — preuve : captures/T5-bureau-*.png, T5-390-*.png, T5-preuve-*.txt, T5-*-requetes-etape1.txt (bout en bout sur la version construite en local, vrai IGN, profil neuf : 9,4 s bureau, 11,8 s à 390 px ; La Rochelle 2 h 15 ; Bordeaux plus de 3 h ; réouverture sans calcul ; effacer) (≈ 17:50) ; suite revérifiée (82 unitaires, 141 navigateur) — ≈ 44 min — agent : 231 k jetons — rapport : taches/T5.md — hors liste : src/theme/tokens.ts, docs/design/system/README.md, src/map/MapView.tsx (option sansZoom) — essai téléphone : à faire avec Vincent
+
 ## Décisions prises à la place de Vincent
 - T0 : recherche par `/geocodage/search` (rend le code INSEE) au lieu de `/completion` ; le faux service intercepte `search*`. Coût si faux : un aller-retour de plus par recherche (≈ 100–300 ms, 1,3 s mesuré sur le téléphone).
 - T0 : file d'appels à 4 requêtes par seconde (à 5 pile, l'IGN refuse la 6e et bloque 5 s). Coût : ≈ 0,5 s de plus par proche.
@@ -47,7 +49,13 @@ Tâche 4 : faite — commits aae103d..bd732c0 — preuve : captures/T4-*.png, T4
 - T4 : repères cachés aux lecteurs d'écran (`aria-hidden`), la zone et les pastilles portent l'information.
 - T4 : anneau de 40 % à 10 %, +15 % au milieu du cycle de 1,2 s ; fixe à 40 % en mouvement réduit.
 - T4 : nouveaux jetons `taille-goutte` 26, `taille-goutte-haut` 34, `duree-pulse-ms` 1 200 (à reporter dans Figma) ; pied de page sur deux lignes à 1 440 px.
+- T5 : quand la feuille monte (390 px), le champ se place sous la poignée, pas le titre « Tes proches » comme dans Figma 27:1160 (≈ 400 px au-dessus du clavier d'un iPhone). Coût : une ligne pour revenir au titre.
+- T5 : nouveaux jetons `taille-bande-carte` 40 et `taille-saisie` 16 (texte des champs à 16 px pour que Safari n'agrandisse pas la page) ; à reporter dans Figma.
+- T5 : focus gardé pendant l'appui sur une suggestion ou « Ajouter » ; bande de carte nue (sans zoom ni légende) pendant l'ajout.
+- T5 : défaut de la tâche 3 corrigé : après le 5ᵉ proche, le focus va au message « 5 proches au maximum… ».
+- T5 : limite connue : après « Effacer mes proches », la feuille monte aussi (sans clavier).
 ## Preuves
+- T5 : captures/T5-bureau-1…4-*.png, T5-390-1…4-*.png, T5-preuve-bureau.txt, T5-preuve-390.txt, T5-*-requetes-etape1.txt, T5-npm-test.txt.
 - T4 : captures/T4-deux-proches.png, T4-la-rochelle.png, T4-la-rochelle-passe.png, T4-bordeaux.png, T4-cinq-proches.png, T4-repere-zoom.png, T4-390-fiche.png, T4-preuve-ign.txt.
 - T3 : captures/T3-vide.png, T3-aucune-adresse.png, T3-recherche-indisponible.png, T3-doublon.png, T3-calcul-et-attente.png, T3-indisponible.png, T3-plein-bureau.png, T3-plein-390.png, T3-repliee-*.png, T3-memoire-refusee.png, T3-ign-*.png, T3-preuve-ign.txt.
 - T2b : captures/T2b-vide.png, T2b-suggestions.png, T2b-nom.png, T2b-calcul.png, T2b-pret-parents.png, T2b-toulouse-seule.png, T2b-deux-proches.png, T2b-390-proche.png, T2b-preuve-ign.txt.
