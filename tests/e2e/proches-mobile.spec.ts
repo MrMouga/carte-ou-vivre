@@ -49,6 +49,9 @@ for (const n of [0, 1, 4]) {
       expect(s.height).toBeGreaterThanOrEqual(size['taille-toucher']);
       // Texte du champ à 16 px : sous 16 px, Safari sur iPhone agrandit la page au focus.
       await expect(champ(page)).toHaveCSS('font-size', `${size['taille-saisie']}px`);
+      // La bande de carte au-dessus est nue : ni zoom ni légende (Figma 27:1160).
+      await expect(page.getByRole('button', { name: 'Zoomer', exact: true })).toBeHidden();
+      await expect(page.getByText('Score 0 → 100')).toBeHidden();
     } else {
       expect(s.y).toBeGreaterThanOrEqual(0);
       expect(s.y + s.height).toBeLessThanOrEqual(hauteur);
@@ -70,7 +73,15 @@ for (const n of [0, 1, 4]) {
     // « Ajouter » : l'ajout se referme, la feuille redescend à sa hauteur de repos, le nouveau proche est dans la zone.
     await ajout.click();
     await expect(zone(page).getByRole('listitem').filter({ hasText: 'Lilleville (59)' })).toBeVisible();
-    if (mobile(page)) await expect.poll(async () => Math.round((await boite(feuille(page))).y)).toBe(Math.round(hautAuRepos(page)));
+    if (mobile(page)) {
+      await expect.poll(async () => Math.round((await boite(feuille(page))).y)).toBe(Math.round(hautAuRepos(page)));
+      // La feuille montre « Tes proches » et la ligne du nouveau proche ; zoom et légende reviennent.
+      const f = await boite(feuille(page));
+      const titre = await boite(zone(page).getByRole('button', { name: 'Tes proches' }));
+      if (n < 4) expect(titre.y).toBeGreaterThanOrEqual(f.y); // avec 4 proches, la ligne du 5e passe avant le titre
+      await expect(zone(page).getByRole('listitem').filter({ hasText: 'Lilleville (59)' })).toBeInViewport();
+      await expect(page.getByRole('button', { name: 'Zoomer', exact: true })).toBeVisible();
+    }
   });
 }
 

@@ -140,6 +140,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutPro
   const ajouter = () => {
     if (!choisie) return;
     if (libelles.includes(choisie.libelle)) return setAvis('doublon'); // R9 : les champs restent, pour changer d'adresse
+    onAjout?.(false); // dans le même rendu que le nouveau proche, pour que Proches le montre dans la feuille redescendue
     onAjouter(choisie, nom);
     setTexte('');
     setNom('');
@@ -258,7 +259,16 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
   const champ = useRef<HTMLInputElement>(null);
   const messagePlein = useRef<HTMLParagraphElement>(null);
   const refocus = useRef(false);
+  // 390 px : après « Ajouter », la feuille redescend ; elle montre « Tes proches » en haut, ou au moins la ligne du nouveau
+  // proche quand elle est plus bas.
+  const section = useRef<HTMLElement>(null);
+  const montrer = useRef(false);
   useEffect(() => {
+    if (montrer.current && !enBureau()) {
+      section.current?.scrollIntoView({ block: 'start' });
+      section.current?.querySelector('ul > li:last-child')?.scrollIntoView({ block: 'nearest' });
+    }
+    montrer.current = false;
     if (refocus.current) (lien.current ?? champ.current ?? messagePlein.current)?.focus();
     refocus.current = false;
   });
@@ -276,7 +286,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
     </Button>
   );
   return (
-    <section aria-labelledby="titre-proches">
+    <section ref={section} aria-labelledby="titre-proches" className="max-bureau:scroll-mt-6">
       <Categorie titre="Tes proches" resume={resumeDe(proches)} idTitre="titre-proches" action={vide ? undefined : effacer}>
         {memoireRefusee && <p className="text-texte text-foreground">Tes proches ne seront pas gardés sur ce navigateur.</p>}
         {vide ? (
@@ -312,6 +322,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
             onAjouter={(lieu, nom) => {
               onAjouter(lieu, nom);
               refocus.current = true;
+              montrer.current = true;
               setOuvert(false);
             }}
           />

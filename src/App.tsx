@@ -161,6 +161,7 @@ export function App() {
           onErreur={() => setErreur(true)}
           onFond={setFond}
           padding={padding}
+          sansZoom={ajout}
         />
       )}
       {donnees && !erreur && <Pastilles proches={proches.proches} commune={choisie == null ? null : index.get(choisie)!} />}
@@ -174,7 +175,7 @@ export function App() {
           'bureau:contents',
           'max-bureau:absolute max-bureau:inset-x-0 max-bureau:bottom-0 max-bureau:flex max-bureau:flex-col max-bureau:overflow-y-auto',
           'max-bureau:rounded-t-sheet max-bureau:bg-card max-bureau:shadow-feuille',
-          choisie ? 'max-bureau:max-h-feuille' : ajout ? 'max-bureau:top-bande-carte' : 'max-bureau:h-feuille',
+          choisie ? 'max-bureau:max-h-feuille' : ajout ? 'max-bureau:top-bande-carte max-bureau:z-3' : 'max-bureau:h-feuille',
         )}
       >
         {/* La poignée reste en haut quand la feuille défile : ce qui défile passe dessous, sans être coupé au bord. */}
@@ -239,7 +240,13 @@ export function App() {
       )}
       {/* Après la feuille, pour qu'au clavier les réglages et la liste passent avant les mentions. Légende puis mentions,
           en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
-      <div ref={pied} className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3">
+      <div
+        ref={pied}
+        className={cn(
+          'pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3',
+          ajout && 'max-bureau:hidden', // la bande de carte au-dessus de la feuille montée est trop basse pour la légende
+        )}
+      >
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
           <Legend sansPlafond={resultat?.actif === false} fondIndisponible={fond === 'secours'} />
           <Mentions className="max-bureau:hidden" />

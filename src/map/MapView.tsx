@@ -6,6 +6,7 @@ import { cadreDe, emprise, type Padding, type Repere } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
 import { ProcheMarkers, type RepereProche } from './ProcheMarkers';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/cn';
 import { map as carte } from '@/theme/tokens';
 
 type Props = {
@@ -28,13 +29,15 @@ type Props = {
   onFond: (fond: Fond) => void;
   /** Marges du cadrage, lues au moment de cadrer (la feuille mobile change de hauteur). */
   padding: () => Padding;
+  /** 390 px : zoom caché (la feuille monte pendant l'ajout d'un proche, Figma 27:1160). */
+  sansZoom?: boolean;
 };
 
 export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
 // celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10, repères des proches.
-export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
+export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding, sansZoom }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
@@ -175,7 +178,7 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proche
         <div ref={container} className="h-full w-full" data-testid="carte" />
       </div>
       {/* Zoom (H8) : en bureau, en bas contre le bord gauche du panneau de liste ; à 390 px, en haut à droite, 44 × 44. */}
-      <div className="pointer-events-none absolute bottom-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:right-3 max-bureau:top-3">
+      <div className={cn('pointer-events-none absolute bottom-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:right-3 max-bureau:top-3', sansZoom && 'max-bureau:hidden')}>
         <div className="pointer-events-auto flex flex-col gap-1">
           <Button variant="icone" className="max-bureau:size-toucher" aria-label="Zoomer" onClick={() => mapRef.current?.zoomIn()}>
             +
