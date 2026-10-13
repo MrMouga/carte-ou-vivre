@@ -59,8 +59,8 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Pastille de temps | `li` d'une `ul` « Temps vers tes proches » (pas un bouton) | une seule ; textes Nom, Valeur (« 4 h au plus », « 3 h 30 », « 3 h 30 · au-dessus de 3 h », « calcul en cours », « trajets indisponibles ») ; bureau seulement |
 | Ligne de proche | `li` (composé) : repère en petit 24 px, nom, adresse, Slider 15 min → 6 h, Button lien « Retirer » | État : Prêt · En attente · Calcul · Indisponible (+ « Réessayer ») |
 | Catégorie repliable | `h2 > button[aria-expanded]` | Ouverte Oui/Non ; repliée : résumé à droite ; ouverte : l'action de la catégorie à droite (Bascule mer, « Effacer mes proches ») |
-| Bascule mer | deux `button[aria-pressed]` | Unité km / min ; segment actif `primary` |
-| Suggestion d'adresse | bouton dans la liste des suggestions | textes Ligne 1, Ligne 2 ; icône de lieu `muted-foreground` |
+| Bascule mer | groupe `role=group` nommé « Unité de la mer », deux `button[aria-pressed]` « km » et « min » | Unité km / min ; segment actif `primary` ; 24 px de haut en bureau, 44 px à 390 px |
+| Suggestion d'adresse | bouton dans la liste des suggestions ; nom accessible « Ligne 1, Ligne 2 » ; le champ porte `aria-controls` vers la liste | textes Ligne 1, Ligne 2 ; icône de lieu `muted-foreground` |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)

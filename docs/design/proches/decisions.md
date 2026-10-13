@@ -28,3 +28,11 @@ La grille : on règle un proche sans perdre la liste de vue (objectif 3) ; on li
 
 ## Après les écrans Figma
 - **Phrase sur l'IGN retirée** (choix de Vincent, spec D12) : plus de phrase sous le champ d'adresse. Coût : l'écran ne dit plus où part l'adresse ; à reprendre dans la FAQ du lancement.
+
+## Après la relecture Figma ([review-figma.md](review-figma.md)) — décidé par Claude, contestable
+- **Repères qui se chevauchent** (H29 confiait la règle à /ui) : les gouttes restent toutes visibles ; si deux étiquettes se recouvrent (deux proches dans la même ville), l'étiquette du proche ajouté en second passe à gauche de sa goutte. Pas de regroupement : 5 repères au plus.
+- **Résumé de « Tes proches » replié** : le nombre, puis les états qui ne sont pas prêts : « 3 · 1 en calcul », « 4 · 1 indisponible ». Sinon un proche en panne disparaît quand la catégorie est repliée.
+- **Mouvement réduit** (`prefers-reduced-motion`) : l'anneau du repère en calcul ne pulse pas ; il reste fixe à 40 %. Dans la ligne et la pastille, le texte « Calcul des trajets… » / « calcul en cours » porte déjà l'état.
+- **Cibles** : liens « Retirer », « Effacer mes proches », « + Ajouter un proche », titres de catégorie et bascule km | min à 24 px de haut au moins en bureau (`taille-cible`), 44 px à 390 px (`taille-toucher`), comme les autres contrôles du contrat. « Réessayer » devient le bouton principal, à côté de « Retirer » (plus empilé à 20 px).
+- **Données d'exemple** des écrans alignées : 269 communes, aucune taille cochée.
+- **Écart contesté** : le contrat du système avait déjà `place-marker` (commit `48e170c`) quand le relecteur l'a lu.
