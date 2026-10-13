@@ -1,5 +1,4 @@
 2026-10-12 · validé
-À revoir (2026-10-13) : D20 de loyer-mer — l'état « sans plafond » suppose aussi qu'aucun proche n'est prêt, et la mer gagne une bascule km / minutes ; à traiter dans /ui de la tranche proches.
 # Design — loyer-mer
 
 Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.md) · Temps convenu : 4 h, 2 sessions · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (compte perso), pages « Système » et « loyer-mer ».

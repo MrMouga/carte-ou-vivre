@@ -1,4 +1,4 @@
-2026-10-13 · brouillon
+2026-10-13 · validé
 # Design — proches
 
 Spec : [docs/specs/2026-10-13-proches/](../../specs/2026-10-13-proches/spec.md) (révisée D10 à D13) · Temps convenu : 2 h, 1 session · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « proches » (`21:561`) et composants sur « Système » · Étend le design [loyer-mer](../loyer-mer/README.md) (construit : le code fait foi pour ce qui existe) et le [système](../system/README.md).
