@@ -21,6 +21,8 @@ Simplification : faite — commits 6cc3934..271d74f — 4 simplifications sans c
 Relectures : review-spec.md (0 Bloquant, 2 Majeurs, 5 Mineurs), qa.md (bureau seulement : 0, 0, 4 Mineurs) — capture personnelle de Vincent supprimée à sa demande (jamais commitée).
 Corrections 1 : faites — commits de23b3f..c2225b2 — H21 à horloge figée + `workers: 2` dans Playwright ; « · » dans la pastille ; « Ajouter » visible au-dessus du compte ; décalage de 4 px et curseurs qui bougent examinés sans défaut (contour de focus ; focus resté sur un curseur + flèche) — suite revérifiée (82 unitaires, 151 navigateur, suite complète verte) — ≈ 47 min — agent : 173 k jetons — rapport : taches/corrections-1.md
 
+Corrections 2 et 3 (demandes de Vincent pendant la démo) : faites — commits 7e38ca2..b6d06f5 — nom affiché « Où vivre en France » (panneau, onglet, démo) ; texte d'aide « Aucune cochée : peu importe » retiré ; « départ de la mairie » seul sous un proche ville — suite revérifiée (84 unitaires, 151 navigateur) — captures/nom-*.png, corr3-*.png — rapports : taches/corrections-2-nom.md, corrections-3-textes.md
+
 ## Décisions prises à la place de Vincent
 - T0 : recherche par `/geocodage/search` (rend le code INSEE) au lieu de `/completion` ; le faux service intercepte `search*`. Coût si faux : un aller-retour de plus par recherche (≈ 100–300 ms, 1,3 s mesuré sur le téléphone).
 - T0 : file d'appels à 4 requêtes par seconde (à 5 pile, l'IGN refuse la 6e et bloque 5 s). Coût : ≈ 0,5 s de plus par proche.
