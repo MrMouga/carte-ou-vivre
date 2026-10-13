@@ -1,0 +1,35 @@
+Tâche 2a — preuve sur le vrai IGN · 2026-10-13T13:16:21.595Z · Chromium (playwright-core), Mac de Vincent
+Texte cherché : « Toulouse » · données : public/data (34746 communes)
+Suggestions (5) :
+  Toulouse — commune Toulouse (31), INSEE 31555, commune, point 1.433805, 43.604082
+  Toulouse 33870 Vayres — commune Vayres (33), INSEE 33539, adresse, point -0.337262, 44.896608
+  Toulouse 71310 Mervans — commune Mervans (71), INSEE 71295, adresse, point 5.183701, 46.780838
+  Toulouse 32350 Barran — commune Barran (32), INSEE 32029, adresse, point 0.440148, 43.599669
+  Avenue de Toulouse 34070 Montpellier — commune Montpellier (34), INSEE 34172, adresse, point 3.858811, 43.592501
+Départ : 1.4442, 43.6046 (première suggestion)
+Recherche : 238 ms
+Calcul du proche (12 zones + classement dans le worker) : 10.5 s
+Fins de tranche :
+  La Rochelle (17300) : plus de 3 h (valeur rangée 0)
+  Brest (29019) : plus de 3 h (valeur rangée 0)
+  Bordeaux (33063) : 3 h (valeur rangée 180)
+  Nantes (44109) : plus de 3 h (valeur rangée 0)
+  Paris (75056) : plus de 3 h (valeur rangée 0)
+  Les Sables-d'Olonne (85194) : plus de 3 h (valeur rangée 0)
+Communes par fin de tranche (0 = plus de 3 h) : 0: 29179 · 15: 1 · 30: 14 · 45: 153 · 60: 267 · 75: 451 · 90: 512 · 105: 567 · 120: 590 · 135: 686 · 150: 842 · 165: 775 · 180: 709
+Demandes de recherche et de zones à data.geopf.fr (départ en ms depuis la première demande à data.geopf.fr, durée, statut) :
+  +23 ms  recherche q=Toulouse  227 ms  200
+  +263 ms  zone 180 min  9492 ms  200
+  +588 ms  zone 165 min  6059 ms  200
+  +1058 ms  zone 150 min  9670 ms  200
+  +1310 ms  zone 135 min  8798 ms  200
+  +1562 ms  zone 120 min  5939 ms  200
+  +1813 ms  zone 105 min  4723 ms  200
+  +2063 ms  zone 90 min  2858 ms  200
+  +2315 ms  zone 75 min  1168 ms  200
+  +2567 ms  zone 60 min  2153 ms  200
+  +2817 ms  zone 45 min  724 ms  200
+  +3067 ms  zone 30 min  1728 ms  200
+  +3483 ms  zone 15 min  975 ms  200
+(39 demandes du fond de carte Plan IGN, chargé par la page en même temps, non listées)
+Écart entre deux départs de zone, vu par le navigateur : min 250 ms, max 470 ms

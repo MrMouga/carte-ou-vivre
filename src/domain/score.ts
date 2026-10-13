@@ -1,4 +1,5 @@
 // Règles de la spec loyer-mer : passage (R1, D11), note et score (R2, D4), palier de couleur (R3, D5), classement (R5, H4).
+// Spec proches : chaque proche prêt est un critère de plus (R10, R11).
 // Tout se compare sur les valeurs affichées : loyer à l'euro pour 52 m², mer au km (sous 1 km : comparée comme 1 km).
 
 export const SURFACE_M2 = 52;
@@ -20,10 +21,21 @@ export type Reglages = { loyer: number | null; mer: number | null; tailles: Tail
 
 export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: 60, tailles: [] }; // H1
 
+/** Plafond d'un proche, en minutes : de 15 min à 3 h par pas de 15 min (R11, D15), 2 h à l'ajout (H19). */
+export const PROCHE = { pas: 15, max: 180, ajout: 120 } as const;
+
+/**
+ * Proche **prêt** (R11) : son plafond en minutes et ses temps, un par commune dans l'ordre de `communes`.
+ * Un temps est la fin de la tranche de 15 min (15 à 180) ; 0 = plus de 3 h ou sans route (R10).
+ */
+export type ProchePret = { nom: string; plafond: number; temps: Uint16Array };
+
 export type Raison =
   | { critere: 'loyer'; valeur: number; plafond: number }
   | { critere: 'mer'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
+  /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h. */
+  | { critere: 'proche'; nom: string; valeur: number; plafond: number }
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
   | { critere: 'taille-inconnue' };
@@ -65,11 +77,11 @@ export function palier(score: number): 1 | 2 | 3 | 4 | 5 {
   return Math.min(5, Math.floor(score / 20) + 1) as 1 | 2 | 3 | 4 | 5;
 }
 
-export function evaluer(communes: Commune[], r: Reglages): Resultat {
-  const actif = r.loyer != null || r.mer != null;
+export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = []): Resultat {
+  const actif = r.loyer != null || r.mer != null || proches.length > 0;
   const parCode = new Map<string, Evaluation>();
   const passent: Evaluation[] = [];
-  for (const c of communes) {
+  communes.forEach((c, i) => {
     const raisons: Raison[] = [];
     const notes: number[] = [];
     if (r.loyer != null) {
@@ -89,12 +101,17 @@ export function evaluer(communes: Commune[], r: Reglages): Resultat {
       if (t == null) raisons.push({ critere: 'taille-inconnue' });
       else if (!r.tailles.includes(t)) raisons.push({ critere: 'taille', taille: t, population: c.population! });
     }
+    for (const p of proches) {
+      const v = p.temps[i];
+      if (v === 0 || v > p.plafond) raisons.push({ critere: 'proche', nom: p.nom, valeur: v, plafond: p.plafond });
+      else notes.push(100 * (1 - v / p.plafond));
+    }
     const passe = raisons.length === 0;
     const score = passe && actif ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : null;
     const e: Evaluation = { commune: c, passe, score, palier: score == null ? null : palier(score), rang: null, raisons };
     parCode.set(c.code, e);
     if (score != null) passent.push(e);
-  }
+  });
   passent.sort(
     (a, b) =>
       b.score! - a.score! ||

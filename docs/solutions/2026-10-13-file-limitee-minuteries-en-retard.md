@@ -1,0 +1,9 @@
+# Une file limitée en débit compte depuis le départ réel de la demande précédente, jamais depuis des heures réservées d'avance
+Étiquettes : perf, tests, outil · Tranche : proches · Source : tâche 2a de /build proches, `docs/plans/2026-10-13-proches/captures/T2a-file-avant-correction.txt`
+
+**Problème** — La file des zones IGN (au plus 4 par seconde, tâche 0) réservait ses créneaux d'avance (0, 250, 500 ms…) avec un `setTimeout` par demande. Les tests unitaires (horloge simulée) étaient verts.
+**Symptômes** — Sur le vrai IGN, dans la vraie page qui chargeait la carte en même temps : deux zones parties à 71 ms d'écart, 5 en moins d'une seconde (à 6, l'IGN refuse et bloque 5 s). Le fil de la page était pris 450 ms : les minuteries échues sont parties en paquet.
+**Ce qui n'a pas marché** — Simuler la page occupée avec `vi.setSystemTime(+600)` : Vitest décale aussi les minuteries, rien ne part en retard, le test passait sur le code fautif.
+**Ce qui a marché** — Une chaîne de promesses : chaque demande attend `dernierDépart + 250 − maintenant`, puis note son départ réel ; un proche arrêté ne garde pas son créneau. Test : `vi.advanceTimersByTime(600)` (synchrone : les minuteries échues se déclenchent, la suite du code attend, comme un fil bloqué), rouge sur l'ancien code, vert sur le nouveau. Vrai IGN ensuite : écart minimal 250 ms.
+**Aussi** — Avec 12 zones à 250 ms, un proche dure au moins 2,75 s, même avec un faux service instantané (2,85 s mesurées) : le « environ 1 s » du plan n'est pas tenable sans changer la file.
+**Prévention** — Toute file à débit limité dans le navigateur se prouve sur le vrai flux, page chargée, avec le journal des départs (écart minimal écrit dans la preuve) ; pour simuler un fil bloqué sous Vitest, avancer l'horloge en synchrone, pas `setSystemTime`.

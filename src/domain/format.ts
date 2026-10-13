@@ -18,6 +18,14 @@ export const population = (n: number) => entier(n >= 10000 ? Math.round(n / 1000
 export const plafondLoyer = (v: number | null) => (v == null ? 'Sans limite' : euros(v));
 export const plafondMer = (v: number | null) => (v == null ? 'Sans limite' : km(v));
 
+/** Temps ou plafond d'un proche (H22), en minutes : « 15 min », « 1 h », « 2 h 15 » ; 0 = « plus de 3 h » (R10). */
+export function duree(min: number): string {
+  if (min === 0) return `plus de 3${NBSP}h`;
+  if (min < 60) return `${min}${NBSP}min`;
+  const m = min % 60;
+  return `${Math.floor(min / 60)}${NBSP}h${m ? `${NBSP}${String(m).padStart(2, '0')}` : ''}`;
+}
+
 export const nomAffiche = (c: { nom: string; dep: string }) => `${c.nom} (${c.dep})`;
 
 /** Compte de la liste et de la zone annoncée (R5, D17). */
@@ -72,5 +80,7 @@ export function raisonTexte(r: Raison): string {
       return 'Distance à la mer inconnue';
     case 'taille-inconnue':
       return 'Taille inconnue';
+    case 'proche':
+      return `${r.nom} ${duree(r.valeur)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
   }
 }

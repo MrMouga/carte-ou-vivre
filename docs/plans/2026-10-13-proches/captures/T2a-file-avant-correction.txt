@@ -1,0 +1,19 @@
+Tâche 2a — premier passage de la preuve sur le vrai IGN, AVANT la correction de la file (2026-10-13T13:14:27Z)
+Même script (probe/proches/t2a-preuve.mjs), même adresse « 12 rue de la Paix, Nantes ». Résultat identique pour les temps
+(La Rochelle 2 h 15, Bordeaux plus de 3 h, Nantes 15 min ; calcul 10,5 s), mais la file réservait ses créneaux d'avance :
+la page chargeait la carte en même temps, une minuterie est arrivée en retard, et deux zones sont parties à 71 ms d'écart.
+Extrait du journal réseau (départ en ms depuis la première demande, durée, statut) — zones seulement :
+  +162 ms  zone 180 min  10486 ms  200
+  +412 ms  zone 165 min  7014 ms  200
+  +704 ms  zone 150 min  8972 ms  200
+  +918 ms  zone 135 min  9729 ms  200
+  +1376 ms  zone 120 min  2654 ms  200   <- 458 ms après la précédente (page occupée)
+  +1447 ms  zone 105 min  5651 ms  200   <- 71 ms seulement : en paquet
+  +1663 ms  zone 90 min  4657 ms  200
+  +1913 ms  zone 75 min  4015 ms  200
+  +2164 ms  zone 60 min  2863 ms  200    (5 zones entre +1376 et +2164 : moins d'une seconde)
+  +2413 ms  zone 45 min  491 ms  200
+  +2663 ms  zone 30 min  314 ms  200
+  +2913 ms  zone 15 min  224 ms  200
+Correction : chaque zone part 250 ms au moins après le départ réel de la précédente (src/proches/ign.ts, test
+« page occupée 600 ms » dans src/proches/ign.test.ts). Après correction : voir T2a-preuve-ign-nantes.txt (écart min 250 ms).

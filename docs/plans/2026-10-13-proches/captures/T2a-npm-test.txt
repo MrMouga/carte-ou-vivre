@@ -1,0 +1,14 @@
+Tâche 2a — npm test, 2026-10-13 15:18 (après correction de la file)
+ Test Files  9 passed (9)
+      Tests  75 passed (75)
+check-tokens : 29 fichier(s), aucune valeur arbitraire
+  ✓  33 [bureau] › tests/e2e/proches-temps.spec.ts:48:1 › zones en panne (erreur réseau) : le calcul échoue (980ms)
+  ✓  34 [bureau] › tests/e2e/proches-temps.spec.ts:54:1 › refus 429 de l’IGN : le calcul échoue, sans demander les autres zones (807ms)
+  ✓  31 [bureau] › tests/e2e/proches-temps.spec.ts:30:1 › « 1 rue Test » : suggestion au code INSEE, 12 zones de 3 h à 15 min, fins de tranche de la fixture (3.9s)
+  ✓  32 [bureau] › tests/e2e/proches-temps.spec.ts:43:1 › « 2 place Test » : autre proche, autres temps (3.8s)
+  ✓  68 [mobile] › tests/e2e/proches-temps.spec.ts:48:1 › zones en panne (erreur réseau) : le calcul échoue (1.1s)
+  ✓  69 [mobile] › tests/e2e/proches-temps.spec.ts:54:1 › refus 429 de l’IGN : le calcul échoue, sans demander les autres zones (1.0s)
+  ✓  66 [mobile] › tests/e2e/proches-temps.spec.ts:30:1 › « 1 rue Test » : suggestion au code INSEE, 12 zones de 3 h à 15 min, fins de tranche de la fixture (3.9s)
+  ✓  67 [mobile] › tests/e2e/proches-temps.spec.ts:43:1 › « 2 place Test » : autre proche, autres temps (3.9s)
+  2 skipped
+  69 passed (39.0s)

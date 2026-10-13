@@ -1,0 +1,34 @@
+Tâche 2a — preuve sur le vrai IGN · 2026-10-13T13:15:49.989Z · Chromium (playwright-core), Mac de Vincent
+Texte cherché : « 12 rue de la Paix, Nantes » · données : public/data (34746 communes)
+Suggestions (4) :
+  12 Rue de la Paix 44000 Nantes — commune Nantes (44), INSEE 44109, adresse, point -1.554555, 47.215051
+  Rue de la Paix 92000 Nanterre — commune Nanterre (92), INSEE 92050, adresse, point 2.22257, 48.887242
+  Avenue de la Paix 44300 Nantes — commune Nantes (44), INSEE 44109, adresse, point -1.566095, 47.234954
+  Impasse de la Paix 24800 Nantheuil — commune Nantheuil (24), INSEE 24304, adresse, point 0.947066, 45.400976
+Départ : -1.554555, 47.215051 (première suggestion)
+Recherche : 182 ms
+Calcul du proche (12 zones + classement dans le worker) : 14.5 s
+Fins de tranche :
+  La Rochelle (17300) : 2 h 15 (valeur rangée 135)
+  Brest (29019) : plus de 3 h (valeur rangée 0)
+  Bordeaux (33063) : plus de 3 h (valeur rangée 0)
+  Nantes (44109) : 15 min (valeur rangée 15)
+  Paris (75056) : plus de 3 h (valeur rangée 0)
+  Les Sables-d'Olonne (85194) : 1 h 45 (valeur rangée 105)
+Communes par fin de tranche (0 = plus de 3 h) : 0: 31024 · 15: 1 · 30: 3 · 45: 54 · 60: 83 · 75: 157 · 90: 221 · 105: 261 · 120: 347 · 135: 480 · 150: 642 · 165: 729 · 180: 744
+Demandes de recherche et de zones à data.geopf.fr (départ en ms depuis la première demande à data.geopf.fr, durée, statut) :
+  +14 ms  recherche q=12 rue de la Paix, Nantes  181 ms  200
+  +199 ms  zone 180 min  14428 ms  200
+  +507 ms  zone 165 min  12781 ms  200
+  +813 ms  zone 150 min  5557 ms  200
+  +1272 ms  zone 135 min  10861 ms  200
+  +1525 ms  zone 120 min  9248 ms  200
+  +1777 ms  zone 105 min  8786 ms  200
+  +2070 ms  zone 90 min  7234 ms  200
+  +2321 ms  zone 75 min  1110 ms  200
+  +2572 ms  zone 60 min  1206 ms  200
+  +2824 ms  zone 45 min  1087 ms  200
+  +3074 ms  zone 30 min  688 ms  200
+  +3327 ms  zone 15 min  575 ms  200
+(38 demandes du fond de carte Plan IGN, chargé par la page en même temps, non listées)
+Écart entre deux départs de zone, vu par le navigateur : min 250 ms, max 459 ms
