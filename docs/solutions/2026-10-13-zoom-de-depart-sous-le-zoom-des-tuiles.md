@@ -1,0 +1,8 @@
+# Une carte cadrée par `fitBounds` peut s'ouvrir sous le premier zoom des tuiles : aucune commune dessinée, et les tests à 844 px de haut ne le voient pas
+Étiquettes : build, tests, data · Tranche : interface-telephone · Source : retours de Vincent du 2026-10-13 (« sur mobile, la vue ne permet pas de voir les zones vertes »), mesure avant /spec interface-telephone
+
+**Problème** — Sur téléphone, la carte s'ouvre sans aucune commune verte. Vincent pensait à un zoom trop large (« zones trop petites »).
+**Symptômes** — Dans une fenêtre de 390 × 664 (Safari sur iPhone), aucune tuile des communes n'est demandée à l'ouverture ; à 390 × 844, les tuiles du zoom 4 ; en bureau, du zoom 5. Calcul : la métropole avec la Corse dans la bande au-dessus de la feuille (≈ 358 × 260 px) donne un zoom ≈ 3,7, sous le `minzoom: 4` de la source des tuiles. Tous les tests à 390 px passaient : ils tournent à 390 × 844, et leur fixture (5 carrés de 0,5°) se cadre à un zoom bien plus haut.
+**Ce qui n'a pas marché** — Juger le défaut sur la capture de Vincent (« trop petit ») : la vraie cause n'était visible qu'en listant les zooms des tuiles demandées.
+**Ce qui a marché** — Un script Playwright qui ouvre la page à plusieurs tailles de fenêtre et note les zooms des requêtes `/tuiles/{z}/…` : « aucune » à 664 px de haut prouve le défaut en une ligne.
+**Prévention** — Le zoom de départ dépend de la taille de la fenêtre : à chaque changement de cadrage ou de plage de zooms des tuiles, vérifier les tuiles demandées à la plus petite fenêtre visée (375 × 548), sur l'emprise réelle, pas sur la fixture. Règle de jugement : une fenêtre de test de 390 × 844 est l'écran entier d'un iPhone, pas la fenêtre de Safari (≈ 664 px) ; tester aussi la fenêtre réelle.

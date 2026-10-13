@@ -1,0 +1,23 @@
+# Interface téléphone
+2026-10-13 · validée · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+
+**En une phrase** : sur téléphone, on voit le vert dès l'ouverture, on replie la feuille pour regarder la carte, la liste a son onglet, et on ajoute un proche sur iPhone sans perdre le champ sous le clavier.
+**Pourquoi** : retours de Vincent du 2026-10-13 : dans Safari sur iPhone, aucune commune n'est dessinée à l'ouverture ; la feuille ne se replie pas ; la liste est sous tous les réglages ; l'ajout d'un proche est un défaut reporté (H39 de proches).
+**C'est réussi si** : en ligne, sur l'iPhone de Vincent : la côte est verte sans zoomer ; « Replier » puis un glisser vers le haut referment et rouvrent la feuille ; l'onglet « Les 10 premières » montre la liste ; un rond touché ouvre la fiche ; avec « + Ajouter un proche », le champ et ses suggestions restent au-dessus du clavier et le proche s'ajoute.
+
+**Ce qu'on voit** (sous 1 024 px ; le bureau ne change pas) : la carte, et en bas une feuille à deux onglets, « Critères » et « Les 10 premières », qui se replie en une barre avec le compte.
+
+**Décisions à valider**
+- **D1** — Seule la mise en page sous 1 024 px change (téléphone et tablette, H11 de loyer-mer). *Pourquoi* : les retours viennent du téléphone. *Écarté* : revoir le bureau aussi.
+- **D2** — À l'ouverture, téléphone tenu droit (dès 375 × 548), la carte montre toujours la métropole avec la Corse, et les communes qui passent y sont dessinées. Il faut pour cela un niveau de zoom de plus dans les données des communes (≈ 1 Mo, chargé à la place du zoom 4). *Pourquoi* : choix de Vincent ; on corrige le défaut sans changer le cadrage. *Écarté* : cadrer sur les communes qui passent ; un zoom plus serré (bords coupés). Coût accepté : la France reste petite.
+- **D3** — La feuille a deux positions : ouverte (comme aujourd'hui), et repliée en une barre fine avec la poignée et le compte. Ouverte au départ. *Pourquoi* : choix de Vincent ; les réglages se voient d'emblée. *Écarté* : une barre repliée avec les onglets ; repliée au départ.
+- **D4** — On plie et déplie avec un bouton ou en faisant glisser le haut de la feuille (la poignée) ; toucher ou glisser la barre repliée la rouvre. *Pourquoi* : choix de Vincent, le geste des applications de cartes. *Écarté* : bouton et toucher seulement. Coût accepté : plus long à construire ; le glisser ne doit pas gêner le défilement.
+- **D5** — Deux onglets, « Critères » (au départ) et « Les 10 premières » ; la feuille rouvre sur le dernier onglet affiché. *Pourquoi* : choix de Vincent ; on règle en regardant la carte, et le résultat ne se cherche plus sous cinq réglages. *Écarté* : la liste d'abord ; la liste sous les réglages (aujourd'hui).
+- **D6** — Choisir une commune (carte ou liste) ouvre sa fiche à la place des onglets, et ouvre la feuille si elle était repliée ; « ← Les 10 premières » ramène à l'onglet de la liste. *Pourquoi* : choix de Vincent ; la fiche garde la feuille entière, comme aujourd'hui (D17 de loyer-mer). *Écarté* : la fiche dans l'onglet de la liste.
+- **D7** — Sur iPhone, pendant l'ajout d'un proche, le champ « Adresse ou ville » et ses suggestions restent au-dessus du clavier, preuve faite sur l'iPhone de Vincent. *Pourquoi* : choix de Vincent ; les onglets changent cet écran de toute façon. *Écarté* : reporter encore.
+- **D8** — Plier ou déplier la feuille ne bouge pas la carte. *Pourquoi* : choix de Vincent ; un zoom fait sur une région n'est jamais perdu. *Écarté* : recadrer sur la France à chaque repli ; recadrer seulement si la carte n'a pas été touchée.
+
+**Pas maintenant** : le téléphone tenu à l'horizontale (feuille repliable, sans promesse sur le vert au départ), le partage, la mer en minutes, une feuille en plein écran ou à trois positions, les pastilles de temps sur téléphone, le bureau.
+**Hypothèses** : H41 à H50 dans [détails](details.md#hypothèses).
+**Le risque** : (1) le défaut du clavier n'a pas de cause connue (un correctif a échoué alors que les tests passaient) : le reproduire sur l'iPhone vient avant tout code (tâche 0 de /breakdown) ; sans reproduction en une tâche, D7 revient à Vincent. (2) À l'échelle de la France sur téléphone, une commune fait moins d'un point et peut ne pas se dessiner (H14 de loyer-mer) : la tâche 0 mesure le vert visible à 390 × 664 ; si la côte ne se lit pas, D2 revient à Vincent.
+**Questions ouvertes** : aucune.

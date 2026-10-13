@@ -1,0 +1,98 @@
+{
+  "slice": "interface-telephone",
+  "fixture": {
+    "description": "Fixture inventée « 5 communes » de loyer-mer (codes 99xxx, noms, loyers, distances, formes) et services simulés de la tranche proches (recherche d'adresse : « 1 rue Test » → « 1 rue Test 44000 Nantesville », etc. ; trajets), sans changement. Réglages de départ : /?loyer=1200&mer=60 → 3 communes passent : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km ». Fenêtres : 390 × 844 (largeur de test du projet), 390 × 664 (fenêtre de Safari sur iPhone, clavier supposé couvrir tout sous y = 342), 375 × 548 (iPhone SE) ; toutes au toucher sous 1 024 px, 1 440 × 900 (bureau). Pour AC-1 seulement (R16), les 5 carrés sont posés aux latitudes de la métropole, décalés de +45° en latitude et de −1° en longitude (Portmer de −1° à −0,5° et de 45° à 45,5°), et la carte est cadrée sur l'emprise de la métropole avec la Corse (ouest −5,2°, sud 41,3°, est 9,6°, nord 51,1°), qui les contient : c'est cette taille, à ces latitudes, qui fait apparaître le défaut (zoom de départ ≈ 3,7 à 390 × 664, ≈ 3,4 à 375 × 548) ; la façon de l'obtenir relève de /breakdown. Le navigateur de test part sans proche gardé.",
+    "items": "voir docs/specs/2026-10-12-loyer-mer/acceptance.json (items A à E) et docs/specs/2026-10-13-proches/acceptance.json (services)",
+    "services": "ceux de docs/specs/2026-10-13-proches/acceptance.json"
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R16",
+      "given": "Fixture avec les 5 carrés aux latitudes de la métropole et l'emprise de la métropole avec la Corse (voir fixture), page ouverte sur /?loyer=1200&mer=60, dans une fenêtre de 390 × 664 puis de 375 × 548",
+      "when": "la carte a fini de s'afficher, sans aucun geste",
+      "then": "dans les deux fenêtres, la carte montre toute l'emprise au-dessus de la feuille ouverte ; Portmer (17), Quaibleu (13) et Grandeville (33) sont peintes de la couleur de leur palier (4, 3 et 2) ; Montcher (75) et Terrebasse (23) ne sont pas peintes",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R17",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844 : feuille ouverte, onglet « Critères » sélectionné, bouton « Replier la feuille » à l'état déplié",
+      "when": "l'utilisateur touche « Replier la feuille », puis « Déplier la feuille »",
+      "then": "après le premier toucher, la feuille est une barre de 64 px de haut au plus, qui dit « 3 communes passent tes critères », avec « Déplier la feuille » à l'état replié ; le rond « 1 » de Portmer n'a pas bougé sur l'écran ; après le second, la feuille est ouverte sur « Critères », « Loyer maximum » visible",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R17",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
+      "when": "l'utilisateur fait glisser au doigt, chaque geste en 300 ms, puis lâche, dans l'ordre : la poignée de 30 px vers le bas ; la poignée de 200 px vers le bas ; la barre repliée de 200 px vers le haut ; un point du réglage « Taille de ville » de 200 px vers le haut ; puis il replie la feuille avec le bouton et touche le texte de la barre",
+      "then": "30 px : la feuille revient ouverte ; 200 px vers le bas : repliée, la barre dit « 3 communes passent tes critères » ; 200 px vers le haut : ouverte sur « Critères » ; le glisser dans « Taille de ville » fait défiler les réglages et la feuille reste ouverte ; le toucher sur le texte de la barre rouvre la feuille sur « Critères »",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R17",
+      "given": "Fixture, fenêtre de 390 × 844",
+      "when": "la page est ouverte, tour à tour, sur : /?loyer=1200&mer=60 ; /?loyer=1000&mer=60 ; /?loyer=650&mer=60 ; /?loyer=300&mer=60 ; /?loyer=aucun&mer=aucun — et chaque fois l'utilisateur replie la feuille",
+      "then": "la barre dit, dans l'ordre : « 3 communes passent tes critères » ; « 2 communes passent tes critères » ; « 1 commune passe tes critères » ; « Aucune commune ne passe tes critères » ; « Aucun plafond fixé »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R18",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
+      "when": "l'utilisateur touche l'onglet « Les 10 premières », replie la feuille, puis la déplie",
+      "then": "l'onglet « Les 10 premières » est sélectionné et montre « 3 communes passent tes critères » puis les lignes « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km » ; « Loyer maximum » n'est pas affiché ; après repli et dépli, c'est toujours « Les 10 premières » qui est affiché",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R19",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille repliée",
+      "when": "l'utilisateur touche le rond « 1 » de Portmer sur la carte, replie la feuille, puis la déplie",
+      "then": "la feuille s'ouvre sur la fiche « Portmer (17) », score 72, « 1re sur 3 communes qui passent », sans onglets ; après repli et dépli, c'est la fiche de Portmer (17) qui est affichée, pas les onglets",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R19",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
+      "when": "l'utilisateur touche le carré de Grandeville (33) sur la carte, puis « ← Les 10 premières »",
+      "then": "la fiche « Grandeville (33) » s'ouvre à la place des onglets, « 3e sur 3 communes qui passent » ; après le retour, l'onglet « Les 10 premières » est sélectionné (et non « Critères ») et le focus est sur la ligne « 3 · Grandeville (33) · 32 · 832 € · 40 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R20",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 dans une fenêtre de 390 × 664, feuille ouverte sur « Critères », d'abord sans proche, puis avec 4 proches prêts (Nantesville, Toulouseville, Lyonville, Brestville) ; puis l'iPhone de Vincent (Safari), sur la version en ligne",
+      "when": "l'utilisateur touche « Adresse ou ville » (sans proche) ou « + Ajouter un proche » (avec 4 proches), tape « 1 rue Test » (sur l'iPhone : « 12 rue de la Paix Nantes »), puis choisit la première suggestion",
+      "then": "dans le navigateur de test, dans les deux cas : au moment où le champ d'adresse reçoit le focus, il est déjà sous la poignée et au-dessus de y = 342, et ne bouge plus pendant la saisie ; la suggestion « 1 rue Test 44000 Nantesville » est entièrement au-dessus de y = 342 ; après le choix, « Nom » a le focus, déjà à sa place, et « Nom » et « Ajouter » sont au-dessus de y = 342. Sur l'iPhone, captures à l'appui : le champ d'adresse et ses suggestions, puis « Nom » et « Ajouter », sont visibles au-dessus du clavier ouvert. Ce critère ne passe qu'avec les captures de l'iPhone",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R18",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 1 440 × 900",
+      "when": "la page a fini de s'afficher",
+      "then": "ni onglets, ni bouton « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste « Les 10 premières » à droite sont visibles ensemble, comme avant cette tranche",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R18",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
+      "when": "l'utilisateur règle « Loyer maximum » sur 1 000 €",
+      "then": "sans changer d'onglet, le compte visible en bas de l'onglet « Critères » passe de « 3 communes passent tes critères » à « 2 communes passent tes critères »",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R17",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères », aucun proche gardé",
+      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville » (nom proposé, plafond 2 h) puis, pendant « Calcul des trajets depuis Nantesville (44)… », replie la feuille et attend la fin du calcul",
+      "then": "sans que la feuille soit dépliée, la barre passe de « 3 communes passent tes critères » à « 1 commune passe tes critères »",
+      "passes": false
+    }
+  ]
+}

@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-13 | Une carte cadrée par `fitBounds` peut s'ouvrir sous le premier zoom des tuiles : aucune commune dessinée, et les tests à 844 px de haut ne le voient pas | build, tests, data | — | [2026-10-13-zoom-de-depart-sous-le-zoom-des-tuiles.md](2026-10-13-zoom-de-depart-sous-le-zoom-des-tuiles.md) |
 | 2026-10-13 | Tuiles vectorielles avec tippecanoe : compter les communes à chaque zoom, et écrire les tuiles vides | data, perf, build | — | [2026-10-13-tuiles-vectorielles-tippecanoe.md](2026-10-13-tuiles-vectorielles-tippecanoe.md) |
 | 2026-10-13 | Dans une spec où un élément se calcule lentement chez un tiers, lui donner ses états d'attente, d'annulation et de réouverture | spec, process | — | [2026-10-13-spec-calcul-lent-etats-file-reouverture.md](2026-10-13-spec-calcul-lent-etats-file-reouverture.md) |
 | 2026-10-13 | Recaler une fixture : relire chaque « when », pas seulement les valeurs attendues | spec, tests, process | — | [2026-10-13-recaler-fixture-relire-when.md](2026-10-13-recaler-fixture-relire-when.md) |
