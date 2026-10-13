@@ -1,5 +1,5 @@
 # Interface téléphone
-2026-10-13 · validée · révisée 2026-10-13 (D9) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-13 · validée · révisée 2026-10-13 (D9, D10) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : sur téléphone, on voit le vert dès l'ouverture, on replie la feuille pour regarder la carte, la liste a son onglet, et on ajoute un proche sur iPhone sans perdre le champ sous le clavier.
 **Pourquoi** : retours de Vincent du 2026-10-13 : dans Safari sur iPhone, aucune commune n'est dessinée à l'ouverture ; la feuille ne se replie pas ; la liste est sous tous les réglages ; l'ajout d'un proche est un défaut reporté (H39 de proches).
@@ -17,6 +17,7 @@
 - **D7** — Sur iPhone, pendant l'ajout d'un proche, le champ « Adresse ou ville » et ses suggestions restent au-dessus du clavier, preuve faite sur l'iPhone de Vincent. *Pourquoi* : choix de Vincent ; les onglets changent cet écran de toute façon. *Écarté* : reporter encore.
 - **D8** — Plier ou déplier la feuille ne bouge pas la carte. *Pourquoi* : choix de Vincent ; un zoom fait sur une région n'est jamais perdu. *Écarté* : recadrer sur la France à chaque repli ; recadrer seulement si la carte n'a pas été touchée.
 - **D9** — Retours du design (/ui) : la feuille ouverte prend 45 % de la hauteur, jamais moins de 272 px (remplace « comme aujourd'hui » de D3) ; le compte (« 8 046 communes passent tes critères ») est en tête de la feuille, sous la poignée, et cette ligne est le bouton qui plie et déplie, sans chevron ; repliée, la feuille garde cette même ligne. *Pourquoi* : choix de Vincent après essai des prototypes (fusion de la direction C) ; plus de carte au départ, et on attrape ce qu'on retrouvera replié. *Écarté* : un chevron à droite (jugé trop présent) ; le compte en bas de « Critères » ; la feuille à 56 %.
+- **D10** — Les captures de l'iPhone (AC-8, vérification de bout en bout) se font pendant le build sur une version construite, servie au Mac par le Wi-Fi ; la version en ligne est vérifiée à /ship. Remplace « sur la version en ligne » d'AC-8 et de details.md. *Pourquoi* : choix de Vincent à /breakdown ; la mise en ligne vient après le build. *Écarté* : laisser AC-8 ouvert jusqu'à /ship.
 
 **Pas maintenant** : le téléphone tenu à l'horizontale (feuille repliable, sans promesse sur le vert au départ), le partage, la mer en minutes, une feuille en plein écran ou à trois positions, les pastilles de temps sur téléphone, le bureau.
 **Hypothèses** : H41 à H50 dans [détails](details.md#hypothèses).

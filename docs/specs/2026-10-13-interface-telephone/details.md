@@ -71,7 +71,7 @@ Loyer-mer : AC-1 à AC-15. Proches : AC-1 à AC-11, AC-14, AC-16. Aux deux large
 Aucune.
 
 ## Vérification de bout en bout
-Sur la version en ligne, sur l'iPhone de Vincent (Safari) tenu droit, puis à 390 × 664 dans le navigateur de test :
+Sur une version construite servie au Mac par le Wi-Fi (D10 ; la version en ligne est vérifiée à /ship), sur l'iPhone de Vincent (Safari) tenu droit, puis à 390 × 664 dans le navigateur de test :
 1. Ouvrir `/` : la France entière, les communes de la côte vertes sans zoomer ; feuille ouverte sur « Critères ».
 2. « Replier la feuille » : la barre dit « … communes passent tes critères », la carte ne bouge pas ; glisser la barre vers le haut : la feuille revient sur « Critères ».
 3. Toucher « Les 10 premières » : la liste ; toucher le rond « 1 » sur la carte : la fiche ; « ← Les 10 premières » : la liste.
