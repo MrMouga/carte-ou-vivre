@@ -5,6 +5,9 @@ const PORT = 4173;
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
+  // 2 tests à la fois : au-delà (5 par défaut sur un Mac à 10 cœurs), la carte WebGL logicielle de tests plus anciens
+  // n'est pas prête dans les 5 s et `npm test` échoue sans défaut (relecture proches, 2026-10-13). ≈ 4 min la suite.
+  workers: 2,
   reporter: 'list',
   use: {
     baseURL: `http://localhost:${PORT}`,

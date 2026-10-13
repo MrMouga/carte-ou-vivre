@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import loyerMer from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import { apresRendu, ouvrir, servirFixture } from './lib/carte';
 import { servirIgn, type OptionsIgn } from './lib/ign';
-import { SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, plafond, pret, regler, zone } from './lib/proches';
+import { ADRESSES, SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, plafond, pret, regler, zone } from './lib/proches';
 
 // Tâche 3 (proches) : états d'un proche et de la zone, pannes, mémoire du navigateur (R9, R12, R13, H21).
 // Faux service IGN de la fixture (tests/e2e/lib/ign.ts), posé après le fond de carte. « Fermer la page puis rouvrir » :
@@ -129,11 +129,22 @@ test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simu
   await page.clock.install();
   await ouvrir(page);
   await servirIgn(page, { delaiZoneMs: 60_000 }); // le service ne répond pas pendant le test
-  await ajouter(page, 'Nantesville');
-  await ajouter(page, 'Toulouseville');
+  // Horloge figée : seul `runFor` fait avancer l'heure de la page, quelle que soit la charge de la machine. La recherche
+  // part 300 ms après la frappe (ATTENTE_RECHERCHE_MS de src/ui/Proches.tsx) : on avance l'horloge d'autant à chaque ajout.
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 5_000);
+  const ajouterHorlogeFigee = async (commune: keyof typeof ADRESSES) => {
+    const [texte, suggestion] = ADRESSES[commune];
+    if (!(await champ(page).isVisible())) await zone(page).getByRole('button', { name: '+ Ajouter un proche' }).click();
+    await champ(page).fill(texte);
+    await page.clock.runFor(300);
+    await zone(page).getByRole('button', { name: suggestion }).click();
+    await zone(page).getByRole('button', AJOUTER).click();
+  };
+  await ajouterHorlogeFigee('Nantesville'); // on est à 0 s du calcul de Nantesville
+  await ajouterHorlogeFigee('Toulouseville'); // 300 ms
   await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets');
 
-  await page.clock.runFor(44_000);
+  await page.clock.runFor(44_000 - 300); // 44 s
   await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets');
   await page.clock.runFor(2_000);
   await expect(zone(page)).toContainText(INDISPONIBLE_44);

@@ -1,0 +1,1373 @@
+
+Running 140 tests using 5 workers
+
+  ✓    3 [bureau] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (6.5s)
+  ✘    1 [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (6.5s)
+  ✘    2 [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (6.5s)
+  ✓    4 [bureau] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (12.3s)
+  ✓    7 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (5.9s)
+  ✓    5 [bureau] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (14.2s)
+  ✓    6 [bureau] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (8.5s)
+  ✓   11 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (2.2s)
+  ✓    9 [bureau] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (4.4s)
+  ✓   10 [bureau] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (3.3s)
+  ✓    8 [bureau] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (9.3s)
+  ✓   12 [bureau] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (4.9s)
+  ✓   14 [bureau] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (5.3s)
+  ✓   13 [bureau] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (8.9s)
+  ✓   16 [bureau] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (10.8s)
+  ✓   18 [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (7.2s)
+  ✓   19 [bureau] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (4.5s)
+  ✓   21 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (2.0s)
+  ✓   17 [bureau] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (14.6s)
+  ✓   20 [bureau] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (7.6s)
+  ✓   24 [bureau] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (3.1s)
+  ✓   25 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (1.6s)
+  ✓   15 [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (20.5s)
+  ✓   23 [bureau] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (6.6s)
+  ✓   22 [bureau] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (9.2s)
+  ✓   26 [bureau] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (5.1s)
+  ✓   28 [bureau] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (5.2s)
+  ✓   27 [bureau] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (8.0s)
+  ✓   30 [bureau] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (9.8s)
+  ✓   32 [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (5.5s)
+  ✓   33 [bureau] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (3.9s)
+  ✓   35 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (1.7s)
+  ✓   31 [bureau] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (11.8s)
+  ✓   37 [bureau] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (4.1s)
+  ✓   36 [bureau] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (6.5s)
+  ✓   39 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (1.5s)
+  ✓   38 [bureau] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (2.5s)
+  ✓   34 [bureau] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (8.3s)
+  ✓   29 [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (19.8s)
+  ✓   40 [bureau] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (4.7s)
+  ✓   42 [bureau] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (4.3s)
+  ✓   41 [bureau] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (7.8s)
+  ✓   46 [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (6.7s)
+  ✓   47 [bureau] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (4.1s)
+  ✓   44 [bureau] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (11.4s)
+  ✓   49 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (3.5s)
+  ✓   45 [bureau] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (14.0s)
+  ✓   50 [bureau] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (6.1s)
+  ✓   48 [bureau] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (8.7s)
+  ✓   51 [bureau] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (5.0s)
+  ✓   43 [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (21.2s)
+  ✓   52 [bureau] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (4.0s)
+  ✓   53 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (3.7s)
+  ✓   54 [bureau] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (8.5s)
+  ✓   56 [bureau] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (7.0s)
+  ✓   55 [bureau] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (10.4s)
+  ✓   58 [bureau] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (11.6s)
+  ✓   61 [bureau] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (5.7s)
+  ✓   60 [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (8.3s)
+  ✓   63 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (5.2s)
+  ✓   59 [bureau] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (13.3s)
+  ✓   64 [bureau] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (6.6s)
+  ✓   57 [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (20.9s)
+  ✓   66 [bureau] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (3.1s)
+  ✓   62 [bureau] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (9.4s)
+  ✓   65 [bureau] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (5.1s)
+  ✓   67 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (3.2s)
+  ✓   68 [bureau] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (7.2s)
+  ✓   70 [bureau] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (6.8s)
+  ✓   69 [bureau] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (10.0s)
+  ✘   73 [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (5.8s)
+  ✘   74 [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (6.0s)
+  ✓   72 [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (11.3s)
+  ✘   75 [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (5.5s)
+  ✓   78 [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (7.3s)
+  ✓   77 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (7.0s)
+  ✓   81 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (2.6s)
+  ✓   71 [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (22.4s)
+  ✓   80 [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (4.2s)
+  ✓   79 [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (9.4s)
+  ✓   76 [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (12.9s)
+  ✓   82 [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (5.6s)
+  ✓   84 [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (6.1s)
+  ✓   83 [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (8.2s)
+  ✘   89 [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (5.8s)
+  ✓   86 [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (13.6s)
+  ✓   88 [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (9.2s)
+  ✓   87 [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (16.6s)
+  ✓   91 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (5.9s)
+  ✘   90 [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (7.7s)
+  ✓   92 [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (8.4s)
+  ✓   85 [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (22.7s)
+  ✓   94 [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (4.4s)
+  ✓   93 [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (6.2s)
+  ✓   95 [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (6.8s)
+  ✓   97 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (5.7s)
+  ✓   98 [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (5.9s)
+  ✓   96 [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (10.0s)
+  ✘  101 [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (5.7s)
+  ✘  100 [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (6.1s)
+  ✘  103 [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (5.7s)
+  ✓  102 [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (8.7s)
+  ✓  106 [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (4.9s)
+  ✓  105 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (7.7s)
+  ✓  109 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (3.0s)
+  ✓   99 [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (22.5s)
+  ✓  108 [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (5.8s)
+  ✘  110 [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (9.5s)
+  ✓  104 [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (29.1s)
+  ✘  111 [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (17.4s)
+  ✘  112 [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (16.4s)
+  ✘  107 [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (36.6s)
+  ✘  113 [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (9.2s)
+  ✘  114 [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (9.4s)
+  ✘  115 [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (9.4s)
+  ✘  116 [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (9.3s)
+  ✘  117 [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (6.2s)
+  ✘  118 [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (6.5s)
+  ✘  119 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (7.1s)
+  ✘  120 [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (7.0s)
+  ✘  121 [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (6.0s)
+  ✘  122 [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (5.7s)
+  ✘  123 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (5.8s)
+  ✘  124 [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (5.7s)
+  ✘  125 [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (5.7s)
+  ✘  126 [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (5.5s)
+  ✘  127 [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (5.8s)
+  ✘  128 [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 (6.6s)
+  ✘  129 [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 (6.2s)
+  ✘  130 [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 (5.7s)
+  ✘  131 [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (6.1s)
+  ✘  132 [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (5.6s)
+  ✘  133 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (6.0s)
+  ✘  134 [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (5.7s)
+  ✘  135 [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (5.8s)
+  ✘  136 [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (5.7s)
+  ✘  137 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (6.0s)
+  ✓  140 [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (7.8s)
+  ✓  138 [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (9.6s)
+  ✓  139 [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (9.9s)
+
+
+  1) [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        5 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:30:3
+
+    Error Context: test-results/proches-etats-AC-7-5-proch-a5c20-n-revient-et-ouvre-le-champ-bureau/error-context.md
+
+  2) [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        5 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:89:3
+
+    Error Context: test-results/proches-etats-AC-10-servic-60844-sayer-»-3-communes-72-49-32-bureau/error-context.md
+
+  3) [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:67:3
+
+    Error Context: test-results/proches-etats-AC-9-Nantesv-2d4c6-at-vide-3-communes-72-49-32-mobile/error-context.md
+
+  4) [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:89:3
+
+    Error Context: test-results/proches-etats-AC-10-servic-60844-sayer-»-3-communes-72-49-32-mobile/error-context.md
+
+  5) [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:100:3
+
+    Error Context: test-results/proches-etats-AC-11-recher-09bce-jouter-»-inactif-3-communes-mobile/error-context.md
+
+  6) [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        3 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:100:3
+
+    Error Context: test-results/proches-etats-AC-11-recher-09bce-jouter-»-inactif-3-communes-mobile-repeat1/error-context.md
+
+  7) [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:111:3
+
+    Error Context: test-results/proches-etats-deux-proches-21696-l-1-en-attente-»-puis-«-2-»-mobile-repeat1/error-context.md
+
+  8) [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        4 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:48:3
+
+    Error Context: test-results/proches-etats-AC-8-Nantesv-7fcb1-l-Portmer-67-Grandeville-21-mobile-repeat2/error-context.md
+
+  9) [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:67:3
+
+    Error Context: test-results/proches-etats-AC-9-Nantesv-2d4c6-at-vide-3-communes-72-49-32-mobile-repeat2/error-context.md
+
+  10) [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:100:3
+
+    Error Context: test-results/proches-etats-AC-11-recher-09bce-jouter-»-inactif-3-communes-mobile-repeat2/error-context.md
+
+  11) [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Tes proches' }).getByRole('listitem').filter({ hasText: 'Nantesville (44)' }).getByRole('button', { name: 'Réessayer' })
+        - locator resolved to <button type="button" aria-label="Réessayer Nantesville (44)" class="inline-flex items-center justify-center cursor-pointer disabled:cursor-default disabled:opacity-50 rounded-base bg-primary px-4 py-2 text-texte-fort text-primary-foreground max-bureau:min-h-toucher">Réessayer</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+      170 |
+      171 |   await servirIgn(page); // le service répond de nouveau (la dernière route posée gagne)
+    > 172 |   await ligne(page, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' }).click();
+          |                                                                                    ^
+      173 |   await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets depuis Nantesville (44)…');
+      174 |   await pret(page, 'Nantesville (44)');
+      175 |   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:172:84
+
+    Error Context: test-results/proches-etats-R13-refus-42-efc83-ice-répond-calcul-puis-prêt-mobile-repeat2/error-context.md
+
+  12) [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:222:3
+
+    Error Context: test-results/proches-etats-R12-mémoire--8cff2-rche-quand-même-Portmer-65--mobile-repeat2/error-context.md
+
+  13) [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:232:3
+
+    Error Context: test-results/proches-etats-R12-empreint-33fd2-nt-indisponible-sans-calcul-mobile-repeat2/error-context.md
+
+  14) [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:250:3
+
+    Error Context: test-results/proches-etats-R12-un-proch-26572--la-réouverture-sans-calcul-mobile-repeat2/error-context.md
+
+  15) [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:30:3
+
+    Error Context: test-results/proches-etats-AC-7-5-proch-a5c20-n-revient-et-ouvre-le-champ-mobile-repeat3/error-context.md
+
+  16) [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:48:3
+
+    Error Context: test-results/proches-etats-AC-8-Nantesv-7fcb1-l-Portmer-67-Grandeville-21-mobile-repeat3/error-context.md
+
+  17) [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:67:3
+
+    Error Context: test-results/proches-etats-AC-9-Nantesv-2d4c6-at-vide-3-communes-72-49-32-mobile-repeat3/error-context.md
+
+  18) [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:89:3
+
+    Error Context: test-results/proches-etats-AC-10-servic-60844-sayer-»-3-communes-72-49-32-mobile-repeat3/error-context.md
+
+  19) [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:100:3
+
+    Error Context: test-results/proches-etats-AC-11-recher-09bce-jouter-»-inactif-3-communes-mobile-repeat3/error-context.md
+
+  20) [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        3 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:111:3
+
+    Error Context: test-results/proches-etats-deux-proches-21696-l-1-en-attente-»-puis-«-2-»-mobile-repeat3/error-context.md
+
+  21) [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        2 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:130:3
+
+    Error Context: test-results/proches-etats-H21-délai-de-aa65d-econd-passent-indisponibles-mobile-repeat3/error-context.md
+
+  22) [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        2 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:162:3
+
+    Error Context: test-results/proches-etats-R13-refus-42-efc83-ice-répond-calcul-puis-prêt-mobile-repeat3/error-context.md
+
+  23) [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        2 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:179:3
+
+    Error Context: test-results/proches-etats-«-Retirer-»--d84de--Retirer-»-en-attente-aussi-mobile-repeat3/error-context.md
+
+  24) [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:197:3
+
+    Error Context: test-results/proches-etats-R9-doublon-l-a64ec-tes-proches-»-sous-le-champ-mobile-repeat3/error-context.md
+
+  25) [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        2 × locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+          - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:209:3
+
+    Error Context: test-results/proches-etats-aucune-adres-130a2-ouvée-»-«-Ajouter-»-inactif-mobile-repeat3/error-context.md
+
+  26) [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:222:3
+
+    Error Context: test-results/proches-etats-R12-mémoire--8cff2-rche-quand-même-Portmer-65--mobile-repeat3/error-context.md
+
+  27) [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:232:3
+
+    Error Context: test-results/proches-etats-R12-empreint-33fd2-nt-indisponible-sans-calcul-mobile-repeat3/error-context.md
+
+  28) [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:250:3
+
+    Error Context: test-results/proches-etats-R12-un-proch-26572--la-réouverture-sans-calcul-mobile-repeat3/error-context.md
+
+  29) [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:30:3
+
+    Error Context: test-results/proches-etats-AC-7-5-proch-a5c20-n-revient-et-ouvre-le-champ-mobile-repeat4/error-context.md
+
+  30) [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:48:3
+
+    Error Context: test-results/proches-etats-AC-8-Nantesv-7fcb1-l-Portmer-67-Grandeville-21-mobile-repeat4/error-context.md
+
+  31) [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:67:3
+
+    Error Context: test-results/proches-etats-AC-9-Nantesv-2d4c6-at-vide-3-communes-72-49-32-mobile-repeat4/error-context.md
+
+  32) [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:89:3
+
+    Error Context: test-results/proches-etats-AC-10-servic-60844-sayer-»-3-communes-72-49-32-mobile-repeat4/error-context.md
+
+  33) [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:100:3
+
+    Error Context: test-results/proches-etats-AC-11-recher-09bce-jouter-»-inactif-3-communes-mobile-repeat4/error-context.md
+
+  34) [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:111:3
+
+    Error Context: test-results/proches-etats-deux-proches-21696-l-1-en-attente-»-puis-«-2-»-mobile-repeat4/error-context.md
+
+  35) [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        2 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:130:3
+
+    Error Context: test-results/proches-etats-H21-délai-de-aa65d-econd-passent-indisponibles-mobile-repeat4/error-context.md
+
+  36) [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        2 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:162:3
+
+    Error Context: test-results/proches-etats-R13-refus-42-efc83-ice-répond-calcul-puis-prêt-mobile-repeat4/error-context.md
+
+  37) [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        3 × unexpected value "null"
+          - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:179:3
+
+    Error Context: test-results/proches-etats-«-Retirer-»--d84de--Retirer-»-en-attente-aussi-mobile-repeat4/error-context.md
+
+  38) [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:197:3
+
+    Error Context: test-results/proches-etats-R9-doublon-l-a64ec-tes-proches-»-sous-le-champ-mobile-repeat4/error-context.md
+
+  39) [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('carte')
+    Expected: "1"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByTestId('carte') with timeout 5000ms
+      - waiting for getByTestId('carte')
+        - locator resolved to <div data-testid="carte" class="h-full w-full"></div>
+        - unexpected value "null"
+        - locator resolved to <div data-fond="ign" data-testid="carte" class="h-full w-full maplibregl-map">…</div>
+        - unexpected value "null"
+
+
+       at lib/carte.ts:47
+
+      45 |   await servirFixture(page);
+      46 |   await page.goto(chemin);
+    > 47 |   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+         |                                           ^
+      48 | }
+      49 |
+      50 | /** Attend que la carte ait redessiné après un réglage (deux images). */
+        at ouvrir (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/lib/carte.ts:47:43)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/proches-etats.spec.ts:209:3
+
+    Error Context: test-results/proches-etats-aucune-adres-130a2-ouvée-»-«-Ajouter-»-inactif-mobile-repeat4/error-context.md
+
+  39 failed
+    [bureau] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+    [bureau] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+    [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+    [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+    [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+    [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+    [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+    [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) 
+    [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul 
+    [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul 
+    [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+    [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+    [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+    [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+    [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles 
+    [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+    [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi 
+    [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ 
+    [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif 
+    [mobile] › tests/e2e/proches-etats.spec.ts:216:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) 
+    [mobile] › tests/e2e/proches-etats.spec.ts:231:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul 
+    [mobile] › tests/e2e/proches-etats.spec.ts:249:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul 
+    [mobile] › tests/e2e/proches-etats.spec.ts:28:1 › AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ 
+    [mobile] › tests/e2e/proches-etats.spec.ts:47:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21 
+    [mobile] › tests/e2e/proches-etats.spec.ts:66:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:88:1 › AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32 
+    [mobile] › tests/e2e/proches-etats.spec.ts:99:1 › AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes 
+    [mobile] › tests/e2e/proches-etats.spec.ts:110:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » 
+    [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles 
+    [mobile] › tests/e2e/proches-etats.spec.ts:161:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt 
+    [mobile] › tests/e2e/proches-etats.spec.ts:178:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi 
+    [mobile] › tests/e2e/proches-etats.spec.ts:196:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ 
+    [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif 
+  101 passed (4.5m)
