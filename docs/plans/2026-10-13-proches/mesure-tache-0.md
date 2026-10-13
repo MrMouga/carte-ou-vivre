@@ -115,3 +115,15 @@ Le temps est surtout celui du serveur de l'IGN : il sera proche de celui du Mac,
 **Recommandation de Claude : l'option 1 (3 h au plus).** C'est le seul réglage qui garde le cas « un week-end chez les parents » (H19) avec une attente raisonnable et sans argent dépensé. L'option 2 est la plus sûre en temps, mais elle rend le critère étroit.
 
 **Second point à trancher (D11)** : les zones de l'IGN placent parfois une ville une tranche trop bas, jusqu'à 7 min sous le trajet de l'IGN (3 villes sur 12). Recommandation : l'accepter, et réécrire D11 ainsi : « à quelques minutes près, selon les zones de l'IGN ». L'autre choix serait d'ajouter une tranche de marge partout, mais on surestimerait alors la plupart des villes de 15 à 30 min.
+
+## (g) Téléphone de Vincent — 2026-10-13, après la révision D15 (3 h au plus)
+Mesure faite par Vincent, page `probe/proches/classer` servie par le Wi-Fi local (`?max=180`), adresse « 12 rue de la Paix, Nantes ». Navigateur : Safari 26.4, iPhone sous iOS 18.7 (modèle exact non relevé). Sortie recopiée telle quelle :
+```
+12 Rue de la Paix 44000 Nantes (INSEE 44109) — recherche 1256 ms ; 12 zones jusqu'à 3 h…
+12 zones reçues (14 s)
+TOTAL 14.9 s (zones : 13.5 s ; classement 52 ms) ; 12/12 zones reçues
+la plus lente : 2 h 15 en 12.8 s
+proche : 3722 mairies à 6 h ou moins, 31024 au-delà
+  fins de tranche : La Rochelle 2 h 15 · Toulouse plus de 6 h · Bordeaux plus de 6 h · Nantes 15 min
+```
+(La page de mesure écrit encore « 6 h » dans ses libellés ; avec `max=180`, il faut lire « 3 h ».) **Sous le seuil de 45 s (H21 révisé)** ; classement 52 ms sur le téléphone.
