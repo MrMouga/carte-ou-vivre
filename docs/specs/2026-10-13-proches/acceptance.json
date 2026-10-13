@@ -330,7 +330,7 @@
       "rule": "R10",
       "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
       "when": "l'utilisateur choisit Grandeville (33) sur la carte",
-      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 30 : au-dessus de ton plafond de 3 h », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture », sans score ni rang",
+      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 30 : au-dessus de ton plafond de 3 h » et « 40 km de la mer à vol d'oiseau », sans score ni rang",
       "passes": false
     },
     {
@@ -398,35 +398,11 @@
       "passes": false
     },
     {
-      "id": "AC-12",
-      "rule": "R14",
-      "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche",
-      "when": "l'utilisateur passe la mer sur « minutes en voiture »",
-      "then": "le plafond de la mer affiche 60 min ; l'adresse de la page devient /?loyer=1200&mer=60&mer-en=min ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · 5 min », « 2 · Quaibleu (13) · 43 · 1 092 € · 14 min », « 3 · Grandeville (33) · 24 · 832 € · 50 min »",
-      "passes": false
-    },
-    {
-      "id": "AC-13",
-      "rule": "R14",
-      "given": "Fixture, aucun proche",
-      "when": "l'utilisateur ouvre /?loyer=1200&mer=45&mer-en=min puis choisit Grandeville (33), puis Montcher (75)",
-      "then": "le plafond de la mer affiche 45 min ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 67 et Quaibleu (13) 39 ; la fiche de Grandeville affiche « Mer 50 min : au-dessus de ton plafond de 45 min », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture » ; celle de Montcher affiche « Mer 2 h 15 : au-dessus de ton plafond de 45 min »",
-      "passes": false
-    },
-    {
       "id": "AC-14",
       "rule": "R9",
       "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
       "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) dans la liste une fois le calcul fini",
       "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 3 h 30 : au-dessus de ton plafond de 3 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
-      "passes": false
-    },
-    {
-      "id": "AC-15",
-      "rule": "R14",
-      "given": "Fixture, aucun proche, page ouverte sur /?loyer=1200&mer=45&mer-en=min",
-      "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
-      "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
       "passes": false
     },
     {
@@ -437,5 +413,34 @@
       "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 3 h au plus » ; après le choix, la même pastille affiche « 3 h 30 · au-dessus de 3 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
       "passes": false
     }
-  ]
+  ],
+  "reportes": {
+    "pourquoi": "D14 (spec proches, 2026-10-13) : mer en minutes reportée à une tranche suivante ; critères gardés tels quels pour elle.",
+    "criteria": [
+      {
+        "id": "AC-12",
+        "rule": "R14",
+        "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche",
+        "when": "l'utilisateur passe la mer sur « minutes en voiture »",
+        "then": "le plafond de la mer affiche 60 min ; l'adresse de la page devient /?loyer=1200&mer=60&mer-en=min ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · 5 min », « 2 · Quaibleu (13) · 43 · 1 092 € · 14 min », « 3 · Grandeville (33) · 24 · 832 € · 50 min »",
+        "passes": false
+      },
+      {
+        "id": "AC-13",
+        "rule": "R14",
+        "given": "Fixture, aucun proche",
+        "when": "l'utilisateur ouvre /?loyer=1200&mer=45&mer-en=min puis choisit Grandeville (33), puis Montcher (75)",
+        "then": "le plafond de la mer affiche 45 min ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 67 et Quaibleu (13) 39 ; la fiche de Grandeville affiche « Mer 50 min : au-dessus de ton plafond de 45 min », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture » ; celle de Montcher affiche « Mer 2 h 15 : au-dessus de ton plafond de 45 min »",
+        "passes": false
+      },
+      {
+        "id": "AC-15",
+        "rule": "R14",
+        "given": "Fixture, aucun proche, page ouverte sur /?loyer=1200&mer=45&mer-en=min",
+        "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
+        "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
+        "passes": false
+      }
+    ]
+  }
 }

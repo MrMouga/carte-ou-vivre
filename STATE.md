@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : ui (tranche proches) — design validé le 2026-10-13 (docs/design/proches/) ; prochaine étape /breakdown de la tranche proches (tâche 0 : mesure des isochrones IGN, source de la mer en minutes, recoloration à 7 critères), avant /ship
+- Étape : ui (tranche proches) — design validé le 2026-10-13 (docs/design/proches/) ; prochaine étape /breakdown de la tranche proches (tâche 0 : mesure des isochrones IGN, recoloration à 7 critères), avant /ship
 - Statut : active
 
 ## Décisions
@@ -72,6 +72,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Spec proches révisée (D12) : plus de phrase sur l'IGN sous le champ d'adresse | Choix de Vincent au vu des écrans Figma. Coût : l'écran ne dit plus que l'adresse part à l'IGN ni qu'elle reste dans le navigateur ; à reprendre dans la FAQ du lancement. |
 | 2026-10-13 | Spec proches révisée (D13) : champ de recherche replié derrière « + Ajouter un proche » dès qu'il y a un proche ; AC-7 reformulé | Choix de Vincent au vu de Figma, panneau plus court. Pastilles sur deux lignes à 4–5 proches acceptées (Nord et Manche cachés). |
 | 2026-10-13 | Design validé : proches | Fusion des pistes A et B : proches réglés dans le panneau de gauche (catégories repliables, lien « + Ajouter un proche »), pastilles de temps en haut de la carte (bureau), repère goutte terre cuite nommé ; jeton place-marker ajouté au système. |
+| 2026-10-13 | Spec proches révisée (D14) : la mer en minutes sort de la tranche | Choix de Vincent à /breakdown (« on fera ça plus tard »). AC-12, AC-13, AC-15 gardés dans acceptance.json (liste « reportes ») ; la tranche ne garde que l'IGN comme service extérieur. |
 
 ## Hypothèses à vérifier
 
@@ -118,7 +119,7 @@ Autres questions :
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
-- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12). Sans le partage (« Copier le lien »), reporté (2026-10-13). Spécifiée le 2026-10-13 (D9 de la spec proches).
+- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12). Sans le partage (« Copier le lien »), reporté (2026-10-13). Spécifiée le 2026-10-13 (D9 de la spec proches). Reportée le 2026-10-13 (D14 de la spec proches) : à reprendre dans une tranche suivante.
 - Tranche 1 : spécifiée et validée le 2026-10-12 (loyer + mer, plafonds sans poids), voir Documents. Les proches viennent en tranche 2, à spécifier avant la mise en ligne de la tranche 1.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 
@@ -126,7 +127,7 @@ Autres questions :
 
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
-- [Spec « Proches et mer en minutes » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
+- [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
 - [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md) · [dossier du build](docs/plans/2026-10-12-loyer-mer/) : [progression](docs/plans/2026-10-12-loyer-mer/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-12-loyer-mer/demo.md)

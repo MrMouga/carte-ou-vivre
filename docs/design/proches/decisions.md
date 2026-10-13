@@ -37,3 +37,4 @@ La grille : on règle un proche sans perdre la liste de vue (objectif 3) ; on li
 - **Données d'exemple** des écrans alignées : 269 communes, aucune taille cochée.
 - **Écart contesté** : le contrat du système avait déjà `place-marker` (commit `48e170c`) quand le relecteur l'a lu.
 - **Choix de Vincent après la relecture** : le lien « + Ajouter un proche » remplace le champ dès qu'il y a un proche (spec D13, AC-7 révisé) ; les pastilles sur deux lignes à 4–5 proches sont acceptées (elles cachent le Nord et la Manche à l'échelle de la France) ; à 390 px, un seul écran de plus, l'ajout avec le clavier.
+- **Mer en minutes reportée** (choix de Vincent à /breakdown, spec D14) : la bascule km | min et la ligne « … min de la mer en voiture » de la fiche sont masquées dans les écrans Figma ; le composant « Bascule mer » reste sur la page Système pour la tranche qui la reprendra.
