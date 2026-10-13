@@ -1,15 +1,17 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { rechercher, type Suggestion } from '@/proches/ign';
-import { NOM_MAX, nomPropose, type Proche } from '@/proches/useProches';
+import { MAX_PROCHES, NOM_MAX, nomPropose, type Proche } from '@/proches/useProches';
 import { Categorie } from './Categorie';
 import { LigneProche } from './LigneProche';
 
 // Zone « Tes proches » du panneau de réglages (Figma 21:562, 22:486, 26:1588 ; details.md « Écrans et états ») :
 // vide (texte et champ) ; avec proches (lignes, et le champ replié derrière « + Ajouter un proche », D13) ; recherche
 // (3 caractères au moins, 300 ms après la dernière frappe, 5 suggestions au plus, H20) ; suggestion choisie → champ « Nom »
-// prérempli et « Ajouter » actif (R9). « Ajouter » vide les champs. Messages (aucune adresse, panne, doublon, plein),
-// « Effacer mes proches » et résumé détaillé : tâche 3.
+// prérempli et « Ajouter » actif (R9). « Ajouter » vide les champs. Sous le champ : « Aucune adresse trouvée. », la panne de
+// la recherche (R13) ou le doublon (R9). Plein (5 proches, tous états) : un message à la place du lien. « Effacer mes
+// proches » sur la ligne du titre ; mémoire refusée (R12) : un message sous le titre. Repliée : le nombre et les états
+// qui ne sont pas prêts (« 3 · 1 en calcul »).
 
 const ATTENTE_RECHERCHE_MS = 300;
 const MIN_CARACTERES = 3;
@@ -35,14 +37,30 @@ function IconeLieu() {
 
 const CHAMP = 'w-full rounded-base border border-border bg-card px-2 py-1 text-texte text-foreground disabled:opacity-50';
 
-type AjoutProps = { onAjouter: (lieu: Suggestion, nom: string) => void; inactif: boolean; focus: boolean };
+type AjoutProps = {
+  onAjouter: (lieu: Suggestion, nom: string) => void;
+  /** Libellés des proches déjà là : un doublon est refusé (R9). */
+  libelles: string[];
+  inactif: boolean;
+  focus: boolean;
+  champ: React.RefObject<HTMLInputElement | null>;
+};
 
-/** Recherche, suggestions, champ « Nom » et « Ajouter » (R9, H20). */
-function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
+/** Message sous le champ, à la place des suggestions (tableau des états Figma 23:1616). */
+type Avis = 'aucune' | 'panne' | 'doublon' | null;
+const AVIS = {
+  aucune: 'Aucune adresse trouvée.',
+  panne: "Recherche d'adresse indisponible. Réessaie dans un moment.",
+  doublon: 'Cette adresse est déjà dans tes proches.',
+} as const;
+
+/** Recherche, suggestions, champ « Nom » et « Ajouter » (R9, H20, R13). */
+function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
   const [texte, setTexte] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [choisie, setChoisie] = useState<Suggestion | null>(null);
   const [nom, setNom] = useState('');
+  const [avis, setAvis] = useState<Avis>(null);
   const idListe = useId();
   const idAdresse = useId();
   const idNom = useId();
@@ -61,7 +79,17 @@ function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
     }
     const arret = new AbortController();
     const minuterie = setTimeout(() => {
-      rechercher(texte, arret.signal).then(setSuggestions, () => !arret.signal.aborted && setSuggestions([])); // panne : message en tâche 3
+      rechercher(texte, arret.signal).then(
+        (s) => {
+          setSuggestions(s);
+          setAvis(s.length ? null : 'aucune');
+        },
+        () => {
+          if (arret.signal.aborted) return;
+          setSuggestions([]);
+          setAvis('panne'); // R13 : la carte et le reste marchent
+        },
+      );
     }, ATTENTE_RECHERCHE_MS);
     return () => {
       clearTimeout(minuterie);
@@ -79,6 +107,7 @@ function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
 
   const ajouter = () => {
     if (!choisie) return;
+    if (libelles.includes(choisie.libelle)) return setAvis('doublon'); // R9 : les champs restent, pour changer d'adresse
     onAjouter(choisie, nom);
     setTexte('');
     setNom('');
@@ -92,6 +121,7 @@ function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
       </label>
       <input
         id={idAdresse}
+        ref={champ}
         type="text"
         autoComplete="off"
         autoFocus={focus}
@@ -101,9 +131,14 @@ function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
         onChange={(e) => {
           setTexte(e.target.value);
           setChoisie(null);
+          setAvis(null);
         }}
         className={CHAMP}
       />
+      {/* Toujours présent, pour que les lecteurs d'écran lisent chaque message (sans le rôle `status`, pris par le compte). */}
+      <p aria-live="polite" className={avis ? 'text-texte text-foreground' : 'sr-only'}>
+        {avis && AVIS[avis]}
+      </p>
       <ul ref={liste} id={idListe} aria-label="Suggestions" hidden={suggestions.length === 0} className="flex flex-col rounded-base border border-border bg-card shadow-panneau">
           {suggestions.map((s) => {
             const [l1, l2] = lignesDe(s);
@@ -150,40 +185,88 @@ function Ajout({ onAjouter, inactif, focus }: AjoutProps) {
   );
 }
 
+/** Résumé de la catégorie repliée (design decisions.md) : « Aucun », « 3 », « 3 · 1 en calcul », « 5 · 1 en attente, 2 indisponibles ». */
+export function resumeDe(proches: Proche[]): string {
+  if (!proches.length) return 'Aucun';
+  const n = (e: Proche['etat']) => proches.filter((p) => p.etat === e).length;
+  const etats = [
+    [n('calcul'), 'en calcul', 'en calcul'],
+    [n('attente'), 'en attente', 'en attente'],
+    [n('indisponible'), 'indisponible', 'indisponibles'],
+  ]
+    .filter(([k]) => k)
+    .map(([k, un, plusieurs]) => `${k} ${k === 1 ? un : plusieurs}`);
+  return etats.length ? `${proches.length} · ${etats.join(', ')}` : String(proches.length);
+}
+
 type Props = {
   proches: Proche[];
   onAjouter: (lieu: Suggestion, nom: string) => void;
   onPlafond: (id: number, minutes: number) => void;
+  onReessayer: (p: Proche) => void;
   onRetirer: (id: number) => void;
+  onEffacer: () => void;
+  /** Un enregistrement dans le navigateur a échoué (R12). */
+  memoireRefusee: boolean;
   /** Pendant le chargement de la page : les points des mairies ne sont pas encore là. */
   inactif: boolean;
 };
 
-export function Proches({ proches, onAjouter, onPlafond, onRetirer, inactif }: Props) {
+export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif }: Props) {
   // D13 : dès un proche, le champ est replié derrière « + Ajouter un proche ».
   const [ouvert, setOuvert] = useState(false);
   const vide = proches.length === 0;
-  // Après « Ajouter », le champ se replie : le focus passe au lien qui le rouvre, plutôt que de se perdre.
+  const plein = proches.length >= MAX_PROCHES;
+  // Après « Ajouter », « Retirer » ou « Effacer mes proches », le bouton pressé disparaît : le focus passe au lien
+  // « + Ajouter un proche », ou au champ s'il n'y a plus de proche, plutôt que de se perdre.
   const lien = useRef<HTMLButtonElement>(null);
+  const champ = useRef<HTMLInputElement>(null);
   const refocus = useRef(false);
   useEffect(() => {
-    if (refocus.current && lien.current) lien.current.focus();
+    if (refocus.current) (lien.current ?? champ.current)?.focus();
     refocus.current = false;
   });
+  const effacer = (
+    <Button
+      variant="lien"
+      onClick={() => {
+        onEffacer();
+        setOuvert(false);
+        refocus.current = true;
+      }}
+    >
+      Effacer mes proches
+    </Button>
+  );
   return (
     <section aria-labelledby="titre-proches">
-      <Categorie titre="Tes proches" resume={vide ? 'Aucun' : String(proches.length)} idTitre="titre-proches">
+      <Categorie titre="Tes proches" resume={resumeDe(proches)} idTitre="titre-proches" action={vide ? undefined : effacer}>
+        {memoireRefusee && <p className="text-texte text-foreground">Tes proches ne seront pas gardés sur ce navigateur.</p>}
         {vide ? (
           <p className="text-secondaire text-muted-foreground">Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune.</p>
         ) : (
           <ul className="flex flex-col gap-3">
             {proches.map((p) => (
-              <LigneProche key={p.id} proche={p} onPlafond={(v) => onPlafond(p.id, v)} onRetirer={() => onRetirer(p.id)} />
+              <LigneProche
+                key={p.id}
+                proche={p}
+                inactif={inactif}
+                onPlafond={(v) => onPlafond(p.id, v)}
+                onReessayer={() => onReessayer(p)}
+                onRetirer={() => {
+                  onRetirer(p.id);
+                  refocus.current = true;
+                }}
+              />
             ))}
           </ul>
         )}
-        {vide || ouvert ? (
+        {plein ? (
+          <p className="text-texte text-muted-foreground">5 proches au maximum. Retire-en un pour en ajouter un autre.</p>
+        ) : vide || ouvert ? (
           <Ajout
+            champ={champ}
+            libelles={proches.map((p) => p.lieu.libelle)}
             inactif={inactif}
             focus={ouvert}
             onAjouter={(lieu, nom) => {

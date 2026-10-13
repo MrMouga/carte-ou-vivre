@@ -112,7 +112,7 @@ export function App() {
   const [retour, setRetour] = useState<string | null>(null);
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
 
-  // Proches (spec proches) : hors de l'adresse de la page (D7) ; les prêts comptent dans le score (R11).
+  // Proches (spec proches) : gardés dans ce navigateur, hors de l'adresse de la page (D7, R12) ; les prêts comptent dans le score (R11).
   const codes = useMemo(() => donnees?.communes.map((c) => c.code) ?? null, [donnees]);
   const proches = useProches(donnees?.reperes ?? null, codes);
   const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages, proches.prets) : null), [donnees, reglages, proches.prets]);
@@ -175,7 +175,16 @@ export function App() {
         >
           <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
             <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
-            <Proches proches={proches.proches} onAjouter={proches.ajouter} onPlafond={proches.regler} onRetirer={proches.retirer} inactif={!prete} />
+            <Proches
+              proches={proches.proches}
+              onAjouter={proches.ajouter}
+              onPlafond={proches.regler}
+              onReessayer={proches.reessayer}
+              onRetirer={proches.retirer}
+              onEffacer={proches.effacer}
+              memoireRefusee={proches.memoireRefusee}
+              inactif={!prete}
+            />
             {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
             <p role="status" className="text-texte-fort max-bureau:sr-only bureau:sticky bureau:bottom-0 bureau:-mx-4 bureau:border-t bureau:border-border bureau:bg-card bureau:p-4">
               {resultat?.actif ? compte(resultat.classement.length) : ''}

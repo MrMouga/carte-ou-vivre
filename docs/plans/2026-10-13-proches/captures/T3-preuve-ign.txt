@@ -1,0 +1,119 @@
+Tâche 3 — preuve sur le vrai IGN · 2026-10-13T14:03:35.027Z · Chromium (playwright-core), profil neuf /private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/ffe496f2-4af0-423d-a2bd-83bf5e722dfe/scratchpad/profil-t3
+
+1. Session 1 (16:03:39) : « / » ouvert, carte prête. Ajout de 5 proches :
+   « 12 rue de la Paix, Nantes » → suggestion « 12 Rue de la Paix, 44000 Nantes », nommé « Parents de Léa » (16:03:40)
+   « Toulouse » → suggestion « Toulouse, Commune · départ de la mairie » (16:03:43)
+   « Rennes » → suggestion « Rennes, Commune · départ de la mairie » (16:03:44)
+   « La Rochelle » → suggestion « la Rochelle, 35230 Orgères » (16:03:45)
+   « Angers » → suggestion « Angers, Commune · départ de la mairie » (16:03:46)
+   Les 5 sont prêts à 16:04:50. Zone « Tes proches » :
+     | TES PROCHES
+     | Effacer mes proches
+     | Parents de Léa
+     | 2 h
+     | 12 Rue de la Paix 44000 Nantes
+     | Retirer
+     | Toulouse (31)
+     | 2 h
+     | Toulouse · départ de la mairie
+     | Retirer
+     | Rennes (35)
+     | 2 h
+     | Rennes · départ de la mairie
+     | Retirer
+     | Orgères (35)
+     | 2 h
+     | la Rochelle 35230 Orgères
+     | Retirer
+     | Angers (49)
+     | 2 h
+     | Angers · départ de la mairie
+     | Retirer
+     | 
+     | 5 proches au maximum. Retire-en un pour en ajouter un autre.
+   Demandes à data.geopf.fr pendant la session 1 : 5 recherches, 60 zones.
+
+2. Mémoire du navigateur (localStorage) après les 5 ajouts : 5 entrées, 464 693 caractères en tout (≈ 465 k caractères ; localStorage compte en caractères, Chrome en accepte 5 M par site)
+   carte-ou-vivre:proche:1 : 92 959 caractères — nom « Parents de Léa », adresse « 12 Rue de la Paix 44000 Nantes », départ -1.554555,47.215051, plafond 120 min, prêt true, temps en base64 92 656 caractères, empreinte 34746-e5607c87
+   carte-ou-vivre:proche:2 : 92 931 caractères — nom « Toulouse (31) », adresse « Toulouse », départ 1.4442,43.6046, plafond 120 min, prêt true, temps en base64 92 656 caractères, empreinte 34746-e5607c87
+   carte-ou-vivre:proche:3 : 92 926 caractères — nom « Rennes (35) », adresse « Rennes », départ -1.6801,48.1114, plafond 120 min, prêt true, temps en base64 92 656 caractères, empreinte 34746-e5607c87
+   carte-ou-vivre:proche:4 : 92 951 caractères — nom « Orgères (35) », adresse « la Rochelle 35230 Orgères », départ -1.65389,47.984627, plafond 120 min, prêt true, temps en base64 92 656 caractères, empreinte 34746-e5607c87
+   carte-ou-vivre:proche:5 : 92 926 caractères — nom « Angers (49) », adresse « Angers », départ -0.548,47.4712, plafond 120 min, prêt true, temps en base64 92 656 caractères, empreinte 34746-e5607c87
+
+   Navigateur fermé (16:04:51).
+
+3. Session 2 (16:04:55) : navigateur relancé sur le même profil, « / » rouvert, carte prête en 4.7 s (+ 3 s d'attente).
+   Curseurs de plafond (proches prêts) : 5 ; « Calcul des trajets » affiché : non.
+   Zone « Tes proches » :
+     | TES PROCHES
+     | Effacer mes proches
+     | Parents de Léa
+     | 2 h
+     | 12 Rue de la Paix 44000 Nantes
+     | Retirer
+     | Toulouse (31)
+     | 2 h
+     | Toulouse · départ de la mairie
+     | Retirer
+     | Rennes (35)
+     | 2 h
+     | Rennes · départ de la mairie
+     | Retirer
+     | Orgères (35)
+     | 2 h
+     | la Rochelle 35230 Orgères
+     | Retirer
+     | Angers (49)
+     | 2 h
+     | Angers · départ de la mairie
+     | Retirer
+     | 
+     | 5 proches au maximum. Retire-en un pour en ajouter un autre.
+   Compte : « Aucune commune ne passe tes critères » · adresse de la page : /?loyer=1200&mer=60
+
+4. Journal réseau de la session 2 : 112 demandes en tout, dont 45 à data.geopf.fr :
+   recherche d'adresse : 0 · zones de temps (isochrones) : 0 · fond Plan IGN (style, tuiles, estompage) : 45
+   Autres demandes (site local) :
+     / : 1
+     modules du serveur de développement : 54
+     /data/communes.json : 2
+     /data/reperes.json : 2
+     /fonts/SourceSerif4-Semibold.woff2 : 1
+     /fonts/SourceSans3-Bold.woff2 : 1
+     /fonts/SourceSans3-Regular.woff2 : 1
+     /fonts/SourceSans3-Semibold.woff2 : 1
+     /tuiles/… (formes des communes) : 4
+   Toutes les demandes à data.geopf.fr (chemin seulement) :
+     /annexes/ressources/vectorTiles/styles/PLAN.IGN/attenue.json : 2
+     /tms/1.0.0/PLAN.IGN/metadata.json : 1
+     /annexes/ressources/vectorTiles/styles/PLAN.IGN/sprite/PlanIgn.json : 1
+     /annexes/ressources/vectorTiles/styles/PLAN.IGN/sprite/PlanIgn.png : 1
+     /wmts : 24
+     /tms/1.0.0/PLAN.IGN/{z}/{x}/{y} : 12
+     /annexes/ressources/vectorTiles/fonts/Source%20Sans%20Pro%20Regular/0-255.pbf : 1
+     /annexes/ressources/vectorTiles/fonts/Source%20Sans%20Pro%20Italic/0-255.pbf : 1
+     /annexes/ressources/vectorTiles/fonts/Source%20Sans%20Pro%20Regular/256-511.pbf : 1
+     /annexes/ressources/vectorTiles/fonts/Source%20Sans%20Pro%20Regular/512-767.pbf : 1
+
+5. Session 3 (16:05:32) : 4 proches retirés. Compte : « 703 communes passent tes critères » ; 3 premières : 1 · Marzan (56) · 63 · 532 € · 3 km | 2 · Chaumes-en-Retz (44) · 62 · 593 € · 8 km | 3 · Villeneuve-en-Retz (44) · 61 · 632 € · 2 km
+   Entrées de proches gardées : carte-ou-vivre:proche:1 ; demandes IGN : {"recherches":0,"zones":0}
+6. Session 4 (16:05:37) : navigateur relancé. Curseurs : 1 ; « Calcul des trajets » : non
+   Zone : TES PROCHES | Effacer mes proches | Parents de Léa | 2 h | 12 Rue de la Paix 44000 Nantes | Retirer | + Ajouter un proche
+   Compte : « 703 communes passent tes critères » ; 3 premières : 1 · Marzan (56) · 63 · 532 € · 3 km | 2 · Chaumes-en-Retz (44) · 62 · 593 € · 8 km | 3 · Villeneuve-en-Retz (44) · 61 · 632 € · 2 km
+   Demandes IGN de la session 4 : {"recherches":0,"zones":0} (sur 112 demandes)
+
+Notes de l'agent (ajoutées après la sortie du script, 2026-10-13 ≈ 16:07) :
+- Scripts : probe/proches/t3/preuve-ign.mjs puis probe/proches/t3/preuve-ign-suite.mjs (non versionnés), serveur de développement
+  http://localhost:5174, Chromium sans fenêtre, profil neuf créé pour la preuve. « Navigateur fermé » = contexte persistant fermé
+  entièrement (le processus Chromium s'arrête), puis relancé sur le même dossier de profil.
+- Adresses publiques seulement (accord de Vincent du 2026-10-13) : une rue de Nantes et des communes. Pour « La Rochelle », la première
+  suggestion de l'IGN est un lieu-dit « la Rochelle, 35230 Orgères », pas la ville : le script prend la première suggestion. Le proche
+  « Orgères (35) » est donc un lieu-dit près de Rennes (constat pour Vincent, hors tâche : l'ordre des suggestions vient de l'IGN).
+- « Chrome en accepte 5 M par site » (ligne 2, écrite par le script) : ordre de grandeur, non mesuré ici. La mesure qui compte : 5 proches
+  = 464 693 caractères, soit ≈ 93 k par proche, comme prévu par le plan (≈ 465 Ko pour 5).
+- Le journal de la session 2 compte toutes les demandes faites par la page, y compris celles qu'un cache servirait : aucune recherche,
+  aucune zone. Les 45 demandes à data.geopf.fr sont le fond Plan IGN (style, tuiles, estompage). communes.json et reperes.json sont
+  demandés deux fois : double montage de React en mode développement (StrictMode), déjà là avant la tâche.
+- Les 5 proches ensemble : « Aucune commune ne passe tes critères » (Nantes, Toulouse, Rennes, Angers à 2 h chacun : aucune commune
+  à moins de 2 h de tous). Avec « Parents de Léa » seul (sessions 3 et 4) : 703 communes, Marzan (56) 63 en tête, mêmes chiffres
+  qu'en tâche 2b après un calcul neuf.

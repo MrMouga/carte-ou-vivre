@@ -6,7 +6,8 @@ import { cn } from '@/lib/cn';
 import type { EtatProche, Proche } from '@/proches/useProches';
 
 // Ligne de proche (Figma « Ligne de proche » 20:168) : repère en petit, nom, adresse, puis selon l'état le plafond et son
-// curseur (prêt), ou la phrase d'état (en attente, calcul, indisponible). « Retirer » a pour nom « Retirer <nom> ».
+// curseur (prêt), ou la phrase d'état (en attente, calcul, indisponible). « Retirer » dans tous les états (il arrête un
+// calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté.
 
 /** Icône maison de Figma (« Icône maison », 14 × 14), à la couleur du texte. */
 export function IconeMaison({ className }: { className?: string }) {
@@ -36,14 +37,19 @@ export function RepereEnPetit({ etat }: { etat: EtatProche }) {
 /** Adresse sous le nom : le libellé de l'IGN, ou pour une commune choisie seule « Toulouse · départ de la mairie » (D6). */
 export const adresseDe = (p: Pick<Proche, 'lieu'>) => (p.lieu.estCommune ? `${p.lieu.libelle} · départ de la mairie` : p.lieu.libelle);
 
-type Props = { proche: Proche; onPlafond: (minutes: number) => void; onRetirer: () => void };
+type Props = { proche: Proche; onPlafond: (minutes: number) => void; onReessayer: () => void; onRetirer: () => void; inactif?: boolean };
 
-export function LigneProche({ proche, onPlafond, onRetirer }: Props) {
+export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif }: Props) {
   const { nom, plafond, etat } = proche;
   const pret = etat === 'pret';
+  const indisponible = etat === 'indisponible';
   const phrase =
-    etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : etat === 'indisponible' ? `Trajets indisponibles depuis ${nom}.` : null;
-  const retirable = pret || etat === 'indisponible'; // arrêter un calcul : tâche 3
+    etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
+  const retirer = (
+    <Button variant="lien" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
+      Retirer
+    </Button>
+  );
   return (
     <li className="flex items-start gap-2">
       <RepereEnPetit etat={etat} />
@@ -61,14 +67,21 @@ export function LigneProche({ proche, onPlafond, onRetirer }: Props) {
             max={PROCHE.max}
             step={PROCHE.pas}
             value={[plafond]}
+            disabled={inactif}
             onValueChange={([v]) => onPlafond(v)}
           />
         )}
-        {phrase && <p className={cn('text-texte', etat === 'indisponible' ? 'text-foreground' : 'text-muted-foreground')}>{phrase}</p>}
-        {retirable && (
-          <Button variant="lien" className="self-start" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
-            Retirer
-          </Button>
+        {phrase && <p className={cn('text-texte', indisponible ? 'text-foreground' : 'text-muted-foreground')}>{phrase}</p>}
+        {indisponible ? (
+          // Figma « Ligne de proche », état Indisponible : « Réessayer » en bouton principal, « Retirer » à côté.
+          <div className="flex items-center gap-2">
+            <Button aria-label={`Réessayer ${nom}`} onClick={onReessayer}>
+              Réessayer
+            </Button>
+            {retirer}
+          </div>
+        ) : (
+          <div className="self-start">{retirer}</div>
         )}
       </div>
     </li>
