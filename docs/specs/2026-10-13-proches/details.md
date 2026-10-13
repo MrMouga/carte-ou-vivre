@@ -1,5 +1,5 @@
 # Détails — proches et mer en minutes
-Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
+Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
 
 ## Parcours
 1. L'utilisateur ouvre la page : réglages lus dans l'adresse (R7) et proches gardés dans ce navigateur (R12).
@@ -12,10 +12,10 @@ Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation ha
 
 ## Écrans et états
 ### Carte — route `/` · dans l'URL : en plus de loyer-mer, `mer-en=min` quand la mer est en minutes (H27) ; les proches n'y sont jamais (D7)
-Zones touchées (les autres restent celles de loyer-mer) : réglages — la mer reçoit la bascule « km à vol d'oiseau / minutes en voiture » (D9) ; nouvelle zone **Tes proches** : champ de recherche et suggestions, champ « Nom » prérempli, bouton « Ajouter », phrase sur les adresses (H26), une ligne par proche (nom, adresse en petit, état ou plafond, « Retirer »), et « Effacer mes proches » dès qu'il y a un proche · carte — un repère par proche, posé à son point de départ et portant son nom, quel que soit l'état du proche ; un repère ne se clique pas · fiche — une ligne par proche, la mer dans les deux unités · pastilles de temps — en haut de la carte, en bureau (R15) · pied de page — la mention de la source du temps jusqu'à la mer (choisie en /breakdown, ajoutée à CLAUDE.md) ; les trajets IGN sont couverts par « © IGN – Géoplateforme ». Disposition, et à 390 px : /ui.
+Zones touchées (les autres restent celles de loyer-mer) : réglages — la mer reçoit la bascule « km à vol d'oiseau / minutes en voiture » (D9) ; nouvelle zone **Tes proches** : champ de recherche et suggestions, champ « Nom » prérempli, bouton « Ajouter », une ligne par proche (nom, adresse en petit, état ou plafond, « Retirer »), et « Effacer mes proches » dès qu'il y a un proche · carte — un repère par proche, posé à son point de départ et portant son nom, quel que soit l'état du proche ; un repère ne se clique pas · fiche — une ligne par proche, la mer dans les deux unités · pastilles de temps — en haut de la carte, en bureau (R15) · pied de page — la mention de la source du temps jusqu'à la mer (choisie en /breakdown, ajoutée à CLAUDE.md) ; les trajets IGN sont couverts par « © IGN – Géoplateforme ». Disposition, et à 390 px : /ui.
 
 États de la zone **Tes proches** (initial : **vide** sans proche gardé, sinon **avec proches**) :
-- **vide** (aucun proche) → le champ de recherche, « Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune. » et la phrase de H26 ; sort vers **recherche**.
+- **vide** (aucun proche) → le champ de recherche, « Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune. » ; sort vers **recherche**.
 - **avec proches** (1 à 4 proches, champ vide) → la liste des proches, le champ de recherche, « Effacer mes proches » ; sort vers **recherche** ou **vide**.
 - **recherche** (au moins 3 caractères tapés, H20) → jusqu'à 5 suggestions ; une fois une suggestion choisie, le champ « Nom » prend sa commune (« Nantes (44) ») et « Ajouter » devient actif ; sinon, « Aucune adresse trouvée. » ou la panne de R13 ; « Ajouter » vide les champs ; sort vers **avec proches** ou **plein**.
 - **plein** (5 proches, quel que soit leur état) → le champ est remplacé par « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; sort vers **avec proches** quand un proche est retiré.
@@ -83,7 +83,7 @@ Loyer-mer : AC-1 à AC-15, sur un navigateur sans proche gardé et avec la mer e
 - **H23** — Mer en minutes : de 5 min à 3 h par pas de 5 min, puis « Sans limite » (`aucun`). 60 min au passage en minutes, d'après le pitch (« la mer à moins d'une heure »).
 - **H24** — Les temps sont ceux du réseau routier, sans embouteillages ni heure de départ ; l'écran dit seulement « en voiture ».
 - **H25** — La mer en minutes vise la même côte que les km (limite terre-mer Shom-IGN 2021, Seine et Adour retirés) : c'est le temps jusqu'au point de route le plus proche de cette côte, atteint le plus vite depuis la mairie. Méthode et distance maximale entre la route et la côte : /breakdown, mesurées en tâche 0.
-- **H26** — Phrase sous le champ : « Les adresses sont envoyées à l'IGN pour calculer les trajets, sans le nom que tu leur donnes. Ce site ne les garde que dans ton navigateur. »
+- **H26** — *Supprimée par D12* (phrase sur l'IGN sous le champ).
 - **H27** — Dans l'adresse de la page, `mer-en=min` suit `mer` et précède `taille` : `/?loyer=1200&mer=60&mer-en=min&taille=petite-ville`.
 - **H28** — Les coordonnées envoyées à l'IGN sont celles que renvoie la recherche, sans arrondi.
 - **H29** — Le repère d'un proche affiche son nom en entier (30 caractères au plus, R9) ; s'il en recouvre un autre, les deux restent visibles (règle d'affichage : /ui).

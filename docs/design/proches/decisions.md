@@ -25,3 +25,6 @@ La grille : on règle un proche sans perdre la liste de vue (objectif 3) ; on li
 - Avec 5 proches, les pastilles passent sur deux lignes à 1 440 px et couvrent le haut de la carte (la Manche, le Nord).
 - Texte sous une ville choisie seule : « Toulouse · départ de la mairie » (le prototype affiche « Toulouse, Commune · Haute-Garonne »).
 - Les temps du prototype sont simulés ; les vrais viennent de la tâche 0.
+
+## Après les écrans Figma
+- **Phrase sur l'IGN retirée** (choix de Vincent, spec D12) : plus de phrase sous le champ d'adresse. Coût : l'écran ne dit plus où part l'adresse ; à reprendre dans la FAQ du lancement.
