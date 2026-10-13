@@ -1,0 +1,239 @@
+# Tâche 0 proches — sorties brutes (2026-10-13, Mac de Vincent, réseau de la maison). Scripts : probe/proches/ (non versionné).
+
+## (a) Un isochrone de 6 h depuis la mairie de Nantes (-1.5545,47.2184), curl, un seul à la fois
+13:53  bdtopo-valhalla http=200 temps=42.409877s poids transféré (gzip)=110494o ; 302 978 o non compressés ; Polygon, 1 anneau, 14 747 sommets
+13:53  bdtopo-pgr      http=200 temps=22.392752s poids transféré (gzip)=110494o — réponse identique à l'octet près, champ "resource":"bdtopo-valhalla"
+13:54  bdtopo-valhalla 15 min http=200 0.258108s 1525o · 60 min 2.324285s 15310o · 180 min 11.544555s 49416o · 360 min 28.478513s 110494o
+En-têtes : x-ratelimit-limit-second: 1 · ratelimit-limit: 5 · access-control-allow-origin: * · cache-control: private, max-age=1814400
+getcapabilities : bdtopo-osrm = route seulement ; bdtopo-pgr et bdtopo-valhalla = route + isochrone (costValue max 50 000) ; graphe_routier_* = Île-de-France seulement (bbox 1.36,48.02 → 3.65,49.34)
+
+## (b) 24 isochrones de « 12 rue de la Paix, Nantes » — à 5 par seconde (toutes les 200 ms), 15 min d'abord
+ 15 min  statut 200  départ 0.0 s  réponse en 0.3 s  fin 0.3 s  4 Ko (non compressé)  168 sommets
+ 30 min  statut 200  départ 0.2 s  réponse en 0.7 s  fin 0.9 s  14 Ko (non compressé)  648 sommets
+ 45 min  statut 200  départ 0.4 s  réponse en 1.4 s  fin 1.8 s  33 Ko (non compressé)  1552 sommets
+ 60 min  statut 200  départ 0.6 s  réponse en 1.6 s  fin 2.2 s  41 Ko (non compressé)  1920 sommets
+ 75 min  statut 200  départ 0.8 s  réponse en 1.4 s  fin 2.2 s  38 Ko (non compressé)  1748 sommets
+ 90 min  statut 429  départ 1.0 s  réponse en 0.0 s  fin 1.0 s  0 Ko (non compressé)  null sommets  <html>
+105 min  statut 429  départ 1.2 s  réponse en 0.1 s  fin 1.3 s  0 Ko (non compressé)  null sommets  <html>
+120 min  statut 429  départ 1.4 s  réponse en 0.0 s  fin 1.4 s  0 Ko (non compressé)  null sommets  <html>
+135 min  statut 429  départ 1.6 s  réponse en 0.0 s  fin 1.6 s  0 Ko (non compressé)  null sommets  <html>
+150 min  statut 429  départ 1.8 s  réponse en 0.0 s  fin 1.8 s  0 Ko (non compressé)  null sommets  <html>
+165 min  statut 429  départ 2.0 s  réponse en 0.0 s  fin 2.0 s  0 Ko (non compressé)  null sommets  <html>
+180 min  statut 429  départ 2.2 s  réponse en 0.0 s  fin 2.2 s  0 Ko (non compressé)  null sommets  <html>
+195 min  statut 429  départ 2.4 s  réponse en 0.0 s  fin 2.4 s  0 Ko (non compressé)  null sommets  <html>
+210 min  statut 429  départ 2.6 s  réponse en 0.0 s  fin 2.6 s  0 Ko (non compressé)  null sommets  <html>
+225 min  statut 429  départ 2.8 s  réponse en 0.1 s  fin 2.9 s  0 Ko (non compressé)  null sommets  <html>
+240 min  statut 429  départ 3.0 s  réponse en 0.0 s  fin 3.0 s  0 Ko (non compressé)  null sommets  <html>
+255 min  statut 429  départ 3.2 s  réponse en 0.0 s  fin 3.2 s  0 Ko (non compressé)  null sommets  <html>
+270 min  statut 429  départ 3.4 s  réponse en 0.0 s  fin 3.4 s  0 Ko (non compressé)  null sommets  <html>
+285 min  statut 429  départ 3.6 s  réponse en 0.1 s  fin 3.7 s  0 Ko (non compressé)  null sommets  <html>
+300 min  statut 429  départ 3.8 s  réponse en 0.0 s  fin 3.8 s  0 Ko (non compressé)  null sommets  <html>
+315 min  statut 429  départ 4.0 s  réponse en 0.0 s  fin 4.0 s  0 Ko (non compressé)  null sommets  <html>
+330 min  statut 429  départ 4.2 s  réponse en 0.0 s  fin 4.2 s  0 Ko (non compressé)  null sommets  <html>
+345 min  statut 429  départ 4.4 s  réponse en 0.0 s  fin 4.4 s  0 Ko (non compressé)  null sommets  <html>
+360 min  statut 429  départ 4.6 s  réponse en 0.0 s  fin 4.6 s  0 Ko (non compressé)  null sommets  <html>
+TOTAL nantes (asc, bdtopo-valhalla) : dernier à 4.6 s ; 5/24 réussis ; 0.13 Mo non compressés
+
+## Limite de débit (isochrones de 15 min) — node probe/proches/debit.mjs
+8 requêtes toutes les 1000 ms : toutes 200 · 10 toutes les 500 ms : toutes 200 · 10 toutes les 334 ms : toutes 200 · 12 toutes les 250 ms : toutes 200
+12 requêtes toutes les 200 ms : 0.0s→200  0.2s→200  0.4s→200  0.6s→200  0.8s→200  1.0s→429 retry-after 5  1.2s→429 retry-after 4  1.4s→429 retry-after 4  1.6s→429 retry-after 4  1.8s→429 retry-after 4  2.0s→429 retry-after 3  2.2s→429 retry-after 3
+
+## (b) b-nantes-desc — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 5.8 s  réponse en 0.3 s  fin 6.1 s  4 Ko (non compressé)  168 sommets
+ 30 min  statut 200  départ 5.5 s  réponse en 2.2 s  fin 7.7 s  14 Ko (non compressé)  648 sommets
+ 45 min  statut 200  départ 5.3 s  réponse en 3.2 s  fin 8.5 s  33 Ko (non compressé)  1552 sommets
+ 60 min  statut 200  départ 5.0 s  réponse en 2.5 s  fin 7.5 s  41 Ko (non compressé)  1920 sommets
+ 75 min  statut 200  départ 4.8 s  réponse en 3.8 s  fin 8.6 s  38 Ko (non compressé)  1748 sommets
+ 90 min  statut 200  départ 4.5 s  réponse en 5.0 s  fin 9.5 s  46 Ko (non compressé)  2169 sommets
+105 min  statut 200  départ 4.3 s  réponse en 10.6 s  fin 14.8 s  57 Ko (non compressé)  2653 sommets
+120 min  statut 200  départ 4.0 s  réponse en 12.8 s  fin 16.8 s  66 Ko (non compressé)  3100 sommets
+135 min  statut 200  départ 3.8 s  réponse en 17.4 s  fin 21.1 s  89 Ko (non compressé)  4222 sommets
+150 min  statut 200  départ 3.5 s  réponse en 21.3 s  fin 24.8 s  99 Ko (non compressé)  4723 sommets
+165 min  statut 200  départ 3.3 s  réponse en 22.3 s  fin 25.6 s  115 Ko (non compressé)  5465 sommets
+180 min  statut 200  départ 3.0 s  réponse en 12.2 s  fin 15.2 s  132 Ko (non compressé)  6279 sommets
+195 min  statut 200  départ 2.8 s  réponse en 28.8 s  fin 31.5 s  145 Ko (non compressé)  6905 sommets
+210 min  statut 200  départ 2.5 s  réponse en 26.6 s  fin 29.1 s  145 Ko (non compressé)  6922 sommets
+225 min  statut 200  départ 2.3 s  réponse en 31.1 s  fin 33.3 s  158 Ko (non compressé)  7546 sommets
+240 min  statut 200  départ 2.0 s  réponse en 31.3 s  fin 33.3 s  183 Ko (non compressé)  8757 sommets
+255 min  statut 200  départ 1.8 s  réponse en 33.6 s  fin 35.3 s  193 Ko (non compressé)  9225 sommets
+270 min  statut 200  départ 1.5 s  réponse en 25.5 s  fin 27.0 s  211 Ko (non compressé)  10097 sommets
+285 min  statut 200  départ 1.3 s  réponse en 36.1 s  fin 37.4 s  230 Ko (non compressé)  11040 sommets
+300 min  statut 200  départ 1.0 s  réponse en 38.2 s  fin 39.2 s  253 Ko (non compressé)  12147 sommets
+315 min  statut 200  départ 0.8 s  réponse en 42.5 s  fin 43.3 s  257 Ko (non compressé)  12374 sommets
+330 min  statut 200  départ 0.5 s  réponse en 41.8 s  fin 42.3 s  277 Ko (non compressé)  13379 sommets
+345 min  statut 504  départ 0.3 s  réponse en 60.1 s  fin 60.3 s  0 Ko (non compressé)  null sommets  {
+360 min  statut 504  départ 0.0 s  réponse en 60.2 s  fin 60.2 s  0 Ko (non compressé)  null sommets  {
+TOTAL nantes (desc, bdtopo-valhalla) : dernier à 60.3 s ; 22/24 réussis ; 2.72 Mo non compressés
+
+## (b) b-toulouse-desc — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 5.8 s  réponse en 1.5 s  fin 7.3 s  3 Ko (non compressé)  146 sommets
+ 30 min  statut 200  départ 5.5 s  réponse en 1.0 s  fin 6.5 s  15 Ko (non compressé)  719 sommets
+ 45 min  statut 200  départ 5.3 s  réponse en 1.4 s  fin 6.6 s  38 Ko (non compressé)  1877 sommets
+ 60 min  statut 200  départ 5.0 s  réponse en 3.8 s  fin 8.8 s  38 Ko (non compressé)  1865 sommets
+ 75 min  statut 200  départ 4.8 s  réponse en 6.1 s  fin 10.8 s  38 Ko (non compressé)  1847 sommets
+ 90 min  statut 200  départ 4.5 s  réponse en 3.0 s  fin 7.6 s  49 Ko (non compressé)  2393 sommets
+105 min  statut 200  départ 4.3 s  réponse en 4.3 s  fin 8.5 s  69 Ko (non compressé)  3361 sommets
+120 min  statut 200  départ 4.0 s  réponse en 3.3 s  fin 7.3 s  91 Ko (non compressé)  4451 sommets
+135 min  statut 200  départ 3.8 s  réponse en 12.1 s  fin 15.9 s  109 Ko (non compressé)  5319 sommets
+150 min  statut 200  départ 3.5 s  réponse en 21.3 s  fin 24.8 s  115 Ko (non compressé)  5570 sommets
+165 min  statut 200  départ 3.3 s  réponse en 24.2 s  fin 27.4 s  133 Ko (non compressé)  6466 sommets
+180 min  statut 200  départ 3.0 s  réponse en 15.5 s  fin 18.5 s  140 Ko (non compressé)  6771 sommets
+195 min  statut 200  départ 2.8 s  réponse en 46.7 s  fin 49.4 s  166 Ko (non compressé)  8027 sommets
+210 min  statut 200  départ 2.5 s  réponse en 26.0 s  fin 28.5 s  174 Ko (non compressé)  8431 sommets
+225 min  statut 200  départ 2.3 s  réponse en 14.9 s  fin 17.1 s  192 Ko (non compressé)  9295 sommets
+240 min  statut 200  départ 2.0 s  réponse en 11.7 s  fin 13.7 s  205 Ko (non compressé)  9917 sommets
+255 min  statut 200  départ 1.8 s  réponse en 30.8 s  fin 32.5 s  216 Ko (non compressé)  10480 sommets
+270 min  statut 504  départ 1.5 s  réponse en 60.1 s  fin 61.6 s  0 Ko (non compressé)  null sommets  {
+285 min  statut 200  départ 1.3 s  réponse en 38.3 s  fin 39.5 s  235 Ko (non compressé)  11395 sommets
+300 min  statut 200  départ 1.0 s  réponse en 46.9 s  fin 47.9 s  250 Ko (non compressé)  12115 sommets
+315 min  statut 200  départ 0.8 s  réponse en 31.9 s  fin 32.6 s  258 Ko (non compressé)  12522 sommets
+330 min  statut 504  départ 0.5 s  réponse en 60.9 s  fin 61.4 s  0 Ko (non compressé)  null sommets  {
+345 min  statut 200  départ 0.3 s  réponse en 53.6 s  fin 53.8 s  257 Ko (non compressé)  12476 sommets
+360 min  statut 200  départ 0.0 s  réponse en 45.2 s  fin 45.3 s  266 Ko (non compressé)  12872 sommets
+TOTAL toulouse (desc, bdtopo-valhalla) : dernier à 61.6 s ; 22/24 réussis ; 2.99 Mo non compressés
+
+## (b) b-nantes-3-en-meme-temps — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 114.5 s  réponse en 0.2 s  fin 114.7 s  4 Ko (non compressé)  168 sommets
+ 30 min  statut 200  départ 114.1 s  réponse en 0.4 s  fin 114.5 s  14 Ko (non compressé)  648 sommets
+ 45 min  statut 200  départ 113.1 s  réponse en 1.0 s  fin 114.1 s  33 Ko (non compressé)  1552 sommets
+ 60 min  statut 200  départ 112.2 s  réponse en 0.9 s  fin 113.1 s  41 Ko (non compressé)  1920 sommets
+ 75 min  statut 200  départ 110.1 s  réponse en 2.1 s  fin 112.2 s  38 Ko (non compressé)  1748 sommets
+ 90 min  statut 200  départ 107.4 s  réponse en 2.7 s  fin 110.1 s  46 Ko (non compressé)  2169 sommets
+105 min  statut 200  départ 107.1 s  réponse en 9.3 s  fin 116.4 s  57 Ko (non compressé)  2653 sommets
+120 min  statut 200  départ 106.3 s  réponse en 9.4 s  fin 115.7 s  66 Ko (non compressé)  3100 sommets
+135 min  statut 200  départ 102.1 s  réponse en 4.9 s  fin 107.1 s  89 Ko (non compressé)  4222 sommets
+150 min  statut 200  départ 100.2 s  réponse en 7.2 s  fin 107.4 s  99 Ko (non compressé)  4723 sommets
+165 min  statut 200  départ 94.0 s  réponse en 6.1 s  fin 100.2 s  115 Ko (non compressé)  5465 sommets
+180 min  statut 200  départ 93.4 s  réponse en 8.7 s  fin 102.1 s  132 Ko (non compressé)  6279 sommets
+195 min  statut 200  départ 91.0 s  réponse en 15.3 s  fin 106.3 s  145 Ko (non compressé)  6905 sommets
+210 min  statut 200  départ 78.8 s  réponse en 15.2 s  fin 94.0 s  145 Ko (non compressé)  6922 sommets
+225 min  statut 200  départ 78.0 s  réponse en 15.4 s  fin 93.4 s  158 Ko (non compressé)  7546 sommets
+240 min  statut 200  départ 70.9 s  réponse en 20.1 s  fin 91.0 s  183 Ko (non compressé)  8757 sommets
+255 min  statut 200  départ 64.8 s  réponse en 14.1 s  fin 78.8 s  193 Ko (non compressé)  9225 sommets
+270 min  statut 200  départ 59.6 s  réponse en 18.4 s  fin 78.0 s  211 Ko (non compressé)  10097 sommets
+285 min  statut 200  départ 40.5 s  réponse en 24.2 s  fin 64.8 s  230 Ko (non compressé)  11040 sommets
+300 min  statut 200  départ 29.4 s  réponse en 41.5 s  fin 70.9 s  253 Ko (non compressé)  12147 sommets
+315 min  statut 200  départ 26.7 s  réponse en 32.9 s  fin 59.6 s  257 Ko (non compressé)  12374 sommets
+330 min  statut 200  départ 0.5 s  réponse en 28.9 s  fin 29.4 s  277 Ko (non compressé)  13379 sommets
+345 min  statut 200  départ 0.3 s  réponse en 26.5 s  fin 26.7 s  280 Ko (non compressé)  13508 sommets
+360 min  statut 200  départ 0.0 s  réponse en 40.5 s  fin 40.5 s  302 Ko (non compressé)  14601 sommets
+TOTAL nantesc3 (desc, bdtopo-valhalla, max 360 min, 3 en même temps au plus) : dernier à 116.4 s ; 24 réussis sur 24 ; 3.29 Mo non compressés
+
+## (b) b-nantes-max3h — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 2.8 s  réponse en 1.5 s  fin 4.3 s  4 Ko (non compressé)  168 sommets
+ 30 min  statut 200  départ 2.5 s  réponse en 0.8 s  fin 3.3 s  14 Ko (non compressé)  648 sommets
+ 45 min  statut 200  départ 2.3 s  réponse en 1.3 s  fin 3.6 s  33 Ko (non compressé)  1552 sommets
+ 60 min  statut 200  départ 2.0 s  réponse en 1.3 s  fin 3.3 s  41 Ko (non compressé)  1920 sommets
+ 75 min  statut 200  départ 1.8 s  réponse en 5.4 s  fin 7.2 s  38 Ko (non compressé)  1748 sommets
+ 90 min  statut 200  départ 1.5 s  réponse en 8.8 s  fin 10.3 s  46 Ko (non compressé)  2169 sommets
+105 min  statut 200  départ 1.3 s  réponse en 3.1 s  fin 4.4 s  57 Ko (non compressé)  2653 sommets
+120 min  statut 200  départ 1.0 s  réponse en 5.3 s  fin 6.3 s  66 Ko (non compressé)  3100 sommets
+135 min  statut 200  départ 0.8 s  réponse en 4.3 s  fin 5.1 s  89 Ko (non compressé)  4222 sommets
+150 min  statut 200  départ 0.5 s  réponse en 9.3 s  fin 9.8 s  99 Ko (non compressé)  4723 sommets
+165 min  statut 200  départ 0.3 s  réponse en 7.0 s  fin 7.2 s  115 Ko (non compressé)  5465 sommets
+180 min  statut 200  départ 0.0 s  réponse en 15.7 s  fin 15.7 s  132 Ko (non compressé)  6279 sommets
+TOTAL nantes3h (desc, bdtopo-valhalla, max 180 min, 99 en même temps au plus) : dernier à 15.7 s ; 12 réussis sur 12 ; 0.72 Mo non compressés
+
+## (b) b-toulouse-max3h — 4 par seconde (toutes les 250 ms), 6 h d'abord
+TOTAL toulouse3h (desc, bdtopo-valhalla, max 180 min, 99 en même temps au plus) : dernier à 13.7 s ; 12 réussis sur 12 ; 0.82 Mo non compressés
+
+## (b) b-nantes-max2h30 — 4 par seconde (toutes les 250 ms), 6 h d'abord
+TOTAL nantes2h30 (desc, bdtopo-valhalla, max 150 min, 99 en même temps au plus) : dernier à 6.8 s ; 10 réussis sur 10 ; 0.48 Mo non compressés
+
+## (b) b-nantes-max2h — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 1.8 s  réponse en 0.5 s  fin 2.2 s  4 Ko (non compressé)  168 sommets
+ 30 min  statut 200  départ 1.5 s  réponse en 0.8 s  fin 2.3 s  14 Ko (non compressé)  648 sommets
+ 45 min  statut 200  départ 1.3 s  réponse en 1.8 s  fin 3.0 s  33 Ko (non compressé)  1552 sommets
+ 60 min  statut 200  départ 1.0 s  réponse en 2.1 s  fin 3.1 s  41 Ko (non compressé)  1920 sommets
+ 75 min  statut 200  départ 0.8 s  réponse en 1.6 s  fin 2.3 s  38 Ko (non compressé)  1748 sommets
+ 90 min  statut 200  départ 0.5 s  réponse en 2.1 s  fin 2.6 s  46 Ko (non compressé)  2169 sommets
+105 min  statut 200  départ 0.3 s  réponse en 2.9 s  fin 3.2 s  57 Ko (non compressé)  2653 sommets
+120 min  statut 200  départ 0.0 s  réponse en 2.9 s  fin 2.9 s  66 Ko (non compressé)  3100 sommets
+TOTAL nantes2h (desc, bdtopo-valhalla, max 120 min, 99 en même temps au plus) : dernier à 3.2 s ; 8 réussis sur 8 ; 0.29 Mo non compressés
+
+## (b) b-toulouse-max2h — 4 par seconde (toutes les 250 ms), 6 h d'abord
+ 15 min  statut 200  départ 1.8 s  réponse en 0.5 s  fin 2.3 s  3 Ko (non compressé)  146 sommets
+ 30 min  statut 200  départ 1.5 s  réponse en 0.5 s  fin 2.0 s  15 Ko (non compressé)  719 sommets
+ 45 min  statut 200  départ 1.3 s  réponse en 2.2 s  fin 3.4 s  38 Ko (non compressé)  1877 sommets
+ 60 min  statut 200  départ 1.0 s  réponse en 1.2 s  fin 2.2 s  38 Ko (non compressé)  1865 sommets
+ 75 min  statut 200  départ 0.8 s  réponse en 1.5 s  fin 2.3 s  38 Ko (non compressé)  1847 sommets
+ 90 min  statut 200  départ 0.5 s  réponse en 4.0 s  fin 4.5 s  49 Ko (non compressé)  2393 sommets
+105 min  statut 200  départ 0.3 s  réponse en 2.3 s  fin 2.5 s  69 Ko (non compressé)  3361 sommets
+120 min  statut 200  départ 0.0 s  réponse en 2.3 s  fin 2.3 s  91 Ko (non compressé)  4451 sommets
+TOTAL toulouse2h (desc, bdtopo-valhalla, max 120 min, 99 en même temps au plus) : dernier à 4.5 s ; 8 réussis sur 8 ; 0.33 Mo non compressés
+
+## Zones de Toulouse redemandées seules : 270 min 200 en 9.559311s · 330 min 200 en 16.193068s
+
+## (b, g) Un proche depuis la page de mesure, Chromium du Mac (bouton « Mesurer un proche »)
+34746 mairies chargées
+prête : appuie sur « Mesurer un proche ».
+
+12 Rue de la Paix 44000 Nantes (INSEE 44109) — recherche 96 ms ; 24 zones…
+24 zones reçues (63 s)
+TOTAL 63.2 s (24 zones : 63.0 s ; classement 46 ms) ; 19/24 zones reçues ; échecs : 3 h → 504, 3 h 45 → 504, 4 h 15 → 504, 5 h 15 → 504, 5 h 30 → 504
+la plus lente : 5 h 30 en 60.1 s
+proche : 19789 mairies à 6 h ou moins, 14957 au-delà
+  fins de tranche : La Rochelle 2 h 15 · Toulouse 5 h 45 · Bordeaux 3 h 30 · Nantes 15 min
+navigateur : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36
+15 min 200 0.6 s · 30 min 200 2.4 s · 45 min 200 0.5 s · 60 min 200 1.7 s · 75 min 200 7.4 s · 90 min 200 8.7 s · 105 min 200 23.0 s · 120 min 200 15.3 s · 135 min 200 16.5 s · 150 min 200 18.7 s · 165 min 200 18.1 s · 180 min 504 60.0 s · 195 min 200 9.0 s · 210 min 200 9.5 s · 225 min 504 60.0 s · 240 min 200 14.9 s · 255 min 504 60.0 s · 270 min 200 28.5 s · 285 min 200 17.8 s · 300 min 200 19.9 s · 315 min 504 60.1 s · 330 min 504 60.1 s · 345 min 200 35.3 s · 360 min 200 37.4 s
+
+## (c) Classement des 34 746 mairies (page construite, Chromium, médiane de 5) — nantesc3 = zones de Nantes complètes (24/24)
+nantesc3 CPU ×1 : {"filPrincipalMs":29,"filPrincipalTous":[52,30,29,27,28],"workerTotalMs":40,"workerCalculMs":37,"filPrincipalBloqueAvecWorkerMs":1,"suivies":{"La Rochelle":"2 h 15","Toulouse":"5 h 45","Bordeaux":"3 h 30","Nantes":"15 min"}}
+nantesc3 CPU ×4 : {"filPrincipalMs":106,"filPrincipalTous":[147,114,106,105,106],"workerTotalMs":46,"workerCalculMs":37,"filPrincipalBloqueAvecWorkerMs":4,"suivies":{"La Rochelle":"2 h 15","Toulouse":"5 h 45","Bordeaux":"3 h 30","Nantes":"15 min"}}
+toulouse CPU ×1 : {"filPrincipalMs":30,"filPrincipalTous":[45,29,30,31,28],"workerTotalMs":39,"workerCalculMs":36,"filPrincipalBloqueAvecWorkerMs":1,"suivies":{"La Rochelle":"4 h 30","Toulouse":"15 min","Bordeaux":"3 h","Nantes":"6 h"}}
+toulouse CPU ×4 : {"filPrincipalMs":115,"filPrincipalTous":[152,116,113,115,112],"workerTotalMs":43,"workerCalculMs":36,"filPrincipalBloqueAvecWorkerMs":4,"suivies":{"La Rochelle":"4 h 30","Toulouse":"15 min","Bordeaux":"3 h","Nantes":"6 h"}}
+
+## (c) Itinéraires IGN de l'adresse à la mairie
+bdtopo-valhalla Nantes -> Bordeaux : 217 min = 3 h 37 | 353 km
+bdtopo-valhalla Nantes -> LaRochelle : 130 min = 2 h 10 | 137 km
+bdtopo-valhalla Toulouse -> Bordeaux : 169 min = 2 h 49 | 245 km
+bdtopo-valhalla Toulouse -> LaRochelle : 276 min = 4 h 35 | 426 km
+bdtopo-osrm Nantes -> Bordeaux : 215 min = 3 h 34 | 352 km
+bdtopo-osrm Nantes -> LaRochelle : 126 min = 2 h 05 | 140 km
+bdtopo-osrm Toulouse -> Bordeaux : 168 min = 2 h 47 | 245 km
+bdtopo-osrm Toulouse -> LaRochelle : 273 min = 4 h 32 | 422 km
+
+## (c) Fin de tranche (zones) contre itinéraire IGN (bdtopo-valhalla), depuis 12 rue de la Paix, Nantes
+Rennes             zones 1 h 45     itinéraire 1 h 44    → tranche attendue 1 h 45    OK
+Angers             zones 1 h 30     itinéraire 1 h 19    → tranche attendue 1 h 30    OK
+Tours              zones 2 h 30     itinéraire 2 h 26    → tranche attendue 2 h 30    OK
+Poitiers           zones 2 h 30     itinéraire 2 h 30    → tranche attendue 2 h 45    SOUS-ESTIMÉ
+Limoges            zones 4 h 30     itinéraire 4 h 36    → tranche attendue 4 h 45    SOUS-ESTIMÉ
+Paris              zones 4 h 15     itinéraire 4 h 02    → tranche attendue 4 h 15    OK
+Brest              zones 4 h 00     itinéraire 3 h 55    → tranche attendue 4 h 00    OK
+Caen               zones 3 h 30     itinéraire 3 h 23    → tranche attendue 3 h 30    OK
+Orléans            zones 3 h 45     itinéraire 3 h 35    → tranche attendue 3 h 45    OK
+Clermont-Ferrand   zones 5 h 15     itinéraire 5 h 07    → tranche attendue 5 h 15    OK
+Bordeaux           zones 3 h 30     itinéraire 3 h 37    → tranche attendue 3 h 45    SOUS-ESTIMÉ
+La Rochelle        zones 2 h 15     itinéraire 2 h 10    → tranche attendue 2 h 15    OK
+
+## (d) Réaction à un réglage — application construite (vite preview), Chromium 1440 px, CPU ×4, rendu logiciel ; 10 essais après 2 d'échauffement
+/ : réaction médiane 28 ms (max 35) · essais 35, 33, 26, 31, 31, 28, 27, 28, 25, 27 · communes recolorées 385/385/385/385/385/385/385/385/385/385 · curseur 1 200 € par mois pour 52 m² · « 8 046 communes passent tes critères »
+/?proches=5 : réaction médiane 27 ms (max 30) · essais 24, 25, 26, 27, 23, 28, 29, 26, 27, 30 · communes recolorées 28/28/28/28/28/28/28/28/28/28 · curseur 1 200 € par mois pour 52 m² · « 1 060 communes passent tes critères »
+/ : réaction médiane 31 ms (max 34) · essais 33, 34, 28, 31, 34, 31, 28, 27, 31, 27 · communes recolorées 385/385/385/385/385/385/385/385/385/385 · curseur 1 200 € par mois pour 52 m² · « 8 046 communes passent tes critères »
+/?proches=5 : réaction médiane 24 ms (max 29) · essais 24, 26, 27, 26, 23, 22, 22, 21, 23, 29 · communes recolorées 28/28/28/28/28/28/28/28/28/28 · curseur 1 200 € par mois pour 52 m² · « 1 060 communes passent tes critères »
+/ : méthode B (touche pressée, mesure hors page) médiane 35 ms (max 49) · essais 35, 31, 49, 35, 38, 33, 40, 40, 32, 34
+/ : réaction médiane 28 ms (max 35) · essais 28, 29, 35, 27, 32, 26, 25, 30, 27, 25 · communes recolorées 385/385/385/385/385/385/385/385/385/385 · curseur 1 200 € par mois pour 52 m² · « 8 046 communes passent tes critères »
+/?proches=5 : méthode B (touche pressée, mesure hors page) médiane 33 ms (max 66) · essais 48, 39, 29, 45, 33, 27, 33, 31, 33, 66
+/?proches=5 : réaction médiane 24 ms (max 31) · essais 27, 27, 24, 23, 24, 23, 22, 31, 23, 21 · communes recolorées 28/28/28/28/28/28/28/28/28/28 · curseur 1 200 € par mois pour 52 m² · « 1 060 communes passent tes critères »
+/ : méthode B (touche pressée, mesure hors page) médiane 35 ms (max 41) · essais 41, 32, 37, 33, 38, 29, 31, 37, 32, 35
+/ : réaction médiane 25 ms (max 31) · essais 26, 31, 25, 26, 25, 25, 25, 25, 31, 24 · communes recolorées 385/385/385/385/385/385/385/385/385/385 · curseur 1 200 € par mois pour 52 m² · « 8 046 communes passent tes critères »
+/?proches=5 : méthode B (touche pressée, mesure hors page) médiane 33 ms (max 130) · essais 29, 36, 30, 28, 27, 28, 33, 130, 34, 37
+/?proches=5 : réaction médiane 25 ms (max 33) · essais 25, 26, 33, 23, 25, 33, 23, 24, 21, 21 · communes recolorées 28/28/28/28/28/28/28/28/28/28 · curseur 1 200 € par mois pour 52 m² · « 1 060 communes passent tes critères »
+/?loyer=1200&mer=aucun : méthode B (touche pressée, mesure hors page) médiane 70 ms (max 80) · essais 80, 75, 71, 65, 63, 71, 63, 68, 70, 67
+/?loyer=1200&mer=aucun : réaction médiane 62 ms (max 85) · essais 59, 61, 59, 61, 85, 65, 62, 67, 58, 68 · communes recolorées 3864/3864/3864/3864/3864/3864/3864/3864/3864/3864 · curseur 1 200 € par mois pour 52 m² · « 34 674 communes passent tes critères »
+/?loyer=1200&mer=aucun&proches=5 : méthode B (touche pressée, mesure hors page) médiane 41 ms (max 74) · essais 32, 42, 30, 39, 74, 48, 46, 41, 30, 36
+/?loyer=1200&mer=aucun&proches=5 : réaction médiane 25 ms (max 32) · essais 25, 26, 32, 27, 25, 25, 22, 32, 23, 24 · communes recolorées 66/66/66/66/66/66/66/66/66/66 · curseur 1 200 € par mois pour 52 m² · « 3 277 communes passent tes critères »
+
+## (g préparée) Page de mesure en mode développement --host (http://localhost:5310/?max=120), Chromium du Mac, 14:2x
+34746 mairies chargées
+prête : appuie sur « Mesurer un proche ».
+
+12 Rue de la Paix 44000 Nantes (INSEE 44109) — recherche 126 ms ; 8 zones jusqu'à 2 h…
+8 zones reçues (7 s)
+TOTAL 7.6 s (zones : 7.4 s ; classement 17 ms) ; 8/8 zones reçues
+la plus lente : 1 h en 6.4 s
+proche : 1127 mairies à 6 h ou moins, 33619 au-delà
+  fins de tranche : La Rochelle plus de 6 h · Toulouse plus de 6 h · Bordeaux plus de 6 h · Nantes 15 min
+navigateur : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36
+15 min 200 0.7 s · 30 min 200 1.2 s · 45 min 200 0.9 s · 60 min 200 6.4 s · 75 min 200 2.0 s · 90 min 200 2.4 s · 105 min 200 3.1 s · 120 min 200 3.5 s

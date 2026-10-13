@@ -1,0 +1,79 @@
+{
+    "status": "OK",
+    "results": [
+        {
+            "x": -1.554555,
+            "y": 47.215051,
+            "country": "StreetAddress",
+            "city": "Nantes",
+            "oldcity": "",
+            "kind": "housenumber",
+            "zipcode": "44000",
+            "street": "Rue de la Paix",
+            "metropole": true,
+            "fulltext": "12 Rue de la Paix, 44000 Nantes",
+            "classification": 7
+        },
+        {
+            "x": 2.22257,
+            "y": 48.887242,
+            "country": "StreetAddress",
+            "city": "Nanterre",
+            "oldcity": "",
+            "kind": "street",
+            "zipcode": "92000",
+            "street": "Rue de la Paix",
+            "metropole": true,
+            "fulltext": "Rue de la Paix, 92000 Nanterre",
+            "classification": 7
+        },
+        {
+            "x": -1.566095,
+            "y": 47.234954,
+            "country": "StreetAddress",
+            "city": "Nantes",
+            "oldcity": "",
+            "kind": "street",
+            "zipcode": "44300",
+            "street": "Avenue de la Paix",
+            "metropole": true,
+            "fulltext": "Avenue de la Paix, 44300 Nantes",
+            "classification": 7
+        },
+        {
+            "x": 0.947066,
+            "y": 45.400976,
+            "country": "StreetAddress",
+            "city": "Nantheuil",
+            "oldcity": "",
+            "kind": "street",
+            "zipcode": "24800",
+            "street": "Impasse de la Paix",
+            "metropole": true,
+            "fulltext": "Impasse de la Paix, 24800 Nantheuil",
+            "classification": 7
+        },
+        {
+            "x": 4.067551,
+            "y": 48.304361,
+            "country": "PositionOfInterest",
+            "names": [
+                "Centre d'Activit\u00e9s Rue de la Paix"
+            ],
+            "city": "Troyes",
+            "zipcode": "10000",
+            "zipcodes": [
+                "10000"
+            ],
+            "metropole": true,
+            "poiType": [
+                "zone industrielle",
+                "zone d'activit\u00e9 ou d'int\u00e9r\u00eat"
+            ],
+            "street": "Centre d'Activit\u00e9s Rue de la Paix",
+            "kind": "zone industrielle",
+            "fulltext": "Centre d'Activit\u00e9s Rue de la Paix, 10000 Troyes",
+            "classification": 9
+        }
+    ]
+}

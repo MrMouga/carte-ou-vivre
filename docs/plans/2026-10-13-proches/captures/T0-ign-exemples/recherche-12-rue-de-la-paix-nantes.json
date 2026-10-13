@@ -1,0 +1,118 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.554555,
+                    47.215051
+                ]
+            },
+            "properties": {
+                "label": "12 Rue de la Paix 44000 Nantes",
+                "score": 0.9758745454545453,
+                "housenumber": "12",
+                "id": "44109_6112_00012",
+                "banId": "c87eeeff-79a9-4447-ba1d-20c41747d9ee",
+                "name": "12 Rue de la Paix",
+                "postcode": "44000",
+                "citycode": "44109",
+                "x": 355484.2,
+                "y": 6689355.89,
+                "city": "Nantes",
+                "context": "44, Loire-Atlantique, Pays de la Loire",
+                "type": "housenumber",
+                "importance": 0.73462,
+                "depcode": "44",
+                "street": "Rue de la Paix",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.22257,
+                    48.887242
+                ]
+            },
+            "properties": {
+                "label": "Rue de la Paix 92000 Nanterre",
+                "score": 0.657133916083916,
+                "id": "92050_7100",
+                "name": "Rue de la Paix",
+                "postcode": "92000",
+                "citycode": "92050",
+                "x": 642991.52,
+                "y": 6865528.22,
+                "city": "Nanterre",
+                "context": "92, Hauts-de-Seine, \u00cele-de-France",
+                "type": "street",
+                "importance": 0.65155,
+                "depcode": "92",
+                "street": "Rue de la Paix",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.566095,
+                    47.234954
+                ]
+            },
+            "properties": {
+                "label": "Avenue de la Paix 44300 Nantes",
+                "score": 0.6389575757575758,
+                "id": "44109_6108",
+                "banId": "bdc10d7c-44fa-454b-ae0a-9e5b34e13a51",
+                "name": "Avenue de la Paix",
+                "postcode": "44300",
+                "citycode": "44109",
+                "x": 354740.04,
+                "y": 6691613.39,
+                "city": "Nantes",
+                "context": "44, Loire-Atlantique, Pays de la Loire",
+                "type": "street",
+                "importance": 0.6952,
+                "depcode": "44",
+                "street": "Avenue de la Paix",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    0.947066,
+                    45.400976
+                ]
+            },
+            "properties": {
+                "label": "Impasse de la Paix 24800 Nantheuil",
+                "score": 0.4195394652406417,
+                "id": "24304_1140",
+                "banId": "088b0611-2280-4e7a-af7e-185e01676d4e",
+                "name": "Impasse de la Paix",
+                "postcode": "24800",
+                "citycode": "24304",
+                "x": 539405.96,
+                "y": 6480038.95,
+                "city": "Nantheuil",
+                "context": "24, Dordogne, Nouvelle-Aquitaine",
+                "type": "street",
+                "importance": 0.37964,
+                "depcode": "24",
+                "street": "Impasse de la Paix",
+                "_type": "address"
+            }
+        }
+    ],
+    "query": "12 rue de la Paix Nantes"
+}

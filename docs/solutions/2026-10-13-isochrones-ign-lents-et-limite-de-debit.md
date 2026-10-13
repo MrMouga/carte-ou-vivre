@@ -1,0 +1,8 @@
+# Isochrones de la Géoplateforme IGN : mesurer la plus grande durée seule avant de promettre un délai, et rester à 4 requêtes par seconde
+Étiquettes : data, perf, discovery, outil · Tranche : proches · Source : tâche 0 de /build proches, `docs/plans/2026-10-13-proches/mesure-tache-0.md`
+
+**Problème** — Le plan visait un proche (24 isochrones de 15 min à 6 h) en 10 s, à 5 requêtes par seconde, en essayant `bdtopo-valhalla` puis `bdtopo-osrm`.
+**Symptômes** — Le temps de calcul de l'IGN croît avec la durée : 15 min ≈ 0,3 s, 3 h ≈ 12 s, 6 h = 28 à 42 s seule. Les 24 ensemble : 60 à 63 s, et 2 à 5 zones finissent en 504 (« upstream server is timing out », coupé à 60 s). À 5 requêtes par seconde pile, la 6e est refusée (429) et l'adresse IP est bloquée 5 s.
+**Ce qui n'a pas marché** — `bdtopo-osrm` ne fait pas d'isochrone (route seulement) ; `bdtopo-pgr` répond avec Valhalla (même fichier, `"resource":"bdtopo-valhalla"`) ; 3 requêtes à la fois : 24/24 mais 116 s.
+**Ce qui a marché** — Pour la mesure : 4 requêtes par seconde (toutes les 250 ms) passent toujours ; la recherche `/geocodage/search?index=address&autocomplete=1` rend le code INSEE (`citycode`, 2A/2B compris ; arrondissements 751xx, 6938x, 132xx ; outre-mer en 97xxx), sans recherche inverse. Le temps du réseau de l'IGN tient sous 10 s jusqu'à 2 h à 2 h 30 de durée maximale.
+**Prévention** — Avant d'écrire un budget de temps sur un service de calcul tiers, mesurer la plus grande valeur demandée **seule**, puis le lot complet, deux fois (le temps varie du simple au double) ; lire les en-têtes et les CGU pour la limite réelle (ici par IP, blocage de 5 s) et viser 80 % de la limite. Règle de jugement.

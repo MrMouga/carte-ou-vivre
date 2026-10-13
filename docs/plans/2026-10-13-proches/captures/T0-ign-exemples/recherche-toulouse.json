@@ -1,0 +1,146 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    1.433805,
+                    43.604082
+                ]
+            },
+            "properties": {
+                "label": "Toulouse",
+                "score": 0.9638772727272726,
+                "id": "31555",
+                "banId": "f8d655da-f150-41fb-bc30-c0b075b6b670",
+                "type": "municipality",
+                "name": "Toulouse",
+                "postcode": "31000",
+                "citycode": "31555",
+                "x": 573517.1,
+                "y": 6279590.9,
+                "population": 514819,
+                "city": "Toulouse",
+                "context": "31, Haute-Garonne, Occitanie",
+                "importance": 0.60265,
+                "depcode": "31",
+                "municipality": "Toulouse",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -0.337262,
+                    44.896608
+                ]
+            },
+            "properties": {
+                "label": "Toulouse 33870 Vayres",
+                "score": 0.9497663636363636,
+                "id": "33539_9drs34",
+                "banId": "90afcf4d-2428-498a-942c-97b502c001f9",
+                "name": "Toulouse",
+                "postcode": "33870",
+                "citycode": "33539",
+                "x": 436618.93,
+                "y": 6427502.18,
+                "city": "Vayres",
+                "context": "33, Gironde, Nouvelle-Aquitaine",
+                "type": "street",
+                "importance": 0.44743,
+                "depcode": "33",
+                "street": "Toulouse",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    5.183701,
+                    46.780838
+                ]
+            },
+            "properties": {
+                "label": "Toulouse 71310 Mervans",
+                "score": 0.9461472727272726,
+                "id": "71295_615fsz",
+                "banId": "aa52d54c-ba2d-4cda-993b-54c9dcc2873a",
+                "name": "Toulouse",
+                "postcode": "71310",
+                "citycode": "71295",
+                "x": 866583.71,
+                "y": 6633493.08,
+                "city": "Mervans",
+                "context": "71, Sa\u00f4ne-et-Loire, Bourgogne-Franche-Comt\u00e9",
+                "type": "street",
+                "importance": 0.40762,
+                "depcode": "71",
+                "street": "Toulouse",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    0.440148,
+                    43.599669
+                ]
+            },
+            "properties": {
+                "label": "Toulouse 32350 Barran",
+                "score": 0.9369927272727272,
+                "type": "locality",
+                "importance": 0.30692,
+                "id": "32029_dj5h7y",
+                "banId": "9c474e90-0433-4b4e-82f3-d2f3ab46239d",
+                "name": "Toulouse",
+                "postcode": "32350",
+                "citycode": "32029",
+                "x": 493278.02,
+                "y": 6281197.13,
+                "city": "Barran",
+                "context": "32, Gers, Occitanie",
+                "depcode": "32",
+                "locality": "Toulouse",
+                "_type": "address"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    3.858811,
+                    43.592501
+                ]
+            },
+            "properties": {
+                "label": "Avenue de Toulouse 34070 Montpellier",
+                "score": 0.7117136363636363,
+                "id": "34172_5518",
+                "name": "Avenue de Toulouse",
+                "postcode": "34070",
+                "citycode": "34172",
+                "x": 769373.11,
+                "y": 6277426.63,
+                "city": "Montpellier",
+                "context": "34, H\u00e9rault, Occitanie",
+                "type": "street",
+                "importance": 0.82885,
+                "depcode": "34",
+                "street": "Avenue de Toulouse",
+                "_type": "address"
+            }
+        }
+    ],
+    "query": "Toulouse"
+}

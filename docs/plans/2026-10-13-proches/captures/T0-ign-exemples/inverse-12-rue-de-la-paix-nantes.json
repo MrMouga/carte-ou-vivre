@@ -1,0 +1,36 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.554555,
+                    47.215051
+                ]
+            },
+            "properties": {
+                "type": "housenumber",
+                "name": "12 Rue de la Paix",
+                "label": "12 Rue de la Paix 44000 Nantes",
+                "street": "Rue de la Paix",
+                "postcode": "44000",
+                "citycode": "44109",
+                "city": "Nantes",
+                "oldcitycode": null,
+                "oldcity": null,
+                "context": "44, Loire-Atlantique, Pays de la Loire",
+                "importance": 0.73462,
+                "housenumber": "12",
+                "id": "44109_6112_00012",
+                "banId": "c87eeeff-79a9-4447-ba1d-20c41747d9ee",
+                "x": 355484.2,
+                "y": 6689355.89,
+                "distance": 0,
+                "score": 1,
+                "_type": "address"
+            }
+        }
+    ]
+}
