@@ -28,7 +28,6 @@ export function SizeChips({ tailles, onChange, disabled = false }: Props) {
           </Toggle>
         ))}
       </div>
-      <p className="text-secondaire text-muted-foreground">Aucune cochée : peu importe</p>
     </Categorie>
   );
 }

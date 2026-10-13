@@ -34,8 +34,9 @@ export function RepereEnPetit({ etat }: { etat: EtatProche }) {
   );
 }
 
-/** Adresse sous le nom : le libellé de l'IGN, ou pour une commune choisie seule « Toulouse · départ de la mairie » (D6). */
-export const adresseDe = (p: Pick<Proche, 'lieu'>) => (p.lieu.estCommune ? `${p.lieu.libelle} · départ de la mairie` : p.lieu.libelle);
+/** Adresse sous le nom : le libellé de l'IGN, ou pour une commune choisie seule « départ de la mairie » (D6 ; la ville est
+ *  déjà dans le nom, corrections 3 du 2026-10-13). */
+export const adresseDe = (p: Pick<Proche, 'lieu'>) => (p.lieu.estCommune ? 'départ de la mairie' : p.lieu.libelle);
 
 type Props = { proche: Proche; onPlafond: (minutes: number) => void; onReessayer: () => void; onRetirer: () => void; inactif?: boolean };
 
