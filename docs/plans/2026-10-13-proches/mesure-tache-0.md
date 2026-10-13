@@ -85,7 +85,7 @@ Les 7 critères ne ralentissent pas la carte : le calcul des notes est négligea
 - → **Rien n'interdit l'appel depuis le navigateur des visiteurs d'un site public** ; la limite est par visiteur (IP), sans clé. Les réponses permettent l'appel depuis un autre site (`access-control-allow-origin: *`).
 - Mention proposée pour la tâche 4 (Licence Ouverte : citer la source) : « Recherche d'adresse et temps de trajet : © IGN – Géoplateforme (Base Adresse Nationale, BD TOPO®) ».
 
-## (g) Sur le téléphone de Vincent — préparée, à faire avec l'orchestrateur
+## (g) Sur le téléphone de Vincent — préparation (la mesure faite est en dernière section)
 La page de mesure marche par le Wi-Fi local (vérifiée le 2026-10-13 à 14:20 depuis `http://192.168.1.26:5310/`, [capture](captures/T0-page-telephone-max2h.png)). Marche à suivre :
 1. Sur le Mac : `cd ~/git-repository/carte-ou-vivre` puis `npx vite --config probe/proches/classer/vite.config.ts --host`. Lire la ligne « Network: http://… :5310/ ».
 2. Sur le téléphone, sur le même Wi-Fi : ouvrir cette adresse (aujourd'hui `http://192.168.1.26:5310/`). Laisser l'adresse proposée « 12 rue de la Paix, Nantes » (adresse publique, n'en mettre aucune autre). Appuyer sur « Mesurer un proche (24 zones) ». Attendre environ une minute.
@@ -101,7 +101,7 @@ Le temps est surtout celui du serveur de l'IGN : il sera proche de celui du Mac,
 | Condition | Mesure | Atteinte ? |
 |---|---|---|
 | Plus de 10 s par proche sur le Mac (H21) | 60 à 63 s, 2 à 5 zones en échec ; 15 s même avec un maximum de 3 h | **Oui** |
-| Plus de 30 s sur le téléphone | non mesurée (préparée) | — |
+| Plus de 30 s sur le téléphone | mesurée après D15 (3 h au plus) : 14,9 s, 12/12 zones, iPhone de Vincent sous iOS 18.7 (modèle non relevé) — voir la dernière section (g) | non atteinte |
 | Zone de 6 h refusée par les trois ressources | Valhalla la rend seule (28 à 42 s), mais échoue souvent avec les 23 autres ; OSRM n'en fait pas ; pgr = Valhalla | Non, de justesse |
 | Conditions d'usage qui interdisent l'appel depuis un site public | autorisé, limite par IP | Non |
 | Réaction au réglage au-delà de 100 ms | 24 à 41 ms avec 7 critères (pire cas mesuré : 70 ms à 1 critère) | Non |
