@@ -1,0 +1,8 @@
+# Marqueurs MapLibre superposés : un z-index par couche de marqueurs, l'étiquette dans son propre marqueur, et un test d'empilement qui recrée l'autre couche
+Étiquettes : build, tests, design · Tranche : proches · Source : /build proches tâche 4, `src/map/ProcheMarkers.ts`, `tests/e2e/proches-carte.spec.ts`
+
+**Problème** — Poser les repères des proches au-dessus des ronds du top 10, avec un nom à côté de chaque goutte qui reste lisible quand deux repères sont proches (H29).
+**Symptômes** — (1) Le test « repère au-dessus du rond » passait sans aucun z-index : le repère, ajouté après les ronds, arrivait dernier dans le DOM. (2) Sur les vraies données, à l'échelle de la France, l'étiquette de Rennes était à moitié cachée sous la goutte de Laval (20 px plus loin), ajoutée après.
+**Ce qui n'a pas marché** — Étiquette dans le même élément que la goutte : chaque marqueur MapLibre a `will-change: transform`, donc son propre contexte d'empilement ; un z-index sur l'étiquette ne la sort pas de son marqueur, et la goutte d'un marqueur suivant passe dessus.
+**Ce qui a marché** — Deux marqueurs par proche au même point : la goutte (`z-1`, au-dessus des ronds) et une boîte de même taille qui porte l'étiquette (`z-2`, au-dessus de toutes les gouttes). Le test fait recréer les ronds (un cran du curseur Loyer) après l'ajout du repère, puis lit la couleur au pixel : rouge sans `z-1` (« lu 31,42,42 », la couleur du rond), vert avec.
+**Prévention** — Un test d'ordre d'empilement doit rendre l'autre couche *après* la couche testée (sinon l'ordre du DOM suffit à le faire passer) ; le vérifier rouge en retirant le z-index. Règle de jugement : tout texte posé sur la carte vit dans une couche au-dessus des formes qui pourraient le couvrir.
