@@ -1,11 +1,11 @@
 # Proches et mer en minutes
-2026-10-13 · validée · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-13 · validée · révisée 2026-10-13 (D10, D11) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : on ajoute jusqu'à 5 proches avec un temps maximum en voiture, on peut lire la mer en minutes, et la carte se recolore.
 **Pourquoi** : c'est la Différence du pitch. Sans les adresses que toi seul connais, la carte ressemble à villeideale.fr.
-**C'est réussi si** : en ligne, avec « 12 rue de la Paix, Nantes » à 4 h au plus, nommé « Parents de Léa », et « Toulouse » à 5 h 30 au plus, Bordeaux et La Rochelle passent. Deux repères nommés sont posés sur la carte. La fiche de Bordeaux donne « Parents de Léa : 3 h 30 à 3 h 45 en voiture » (valeur relevée en tâche 0 ; l'IGN donnait 3 h 34 le 2026-10-11). Après avoir rouvert le navigateur, les proches sont toujours là, sans recalcul.
+**C'est réussi si** : en ligne, avec « 12 rue de la Paix, Nantes » à 4 h au plus, nommé « Parents de Léa », et « Toulouse » à 5 h 30 au plus, Bordeaux et La Rochelle passent. Deux repères nommés sont posés sur la carte. La fiche de Bordeaux et la pastille de ce proche donnent « 3 h 45 » (valeur relevée en tâche 0 ; l'IGN donnait 3 h 34 le 2026-10-11). Après avoir rouvert le navigateur, les proches sont toujours là, sans recalcul.
 
-**Ce qu'on voit** : dans les réglages, « Tes proches » et la bascule de la mer ; sur la carte, un repère par proche ; dans la fiche, les temps.
+**Ce qu'on voit** : dans les réglages, « Tes proches » et la bascule de la mer ; sur la carte, un repère par proche et, en haut, une pastille de temps par proche ; dans la fiche, les temps.
 
 **Décisions à valider**
 - **D1** — Proches et mer en minutes dans une seule tranche. *Pourquoi* : choix de Vincent. *Écarté* : la mer en minutes en tranche 3. Coût accepté : au-dessus de la taille perso.
@@ -17,6 +17,9 @@
 - **D7** — Les proches sont gardés dans ce navigateur, jamais dans l'adresse de la page ; un bouton « Effacer mes proches » les retire. *Pourquoi* : choix de Vincent ; les proches dans le lien sont reportés (2026-10-13). *Écarté* : ne rien garder. Coût accepté : un lien ouvert ailleurs n'a pas les proches.
 - **D8** — La liste ne change pas ; c'est la fiche qui donne les temps. *Pourquoi* : choix de Vincent, la liste reste lisible avec 5 proches. *Écarté* : le trajet le plus long dans la ligne.
 - **D9** — Une bascule pour la mer, « km à vol d'oiseau / minutes en voiture », sur les km par défaut. Les minutes mesurent le trajet en voiture de la mairie jusqu'à la même côte que les km, calculé une fois pour toutes. La fiche montre les deux. *Pourquoi* : demande de Vincent ; la tranche 1 reste intacte. *Écarté* : les minutes par défaut ; les minutes seules. Révise D8 de loyer-mer (D20 là-bas).
+
+- **D10** — En haut de la carte, en bureau, une pastille par proche, en affichage seul : son nom et son plafond (« Parents de Léa · 4 h au plus ») ; quand une ville est choisie, son temps depuis cette ville (« 3 h 30 »), suivi de « au-dessus de 4 h » s'il dépasse. Pas de pastilles à 390 px. Complète D8. *Pourquoi* : choix de Vincent au vu du prototype /ui (fusion des pistes A et B) ; on lit les temps d'une ville sans quitter la carte des yeux. *Écarté* : des pastilles cliquables qui portent le réglage (piste B, chaque plafond caché derrière un clic) ; les temps seulement dans la fiche.
+- **D11** — Un temps de proche s'affiche à son estimation haute : « 3 h 30 », et non « 3 h 15 à 3 h 30 ». Le calcul par tranches de 15 min (D2) ne change pas : l'affichage peut dépasser le vrai trajet de moins de 15 min, jamais le sous-estimer. Remplace le format en tranche de R10 et H22. *Pourquoi* : choix de Vincent au vu du prototype, plus simple à lire. *Écarté* : la tranche « 3 h 15 à 3 h 30 ».
 
 **Pas maintenant** : « Copier le lien », les proches ou la commune dans l'adresse de la page, les poids, les transports en commun, l'heure de départ, la mesure d'audience (à /ship, sans jamais l'adresse), la montagne, l'emploi, l'achat.
 **Hypothèses** : choix par défaut H19 à H30 dans [détails](details.md#hypothèses).

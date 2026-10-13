@@ -68,6 +68,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Tranche 2 sans le partage : « Copier le lien », commune choisie dans l'adresse et adresses des proches hors du lien reportés à une tranche suivante | Choix de Vincent (« on verra plus tard »). La tranche 2 garde les proches (temps de trajet) et la mer en minutes. Coût : le moment de partage du plan de distribution (la carte envoyée au conjoint) attend une tranche de plus ; l'adresse de la page garde déjà les réglages (tranche 1). |
 | 2026-10-13 | Spec validée : proches | Jusqu'à 5 proches (adresse ou ville, nom libre, repère sur la carte), temps en voiture par l'IGN depuis le navigateur en tranches de 15 min jusqu'à 6 h, un plafond par proche sans poids, chaque proche = un critère ; proches gardés dans le navigateur, hors du lien ; mer : bascule km / minutes (km par défaut) ; 9 décisions, 15 critères, au-dessus de la taille perso par choix de Vincent. |
 | 2026-10-13 | Spec loyer-mer révisée (D20) | R2, l'état « sans plafond » et D8 tiennent compte des proches et de la mer en minutes ; aucun critère de la tranche 1 ne change. |
+| 2026-10-13 | Spec proches révisée (D10, D11) pendant /ui | Pastilles de temps en haut de la carte, en affichage seul (bureau) ; temps d'un proche affiché à l'estimation haute (« 3 h 30 ») ; AC-3, AC-5, AC-14 reformulés sans changer de valeur, AC-16 ajouté. Choix de Vincent au vu du prototype. |
 
 ## Hypothèses à vérifier
 

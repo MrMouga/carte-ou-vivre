@@ -330,7 +330,7 @@
       "rule": "R10",
       "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
       "when": "l'utilisateur choisit Grandeville (33) sur la carte",
-      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 15 à 3 h 30 : au-dessus de ton plafond de 3 h », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture », sans score ni rang",
+      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 30 : au-dessus de ton plafond de 3 h », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture », sans score ni rang",
       "passes": false
     },
     {
@@ -346,7 +346,7 @@
       "rule": "R10",
       "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30 puis Toulouseville (31) prêt à 4 h 30",
       "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
-      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 3 h 15 à 3 h 30 en voiture » et « Toulouseville (31) : 2 h 15 à 2 h 30 en voiture », le score 27 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 6 h : au-dessus de ton plafond de 3 h 30 », sans score",
+      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 3 h 30 en voiture » et « Toulouseville (31) : 2 h 30 en voiture », le score 27 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 6 h : au-dessus de ton plafond de 3 h 30 », sans score",
       "passes": false
     },
     {
@@ -418,7 +418,7 @@
       "rule": "R9",
       "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
       "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) dans la liste une fois le calcul fini",
-      "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 3 h 15 à 3 h 30 : au-dessus de ton plafond de 3 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
+      "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 3 h 30 : au-dessus de ton plafond de 3 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
       "passes": false
     },
     {
@@ -427,6 +427,14 @@
       "given": "Fixture, aucun proche, page ouverte sur /?loyer=1200&mer=45&mer-en=min",
       "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
       "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
+      "passes": false
+    },
+    {
+      "id": "AC-16",
+      "rule": "R15",
+      "given": "Fixture, largeur bureau (1 440 px), réglages de départ, Nantesville (44) prêt avec le plafond 3 h, aucune commune choisie",
+      "when": "l'utilisateur regarde le haut de la carte, puis choisit Grandeville (33) dans la liste",
+      "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 3 h au plus » ; après le choix, la même pastille affiche « 3 h 30 · au-dessus de 3 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
       "passes": false
     }
   ]
