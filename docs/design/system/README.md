@@ -65,6 +65,7 @@ Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)
 Valeurs que le contrat cite comme règles ou que Figma dessine sans variable ; à reporter dans Figma. `taille-cible` 24 · `taille-toucher` 44 · `taille-bouton-icone` 32 · `taille-pastille` 28 (hauteur min.) · `taille-poignee` 18 · `taille-rail` 4 · `taille-reglages` 300 (panneau de réglages) · `taille-liste` 320 (panneau de liste et de fiche) · `taille-echantillon` 14 et `taille-ecart-echantillon` 2 (pastilles de couleur de la légende) · `radius-echantillon` 3 · `taille-rang` 22 (colonne du rang dans la liste) · `taille-pastille-score` 10 et `radius-pastille-score` 2 (pastille du palier dans la liste et la fiche) · `taille-rond` 22 et `taille-rond-choisi` 26 (ronds du top 10) · `trait-focus` 2 · `ecart-focus` 2.
+Ajoutées par /build proches (tâche 4, le 2026-10-13), à reporter dans Figma : `taille-goutte` 26 et `taille-goutte-haut` 34 (goutte du repère d'un proche, Figma 18:144 ; classes `w-goutte`, `h-goutte-haut`, `size-goutte`) ; durée `duree-pulse-ms` 1 200 (anneau du repère en calcul, dans `map` de `tokens.ts`).
 
 ## Dans le code
 Source unique : `src/theme/tokens.ts` (variables CSS sur `:root` sous les noms ci-dessus, thème Tailwind, couleurs du style MapLibre). Le thème par défaut de Tailwind est **vidé** : une classe hors de cette liste ne produit aucun style. Contrôle : `npm run check-tokens`.

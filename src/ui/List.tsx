@@ -4,10 +4,17 @@ import type { Resultat } from '@/domain/score';
 import { cn } from '@/lib/cn';
 import { CLASSES_PALIER } from './Legend';
 
-type Props = { resultat: Resultat; onChoisir: (code: string) => void; /** Au retour de la fiche : la ligne qui reprend le focus. */ focusCode?: string | null };
+type Props = {
+  resultat: Resultat;
+  onChoisir: (code: string) => void;
+  /** Au retour de la fiche : la ligne qui reprend le focus. */
+  focusCode?: string | null;
+  /** Au moins un proche prêt : le message « aucune commune » le cite (spec proches, details.md). */
+  avecProche?: boolean;
+};
 
 // Les 10 premières (frame Figma 5:2, « Les 10 premières ») : compte, puis une ligne-bouton par commune (R5).
-export function List({ resultat, onChoisir, focusCode }: Props) {
+export function List({ resultat, onChoisir, focusCode, avecProche = false }: Props) {
   const { actif, classement } = resultat;
   const section = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -24,7 +31,11 @@ export function List({ resultat, onChoisir, focusCode }: Props) {
       {!actif ? (
         <p className="text-texte">Fixe un loyer ou une distance à la mer pour classer les communes.</p>
       ) : classement.length === 0 ? (
-        <p className="text-texte">Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.</p>
+        <p className="text-texte">
+          {avecProche
+            ? 'Aucune commune ne passe tes critères. Relâche le loyer, la mer, la taille ou un proche.'
+            : 'Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.'}
+        </p>
       ) : (
         <ol className="flex flex-col">
           {classement.slice(0, 10).map((e) => (

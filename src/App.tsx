@@ -18,6 +18,8 @@ import { Mentions } from './ui/Mentions';
 import { cn } from './lib/cn';
 import { useProches } from './proches/useProches';
 import { Proches } from './ui/Proches';
+import { Pastilles } from './ui/Pastilles';
+import type { RepereProche } from './map/ProcheMarkers';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
 const REPRISE_ADRESSE_MS = 1000;
@@ -115,6 +117,11 @@ export function App() {
   // Proches (spec proches) : gardés dans ce navigateur, hors de l'adresse de la page (D7, R12) ; les prêts comptent dans le score (R11).
   const codes = useMemo(() => donnees?.communes.map((c) => c.code) ?? null, [donnees]);
   const proches = useProches(donnees?.reperes ?? null, codes);
+  // Repères des proches (D4) : au point de départ, quel que soit l'état.
+  const reperesProches = useMemo<RepereProche[]>(
+    () => proches.proches.map((p) => ({ id: p.id, nom: p.nom, etat: p.etat, lngLat: p.depart ?? p.lieu.point })),
+    [proches.proches],
+  );
   const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages, proches.prets) : null), [donnees, reglages, proches.prets]);
   const ronds = useMemo<Rond[]>(
     () =>
@@ -145,6 +152,7 @@ export function App() {
           choisie={choisie == null ? null : index.get(choisie)!}
           sansPlafond={resultat?.actif === false}
           ronds={ronds}
+          proches={reperesProches}
           onChoisir={(i) => setChoisie(donnees.communes[i].code)}
           onPrete={() => setPrete(true)}
           onErreur={() => setErreur(true)}
@@ -152,6 +160,7 @@ export function App() {
           padding={padding}
         />
       )}
+      {donnees && !erreur && <Pastilles proches={proches.proches} commune={choisie == null ? null : index.get(choisie)!} />}
       {/* Bureau : panneaux posés sur la carte (la boîte s'efface). 390 px : une feuille en bas qui défile, à 56 % de la
           hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667). */}
       <div
@@ -194,9 +203,15 @@ export function App() {
         {resultat && (
           <div className="bureau:absolute bureau:right-4 bureau:top-4 bureau:w-liste">
             {choisie ? (
-              <Fiche evaluation={resultat.parCode.get(choisie)!} total={resultat.classement.length} onRetour={() => { setRetour(choisie); setChoisie(null); }} />
+              <Fiche
+                evaluation={resultat.parCode.get(choisie)!}
+                total={resultat.classement.length}
+                proches={proches.proches}
+                index={index.get(choisie)!}
+                onRetour={() => { setRetour(choisie); setChoisie(null); }}
+              />
             ) : (
-              <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} />
+              <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} avecProche={proches.prets.length > 0} />
             )}
           </div>
         )}

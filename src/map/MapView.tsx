@@ -4,6 +4,7 @@ import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPA
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
 import { cadreDe, emprise, type Padding, type Repere } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
+import { ProcheMarkers, type RepereProche } from './ProcheMarkers';
 import { Button } from '@/components/ui/button';
 import { map as carte } from '@/theme/tokens';
 
@@ -17,6 +18,8 @@ type Props = {
   /** Page « sans plafond » : toutes les communes peintes sont en sable (D17). */
   sansPlafond: boolean;
   ronds: Rond[];
+  /** Repères des proches (spec proches D4), dans l'ordre d'ajout. */
+  proches: RepereProche[];
   onChoisir: (index: number) => void;
   /** Première image dessinée. */
   onPrete: () => void;
@@ -30,14 +33,15 @@ type Props = {
 export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
-// celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10.
-export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
+// celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10, repères des proches.
+export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
+  const reperesProches = useRef<ProcheMarkers | null>(null);
   const peintes = useRef<(string | null | undefined)[]>([]);
-  const etat = useRef({ couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding });
-  etat.current = { couleurs, choisie, sansPlafond, ronds, onChoisir, onPrete, onErreur, onFond, padding };
+  const etat = useRef({ couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding });
+  etat.current = { couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding };
   const france = useMemo(() => emprise(reperes), [reperes]);
 
   useEffect(() => {
@@ -95,6 +99,8 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, onChoi
         m.on('mouseleave', COMMUNES_LAYER.id, () => (m.getCanvas().style.cursor = ''));
         marqueurs.current = new RankMarkers(m, (i) => etat.current.onChoisir(i));
         marqueurs.current.update(etat.current.ronds, etat.current.choisie);
+        reperesProches.current = new ProcheMarkers(m);
+        reperesProches.current.update(etat.current.proches);
         // Sans image demandée ici, MapLibre peut ne plus redessiner après l'ajout des couches, et `idle` n'arrive pas.
         m.once('idle', () => {
           container.current?.setAttribute('data-carte-prete', '1');
@@ -121,6 +127,8 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, onChoi
       clearInterval(essai);
       marqueurs.current?.remove();
       marqueurs.current = null;
+      reperesProches.current?.remove();
+      reperesProches.current = null;
       map?.remove();
       mapRef.current = null;
       peintes.current = [];
@@ -140,6 +148,10 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, onChoi
   useEffect(() => {
     marqueurs.current?.update(ronds, choisie);
   }, [ronds, choisie]);
+
+  useEffect(() => {
+    reperesProches.current?.update(proches);
+  }, [proches]);
 
   // Commune choisie : double contour et zoom sur elle ; retour à la liste : la France entière (D14).
   const avant = useRef<number | null>(null);

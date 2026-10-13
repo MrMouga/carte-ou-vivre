@@ -1,0 +1,46 @@
+# Tâche 4 — preuve sur le vrai IGN et les vraies données (scripts jetables probe/proches/t4/preuve.mjs puis preuve-suite.mjs, même profil)
+Tâche 4 — preuve sur le vrai IGN · 2026-10-13T14:40:42.062Z · Chromium (playwright-core), profil neuf, 1440 × 900
+
+1. (16:40:42) Deux proches : « 12 rue de la Paix, Nantes » nommé « Parents de Léa », puis Rennes (commune).
+   repère posé dès « Ajouter » : état calcul, point -1.554555, 47.215051
+   Parents de Léa prêt en 9.5 s
+   Rennes (35) prêt en 7.9 s
+   pastilles : Parents de Léa 2 h au plus | Rennes (35) 2 h au plus
+   compte : « 340 communes passent tes critères »
+
+2. (16:41:03) Parents de Léa réglé sur 2 h 30 (details.md, vérification de bout en bout, étape 2), puis La Rochelle choisie sur la carte.
+   fiche : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | NE PASSE PAS TES CRITÈRES | Rennes (35) plus de 3 h : au-dessus de ton plafond de 2 h | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer | TES PROCHES | Parents de Léa : 2 h 15 en voiture | Rennes (35) : plus de 3 h en voiture
+   pastilles : Parents de Léa 2 h 15 | Rennes (35) plus de 3 h · au-dessus de 2 h
+
+3. (16:41:09) Cinq proches : Angers (commune), Laval (trajets en panne simulée : demandes de zones coupées), Le Mans (en calcul au moment de la capture).
+   Angers (49) prêt en 11.9 s
+   pastilles : Parents de Léa 2 h 30 au plus | Rennes (35) 2 h au plus | Angers (49) 2 h au plus | ! Laval (53) trajets indisponibles | … Le Mans (72) calcul en cours
+   repères : Parents de Léa (pret) | Rennes (35) (pret) | Angers (49) (pret) | Laval (53) (indisponible) | Le Mans (72) (calcul)
+   étiquettes : Parents de Léa à droite | Rennes (35) à droite | Angers (49) à droite | Laval (53) à gauche | Le Mans (72) à droite
+   Le Mans (72) prêt en 15.0 s
+
+4. (16:41:42) Repère zoomé : Parents de Léa (Nantes).
+   goutte à 507, 341
+
+5. Requêtes : 627 en tout, dont 54 recherches ou zones IGN ; contenant « Parents » ou « Léa » : 0
+   adresse de la page : /?loyer=1200&mer=60
+
+Suite · 16:41:52 · même profil, navigateur relancé.
+   reste : Parents de Léa 2 h 30 au plus ; compte « 1 220 communes passent tes critères »
+
+6. (16:41:54) La Rochelle (17300), Parents de Léa seul à 2 h 30.
+   fiche : ← Les 10 premières | La Rochelle (17) | Ville moyenne · 80 000 habitants | 48 | / 100 | 467e sur 1 220 communes qui passent | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer | TES PROCHES | Parents de Léa : 2 h 15 en voiture
+   pastilles : Parents de Léa 2 h 15
+
+7. (16:42:01) Bordeaux (33063).
+   fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Parents de Léa plus de 3 h : au-dessus de ton plafond de 2 h 30 | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | TES PROCHES | Parents de Léa : plus de 3 h en voiture
+   pastilles : Parents de Léa plus de 3 h · au-dessus de 2 h 30
+
+8. (16:42:08) Repère zoomé sur Nantes.
+   goutte à 506, 341 ; pixels autour (sous la pointe, à gauche) : [[77,146,133],[77,148,136]]
+
+9. (16:42:14) 390 px : pas de pastilles ; fiche de la 1re commune de la liste.
+   pastilles visibles : 0
+   fiche : ← Les 10 premières | Marzan (56) | Petite commune · 2 700 habitants | 67 | / 100 | 1re sur 1 220 communes qui passent | 532 € par mois pour 52 m² (10,2 €/m²) | Estimation du secteur (communes voisines) | 3 km de la mer à vol d'oiseau | TES PROCHES | Parents de Léa : 1 h 15 en voiture
+
+10. Demandes de recherche ou de zones pendant cette suite : 0

@@ -69,6 +69,8 @@ export const size = {
   'trait-focus': 2,
   'ecart-focus': 2,
   'taille-poignee-feuille': 40, // poignée de la feuille mobile, 40 × 4 (Figma 7:363)
+  'taille-goutte': 26, // repère d'un proche : goutte 26 × 34 (Figma « Repère proche » 18:144), tranche proches
+  'taille-goutte-haut': 34,
 } as const;
 
 /**
@@ -120,6 +122,7 @@ export const map = {
   'zoom-commune-max': 12,
   'duree-zoom-ms': 500,
   'trait-cote': 1, // fond de secours : trait de côte et frontières (R8)
+  'duree-pulse-ms': 1200, // anneau du repère d'un proche en calcul (Figma « Repère proche » 18:144)
 } as const;
 
 function rgba(hex: string, alpha: number): string {

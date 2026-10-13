@@ -1,14 +1,31 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { loyerTexte, merFiche, nomAffiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
+import { duree, loyerTexte, merFiche, nomAffiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
 import type { Evaluation } from '@/domain/score';
 import { cn } from '@/lib/cn';
+import type { Proche } from '@/proches/useProches';
 import { CLASSES_PALIER } from './Legend';
 
-type Props = { evaluation: Evaluation; /** Nombre de communes qui passent (R6). */ total: number; onRetour: () => void };
+type Props = {
+  evaluation: Evaluation;
+  /** Nombre de communes qui passent (R6). */
+  total: number;
+  /** Proches dans l'ordre d'ajout, et l'index de la commune dans communes.json (ordre de leurs temps). */
+  proches: Proche[];
+  index: number;
+  onRetour: () => void;
+};
+
+/** Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours », « … : trajets indisponibles ». */
+export function ligneProche(p: Proche, index: number): string {
+  if (p.etat === 'indisponible') return `${p.nom} : trajets indisponibles`;
+  if (p.etat !== 'pret' || !p.temps) return `${p.nom} : calcul en cours`;
+  return `${p.nom} : ${duree(p.temps[index])} en voiture`;
+}
 
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond.
-export function Fiche({ evaluation: e, total, onRetour }: Props) {
+// Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
+export function Fiche({ evaluation: e, total, proches, index, onRetour }: Props) {
   const c = e.commune;
   const titre = useRef<HTMLHeadingElement>(null);
   // Le focus suit la commune choisie (la liste qui avait le focus a disparu).
@@ -51,6 +68,18 @@ export function Fiche({ evaluation: e, total, onRetour }: Props) {
         {c.loyerM2 != null && !c.estimationPropre && <p className="text-secondaire text-muted-foreground">Estimation du secteur (communes voisines)</p>}
       </div>
       <p className="text-texte tabular-nums">{merFiche(c.merKm)}</p>
+      {proches.length > 0 && (
+        <div className="flex flex-col gap-1 pt-2">
+          <h3 className="text-categorie uppercase text-muted-foreground">Tes proches</h3>
+          <ul className="flex flex-col gap-1">
+            {proches.map((p) => (
+              <li key={p.id} className="text-texte tabular-nums">
+                {ligneProche(p, index)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

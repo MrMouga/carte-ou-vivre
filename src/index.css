@@ -40,3 +40,19 @@
     outline-offset: var(--ecart-focus);
   }
 }
+
+/* Repère d'un proche en calcul (Figma « Repère proche » 18:144) : l'anneau pulse ; fixe à 40 % si l'on réduit les
+   animations (design proches, decisions.md). Durée : jeton `duree-pulse-ms`, posé par src/map/ProcheMarkers.ts. */
+@keyframes pulse-anneau {
+  50% {
+    opacity: 0.1;
+    transform: scale(1.15);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .anneau-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pulse-anneau var(--duree-pulse) ease-in-out infinite;
+  }
+}
