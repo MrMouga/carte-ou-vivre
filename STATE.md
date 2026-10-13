@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : build (tranche loyer-mer) — démo acceptée le 2026-10-13 (docs/plans/2026-10-12-loyer-mer/demo.md) ; prochaine étape /spec de la tranche 2 (proches, mer en minutes), avant /ship — choix de Vincent du 2026-10-13
+- Étape : spec (tranche proches) — validée le 2026-10-13 (docs/specs/2026-10-13-proches/) ; prochaine étape /ui de la tranche proches, puis /breakdown (tâche 0 : mesure des isochrones IGN, source de la mer en minutes), avant /ship
 - Statut : active
 
 ## Décisions
@@ -66,6 +66,8 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-12 | Plan validé : loyer-mer | 10 tâches (0a socle, 0b jetons, 1a données, 1b mesure du risque, 2 carte, 3 liste, 4 fiche, 5a adresse, 5b états et mentions, 6 mobile), même périmètre que la spec ; Vite + React + TS + MapLibre, données statiques, Cloudflare Pages ; règle des dépendances : dernière version de plus de 7 jours (lecture confirmée par Vincent). |
 | 2026-10-13 | Tranche construite : loyer-mer | Démo acceptée par Vincent : carte des 34 746 communes en tuiles à 100 m, réglages, liste, fiche, adresse, états et 390 px ; 15 critères verts ; réaction 102 ms (jugée fluide sur Mac, téléphone non vérifié) ; spec révisée à la démo : la mairie comme point unique de chaque commune (D18), logos Shom et IGN en texte (D19), décisions du build gardées (H11–H18). |
 | 2026-10-13 | Tranche 2 sans le partage : « Copier le lien », commune choisie dans l'adresse et adresses des proches hors du lien reportés à une tranche suivante | Choix de Vincent (« on verra plus tard »). La tranche 2 garde les proches (temps de trajet) et la mer en minutes. Coût : le moment de partage du plan de distribution (la carte envoyée au conjoint) attend une tranche de plus ; l'adresse de la page garde déjà les réglages (tranche 1). |
+| 2026-10-13 | Spec validée : proches | Jusqu'à 5 proches (adresse ou ville, nom libre, repère sur la carte), temps en voiture par l'IGN depuis le navigateur en tranches de 15 min jusqu'à 6 h, un plafond par proche sans poids, chaque proche = un critère ; proches gardés dans le navigateur, hors du lien ; mer : bascule km / minutes (km par défaut) ; 9 décisions, 15 critères, au-dessus de la taille perso par choix de Vincent. |
+| 2026-10-13 | Spec loyer-mer révisée (D20) | R2, l'état « sans plafond » et D8 tiennent compte des proches et de la mer en minutes ; aucun critère de la tranche 1 ne change. |
 
 ## Hypothèses à vérifier
 
@@ -112,7 +114,7 @@ Autres questions :
 - Signature du write-up et du README : à décider avant /launch (le site n'est pas signé).
 - Surface par défaut pour le loyer : tranché le 2026-10-11, 52 m² (voir Décisions)
 - Unité affichée sur la carte : tranché le 2026-10-11, les 675 aires de métropole (voir Décisions)
-- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12). Sans le partage (« Copier le lien »), reporté (2026-10-13).
+- Tranche 2 : proposer le choix « km à vol d'oiseau ou minutes en voiture » pour la mer (précalcul commune → côte), avec les proches (demande de Vincent du 2026-10-12). Sans le partage (« Copier le lien »), reporté (2026-10-13). Spécifiée le 2026-10-13 (D9 de la spec proches).
 - Tranche 1 : spécifiée et validée le 2026-10-12 (loyer + mer, plafonds sans poids), voir Documents. Les proches viennent en tranche 2, à spécifier avant la mise en ligne de la tranche 1.
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 
@@ -120,6 +122,7 @@ Autres questions :
 
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
+- [Spec « Proches et mer en minutes » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
 - [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md) · [dossier du build](docs/plans/2026-10-12-loyer-mer/) : [progression](docs/plans/2026-10-12-loyer-mer/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-12-loyer-mer/demo.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
