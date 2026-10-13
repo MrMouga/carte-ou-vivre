@@ -80,3 +80,4 @@ Corrections 2 et 3 (demandes de Vincent pendant la démo) : faites — commits 7
 - Signalé en tâche 3, pour Vincent : sur le vrai IGN, « La Rochelle » propose d'abord « la Rochelle, 35230 Orgères » (lieu-dit), pas la ville ; mettre les communes en tête des suggestions ?
 - Signalé en tâche 4 : le test « H21 délai de 45 s » (proches-etats.spec.ts, tâche 3) est instable en parallèle (9 échecs sur 12 isolé, 1 dans une suite) — à corriger avant la démo.
 - Capture de Vincent `captures/T5-iphone-vincent-bug-clavier.png` : contient une adresse personnelle (fiche contact) ; laissée hors de git, à Vincent de décider.
+Terminé 2026-10-13 — démo acceptée par Vincent (≈ 20:55)

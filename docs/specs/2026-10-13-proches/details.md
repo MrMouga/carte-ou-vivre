@@ -84,6 +84,17 @@ Loyer-mer : AC-1 à AC-15, sur un navigateur sans proche gardé et avec la mer e
 - **H29** — Le repère d'un proche affiche son nom en entier (30 caractères au plus, R9) ; s'il en recouvre un autre, les deux restent visibles (règle d'affichage : /ui).
 - **H30** — Un nom de proche n'est envoyé à aucun service, et ne sort jamais du navigateur.
 
+- **H31** — Recherche d'adresse par `/geocodage/search` de l'IGN, qui rend le code INSEE (Corse comprise) ; arrondissements de Paris, Lyon, Marseille ramenés à la ville ; outre-mer écarté ; requêtes espacées d'au moins 250 ms (4 par seconde). *Décidé au build, gardé à la démo (2026-10-13).*
+- **H32** — Une zone IGN ratée (refus, délai, réseau) rend tout le proche **indisponible**, sans nouvel essai automatique ; « Réessayer » relance tout le proche. *Idem.*
+- **H33** — Mémoire : une entrée par proche dans le stockage du navigateur ; un proche gardé avant la fin de son calcul revient **indisponible** avec « Réessayer » ; les proches gardés s'affichent dès l'ouverture, curseurs bloqués pendant le chargement. *Idem.*
+- **H34** — Résumé de « Tes proches » repliée : le nombre, puis les états qui ne sont pas prêts (« 5 · 1 en calcul, 1 indisponible »). *Idem.*
+- **H35** — En bureau, le panneau de réglages s'arrête au-dessus de la légende et défile ; le compte reste collé en bas, sous un trait. *Idem.*
+- **H36** — Suggestions sur deux lignes tirées du libellé IGN (« 12 Rue de la Paix » / « 44000 Nantes ») ; une ville : « Commune · départ de la mairie ». Sous le nom d'un proche : le libellé IGN tel quel, ou « départ de la mairie » pour une ville seule. *Idem ; texte de la ville seule demandé par Vincent à la démo.*
+- **H37** — Repères : nom dans une étiquette à droite, à gauche si elle recouvre celle d'un proche ajouté avant ; gouttes au-dessus des ronds du top 10 ; cachés aux lecteurs d'écran (la zone et les pastilles portent l'information). Le petit repère d'une pastille suit l'état du proche (« … », « ! »). *Idem.*
+- **H38** — Pastille : « Parents de Léa · 2 h au plus » (le « · » est dessiné) ; « plus de 3 h · au-dessus de 2 h » ; « TES PROCHES » dans tous les états de la fiche. *Idem.*
+- **H39** — À 390 px, quand la feuille monte pour l'ajout, c'est le champ qui se place sous la poignée (pas le titre). **Défaut connu** : sur un vrai iPhone, le champ disparaît sous le clavier ; reporté avec la refonte de l'interface téléphone (choix de Vincent, 2026-10-13). *Idem.*
+- **H40** — Le texte d'aide « Aucune cochée : peu importe » sous les tailles de ville est retiré (demande de Vincent à la démo) ; le résumé replié dit toujours « Peu importe ». Nom affiché du produit : « Où vivre en France ». *Idem.*
+
 ## Exceptions
 Aucune.
 

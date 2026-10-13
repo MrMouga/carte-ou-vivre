@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : breakdown (tranche proches) — plan validé le 2026-10-13 (docs/plans/2026-10-13-proches/plan.md) ; prochaine étape /build de la tranche proches, avant /ship
+- Étape : build (tranche proches) — démo acceptée le 2026-10-13 (docs/plans/2026-10-13-proches/demo.md) ; prochaine étape /ship (loyer-mer et proches), ou /spec de la tranche suivante (partage, mer en minutes, interface téléphone)
 - Statut : active
 
 ## Décisions
@@ -76,6 +76,8 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Plan validé : proches | 7 tâches (0 mesure IGN et recoloration, 1 catégories repliables, 2a calcul des temps, 2b ajout dans le panneau, 3 états et mémoire, 4 repères, pastilles et fiche, 5 390 px et bout en bout) ; aucun paquet ; requêtes IGN de test à adresses publiques autorisées ; seuil de réaction 100 ms + 20 ms de marge. |
 | 2026-10-13 | Spec proches révisée (D15, D16) après la mesure de la tâche 0 : plafond d'un proche de 15 min à 3 h ; temps « à quelques minutes près » | Jusqu'à 6 h, un proche prenait 60 s et l'IGN abandonnait 2 à 5 zones sur 24 ; jusqu'à 3 h, 14 à 16 s. Choix de Vincent contre la proposition de Claude (IGN jusqu'à 3 h + estimation au-delà). Coût : l'exemple du pitch (parents à Nantes et à Toulouse) ne se joue plus. AC-1 à AC-6, AC-8, AC-14, AC-16 recalés (fixture divisée par deux, plafond à l'ajout 2 h). |
 | 2026-10-13 | Ajout d'un proche sur iPhone : défaut connu, reporté | Sur un vrai iPhone (Safari), le champ « Adresse ou ville » disparaît quand le clavier s'ouvre (deux essais de Vincent, un correctif tenté). Choix de Vincent : l'interface téléphone sera retravaillée plus tard. En bureau et dans les tests à 390 px, tout passe. |
+| 2026-10-13 | Tranche construite : proches | Démo acceptée : jusqu'à 5 proches nommés, temps en voiture par l'IGN jusqu'à 3 h (≈ 10–15 s par proche), repères, pastilles de temps, fiche, mémoire du navigateur ; 13 critères verts, 15 de loyer-mer toujours verts ; défaut iPhone (champ sous le clavier) reporté ; décisions du build gardées (H31–H40). |
+| 2026-10-13 | Nom affiché : « Où vivre en France » | Choix de Vincent à la démo (au lieu de « Carte où vivre ») ; le dépôt, les dossiers et les clés de mémoire gardent « carte-ou-vivre ». |
 
 ## Hypothèses à vérifier
 
@@ -132,7 +134,7 @@ Autres questions :
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
-- [Plan « Proches » — 2026-10-13](docs/plans/2026-10-13-proches/plan.md)
+- [Plan « Proches » — 2026-10-13](docs/plans/2026-10-13-proches/plan.md) · [dossier du build](docs/plans/2026-10-13-proches/) : [progression](docs/plans/2026-10-13-proches/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-13-proches/demo.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
 - [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md) · [dossier du build](docs/plans/2026-10-12-loyer-mer/) : [progression](docs/plans/2026-10-12-loyer-mer/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-12-loyer-mer/demo.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
