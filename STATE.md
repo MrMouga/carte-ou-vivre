@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : build (tranche loyer-mer) — démo acceptée le 2026-10-13 (docs/plans/2026-10-12-loyer-mer/demo.md) ; prochaine étape /ship (ou /spec de la tranche 2)
+- Étape : build (tranche loyer-mer) — démo acceptée le 2026-10-13 (docs/plans/2026-10-12-loyer-mer/demo.md) ; prochaine étape /spec de la tranche 2 (proches, mer en minutes), avant /ship — choix de Vincent du 2026-10-13
 - Statut : active
 
 ## Décisions
