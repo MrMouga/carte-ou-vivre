@@ -10,7 +10,7 @@ Lire d'abord [spec.md](spec.md) (décisions D-n). Révisé le 2026-10-12 : commu
 
 ## Écrans et états
 ### Carte — route `/` · dans l'URL : `loyer` (euros ou `aucun`), `mer` (km ou `aucun`), `taille` (liste de tailles, absente = peu importe)
-Zones : carte — fond Plan IGN atténué et estompage IGN (D16), et par-dessus les communes de métropole qui passent, colorées (Paris, Lyon, Marseille d'un seul tenant) ; une commune qui ne passe pas laisse voir le fond ; cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, « Non colorée : ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN avec logos et liens, Insee, IGN – Géoplateforme (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
+Zones : carte — fond Plan IGN atténué et estompage IGN (D16), et par-dessus les communes de métropole qui passent, colorées (Paris, Lyon, Marseille d'un seul tenant) ; une commune qui ne passe pas laisse voir le fond ; cadrée au départ sur la métropole avec la Corse · réglages — plafond de loyer, plafond de mer, pastilles de taille · liste — les 10 premières · fiche — la commune choisie · légende — les 5 tranches, « Non colorée : ne passe pas », la couleur neutre « sans plafond » · pied de page — mentions de cette tranche : ANIL, Shom-IGN (noms encadrés et liens, D19), Insee, IGN – Géoplateforme (CLAUDE.md, Données), source des formes et des populations (choisies en tâche 0, leur mention ajoutée à CLAUDE.md). Disposition à 390 px : /ui.
 
 États de la page :
 - **chargement** (ouverture) → indicateur « Chargement de la carte… » (H9) ; réglages inactifs ; sort vers **classée**, **aucune commune**, **sans plafond** ou **erreur**.
@@ -66,7 +66,15 @@ Première tranche.
 - **H7** — Une valeur `loyer` ou `mer` est invalide si elle n'est ni `aucun` ni un nombre de la plage et du pas de H2 (`loyer=1234` est invalide).
 - **H8** — La carte se zoome et se déplace (molette, pincement, boutons + et −). Le zoom ne fait pas partie de l'adresse.
 - **H10** — Opacité des communes colorées : 88 % à l'échelle de la France, 70 % au zoom d'une ville (D17 : à 40 %, le palier 4 paraissait plus clair que le palier 1 de la légende) ; « sans plafond » à 70 % (D17 : à 45 %, 1,28:1 sur le fond).
-- **H9** — Budgets : la page réagit à un réglage en ≤ 100 ms ; l'indicateur de chargement apparaît après 300 ms et reste au moins 300 ms ; au bout de 15 s sans données, on passe en **erreur**.
+- **H9** — Budgets : la page réagit à un réglage en ≤ 100 ms ; l'indicateur de chargement apparaît après 300 ms et reste au moins 300 ms ; au bout de 15 s sans données, on passe en **erreur**. Mesuré au build : 102 ms (version construite, processeur ralenti ×4, sans carte graphique), jugé fluide par Vincent sur son Mac le 2026-10-13 ; non mesuré sur téléphone.
+- **H11** — Sous 1 024 px de large, la page prend la mise en page du téléphone (carte en haut, feuille en bas) ; une tablette aussi. *Décidé au build, gardé à la démo (2026-10-13).*
+- **H12** — À 390 px : les mentions sont au bas de la feuille de la liste et ne s'affichent pas quand une fiche est ouverte ; le compte des réglages n'est lu qu'aux lecteurs d'écran (la liste l'écrit) ; dans l'état **aucune commune**, la bande de carte affiche « Aucune commune ne passe tes critères » au-dessus de la feuille. *Idem.*
+- **H13** — Ronds du top 10 regroupés (D17) quand leurs centres sont à moins d'un demi-diamètre ; un clic sur un groupe zoome juste assez pour les séparer. Choisir une commune zoome sur elle au plus jusqu'au zoom 12, en 500 ms. *Idem.*
+- **H14** — À l'échelle de la France, une commune plus petite qu'un pixel peut ne pas se colorer (10 au zoom 4, 1 au zoom 6) ; toutes se colorent dès le zoom 7. *Idem.*
+- **H15** — Fond de secours (R8) : trait de côte simplifié à environ 500 m ; les communes y sont posées sur un fond opaque. *Idem.*
+- **H16** — Une fiche ouverte prend le focus sur son titre ; le retour à la liste le rend à la ligne de la commune. *Idem.*
+- **H17** — Un nombre dans l'adresse n'est valide qu'écrit en chiffres seuls (`+1200` ou `1200.0` sont invalides) ; les tailles y sont remises dans l'ordre de D11, sans doublon. *Idem.*
+- **H18** — Si le navigateur refuse de réécrire l'adresse (trop de réécritures en peu de temps, curseur glissé), la page réessaie une seconde plus tard : l'adresse peut avoir quelques secondes de retard, la page ne tombe pas. *Idem.*
 
 ## Exceptions
 - Accessibilité : les communes ne se parcourent pas une à une au clavier. L'accès au clavier passe par les réglages, la liste et la fiche. Une commune hors du top 10 ne s'atteint qu'à la souris ou au doigt, jusqu'à la recherche par nom (Pas maintenant).

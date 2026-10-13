@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : breakdown (tranche loyer-mer) — plan validé (docs/plans/2026-10-12-loyer-mer/plan.md) ; prochaine étape /build
+- Étape : build (tranche loyer-mer) — démo acceptée le 2026-10-13 (docs/plans/2026-10-12-loyer-mer/demo.md) ; prochaine étape /ship (ou /spec de la tranche 2)
 - Statut : active
 
 ## Décisions
@@ -64,6 +64,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-12 | Spec loyer-mer révisée (D17) après la relecture Figma : opacité 70 % au zoom et sans plafond (H10) ; fond de secours lisible (R8) ; compte « Aucune commune ne passe tes critères » ; intitulé « Ne passe pas tes critères » ; à 390 px la fiche remplace les réglages ; ronds du top 10 regroupés | Décidé par Claude à la demande de Vincent (« à toi de voir, je testerai ensuite ») ; mesures de la relecture (couleur au zoom plus claire que le palier 1, sable à 1,28:1). À contester après ses tests. |
 | 2026-10-12 | Design validé : loyer-mer | Carte plein écran, réglages à gauche et liste ou fiche à droite ; à 390 px, une feuille où la fiche remplace les réglages ; une teinte vert d'eau en 5 paliers, l'encre pour les réglages, Source Sans 3 / Source Serif 4. |
 | 2026-10-12 | Plan validé : loyer-mer | 10 tâches (0a socle, 0b jetons, 1a données, 1b mesure du risque, 2 carte, 3 liste, 4 fiche, 5a adresse, 5b états et mentions, 6 mobile), même périmètre que la spec ; Vite + React + TS + MapLibre, données statiques, Cloudflare Pages ; règle des dépendances : dernière version de plus de 7 jours (lecture confirmée par Vincent). |
+| 2026-10-13 | Tranche construite : loyer-mer | Démo acceptée par Vincent : carte des 34 746 communes en tuiles à 100 m, réglages, liste, fiche, adresse, états et 390 px ; 15 critères verts ; réaction 102 ms (jugée fluide sur Mac, téléphone non vérifié) ; spec révisée à la démo : la mairie comme point unique de chaque commune (D18), logos Shom et IGN en texte (D19), décisions du build gardées (H11–H18). |
 
 ## Hypothèses à vérifier
 
@@ -119,7 +120,7 @@ Autres questions :
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
-- [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md)
+- [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md) · [dossier du build](docs/plans/2026-10-12-loyer-mer/) : [progression](docs/plans/2026-10-12-loyer-mer/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-12-loyer-mer/demo.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
 - [Discovery « données des critères » — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/synthesis.md)
 - [Tests avant de coder : prix, mer, montagne — 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/tests-avant-code/prix-mer-montagne-2026-10-11.md)
