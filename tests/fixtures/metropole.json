@@ -1,0 +1,10 @@
+{"note": "Généré par python3 scripts/data/tuiles.py --fixture (jeu d'AC-1 d'interface-telephone).",
+ "items": [
+  {"id": "A", "code_insee": "99001", "nom": "Portmer", "dep": "17", "population": 23000, "loyer_m2": 12.5, "estimation_propre": false, "mer_km": 0.9, "forme": [[-1, 45], [-0.5, 45], [-0.5, 45.5], [-1, 45.5], [-1, 45]]},
+  {"id": "B", "code_insee": "99002", "nom": "Grandeville", "dep": "33", "population": 260000, "loyer_m2": 16.0, "estimation_propre": true, "mer_km": 39.9, "forme": [[0, 45], [0.5, 45], [0.5, 45.5], [0, 45.5], [0, 45]]},
+  {"id": "C", "code_insee": "99003", "nom": "Montcher", "dep": "75", "population": 2100000, "loyer_m2": 30.0, "estimation_propre": true, "mer_km": 148.2, "forme": [[1, 45], [1.5, 45], [1.5, 45.5], [1, 45.5], [1, 45]]},
+  {"id": "D", "code_insee": "99004", "nom": "Terrebasse", "dep": "23", "population": 4200, "loyer_m2": 8.0, "estimation_propre": false, "mer_km": 180.3, "forme": [[-1, 46], [-0.5, 46], [-0.5, 46.5], [-1, 46.5], [-1, 46]]},
+  {"id": "E", "code_insee": "99005", "nom": "Quaibleu", "dep": "13", "population": 85000, "loyer_m2": 21.0, "estimation_propre": true, "mer_km": 7.0, "forme": [[0, 46], [0.5, 46], [0.5, 46.5], [0, 46.5], [0, 46]]},
+  {"id": "R1", "code_insee": "99998", "nom": "Coin-Sud-Ouest", "dep": "99", "population": 1000, "loyer_m2": 50.0, "estimation_propre": false, "mer_km": 300.0, "forme": [[-5.2, 41.3], [-5.1, 41.3], [-5.1, 41.4], [-5.2, 41.4], [-5.2, 41.3]]},
+  {"id": "R2", "code_insee": "99999", "nom": "Coin-Nord-Est", "dep": "99", "population": 1000, "loyer_m2": 50.0, "estimation_propre": false, "mer_km": 300.0, "forme": [[9.5, 51.0], [9.6, 51.0], [9.6, 51.1], [9.5, 51.1], [9.5, 51.0]]}
+ ]}

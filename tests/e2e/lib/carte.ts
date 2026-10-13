@@ -1,36 +1,45 @@
 import { existsSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
+import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
 import { readPixels } from './pixels';
 
 // Fixture « 5 communes » servie à la place de public/data, et fond IGN remplacé par un style local uni (aucun appel réseau).
 export type Id = 'A' | 'B' | 'C' | 'D' | 'E';
+type Item = (typeof acceptance.fixture.items)[number] | (typeof metropole.items)[number];
+/** Un jeu de communes servi aux tests : ses lignes, ses carrés et le dossier de ses tuiles. */
+export type Jeu = { items: Item[]; tuiles: URL };
 const items = acceptance.fixture.items;
+export const FIXTURE: Jeu = { items, tuiles: new URL('../../fixtures/tuiles/', import.meta.url) };
+/**
+ * Jeu d'AC-1 d'interface-telephone (python3 scripts/data/tuiles.py --fixture) : les 5 carrés décalés aux latitudes de la
+ * métropole, et deux communes qui ne passent pas aux coins de l'emprise de la métropole avec la Corse (R1, R2).
+ */
+export const METROPOLE: Jeu = { items: metropole.items, tuiles: new URL('../../fixtures/tuiles-metropole/', import.meta.url) };
 
-const communesJson = {
+const communesJson = ({ items }: Jeu) => ({
   champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km'],
   communes: items.map((it) => [it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km]),
-};
-// Formes : tuiles de la fixture (python3 scripts/data/tuiles.py --fixture) ; repères : centre et cadre de chaque carré.
-const TUILES = new URL('../../fixtures/tuiles/', import.meta.url);
-const reperesJson = {
+});
+// Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
+const reperesJson = ({ items }: Jeu) => ({
   champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
   reperes: items.map(({ forme }) => {
     const [xs, ys] = [forme.map((c) => c[0]), forme.map((c) => c[1])];
     const [w, s, e, n] = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
     return [(w + e) / 2, (s + n) / 2, w, s, e, n];
   }),
-};
+});
 const PNG_TRANSPARENT = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
 export const STYLE_LOCAL = { version: 8, sources: {}, layers: [{ id: 'fond', type: 'background', paint: { 'background-color': color.background } }] };
 
-export async function servirFixture(page: Page, { fondEnPanne = false } = {}) {
-  await page.route('**/data/communes.json', (r) => r.fulfill({ json: communesJson }));
-  await page.route('**/data/reperes.json', (r) => r.fulfill({ json: reperesJson }));
+export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIXTURE } = {}) {
+  await page.route('**/data/communes.json', (r) => r.fulfill({ json: communesJson(jeu) }));
+  await page.route('**/data/reperes.json', (r) => r.fulfill({ json: reperesJson(jeu) }));
   await page.route('**/tuiles/**', (r) => {
-    const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), TUILES);
+    const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });
   });
   await page.route('https://data.geopf.fr/**', (r) => {
@@ -41,8 +50,8 @@ export async function servirFixture(page: Page, { fondEnPanne = false } = {}) {
   });
 }
 
-export async function ouvrir(page: Page, chemin = '/') {
-  await servirFixture(page);
+export async function ouvrir(page: Page, chemin = '/', { jeu = FIXTURE } = {}) {
+  await servirFixture(page, { jeu });
   await page.goto(chemin);
   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
 }
@@ -53,11 +62,11 @@ export async function apresRendu(page: Page) {
 }
 
 // Où tombe le centre de chaque carré à l'ouverture : même calcul que fitBounds de MapLibre (tuiles de 512 px, Mercator),
-// sur l'emprise de la fixture et avec le cadrage de la largeur testée (bureau ou 390 px).
+// sur l'emprise du jeu (la fixture par défaut) et avec le cadrage de la largeur testée (bureau ou 390 px).
 const mx = (lon: number) => (lon + 180) / 360;
 const my = (lat: number) => (1 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / Math.PI) / 2;
 
-export function vue(page: Page) {
+export function vue(page: Page, { items } = FIXTURE) {
   const { width: W, height: H } = page.viewportSize()!;
   const p = paddingCarte(W, H); // à 390 px : la bande au-dessus de la feuille de la liste
   const lons = items.flatMap((it) => it.forme.map((c) => c[0]));
@@ -67,14 +76,14 @@ export function vue(page: Page) {
   const monde = 512 * 2 ** z;
   const cx = p.left + (W - p.left - p.right) / 2, cy = p.top + (H - p.top - p.bottom) / 2;
   const ecran = (lon: number, lat: number) => ({ x: cx + (mx(lon) - (x0 + x1) / 2) * monde, y: cy + (my(lat) - (y0 + y1) / 2) * monde });
-  const forme = (id: Id) => items.find((it) => it.id === id)!.forme;
+  const forme = (id: string) => items.find((it) => it.id === id)!.forme;
   /** Centre du carré : là où l'on clique (et où se pose le rond d'une commune du top 10). */
-  const centre = (id: Id) => ecran((forme(id)[0][0] + forme(id)[2][0]) / 2, (forme(id)[0][1] + forme(id)[2][1]) / 2);
+  const centre = (id: string) => ecran((forme(id)[0][0] + forme(id)[2][0]) / 2, (forme(id)[0][1] + forme(id)[2][1]) / 2);
   /** Point de lecture de la couleur : à 0,1° du coin sud-ouest, loin du rond et des bords. */
-  const lecture = (id: Id) => ecran(forme(id)[0][0] + 0.1, forme(id)[0][1] + 0.1);
+  const lecture = (id: string) => ecran(forme(id)[0][0] + 0.1, forme(id)[0][1] + 0.1);
   const opacite = Math.max(carte['opacite-zoom'], Math.min(carte['opacite-france'],
     carte['opacite-france'] + ((z - carte['zoom-france']) / (carte['zoom-ville'] - carte['zoom-france'])) * (carte['opacite-zoom'] - carte['opacite-france'])));
-  return { z, centre, lecture, opacite };
+  return { z, centre, lecture, opacite, ecran, padding: p };
 }
 
 const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
@@ -85,11 +94,19 @@ export function melange(jeton: keyof typeof color, opacite: number) {
   return a.map((v, i) => Math.round(v * opacite + b[i] * (1 - opacite)));
 }
 
-/** Vérifie la couleur de chaque carré (± 3 par canal) ; null = non peinte (pixel = fond). */
-export async function attendreCouleurs(page: Page, attendu: Partial<Record<Id, keyof typeof color | null>>) {
-  const { lecture, opacite } = vue(page);
-  const ids = Object.keys(attendu) as Id[];
-  const px = await readPixels(page, ids.map(lecture));
+/**
+ * Vérifie la couleur de chaque carré (± 3 par canal) ; null = non peinte (pixel = fond). Par défaut, lue près du coin
+ * sud-ouest ; `au: 'centre'` pour un carré de quelques pixels (jeu métropole), dont le bord est adouci.
+ */
+export async function attendreCouleurs<K extends string = Id>(
+  page: Page,
+  attendu: Partial<Record<K, keyof typeof color | null>>,
+  { jeu = FIXTURE, au = 'lecture' as 'lecture' | 'centre' } = {},
+) {
+  const v = vue(page, jeu);
+  const { opacite } = v;
+  const ids = Object.keys(attendu) as K[];
+  const px = await readPixels(page, ids.map(v[au]));
   ids.forEach((id, k) => {
     const j = attendu[id];
     const cible = j == null ? rgb(color.background) : melange(j, j === 'area-unranked' ? carte['opacite-sans-plafond'] : opacite);

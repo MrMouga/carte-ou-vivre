@@ -25,9 +25,9 @@ export const SOURCE_COMMUNES = 'communes';
 /** Couche des tuiles (scripts/data/tuiles.py) ; l'identifiant d'une forme est l'index de sa commune. */
 export const COUCHE_TUILES = 'communes';
 
-/** Tuiles vectorielles des communes (contours à 100 m, zooms 4 à 11), demandées seulement dans le cadre des communes. */
+/** Tuiles vectorielles des communes (contours à 100 m, zooms 3 à 11), demandées seulement dans le cadre des communes. */
 export function sourceCommunes(bounds: [number, number, number, number]): VectorSourceSpecification {
-  return { type: 'vector', tiles: [`${location.origin}/tuiles/{z}/{x}/{y}.pbf`], minzoom: 4, maxzoom: 11, bounds };
+  return { type: 'vector', tiles: [`${location.origin}/tuiles/{z}/{x}/{y}.pbf`], minzoom: 3, maxzoom: 11, bounds };
 }
 
 /**
