@@ -11,6 +11,9 @@ const col = (name: string) => champs.indexOf(name);
 const byCode = new Map(communes.map((r) => [r[0] as string, r]));
 const get = (code: string, name: string) => byCode.get(code)![col(name)] as number;
 
+// Repères (tâche 8, D18) : une ligne par commune, dans le même ordre ; le rond est posé sur la mairie.
+const { reperes } = JSON.parse(readFileSync(new URL('../../public/data/reperes.json', import.meta.url), 'utf8')) as { reperes: number[][] };
+
 describe('public/data/communes.json', () => {
   it('34 746 communes de métropole, toutes avec population, loyer et distance à la mer', () => {
     expect(communes).toHaveLength(34746);
@@ -30,6 +33,14 @@ describe('public/data/communes.json', () => {
 
   it("Adour corrigé : Port-de-Lanne, Saint-Étienne-d'Orthe et Sames au-delà de 2 km", () => {
     for (const code of ['40231', '40256', '64502']) expect(get(code, 'mer_km')).toBeGreaterThan(2);
+  });
+
+  it('repères : une ligne par commune ; le rond de Bordeaux est sur sa mairie, dans son cadre (D18)', () => {
+    expect(reperes).toHaveLength(communes.length);
+    const [lon, lat, ouest, sud, est, nord] = reperes[communes.findIndex((r) => r[0] === '33063')];
+    expect(lon).toBeCloseTo(-0.5794, 4);
+    expect(lat).toBeCloseTo(44.8379, 4);
+    expect(lon > ouest && lon < est && lat > sud && lat < nord).toBe(true);
   });
 
   it("Paris, Lyon et Marseille d'un seul tenant, sans arrondissement", () => {
