@@ -1,0 +1,25 @@
+# Proches et mer en minutes
+2026-10-13 · validée · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+
+**En une phrase** : on ajoute jusqu'à 5 proches avec un temps maximum en voiture, on peut lire la mer en minutes, et la carte se recolore.
+**Pourquoi** : c'est la Différence du pitch. Sans les adresses que toi seul connais, la carte ressemble à villeideale.fr.
+**C'est réussi si** : en ligne, avec « 12 rue de la Paix, Nantes » à 4 h au plus, nommé « Parents de Léa », et « Toulouse » à 5 h 30 au plus, Bordeaux et La Rochelle passent. Deux repères nommés sont posés sur la carte. La fiche de Bordeaux donne « Parents de Léa : 3 h 30 à 3 h 45 en voiture » (valeur relevée en tâche 0 ; l'IGN donnait 3 h 34 le 2026-10-11). Après avoir rouvert le navigateur, les proches sont toujours là, sans recalcul.
+
+**Ce qu'on voit** : dans les réglages, « Tes proches » et la bascule de la mer ; sur la carte, un repère par proche ; dans la fiche, les temps.
+
+**Décisions à valider**
+- **D1** — Proches et mer en minutes dans une seule tranche. *Pourquoi* : choix de Vincent. *Écarté* : la mer en minutes en tranche 3. Coût accepté : au-dessus de la taille perso.
+- **D2** — Temps des proches calculés par l'IGN (le service du fond de carte), depuis le navigateur, par tranches de 15 min jusqu'à 6 h, puis « plus de 6 h ». *Pourquoi* : ORS plafonne à 1 h ou à 50 adresses par jour, et sa clé ne doit pas aller dans le navigateur ; l'IGN est gratuit, sans clé, et limité par visiteur. 15 min : choix de Vincent. *Écarté* : ORS derrière un serveur ; des tranches de 30 min ; le vol d'oiseau.
+- **D3** — On choisit une adresse, puis « Ajouter » lance le calcul : quelques secondes, avec un indicateur, et on peut annuler. *Pourquoi* : choix de Vincent, l'attente vient au moment de l'ajout. *Écarté* : calculer dès qu'on choisit une suggestion.
+- **D4** — Jusqu'à 5 proches. Chacun porte un nom libre, prérempli avec sa commune (« Nantes (44) »), et un repère à ce nom est posé sur la carte, à l'adresse. *Pourquoi* : choix de Vincent (révisé pendant l'entretien), on lit la carte par rapport à « Parents de Léa ». *Écarté* : la commune seule ; aucun repère.
+- **D5** — Un plafond par proche, de 15 min à 6 h, sans poids ni « Sans limite » : pour qu'un proche ne compte plus, on le retire. Chaque proche compte pour un critère dans la moyenne de la tranche 1, avec la fin de sa tranche de temps (« 3 h 15 à 3 h 30 » compte pour 3 h 30). *Pourquoi* : choix de Vincent, comme le loyer et la mer ; « plus de poids sur Nantes » = un plafond plus serré. *Écarté* : des poids ; les proches regroupés en un seul critère. Coût accepté : avec 5 proches, ils font 5 parts sur 7 du score.
+- **D6** — Le trajet part de l'adresse exacte, ou de la mairie si l'on a choisi une commune, et arrive à la mairie de chaque commune (D18 de loyer-mer). L'adresse part vers l'IGN, mais pas son nom ; une phrase le dit. *Pourquoi* : adresse exacte choisie par Vincent le 2026-10-11 ; une ville seule suffit quand on ne connaît pas l'adresse. *Écarté* : le centre de la commune ; les adresses précises seulement.
+- **D7** — Les proches sont gardés dans ce navigateur, jamais dans l'adresse de la page ; un bouton « Effacer mes proches » les retire. *Pourquoi* : choix de Vincent ; les proches dans le lien sont reportés (2026-10-13). *Écarté* : ne rien garder. Coût accepté : un lien ouvert ailleurs n'a pas les proches.
+- **D8** — La liste ne change pas ; c'est la fiche qui donne les temps. *Pourquoi* : choix de Vincent, la liste reste lisible avec 5 proches. *Écarté* : le trajet le plus long dans la ligne.
+- **D9** — Une bascule pour la mer, « km à vol d'oiseau / minutes en voiture », sur les km par défaut. Les minutes mesurent le trajet en voiture de la mairie jusqu'à la même côte que les km, calculé une fois pour toutes. La fiche montre les deux. *Pourquoi* : demande de Vincent ; la tranche 1 reste intacte. *Écarté* : les minutes par défaut ; les minutes seules. Révise D8 de loyer-mer (D20 là-bas).
+
+**Pas maintenant** : « Copier le lien », les proches ou la commune dans l'adresse de la page, les poids, les transports en commun, l'heure de départ, la mesure d'audience (à /ship, sans jamais l'adresse), la montagne, l'emploi, l'achat.
+**Hypothèses** : choix par défaut H19 à H30 dans [détails](details.md#hypothèses).
+**Taille** : au-dessus du gabarit perso (6 règles, 15 critères), par choix de Vincent.
+**Le risque** : (1) Le calcul de l'IGN. Il accepte 6 h sur le papier ; on n'a mesuré ni la durée ni le poids, et ses conditions d'usage n'ont pas été lues. (2) La mer en minutes : il faut une source qui calcule 34 746 trajets, avec une licence compatible. (3) La recoloration en 100 ms avec 7 critères (102 ms mesurés avec 2). Les trois sont mesurés en tâche 0 de /breakdown. Au-delà de 10 s par proche, ou sans source ni conditions qui le permettent, retour à Vincent.
+**Questions ouvertes** : aucune.

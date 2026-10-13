@@ -1,0 +1,433 @@
+{
+  "slice": "proches",
+  "fixture": {
+    "description": "Fixture inventée « 5 communes » de loyer-mer (mêmes codes 99xxx, noms, populations, loyers, distances et formes), plus : mairie (point d'arrivée des trajets, au centre de chaque carré) et mer_min (temps en voiture de la mairie à la côte, en minutes, déjà arrondi à la minute). Services simulés : la recherche d'adresse (suggestions par texte tapé ; points de départ loin des carrés) et le calcul de trajets (pour chaque adresse choisie, la fin de la tranche de 15 min de chaque commune, par code INSEE). Les AC vérifient ces tranches telles qu'elles s'affichent ; la façon dont le service simulé les produit (zones ou réponse directe) relève de /breakdown, et la traduction d'une zone en tranche par commune se teste à part. Nom par défaut d'un proche : « commune (département) », par ex. « Nantesville (44) ». Pannes et délais : blocs « pannes » et « délais ». Le navigateur de test part sans proche gardé.",
+    "items": [
+      {
+        "id": "A",
+        "code_insee": "99001",
+        "nom": "Portmer",
+        "dep": "17",
+        "population": 23000,
+        "loyer_m2": 12.5,
+        "estimation_propre": false,
+        "mer_km": 0.9,
+        "mer_min": 5,
+        "mairie": [
+          0.25,
+          0.25
+        ],
+        "forme": [
+          [
+            0,
+            0
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.5,
+            0.5
+          ],
+          [
+            0,
+            0.5
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "B",
+        "code_insee": "99002",
+        "nom": "Grandeville",
+        "dep": "33",
+        "population": 260000,
+        "loyer_m2": 16.0,
+        "estimation_propre": true,
+        "mer_km": 39.9,
+        "mer_min": 50,
+        "mairie": [
+          1.25,
+          0.25
+        ],
+        "forme": [
+          [
+            1,
+            0
+          ],
+          [
+            1.5,
+            0
+          ],
+          [
+            1.5,
+            0.5
+          ],
+          [
+            1,
+            0.5
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "C",
+        "code_insee": "99003",
+        "nom": "Montcher",
+        "dep": "75",
+        "population": 2100000,
+        "loyer_m2": 30.0,
+        "estimation_propre": true,
+        "mer_km": 148.2,
+        "mer_min": 135,
+        "mairie": [
+          2.25,
+          0.25
+        ],
+        "forme": [
+          [
+            2,
+            0
+          ],
+          [
+            2.5,
+            0
+          ],
+          [
+            2.5,
+            0.5
+          ],
+          [
+            2,
+            0.5
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "D",
+        "code_insee": "99004",
+        "nom": "Terrebasse",
+        "dep": "23",
+        "population": 4200,
+        "loyer_m2": 8.0,
+        "estimation_propre": false,
+        "mer_km": 180.3,
+        "mer_min": 160,
+        "mairie": [
+          0.25,
+          1.25
+        ],
+        "forme": [
+          [
+            0,
+            1
+          ],
+          [
+            0.5,
+            1
+          ],
+          [
+            0.5,
+            1.5
+          ],
+          [
+            0,
+            1.5
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      {
+        "id": "E",
+        "code_insee": "99005",
+        "nom": "Quaibleu",
+        "dep": "13",
+        "population": 85000,
+        "loyer_m2": 21.0,
+        "estimation_propre": true,
+        "mer_km": 7.0,
+        "mer_min": 14,
+        "mairie": [
+          1.25,
+          1.25
+        ],
+        "forme": [
+          [
+            1,
+            1
+          ],
+          [
+            1.5,
+            1
+          ],
+          [
+            1.5,
+            1.5
+          ],
+          [
+            1,
+            1.5
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "services": {
+      "recherche d'adresse (IGN) — suggestions par texte tapé": {
+        "1 rue Test": {
+          "suggestions": [
+            {
+              "libelle": "1 rue Test 44000 Nantesville",
+              "commune": "Nantesville",
+              "dep": "44",
+              "point": [
+                -2.0,
+                3.0
+              ]
+            }
+          ]
+        },
+        "2 place Test": {
+          "suggestions": [
+            {
+              "libelle": "2 place Test 31000 Toulouseville",
+              "commune": "Toulouseville",
+              "dep": "31",
+              "point": [
+                3.0,
+                -2.0
+              ]
+            }
+          ]
+        },
+        "3 rue Test": {
+          "suggestions": [
+            {
+              "libelle": "3 rue Test 69000 Lyonville",
+              "commune": "Lyonville",
+              "dep": "69",
+              "point": [
+                5.0,
+                0.25
+              ]
+            }
+          ]
+        },
+        "4 rue Test": {
+          "suggestions": [
+            {
+              "libelle": "4 rue Test 29000 Brestville",
+              "commune": "Brestville",
+              "dep": "29",
+              "point": [
+                -3.0,
+                0.25
+              ]
+            }
+          ]
+        },
+        "5 rue Test": {
+          "suggestions": [
+            {
+              "libelle": "5 rue Test 59000 Lilleville",
+              "commune": "Lilleville",
+              "dep": "59",
+              "point": [
+                1.25,
+                4.0
+              ]
+            }
+          ]
+        },
+        "zzzz": {
+          "suggestions": []
+        }
+      },
+      "calcul de trajets (IGN) — fin de tranche en minutes par code de commune (null = plus de 6 h), par adresse choisie": {
+        "1 rue Test 44000 Nantesville": {
+          "99001": 120,
+          "99002": 210,
+          "99003": 240,
+          "99004": 300,
+          "99005": null
+        },
+        "2 place Test 31000 Toulouseville": {
+          "99001": 270,
+          "99002": 150,
+          "99003": null,
+          "99004": 195,
+          "99005": 240
+        },
+        "3 rue Test 69000 Lyonville": {
+          "99001": 360,
+          "99002": 345,
+          "99003": 30,
+          "99004": 150,
+          "99005": 210
+        },
+        "4 rue Test 29000 Brestville": {
+          "99001": 180,
+          "99002": 330,
+          "99003": null,
+          "99004": 285,
+          "99005": null
+        },
+        "5 rue Test 59000 Lilleville": {
+          "99001": null,
+          "99002": null,
+          "99003": 60,
+          "99004": 330,
+          "99005": null
+        }
+      },
+      "pannes": {
+        "recherche d'adresse": "erreur réseau sur toute recherche",
+        "calcul de trajets": "erreur réseau sur tout calcul",
+        "fond IGN": "comme loyer-mer (AC-15)"
+      },
+      "délais": {
+        "calcul de trajets": "chaque proche répond 1 s après le début de son calcul, pour que l'état « calcul » s'observe",
+        "recherche d'adresse": "réponse immédiate"
+      }
+    }
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R9",
+      "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
+      "when": "l'utilisateur tape « 1 rue Test », choisit « 1 rue Test 44000 Nantesville », garde le nom proposé et appuie sur « Ajouter »",
+      "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 3 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 59 · 650 € · moins d'1 km » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer=60",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R11",
+      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
+      "when": "l'utilisateur règle le plafond de Nantesville (44) sur 3 h 30",
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 62 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 21 · 832 € · 40 km » (fin de tranche 3 h 30 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R10",
+      "given": "Fixture, réglages de départ, proche Nantesville (44) prêt avec le plafond 3 h",
+      "when": "l'utilisateur choisit Grandeville (33) sur la carte",
+      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 3 h 15 à 3 h 30 : au-dessus de ton plafond de 3 h », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture », sans score ni rang",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R11",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30",
+      "when": "l'utilisateur ajoute « 2 place Test 31000 Toulouseville » et règle son plafond sur 4 h 30",
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 47 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 27 · 832 € · 40 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R10",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30 puis Toulouseville (31) prêt à 4 h 30",
+      "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
+      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 3 h 15 à 3 h 30 en voiture » et « Toulouseville (31) : 2 h 15 à 2 h 30 en voiture », le score 27 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 6 h : au-dessus de ton plafond de 3 h 30 », sans score",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R11",
+      "given": "Fixture, loyer et mer sur « Sans limite », Nantesville (44) prêt à 3 h 30",
+      "when": "la carte est affichée",
+      "then": "la liste montre « 2 communes passent tes critères » puis Portmer (17) avec le score 43 et Grandeville (33) avec le score 0 ; Portmer a la couleur de la tranche 40–60 et Grandeville celle de la tranche 0–20 ; Montcher (75), Terrebasse (23) et Quaibleu (13) ne sont pas colorées ; le message « Fixe un loyer ou une distance à la mer pour classer les communes. » n'est pas affiché",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R9",
+      "given": "Fixture, réglages de départ, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
+      "when": "la zone « Tes proches » est affichée",
+      "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le champ de recherche revient",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R12",
+      "given": "Fixture, réglages de départ, Nantesville (44) prêt à 3 h 30 et gardé dans ce navigateur",
+      "when": "l'utilisateur ferme la page puis rouvre /",
+      "then": "Nantesville (44) est prêt avec le plafond 3 h 30, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 62 puis Grandeville (33) 21 ; l'adresse de la page est /?loyer=1200&mer=60",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R12",
+      "given": "Fixture, réglages de départ, Nantesville (44) et Toulouseville (31) prêts et gardés dans ce navigateur",
+      "when": "l'utilisateur appuie sur « Effacer mes proches » puis rouvre /",
+      "then": "aucun proche n'est affiché et la zone est dans l'état vide ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R13",
+      "given": "Fixture, réglages de départ, service de trajets en panne",
+      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville »",
+      "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R13",
+      "given": "Fixture, réglages de départ, service de recherche d'adresse en panne",
+      "when": "l'utilisateur tape « 1 rue Test »",
+      "then": "la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. », « Ajouter » reste inactif, et la liste montre toujours « 3 communes passent tes critères »",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R14",
+      "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche",
+      "when": "l'utilisateur passe la mer sur « minutes en voiture »",
+      "then": "le plafond de la mer affiche 60 min ; l'adresse de la page devient /?loyer=1200&mer=60&mer-en=min ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · 5 min », « 2 · Quaibleu (13) · 43 · 1 092 € · 14 min », « 3 · Grandeville (33) · 24 · 832 € · 50 min »",
+      "passes": false
+    },
+    {
+      "id": "AC-13",
+      "rule": "R14",
+      "given": "Fixture, aucun proche",
+      "when": "l'utilisateur ouvre /?loyer=1200&mer=45&mer-en=min puis choisit Grandeville (33), puis Montcher (75)",
+      "then": "le plafond de la mer affiche 45 min ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 67 et Quaibleu (13) 39 ; la fiche de Grandeville affiche « Mer 50 min : au-dessus de ton plafond de 45 min », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture » ; celle de Montcher affiche « Mer 2 h 15 : au-dessus de ton plafond de 45 min »",
+      "passes": false
+    },
+    {
+      "id": "AC-14",
+      "rule": "R9",
+      "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche gardé",
+      "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) dans la liste une fois le calcul fini",
+      "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 3 h 15 à 3 h 30 : au-dessus de ton plafond de 3 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
+      "passes": false
+    },
+    {
+      "id": "AC-15",
+      "rule": "R14",
+      "given": "Fixture, aucun proche, page ouverte sur /?loyer=1200&mer=45&mer-en=min",
+      "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
+      "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
+      "passes": false
+    }
+  ]
+}
