@@ -83,7 +83,7 @@
       "rule": "R18",
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
       "when": "l'utilisateur règle « Loyer maximum » sur 1 000 €",
-      "then": "sans changer d'onglet, le compte visible en bas de l'onglet « Critères » passe de « 3 communes passent tes critères » à « 2 communes passent tes critères »",
+      "then": "sans changer d'onglet, le compte visible en haut de la feuille passe de « 3 communes passent tes critères » à « 2 communes passent tes critères »",
       "passes": false
     },
     {
