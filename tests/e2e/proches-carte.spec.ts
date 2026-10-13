@@ -254,3 +254,30 @@ test('repère en calcul : l’anneau pulse, et reste fixe avec « réduire les a
   await expect.poll(() => anneau.evaluate((el) => el.getAnimations().length)).toBe(0);
   await expect(anneau).toHaveCSS('opacity', '0.4');
 });
+
+// Retour de Vincent (2026-10-13) : un repère glissé sous un panneau passait par-dessus (z-index des marqueurs hors de la carte).
+test('repère glissé sous la liste (bureau) ou la feuille (390 px) : le panneau le couvre (lu au pixel)', async ({ page }, info) => {
+  await ouvrir(page);
+  await servirIgn(page, { delaiZoneMs: 60_000 });
+  await servirVoisins(page);
+  await ajouterVoisin(page, 1, 'Mamie Jo');
+  await apresRendu(page);
+  const panneau = (await (info.project.name === 'mobile' ? page.getByTestId('feuille') : liste(page)).boundingBox())!;
+  const g = (await boite(page, 'Mamie Jo', 'goutte'))!;
+  // On glisse la carte (depuis un point vide, en haut au milieu) pour poser le centre de la goutte 8 px dans le panneau.
+  const [dx, dy] = [panneau.x + 8 - (g.x + g.width / 2), panneau.y + panneau.height / 2 - (g.y + g.height / 2)];
+  const { width: W } = page.viewportSize()!;
+  const depart = { x: W / 2, y: 120 };
+  await page.mouse.move(depart.x, depart.y);
+  await page.mouse.down();
+  await page.mouse.move(depart.x + dx, depart.y + dy, { steps: 20 });
+  await page.mouse.up();
+  await apresRendu(page);
+  const apres = (await boite(page, 'Mamie Jo', 'goutte'))!;
+  const point = { x: apres.x + apres.width / 2, y: apres.y + apres.height / 2 };
+  expect(point.x).toBeGreaterThan(panneau.x);
+  expect(point.y).toBeGreaterThan(panneau.y);
+  const [px] = await readPixels(page, [point]);
+  const ecart = (hex: string) => Math.max(...[1, 3, 5].map((i, k) => Math.abs(parseInt(hex.slice(i, i + 2), 16) - px[k])));
+  expect(ecart(color.card), `lu ${px}`).toBeLessThanOrEqual(12);
+});

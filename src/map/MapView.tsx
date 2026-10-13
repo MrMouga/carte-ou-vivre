@@ -173,8 +173,9 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proche
 
   return (
     <>
-      {/* MapLibre impose position: relative à son conteneur : le placement se fait sur une boîte autour. */}
-      <div className="absolute inset-0">
+      {/* MapLibre impose position: relative à son conteneur : le placement se fait sur une boîte autour. `isolate` garde
+          les z-index des marqueurs (repères des proches) sous les panneaux posés sur la carte. */}
+      <div className="absolute inset-0 isolate">
         <div ref={container} className="h-full w-full" data-testid="carte" />
       </div>
       {/* Zoom (H8) : en bureau, en bas contre le bord gauche du panneau de liste ; à 390 px, en haut à droite, 44 × 44. */}
