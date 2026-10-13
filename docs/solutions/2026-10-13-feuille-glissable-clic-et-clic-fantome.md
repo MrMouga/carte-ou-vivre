@@ -1,0 +1,8 @@
+# Feuille du bas qui se glisse : capturer le pointeur seulement après 10 px, et avaler le clic qui suit un toucher qui la déplie
+Étiquettes : build, design, tests · Tranche : interface-telephone · Source : prototypes /ui du 2026-10-13 (branche `prototype/interface-telephone`, `src/ui/FeuilleMobile.tsx`)
+
+**Problème** — Une feuille mobile qu'on replie d'un bouton, d'un toucher sur sa tête ou d'un glisser (pointer events sur la zone de prise).
+**Symptômes** — (1) Le bouton « Replier la feuille », posé dans la zone de prise, ne réagissait plus : `setPointerCapture` au `pointerdown` détournait le clic vers la zone. (2) Un toucher sur la barre repliée dépliait la feuille, puis ouvrait la fiche de la ligne de liste apparue sous le doigt : le clic qui suit le `pointerup` tombe sur ce qui est là **après** le rendu.
+**Ce qui n'a pas marché** — Capturer le pointeur dès le `pointerdown` ; laisser le `click` d'un bouton-tête faire aussi le changement (double effet avec le toucher détecté par le glisser).
+**Ce qui a marché** — Ignorer le `pointerdown` sur un vrai bouton (sauf la tête marquée `data-prise`) ; ne capturer le pointeur qu'après 10 px de déplacement ; au `pointerup`, ajouter un écouteur `click` en capture sur `window`, `once`, retiré après 400 ms, qui avale le clic ; le bouton-tête ne réagit à `click` que pour le clavier (`event.detail === 0`).
+**Prévention** — Test e2e au toucher (`hasTouch`) : déplier d'un toucher sur la barre, puis vérifier qu'aucune fiche n'est ouverte et que l'onglet est celui d'avant. Règle de jugement : tout geste qui change la mise en page sous le doigt doit neutraliser le clic qui le suit.
