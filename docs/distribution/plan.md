@@ -1,5 +1,4 @@
 # Plan de distribution — Carte où vivre
-À revoir (2026-10-13) : le partage (« Copier le lien », adresses des proches hors du lien) est retiré de la tranche 2 par Vincent — le moment de partage attend une tranche suivante.
 2026-10-12 · validé · Ambition : perso · Temps : 1 h/semaine jusqu'au 8/11, puis la moitié du temps jusqu'au 6/12 · Révision de : —
 
 ## Positionnement
@@ -26,6 +25,7 @@ Canal retenu : r/france, à confirmer le 15/11. Canal de secours : Indie Makers 
 
 ## Le moment de partage
 L'utilisateur envoie **le lien de sa carte** : les réglages sont dans l'URL et un bouton « Copier le lien » ouvre la même carte chez le conjoint. À porter dans la spec de la tranche des proches (décision D-n). Point à trancher là-bas : les adresses des proches ne doivent pas apparaître en clair dans le lien.
+**Révisé le 2026-10-13** : le partage n'est pas dans la tranche « proches » (choix de Vincent). Les proches y sont gardés dans le navigateur, jamais dans le lien (spec proches, D7) : un lien envoyé aujourd'hui ouvre la carte sans les proches. « Copier le lien » et la façon de partager les proches sans leurs adresses en clair passent à une tranche suivante, à spécifier avant /launch.
 
 ## D'ici le lancement
 - Chaque semaine (1 h) : une réponse utile sur r/france, sans lien, et une ligne de notes sur les mots employés par les gens.
