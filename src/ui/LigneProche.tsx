@@ -46,7 +46,7 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
   const phrase =
     etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
   const retirer = (
-    <Button variant="lien" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
+    <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
       Retirer
     </Button>
   );
@@ -75,7 +75,7 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
         {indisponible ? (
           // Figma « Ligne de proche », état Indisponible : « Réessayer » en bouton principal, « Retirer » à côté.
           <div className="flex items-center gap-2">
-            <Button aria-label={`Réessayer ${nom}`} onClick={onReessayer}>
+            <Button className="max-bureau:min-h-toucher" aria-label={`Réessayer ${nom}`} onClick={onReessayer}>
               Réessayer
             </Button>
             {retirer}

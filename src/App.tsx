@@ -111,6 +111,9 @@ export function App() {
   const message: Message = erreur ? 'erreur' : indicateurVisible ? 'chargement' : prete && fond === 'secours' ? 'fond-indisponible' : null;
 
   const [choisie, setChoisie] = useState<string | null>(null);
+  // 390 px : tant que l'ajout d'un proche a le focus, la feuille monte en haut, pour que le champ et ses suggestions
+  // restent au-dessus du clavier (Figma 27:1160).
+  const [ajout, setAjout] = useState(false);
   const [retour, setRetour] = useState<string | null>(null);
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
 
@@ -162,18 +165,22 @@ export function App() {
       )}
       {donnees && !erreur && <Pastilles proches={proches.proches} commune={choisie == null ? null : index.get(choisie)!} />}
       {/* Bureau : panneaux posés sur la carte (la boîte s'efface). 390 px : une feuille en bas qui défile, à 56 % de la
-          hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667). */}
+          hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667) ;
+          pendant l'ajout d'un proche, elle monte jusqu'à la bande de carte du haut (27:1160). */}
       <div
         ref={feuille}
         data-testid="feuille"
         className={cn(
           'bureau:contents',
           'max-bureau:absolute max-bureau:inset-x-0 max-bureau:bottom-0 max-bureau:flex max-bureau:flex-col max-bureau:overflow-y-auto',
-          'max-bureau:rounded-t-sheet max-bureau:bg-card max-bureau:pt-2 max-bureau:shadow-feuille',
-          choisie ? 'max-bureau:max-h-feuille' : 'max-bureau:h-feuille',
+          'max-bureau:rounded-t-sheet max-bureau:bg-card max-bureau:shadow-feuille',
+          choisie ? 'max-bureau:max-h-feuille' : ajout ? 'max-bureau:top-bande-carte' : 'max-bureau:h-feuille',
         )}
       >
-        <div className="mx-4 h-rail w-poignee-feuille shrink-0 rounded-full bg-border bureau:hidden" aria-hidden="true" />
+        {/* La poignée reste en haut quand la feuille défile : ce qui défile passe dessous, sans être coupé au bord. */}
+        <div className="sticky top-0 z-1 shrink-0 bg-card pt-2 bureau:hidden" aria-hidden="true">
+          <div className="mx-4 h-rail w-poignee-feuille rounded-full bg-border" />
+        </div>
         {/* Bureau : le panneau s'arrête au-dessus de la légende et défile, le compte collé en bas (Figma 22:486). */}
         <div
           style={{ '--bas-reglages': `${basReglages}px` } as React.CSSProperties}
@@ -193,6 +200,7 @@ export function App() {
               onEffacer={proches.effacer}
               memoireRefusee={proches.memoireRefusee}
               inactif={!prete}
+              onAjout={setAjout}
             />
             {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
             <p role="status" className="text-texte-fort max-bureau:sr-only bureau:sticky bureau:bottom-0 bureau:-mx-4 bureau:border-t bureau:border-border bureau:bg-card bureau:p-4">
@@ -216,11 +224,13 @@ export function App() {
           </div>
         )}
         {!choisie && <Mentions className="mx-4 mb-4 bureau:hidden" />}
+        {/* Pendant l'ajout, de quoi faire défiler le champ jusqu'en haut même quand la liste est courte. */}
+        {ajout && <div className="h-full shrink-0 bureau:hidden" aria-hidden="true" />}
       </div>
       <Status message={message} onReessayer={() => setEssai((n) => n + 1)} />
       {/* 390 px : la liste est sous les réglages, hors de l'écran ; la bande de carte dit pourquoi elle est vide (état
           « aucune commune »), comme « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. */}
-      {resultat?.actif && resultat.classement.length === 0 && !choisie && message == null && (
+      {resultat?.actif && resultat.classement.length === 0 && !choisie && !ajout && message == null && (
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-4 bottom-feuille flex justify-center pb-2 bureau:hidden">
           <p data-testid="carte-vide" className="rounded-base border border-border bg-card px-2 py-1 text-secondaire">
             Aucune commune ne passe tes critères

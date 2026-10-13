@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { rechercher, type Suggestion } from '@/proches/ign';
 import { MAX_PROCHES, NOM_MAX, nomPropose, type Proche } from '@/proches/useProches';
+import { layout } from '@/theme/tokens';
 import { Categorie } from './Categorie';
 import { LigneProche } from './LigneProche';
 
@@ -35,7 +36,14 @@ function IconeLieu() {
   );
 }
 
-const CHAMP = 'w-full rounded-base border border-border bg-card px-2 py-1 text-texte text-foreground disabled:opacity-50';
+// 390 px : 44 px de haut (Figma 27:1160) et 16 px de texte, sans quoi Safari sur iPhone agrandit la page au focus.
+const CHAMP =
+  'w-full rounded-base border border-border bg-card px-2 py-1 text-texte text-foreground disabled:opacity-50 max-bureau:min-h-toucher max-bureau:text-(length:--taille-saisie)';
+/** Cibles au toucher sous la largeur de bureau (contrat : 44 px). */
+const TOUCHER = 'max-bureau:min-h-toucher';
+const enBureau = () => innerWidth >= layout['largeur-bureau'];
+/** Garde le focus où il est quand on appuie : sur iPhone, le champ perdrait le focus avant le clic, et la feuille redescendrait sous le doigt. */
+const garderFocus = (e: React.MouseEvent) => e.preventDefault();
 
 type AjoutProps = {
   onAjouter: (lieu: Suggestion, nom: string) => void;
@@ -44,6 +52,8 @@ type AjoutProps = {
   inactif: boolean;
   focus: boolean;
   champ: React.RefObject<HTMLInputElement | null>;
+  /** Le focus entre dans l'ajout (champ, suggestions, « Nom », « Ajouter ») ou en sort. */
+  onAjout?: (actif: boolean) => void;
 };
 
 /** Message sous le champ, à la place des suggestions (tableau des états Figma 23:1616). */
@@ -55,7 +65,7 @@ const AVIS = {
 } as const;
 
 /** Recherche, suggestions, champ « Nom » et « Ajouter » (R9, H20, R13). */
-function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
+function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout }: AjoutProps) {
   const [texte, setTexte] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [choisie, setChoisie] = useState<Suggestion | null>(null);
@@ -66,10 +76,32 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
   const idNom = useId();
   const champNom = useRef<HTMLInputElement>(null);
   const liste = useRef<HTMLUListElement>(null);
-  // Bureau : le panneau défile jusqu'aux suggestions quand elles arrivent sous son bord (Figma 22:486).
+  const bloc = useRef<HTMLDivElement>(null);
+  // Bureau : le panneau défile jusqu'aux suggestions quand elles arrivent sous son bord (Figma 22:486). À 390 px, le champ
+  // est déjà en haut de la feuille, les suggestions dessous.
   useEffect(() => {
-    if (suggestions.length) liste.current?.scrollIntoView({ block: 'center' }); // « nearest » les laisse sous le compte collé
+    if (suggestions.length && enBureau()) liste.current?.scrollIntoView({ block: 'center' }); // « nearest » les laisse sous le compte collé
   }, [suggestions]);
+  // 390 px : le focus entre dans l'ajout → la feuille monte (App), puis elle défile pour mettre le champ en haut, sous la
+  // poignée : sur un iPhone, il ne reste qu'environ 400 px au-dessus du clavier.
+  const monter = () => {
+    onAjout?.(true);
+    if (!enBureau()) requestAnimationFrame(() => bloc.current?.scrollIntoView({ block: 'start' }));
+  };
+  const entrer = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) monter();
+  };
+  // Ouvert par « + Ajouter un proche » : le champ prend le focus. Lu ici plutôt que par l'événement, que React ne
+  // transmet pas pendant le rendu (`autoFocus`) et qui ne revient pas quand le champ a déjà le focus. L'ajout disparaît
+  // (proche ajouté) : la feuille redescend, même si le navigateur n'annonce pas la perte du focus.
+  useEffect(() => {
+    if (focus) champ.current?.focus();
+    if (bloc.current?.contains(document.activeElement)) monter();
+    return () => onAjout?.(false);
+  }, []); // au montage seulement
+  const sortir = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) onAjout?.(false);
+  };
 
   // Recherche 300 ms après la dernière frappe ; la réponse d'un texte dépassé est ignorée.
   useEffect(() => {
@@ -115,7 +147,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-2 max-bureau:scroll-mt-6">
       <label htmlFor={idAdresse} className="text-secondaire text-muted-foreground">
         Adresse ou ville
       </label>
@@ -124,7 +156,6 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
         ref={champ}
         type="text"
         autoComplete="off"
-        autoFocus={focus}
         aria-controls={idListe}
         value={texte}
         disabled={inactif}
@@ -147,8 +178,9 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
                 <button
                   type="button"
                   aria-label={l2 ? `${l1}, ${l2}` : l1}
+                  onMouseDown={garderFocus}
                   onClick={() => choisir(s)}
-                  className="flex w-full cursor-pointer items-center gap-2 rounded-base p-2 text-left hover:bg-background"
+                  className="flex w-full cursor-pointer items-center gap-2 rounded-base p-2 text-left hover:bg-background max-bureau:min-h-toucher max-bureau:py-1"
                 >
                   <IconeLieu />
                   <span className="flex min-w-0 flex-col">
@@ -178,7 +210,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ }: AjoutProps) {
           />
         </>
       )}
-      <Button className="self-start" disabled={!choisie || inactif} onClick={ajouter}>
+      <Button className={`self-start ${TOUCHER}`} disabled={!choisie || inactif} onMouseDown={garderFocus} onClick={ajouter}>
         Ajouter
       </Button>
     </div>
@@ -210,25 +242,30 @@ type Props = {
   memoireRefusee: boolean;
   /** Pendant le chargement de la page : les points des mairies ne sont pas encore là. */
   inactif: boolean;
+  /** Le focus entre dans l'ajout d'un proche ou en sort (390 px : la feuille monte, App). */
+  onAjout?: (actif: boolean) => void;
 };
 
-export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif }: Props) {
+export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif, onAjout }: Props) {
   // D13 : dès un proche, le champ est replié derrière « + Ajouter un proche ».
   const [ouvert, setOuvert] = useState(false);
   const vide = proches.length === 0;
   const plein = proches.length >= MAX_PROCHES;
   // Après « Ajouter », « Retirer » ou « Effacer mes proches », le bouton pressé disparaît : le focus passe au lien
-  // « + Ajouter un proche », ou au champ s'il n'y a plus de proche, plutôt que de se perdre.
+  // « + Ajouter un proche », au champ s'il n'y a plus de proche, ou au message « 5 proches au maximum… » après le 5ᵉ,
+  // plutôt que de se perdre.
   const lien = useRef<HTMLButtonElement>(null);
   const champ = useRef<HTMLInputElement>(null);
+  const messagePlein = useRef<HTMLParagraphElement>(null);
   const refocus = useRef(false);
   useEffect(() => {
-    if (refocus.current) (lien.current ?? champ.current)?.focus();
+    if (refocus.current) (lien.current ?? champ.current ?? messagePlein.current)?.focus();
     refocus.current = false;
   });
   const effacer = (
     <Button
       variant="lien"
+      className={TOUCHER}
       onClick={() => {
         onEffacer();
         setOuvert(false);
@@ -262,13 +299,16 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
           </ul>
         )}
         {plein ? (
-          <p className="text-texte text-muted-foreground">5 proches au maximum. Retire-en un pour en ajouter un autre.</p>
+          <p ref={messagePlein} tabIndex={-1} className="text-texte text-muted-foreground">
+            5 proches au maximum. Retire-en un pour en ajouter un autre.
+          </p>
         ) : vide || ouvert ? (
           <Ajout
             champ={champ}
             libelles={proches.map((p) => p.lieu.libelle)}
             inactif={inactif}
             focus={ouvert}
+            onAjout={onAjout}
             onAjouter={(lieu, nom) => {
               onAjouter(lieu, nom);
               refocus.current = true;
@@ -276,7 +316,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
             }}
           />
         ) : (
-          <Button ref={lien} variant="lien" className="self-start" onClick={() => setOuvert(true)}>
+          <Button ref={lien} variant="lien" className={`self-start ${TOUCHER}`} onClick={() => setOuvert(true)}>
             + Ajouter un proche
           </Button>
         )}

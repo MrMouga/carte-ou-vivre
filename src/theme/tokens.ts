@@ -71,6 +71,10 @@ export const size = {
   'taille-poignee-feuille': 40, // poignée de la feuille mobile, 40 × 4 (Figma 7:363)
   'taille-goutte': 26, // repère d'un proche : goutte 26 × 34 (Figma « Repère proche » 18:144), tranche proches
   'taille-goutte-haut': 34,
+  'taille-bande-carte': 40, // 390 px : bande de carte au-dessus de la feuille montée pendant l'ajout d'un proche (Figma 27:1160), tranche proches
+  // 390 px : taille du texte des champs de saisie. Sous 16 px, Safari sur iPhone agrandit la page quand un champ prend le
+  // focus ; le style `texte` (15) reste le reste du temps. Classe : `max-bureau:text-(length:--taille-saisie)`.
+  'taille-saisie': 16,
 } as const;
 
 /**
