@@ -21,6 +21,8 @@ export const MAX_PROCHES = 5;
 /** Délai d'échec d'un proche, compté depuis le début de son calcul (H21). */
 export const DELAI_PROCHE_MS = 45_000;
 const RETIRE = 'retiré';
+/** Un proche indisponible n'a pas de temps (R12, R13). */
+const INDISPONIBLE = { etat: 'indisponible', temps: null, empreinte: null } as const;
 
 /** Nom proposé pour une suggestion : sa commune et son département, « Nantes (44) » (R9). */
 export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
@@ -59,7 +61,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     Promise.race([calculerTemps(tache.depart, points, arret.signal), arrete])
       .then(
         (temps) => changer(tache.id, { etat: 'pret', temps, empreinte }),
-        () => arret.signal.reason !== RETIRE && changer(tache.id, { etat: 'indisponible', temps: null, empreinte: null }), // R13
+        () => arret.signal.reason !== RETIRE && changer(tache.id, INDISPONIBLE), // R13
       )
       .finally(() => {
         clearTimeout(delai);
@@ -130,7 +132,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   useEffect(() => {
     if (!empreinte) return;
     const perime = (p: Proche) => p.etat === 'pret' && p.empreinte !== empreinte;
-    setProches((ps) => (ps.some(perime) ? ps.map((p) => (perime(p) ? { ...p, etat: 'indisponible', temps: null, empreinte: null } : p)) : ps));
+    setProches((ps) => (ps.some(perime) ? ps.map((p) => (perime(p) ? { ...p, ...INDISPONIBLE } : p)) : ps));
   }, [empreinte]);
 
   // R12 : chaque proche changé est réécrit, chaque proche retiré est effacé. Un refus (navigateur, mémoire pleine) → message.
