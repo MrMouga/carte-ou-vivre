@@ -10,9 +10,9 @@ import type { EtatProche, Proche } from '@/proches/useProches';
 // calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté.
 
 /** Icône maison de Figma (« Icône maison », 14 × 14), à la couleur du texte. */
-export function IconeMaison({ className }: { className?: string }) {
+function IconeMaison() {
   return (
-    <svg viewBox="0 0 14 14" className={cn('size-echantillon shrink-0', className)} aria-hidden="true">
+    <svg viewBox="0 0 14 14" className="size-echantillon shrink-0" aria-hidden="true">
       <path d="M7 2.33333L1.75 6.41667H3.20833V11.0833H6.125V8.16667H7.875V11.0833H10.7917V6.41667H12.25L7 2.33333Z" fill="currentColor" />
     </svg>
   );
