@@ -1,0 +1,58 @@
+# Suite de tests — correctif clavier iPhone, 2026-10-13
+
+## npm test, 18:24–18:27 (charge moyenne 21 à 27)
+> vitest run && node scripts/check-tokens.mjs && playwright test
+ Test Files  10 passed (10)
+      Tests  82 passed (82)
+check-tokens : 35 fichier(s), aucune valeur arbitraire
+  ✘   64 [bureau] › tests/e2e/proches-temps.spec.ts:43:1 › « 2 place Test » : autre proche, autres temps (6.3s)
+  ✘   63 [bureau] › tests/e2e/proches-temps.spec.ts:30:1 › « 1 rue Test » : suggestion au code INSEE, 12 zones de 3 h à 15 min, fins de tranche de la fixture (7.9s)
+  ✘   77 [mobile] › tests/e2e/adresse.spec.ts:29:1 › AC-13 régler le loyer sur 800 € depuis / : adresse /?loyer=800&mer=60, et l'historique n'a pas gagné d'entrée (5.8s)
+  ✘   78 [mobile] › tests/e2e/adresse.spec.ts:39:1 › AC-14 /?taille=petite-ville,ville-moyenne : deux pastilles cochées ; adresse complétée ; Portmer 72, Quaibleu 49 (9.8s)
+  ✘   79 [mobile] › tests/e2e/aucune.spec.ts:6:1 › 390 px, aucune commune : la raison est visible sans faire défiler (10.7s)
+  ✘   84 [mobile] › tests/e2e/carte.spec.ts:20:1 › AC-3 mer 40 km : B passe avec 15 (0–20), A 72 (60–80), E 46 (40–60) ; C et D non colorées (11.2s)
+  ✘  123 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (7.8s)
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toContainText(expected) failed
+  7 failed
+  2 skipped
+  139 passed (3.0m)
+
+## npm test, 18:27–18:30 (charge 16 à 19)
+> vitest run && node scripts/check-tokens.mjs && playwright test
+ Test Files  10 passed (10)
+      Tests  82 passed (82)
+check-tokens : 35 fichier(s), aucune valeur arbitraire
+  ✘    6 [bureau] › tests/e2e/carte.spec.ts:7:1 › AC-1 réglages de départ : A palier 60–80, E palier 40–60, B palier 20–40 ; C et D non colorées (7.2s)
+  ✘   11 [bureau] › tests/e2e/categories.spec.ts:47:1 › cible du titre : 24 px de haut en bureau, 44 px à 390 px (6.0s)
+  ✘   27 [bureau] › tests/e2e/fiche.spec.ts:75:1 › ronds du top 10 : un rond par commune qui passe, son clic ouvre la fiche, le rond choisi est marqué (7.2s)
+  ✘   77 [mobile] › tests/e2e/adresse.spec.ts:29:1 › AC-13 régler le loyer sur 800 € depuis / : adresse /?loyer=800&mer=60, et l'historique n'a pas gagné d'entrée (6.3s)
+  ✘  123 [mobile] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (8.5s)
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: expect(locator).toContainText(expected) failed
+  5 failed
+  2 skipped
+  141 passed (2.5m)
+
+## npx playwright test --workers=2, 18:30–18:34
+  2 skipped
+  147 passed (4.2m)
+
+## npm test, 18:34–18:37
+> vitest run && node scripts/check-tokens.mjs && playwright test
+ Test Files  10 passed (10)
+      Tests  82 passed (82)
+check-tokens : 35 fichier(s), aucune valeur arbitraire
+  ✘   49 [bureau] › tests/e2e/proches-etats.spec.ts:128:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (8.1s)
+    Error: expect(locator).toContainText(expected) failed
+  1 failed
+  2 skipped
+  145 passed (2.4m)

@@ -1,0 +1,12 @@
+18:23:01 — page prête, http://localhost:5173/?loyer=1200&mer=60
+champ — avant le toucher : cible y 604 → 648, feuille y 292 → 664
+champ — à la fin de l'événement focus (ce que Safari relève) : champ y 352 → 396 ; 500 ms plus tard : champ y 80 → 124 ; feuille y 40 → 664
+champ — champ au-dessus du clavier (y ≤ 342) au focus : NON ; a bougé après : OUI
+champ — première suggestion « 12 Rue de la Paix, 44000 Nantes » : y 133 → 177 (au-dessus du clavier : oui)
+champ « Adresse ou ville » : {"id":"_r_7_","name":"","autocomplete":"off"}
+champ « Nom » : {"id":"_r_8_","name":"","autocomplete":"off"}
+proche ajouté ; feuille redescendue : y 292 → 664
+lien — avant le toucher : cible y 604 → 648, feuille y 292 → 664
+lien — à la fin de l'événement focus (ce que Safari relève) : champ y 620 → 664 ; 500 ms plus tard : champ y 79 → 123 ; feuille y 40 → 664
+lien — champ au-dessus du clavier (y ≤ 342) au focus : NON ; a bougé après : OUI
+lien — première suggestion « 12 Rue de la Paix, 44000 Nantes » : y 132 → 177 (au-dessus du clavier : oui)
