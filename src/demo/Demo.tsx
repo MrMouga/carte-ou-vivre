@@ -52,7 +52,7 @@ export function Demo() {
         <Pastille libelle="Petite ville" habitants="10 000 – 50 000 hab." cochee />
       </section>
       <section className="flex w-liste flex-col gap-1 rounded-panel border border-border bg-card p-4 shadow-panneau">
-        <p className="font-serif text-marque">Carte où vivre</p>
+        <p className="font-serif text-marque">Où vivre en France</p>
         <p className="font-serif text-titre-fiche">Douarnenez (29)</p>
         <p className="text-texte tabular-nums">601 € par mois pour 52 m² (11,6 €/m²)</p>
         <p className="text-texte-fort">269 communes passent tes critères</p>
