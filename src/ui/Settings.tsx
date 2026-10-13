@@ -3,6 +3,7 @@ import { Slider } from '@/components/ui/slider';
 import { plafondLoyer, plafondMer } from '@/domain/format';
 import { SURFACE_M2, type Reglages } from '@/domain/score';
 import { BORNES } from '@/domain/url';
+import { Categorie } from './Categorie';
 
 type CurseurProps = {
   libelle: string;
@@ -44,13 +45,12 @@ function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange, disabled
 /** `inactif` : pendant le chargement (details.md), les curseurs ne bougent pas. */
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; inactif?: boolean; children?: React.ReactNode };
 
-// Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, plafond de loyer, plafond de mer.
+// Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, plafond de loyer, plafond de mer, en catégories repliables.
 export function Settings({ reglages, onChange, inactif = false, children }: Props) {
   return (
     <section aria-label="Réglages" className="flex flex-col gap-3 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
       <h1 className="font-serif text-marque">Carte où vivre</h1>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-categorie uppercase text-muted-foreground">Loyer</h2>
+      <Categorie titre="Loyer" resume={plafondLoyer(reglages.loyer)}>
         <Curseur
           libelle="Loyer maximum"
           sousTexte={`par mois pour ${SURFACE_M2} m²`}
@@ -60,9 +60,8 @@ export function Settings({ reglages, onChange, inactif = false, children }: Prop
           onChange={(loyer) => onChange({ ...reglages, loyer })}
           disabled={inactif}
         />
-      </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-categorie uppercase text-muted-foreground">Mer</h2>
+      </Categorie>
+      <Categorie titre="Mer" resume={plafondMer(reglages.mer)}>
         <Curseur
           libelle="Mer à moins de"
           sousTexte="à vol d'oiseau"
@@ -72,7 +71,7 @@ export function Settings({ reglages, onChange, inactif = false, children }: Prop
           onChange={(mer) => onChange({ ...reglages, mer })}
           disabled={inactif}
         />
-      </div>
+      </Categorie>
       {children}
     </section>
   );
