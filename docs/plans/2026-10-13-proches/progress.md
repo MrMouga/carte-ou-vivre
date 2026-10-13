@@ -18,6 +18,9 @@ Correctif clavier iPhone : fait — commits 11c6bc5..0c352c2 — suite revérifi
 
 Simplification : faite — commits 6cc3934..271d74f — 4 simplifications sans changement visible ; suite revérifiée (82 unitaires, 147 navigateur, H21 passé) — ≈ 5 min — agent : 105 k jetons — rapport : taches/simplification.md
 
+Relectures : review-spec.md (0 Bloquant, 2 Majeurs, 5 Mineurs), qa.md (bureau seulement : 0, 0, 4 Mineurs) — capture personnelle de Vincent supprimée à sa demande (jamais commitée).
+Corrections 1 : faites — commits de23b3f..c2225b2 — H21 à horloge figée + `workers: 2` dans Playwright ; « · » dans la pastille ; « Ajouter » visible au-dessus du compte ; décalage de 4 px et curseurs qui bougent examinés sans défaut (contour de focus ; focus resté sur un curseur + flèche) — suite revérifiée (82 unitaires, 151 navigateur, suite complète verte) — ≈ 47 min — agent : 173 k jetons — rapport : taches/corrections-1.md
+
 ## Décisions prises à la place de Vincent
 - T0 : recherche par `/geocodage/search` (rend le code INSEE) au lieu de `/completion` ; le faux service intercepte `search*`. Coût si faux : un aller-retour de plus par recherche (≈ 100–300 ms, 1,3 s mesuré sur le téléphone).
 - T0 : file d'appels à 4 requêtes par seconde (à 5 pile, l'IGN refuse la 6e et bloque 5 s). Coût : ≈ 0,5 s de plus par proche.
@@ -58,6 +61,7 @@ Simplification : faite — commits 6cc3934..271d74f — 4 simplifications sans c
 - T5 : focus gardé pendant l'appui sur une suggestion ou « Ajouter » ; bande de carte nue (sans zoom ni légende) pendant l'ajout.
 - T5 : défaut de la tâche 3 corrigé : après le 5ᵉ proche, le focus va au message « 5 proches au maximum… ».
 - T5 : limite connue : après « Effacer mes proches », la feuille monte aussi (sans clavier).
+- Corrections 1 : `workers: 2` dans playwright.config.ts (suite ≈ 4 min au lieu de 2 min 20) ; « · » de la pastille dessiné en CSS (AC-16 lit le nom suivi de la valeur).
 ## Preuves
 - T5 : captures/T5-bureau-1…4-*.png, T5-390-1…4-*.png, T5-preuve-bureau.txt, T5-preuve-390.txt, T5-*-requetes-etape1.txt, T5-npm-test.txt.
 - T4 : captures/T4-deux-proches.png, T4-la-rochelle.png, T4-la-rochelle-passe.png, T4-bordeaux.png, T4-cinq-proches.png, T4-repere-zoom.png, T4-390-fiche.png, T4-preuve-ign.txt.
