@@ -28,7 +28,7 @@ Date : 13 octobre 2026. Réglages : loyer 1 200 €, mer 60 km. Proches :
 2. **Toulouse (31)** — la commune, départ de sa mairie — plafond 5 h 30 — en calcul.
 3. (pour l'état plein) **Mamie Jo** — « 3 place du Marché, 22300 Lannion » ; **Karim boulot** — « 40 avenue de France, 75013 Paris » ; **Les Dupont** — « 5 rue Sainte-Catherine, 33000 Bordeaux ».
 Fiche de référence : **Bordeaux (33)** — 832 € pour 52 m², 39 km de la mer à vol d'oiseau, 50 min en voiture, Parents de Léa 3 h 30 à 3 h 45, Toulouse (31) 2 h 15 à 2 h 30. Commune refusée : **Arcachon (33)** avec « Toulouse (31) 3 h 15 à 3 h 30 : au-dessus de ton plafond de 3 h ».
-Les temps du prototype sont **simulés** (distance à vol d'oiseau × 1,3 à 80 km/h, arrondie à la tranche de 15 min), pour sentir l'interface, pas pour les juger.
+Les temps du prototype sont **simulés** (0,72 min par km à vol d'oiseau + 10 min, calé sur Nantes → Bordeaux 3 h 34, arrondis à la tranche de 15 min), pour sentir l'interface, pas pour les juger.
 
 ## Écrans
 ### A. Réglages, bureau (panneau de gauche, 300 px) — de haut en bas
