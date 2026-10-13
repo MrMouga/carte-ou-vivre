@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : build (tranche proches) — démo acceptée le 2026-10-13 (docs/plans/2026-10-13-proches/demo.md) ; prochaine étape /ship (loyer-mer et proches), ou /spec de la tranche suivante (partage, mer en minutes, interface téléphone)
+- Étape : spec (tranche interface-telephone) — validée le 2026-10-13 (docs/specs/2026-10-13-interface-telephone/spec.md) ; prochaine étape /ui. Loyer-mer et proches en ligne (/ship du 2026-10-13) ; correctif « repère au-dessus des panneaux » (855cd46) pas encore poussé
 - Statut : active
 
 ## Décisions
@@ -78,6 +78,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Ajout d'un proche sur iPhone : défaut connu, reporté | Sur un vrai iPhone (Safari), le champ « Adresse ou ville » disparaît quand le clavier s'ouvre (deux essais de Vincent, un correctif tenté). Choix de Vincent : l'interface téléphone sera retravaillée plus tard. En bureau et dans les tests à 390 px, tout passe. |
 | 2026-10-13 | Tranche construite : proches | Démo acceptée : jusqu'à 5 proches nommés, temps en voiture par l'IGN jusqu'à 3 h (≈ 10–15 s par proche), repères, pastilles de temps, fiche, mémoire du navigateur ; 13 critères verts, 15 de loyer-mer toujours verts ; défaut iPhone (champ sous le clavier) reporté ; décisions du build gardées (H31–H40). |
 | 2026-10-13 | Nom affiché : « Où vivre en France » | Choix de Vincent à la démo (au lieu de « Carte où vivre ») ; le dépôt, les dossiers et les clés de mémoire gardent « carte-ou-vivre ». |
+| 2026-10-13 | Spec validée : interface-telephone | Retours de Vincent sur téléphone : feuille repliable (bouton et glisser, barre avec le compte), onglets Critères / Les 10 premières, fiche à la place des onglets, carte immobile au repli ; communes dessinées à l'ouverture (défaut mesuré : aucune tuile à 390 × 664 ; un niveau de zoom de plus dans les données, accepté) ; défaut du clavier iPhone inclus, preuve sur son iPhone. Téléphone à l'horizontale hors tranche. 8 décisions, 5 règles, 11 critères. |
 
 ## Hypothèses à vérifier
 
@@ -133,6 +134,7 @@ Autres questions :
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
+- [Spec « Interface téléphone » — 2026-10-13](docs/specs/2026-10-13-interface-telephone/spec.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
 - [Plan « Proches » — 2026-10-13](docs/plans/2026-10-13-proches/plan.md) · [dossier du build](docs/plans/2026-10-13-proches/) : [progression](docs/plans/2026-10-13-proches/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-13-proches/demo.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
