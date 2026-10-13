@@ -36,3 +36,4 @@ La grille : on règle un proche sans perdre la liste de vue (objectif 3) ; on li
 - **Cibles** : liens « Retirer », « Effacer mes proches », « + Ajouter un proche », titres de catégorie et bascule km | min à 24 px de haut au moins en bureau (`taille-cible`), 44 px à 390 px (`taille-toucher`), comme les autres contrôles du contrat. « Réessayer » devient le bouton principal, à côté de « Retirer » (plus empilé à 20 px).
 - **Données d'exemple** des écrans alignées : 269 communes, aucune taille cochée.
 - **Écart contesté** : le contrat du système avait déjà `place-marker` (commit `48e170c`) quand le relecteur l'a lu.
+- **Choix de Vincent après la relecture** : le lien « + Ajouter un proche » remplace le champ dès qu'il y a un proche (spec D13, AC-7 révisé) ; les pastilles sur deux lignes à 4–5 proches sont acceptées (elles cachent le Nord et la Manche à l'échelle de la France) ; à 390 px, un seul écran de plus, l'ajout avec le clavier.

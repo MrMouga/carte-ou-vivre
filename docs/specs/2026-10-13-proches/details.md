@@ -1,5 +1,5 @@
 # Détails — proches et mer en minutes
-Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
+Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12), champ replié derrière « + Ajouter un proche » (D13). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
 
 ## Parcours
 1. L'utilisateur ouvre la page : réglages lus dans l'adresse (R7) et proches gardés dans ce navigateur (R12).
@@ -16,7 +16,7 @@ Zones touchées (les autres restent celles de loyer-mer) : réglages — la mer 
 
 États de la zone **Tes proches** (initial : **vide** sans proche gardé, sinon **avec proches**) :
 - **vide** (aucun proche) → le champ de recherche, « Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune. » ; sort vers **recherche**.
-- **avec proches** (1 à 4 proches, champ vide) → la liste des proches, le champ de recherche, « Effacer mes proches » ; sort vers **recherche** ou **vide**.
+- **avec proches** (1 à 4 proches) → la liste des proches, le lien « + Ajouter un proche » qui ouvre le champ de recherche (D13), « Effacer mes proches » ; sort vers **recherche** ou **vide**.
 - **recherche** (au moins 3 caractères tapés, H20) → jusqu'à 5 suggestions ; une fois une suggestion choisie, le champ « Nom » prend sa commune (« Nantes (44) ») et « Ajouter » devient actif ; sinon, « Aucune adresse trouvée. » ou la panne de R13 ; « Ajouter » vide les champs ; sort vers **avec proches** ou **plein**.
 - **plein** (5 proches, quel que soit leur état) → le champ est remplacé par « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; sort vers **avec proches** quand un proche est retiré.
 

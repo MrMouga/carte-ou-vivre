@@ -70,6 +70,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Spec loyer-mer révisée (D20) | R2, l'état « sans plafond » et D8 tiennent compte des proches et de la mer en minutes ; aucun critère de la tranche 1 ne change. |
 | 2026-10-13 | Spec proches révisée (D10, D11) pendant /ui | Pastilles de temps en haut de la carte, en affichage seul (bureau) ; temps d'un proche affiché à l'estimation haute (« 3 h 30 ») ; AC-3, AC-5, AC-14 reformulés sans changer de valeur, AC-16 ajouté. Choix de Vincent au vu du prototype. |
 | 2026-10-13 | Spec proches révisée (D12) : plus de phrase sur l'IGN sous le champ d'adresse | Choix de Vincent au vu des écrans Figma. Coût : l'écran ne dit plus que l'adresse part à l'IGN ni qu'elle reste dans le navigateur ; à reprendre dans la FAQ du lancement. |
+| 2026-10-13 | Spec proches révisée (D13) : champ de recherche replié derrière « + Ajouter un proche » dès qu'il y a un proche ; AC-7 reformulé | Choix de Vincent au vu de Figma, panneau plus court. Pastilles sur deux lignes à 4–5 proches acceptées (Nord et Manche cachés). |
 
 ## Hypothèses à vérifier
 

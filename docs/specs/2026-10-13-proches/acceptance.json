@@ -362,7 +362,7 @@
       "rule": "R9",
       "given": "Fixture, réglages de départ, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
       "when": "la zone « Tes proches » est affichée",
-      "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le champ de recherche revient",
+      "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le lien « + Ajouter un proche » revient et ouvre le champ de recherche",
       "passes": false
     },
     {

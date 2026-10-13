@@ -1,5 +1,5 @@
 # Proches et mer en minutes
-2026-10-13 · validée · révisée 2026-10-13 (D10, D11, D12) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-13 · validée · révisée 2026-10-13 (D10 à D13) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : on ajoute jusqu'à 5 proches avec un temps maximum en voiture, on peut lire la mer en minutes, et la carte se recolore.
 **Pourquoi** : c'est la Différence du pitch. Sans les adresses que toi seul connais, la carte ressemble à villeideale.fr.
@@ -21,6 +21,7 @@
 - **D10** — En haut de la carte, en bureau, une pastille par proche, en affichage seul : son nom et son plafond (« Parents de Léa · 4 h au plus ») ; quand une ville est choisie, son temps depuis cette ville (« 3 h 30 »), suivi de « au-dessus de 4 h » s'il dépasse. Pas de pastilles à 390 px. Complète D8. *Pourquoi* : choix de Vincent au vu du prototype /ui (fusion des pistes A et B) ; on lit les temps d'une ville sans quitter la carte des yeux. *Écarté* : des pastilles cliquables qui portent le réglage (piste B, chaque plafond caché derrière un clic) ; les temps seulement dans la fiche.
 - **D11** — Un temps de proche s'affiche à son estimation haute : « 3 h 30 », et non « 3 h 15 à 3 h 30 ». Le calcul par tranches de 15 min (D2) ne change pas : l'affichage peut dépasser le vrai trajet de moins de 15 min, jamais le sous-estimer. Remplace le format en tranche de R10 et H22. *Pourquoi* : choix de Vincent au vu du prototype, plus simple à lire. *Écarté* : la tranche « 3 h 15 à 3 h 30 ».
 - **D12** — Pas de phrase sur l'IGN sous le champ d'adresse ; supprime « une phrase le dit » de D6 et H26. *Pourquoi* : choix de Vincent au vu des écrans Figma, le panneau reste plus court. *Écarté* : la phrase sous le champ (H26). Coût accepté : l'écran ne dit plus que l'adresse part à l'IGN ni qu'elle reste dans le navigateur ; à reprendre dans la FAQ du lancement.
+- **D13** — Dès qu'il y a un proche, le champ de recherche est replié derrière un lien « + Ajouter un proche », qui l'ouvre ; sans proche, le champ est affiché. *Pourquoi* : choix de Vincent au vu du prototype et de Figma, le panneau reste court. *Écarté* : le champ toujours visible (un clic de moins pour ajouter). Révise l'état « avec proches » et AC-7.
 
 **Pas maintenant** : « Copier le lien », les proches ou la commune dans l'adresse de la page, les poids, les transports en commun, l'heure de départ, la mesure d'audience (à /ship, sans jamais l'adresse), la montagne, l'emploi, l'achat.
 **Hypothèses** : choix par défaut H19 à H30 dans [détails](details.md#hypothèses).
