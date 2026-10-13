@@ -1,0 +1,8 @@
+# Dans un panneau qui défile avec un pied collé, retirer le rembourrage bas du panneau et centrer ce qu'on fait apparaître
+Étiquettes : build, design · Tranche : proches · Source : tâche 2b de /build proches, captures/T2b-suggestions.png, commit de la tâche
+
+**Problème** — En bureau, le panneau de réglages (position absolue, page sans défilement) dépassait le bas de l'écran dès un proche et la recherche ouverte (945 px pour 900) : « Ajouter » et le compte devenaient inaccessibles. Figma 22:486 : panneau qui défile, compte collé en bas.
+**Symptômes** — (1) Avec `sticky bottom-0` et des marges négatives `-mx-4 -mb-4` pour couvrir le rembourrage `p-4` du panneau, le compte collé recouvrait le bouton « Ajouter » et laissait un vide dessous. (2) `scrollIntoView({ block: 'nearest' })` sur les suggestions les laissait sous le compte collé.
+**Ce qui n'a pas marché** — La marge négative en bas (Chrome colle l'élément au bord intérieur du rembourrage, pas au bord du panneau) ; `nearest` (il ignore ce qui est collé par-dessus).
+**Ce qui a marché** — `pb-0` sur le panneau en bureau, le pied garde `-mx-4 p-4` ; hauteur du panneau bornée par une boîte `top-4 bottom-(--bas-reglages)` (hauteur de la légende mesurée par un ResizeObserver, pas de valeur en dur), `pointer-events-none` sur la boîte pour ne pas bloquer la carte ; `scrollIntoView({ block: 'center' })`, sans risque ici car `main` ne défile pas (scrollHeight = clientHeight, vérifié).
+**Prévention** — Règle de jugement : tout panneau posé sur une page qui ne défile pas se regarde avec son contenu le plus long (recherche ouverte, 5 suggestions) à 1 440 × 900, capture à l'appui.
