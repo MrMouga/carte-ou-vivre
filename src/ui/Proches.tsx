@@ -87,6 +87,12 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
   useEffect(() => {
     if (suggestions.length && enBureau()) liste.current?.scrollIntoView({ block: 'center' }); // « nearest » les laisse sous le compte collé
   }, [suggestions]);
+  // Bureau : un message sous le champ (aucune adresse, panne, doublon) pousse « Ajouter » vers le bas ; le panneau défile
+  // pour le garder entier au-dessus du compte collé (relecture navigateur, qa.md).
+  const bouton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (avis && enBureau()) bouton.current?.scrollIntoView({ block: 'center' });
+  }, [avis]);
   // 390 px : le focus entre dans l'ajout → la feuille monte (App), puis elle défile pour mettre le champ en haut, sous la
   // poignée : sur un iPhone, il ne reste qu'environ 340 px au-dessus du clavier. Marge `scroll-mt-4` : la poignée collée
   // (12 px) et la moitié de l'écart qui précède, pour que rien de coupé ne dépasse sous la poignée.
@@ -224,7 +230,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
           />
         </>
       )}
-      <Button className={`self-start ${TOUCHER}`} disabled={!choisie || inactif} onMouseDown={garderFocus} onClick={ajouter}>
+      <Button ref={bouton} className={`self-start ${TOUCHER}`} disabled={!choisie || inactif} onMouseDown={garderFocus} onClick={ajouter}>
         Ajouter
       </Button>
     </div>

@@ -213,6 +213,25 @@ test('aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter
   await expect(zone(page).getByRole('button', AJOUTER)).toBeDisabled();
 });
 
+// Hors AC (relecture navigateur proches, qa.md) : en bureau, le message sous le champ poussait « Ajouter » sous le compte collé.
+test('aucune adresse en bureau, avec un proche : le panneau défile, « Ajouter » entier au-dessus du compte collé', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 }); // le compte n'est collé au bas du panneau qu'en bureau
+  await ouvrir(page);
+  await servirIgn(page);
+  await ajouter(page, 'Nantesville');
+  await pret(page, 'Nantesville (44)');
+  await zone(page).getByRole('button', { name: '+ Ajouter un proche' }).click();
+  await champ(page).fill('zzzz');
+  await expect(zone(page)).toContainText('Aucune adresse trouvée.');
+  const bas = async (nom: 'Ajouter' | 'compte') => {
+    const l = nom === 'Ajouter' ? zone(page).getByRole('button', AJOUTER) : page.getByRole('region', { name: 'Réglages' }).getByRole('status');
+    const b = (await l.boundingBox())!;
+    return { haut: b.y, bas: b.y + b.height };
+  };
+  await expect.poll(async () => (await bas('Ajouter')).bas <= (await bas('compte')).haut).toBe(true);
+  await expect(champ(page)).toBeInViewport(); // le champ reste visible lui aussi
+});
+
 test('R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65)', async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {
