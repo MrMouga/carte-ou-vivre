@@ -363,7 +363,7 @@
       "given": "Fixture, réglages de départ, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
       "when": "la zone « Tes proches » est affichée",
       "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le lien « + Ajouter un proche » revient et ouvre le champ de recherche",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -371,7 +371,7 @@
       "given": "Fixture, réglages de départ, Nantesville (44) prêt à 2 h 15 et gardé dans ce navigateur",
       "when": "l'utilisateur ferme la page puis rouvre /",
       "then": "Nantesville (44) est prêt avec le plafond 2 h 15, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 67 puis Grandeville (33) 21 ; l'adresse de la page est /?loyer=1200&mer=60",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -379,7 +379,7 @@
       "given": "Fixture, réglages de départ, Nantesville (44) et Toulouseville (31) prêts et gardés dans ce navigateur",
       "when": "l'utilisateur appuie sur « Effacer mes proches » puis rouvre /",
       "then": "aucun proche n'est affiché et la zone est dans l'état vide ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -387,7 +387,7 @@
       "given": "Fixture, réglages de départ, service de trajets en panne",
       "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville »",
       "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -395,7 +395,7 @@
       "given": "Fixture, réglages de départ, service de recherche d'adresse en panne",
       "when": "l'utilisateur tape « 1 rue Test »",
       "then": "la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. », « Ajouter » reste inactif, et la liste montre toujours « 3 communes passent tes critères »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",

@@ -8,6 +8,8 @@ Tâche 2a : faite — commits 00d96df..6d1b1bb — preuve : captures/T2a-preuve-
 
 Tâche 2b : faite — commits 45c01a2..fb75eee — preuve : captures/T2b-*.png, T2b-preuve-ign.txt (Parents de Léa 10,9 s, Toulouse commune 29,6 s, nom jamais envoyé, adresse de la page inchangée) (≈ 15:40) ; suite revérifiée (75 unitaires, 83 navigateur) — ≈ 20 min — agent : 300 k jetons — rapport : taches/T2b.md — AC-1, AC-2, AC-4, AC-6 — hors liste : src/ui/Settings.tsx (panneau défilant, compte collé ; expliqué)
 
+Tâche 3 : faite — commits 5701053..6f5a906 — preuve : captures/T3-*.png, T3-preuve-ign.txt (5 proches réels, 464 693 caractères, réouverture : 0 recherche, 0 zone) (≈ 16:10) ; suite revérifiée (82 unitaires, 111 navigateur) — ≈ 22 min — agent : 239 k jetons — rapport : taches/T3.md — AC-7 à AC-11 — hors liste : src/App.tsx, tests/e2e/lib/proches.ts (expliqués)
+
 ## Décisions prises à la place de Vincent
 - T0 : recherche par `/geocodage/search` (rend le code INSEE) au lieu de `/completion` ; le faux service intercepte `search*`. Coût si faux : un aller-retour de plus par recherche (≈ 100–300 ms, 1,3 s mesuré sur le téléphone).
 - T0 : file d'appels à 4 requêtes par seconde (à 5 pile, l'IGN refuse la 6e et bloque 5 s). Coût : ≈ 0,5 s de plus par proche.
@@ -28,7 +30,16 @@ Tâche 2b : faite — commits 45c01a2..fb75eee — preuve : captures/T2b-*.png, 
 - T2b : focus au champ « Nom » après une suggestion ; Entrée vaut « Ajouter » ; le panneau défile pour montrer les suggestions.
 - T2b : icônes maison et lieu en SVG `currentColor`.
 - T2b : mesure IGN réelle : la zone de 3 h depuis Toulouse a mis 29,5 s (sous les 45 s de H21) ; le cache du navigateur fausse les remesures (2,9 s).
+- T3 : mémoire en `localStorage`, une clé par proche (`carte-ou-vivre:proche:<n>`), JSON avec temps en base64 et empreinte.
+- T3 : un proche en attente ou en calcul est aussi gardé ; fermé à ce moment, il revient indisponible avec « Réessayer ».
+- T3 : proches gardés affichés dès l'ouverture, curseurs bloqués pendant le chargement.
+- T3 : message « mémoire refusée » gardé jusqu'à la fermeture de la page ; les écritures suivantes sont tentées.
+- T3 : délai de 45 s posé par la file, il couvre aussi le classement ; « Réessayer » repart de zéro.
+- T3 : résumé replié « 5 · 1 en calcul, 1 indisponible » (une seule « · », puis des virgules ; « en attente » compté à part).
+- T3 : doublon : les champs gardent l'adresse et le nom ; « Réessayer » a pour nom accessible « Réessayer <nom> ».
+- T3 : focus après « Retirer » / « Effacer » : lien « + Ajouter un proche » ou champ. **Défaut connu : après l'ajout du 5ᵉ proche, le focus est perdu** (pour les relecteurs).
 ## Preuves
+- T3 : captures/T3-vide.png, T3-aucune-adresse.png, T3-recherche-indisponible.png, T3-doublon.png, T3-calcul-et-attente.png, T3-indisponible.png, T3-plein-bureau.png, T3-plein-390.png, T3-repliee-*.png, T3-memoire-refusee.png, T3-ign-*.png, T3-preuve-ign.txt.
 - T2b : captures/T2b-vide.png, T2b-suggestions.png, T2b-nom.png, T2b-calcul.png, T2b-pret-parents.png, T2b-toulouse-seule.png, T2b-deux-proches.png, T2b-390-proche.png, T2b-preuve-ign.txt.
 - T2a : captures/T2a-preuve-ign-nantes.txt, T2a-preuve-ign-toulouse-commune.txt, T2a-file-avant-correction.txt, T2a-npm-test.txt.
 - T1 : captures/T1-bureau-ouvertes.png, T1-bureau-repliees.png, T1-390-ouvertes.png, T1-390-repliees.png, T1-npm-test.txt.
@@ -38,3 +49,4 @@ Tâche 2b : faite — commits 45c01a2..fb75eee — preuve : captures/T2b-*.png, 
 ## Constats hors tâche (pour les relecteurs)
 - Vu en tâche 1, existait avant : à 390 px avec la mer sur « Sans limite », le groupe de ronds « 1·2·…·10 » dépasse du bord droit de l'écran (captures/T1-390-ouvertes.png).
 - Signalé en tâche 2b : vers 15:36, les curseurs Loyer et Mer de la fenêtre visible du navigateur de test ont bougé sans commande de l'agent (manipulation extérieure probable) ; aucune capture n'a été prise après.
+- Signalé en tâche 3, pour Vincent : sur le vrai IGN, « La Rochelle » propose d'abord « la Rochelle, 35230 Orgères » (lieu-dit), pas la ville ; mettre les communes en tête des suggestions ?
