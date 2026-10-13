@@ -1,0 +1,118 @@
+# Mesures de la sonde sur l'iPhone de Vincent, 2026-10-13 23:32–23:39, Safari, serveur de dev par le relais http://192.168.1.26:5181/ (main @ 0b1e5f4).
+# 6 chargements de page ; seules les sessions 7arigq (23:35, cas 1) et 83kbaj (23:38, cas 1 puis choix d'une suggestion → « Nom », puis « Ajouter ») contiennent un focus de champ. Les 4 autres : carte et réglages touchés, aucun focus.
+# Lecture : t en ms depuis le chargement ; vv = décalage + hauteur de la partie visible (visualViewport) ; champ = getBoundingClientRect du champ qui a le focus.
+# Sur l'iPhone, clavier ouvert, ces positions se lisent dans la partie visible : visible = entre 0 et la hauteur vv (recoupé avec la capture T0-iphone-cas1-champ-cache.png, où l'on voit les 10 derniers px de « Ajouter »). Le drapeau de la sonde a été recalculé ainsi.
+# Libellés des suggestions de l'IGN remplacés par « suggestion IGN ».
+
+=== session 7arigq · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1
+    écran 390×844 @3 · fenêtre 390×645 · http://192.168.1.26:5181/?loyer=1200&mer=60
+  22733 pointerdown span @294.3,590.3
+  22734 focusin span
+  23093 touchstart span @294.3,590.3
+  23097 pointerup span @289,463
+  23097 touchend span @289.3,470.3
+  23223 pointerdown button « Mer » @281.3,540
+  23223 touchstart button « Mer » @281.3,540
+  23486 touchend button « Mer » @288,396.7
+  40570 pointerdown input#search-lieu_r_7_ « Adresse ou ville » @262.3,343.3
+  40570 touchstart input#search-lieu_r_7_ « Adresse ou ville » @262.3,343.3
+  40647 pointerup input#search-lieu_r_7_ « Adresse ou ville » @262.3,343.3
+  40647 touchend input#search-lieu_r_7_ « Adresse ou ville » @262.3,343.3
+  40664 mousedown input#search-lieu_r_7_ « Adresse ou ville » @262,343
+  40664 focusout span → input#search-lieu_r_7_ « Adresse ou ville »
+  40701 focus-avant-react #1 input#search-lieu_r_7_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 323.8→367.8 VISIBLE · feuille 283.8→645 st 615/1441 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40711 focus-apres-react #1 input#search-lieu_r_7_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40711 apres #1 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40718 mouseup button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km » @262,343 · sous le doigt : button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km »
+  40718 click div « feuille » @262,343 · sous le doigt : button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km »
+  40719 scroll [div « feuille »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40719 apres #1 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40762 apres #1 +50 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40811 apres #1 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40912 apres #1 +200 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40997 vv-resize — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40997 scroll [document] — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  40997 vv-scroll — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  41011 apres #1 +300 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  41212 apres #1 +500 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  41412 apres #1 +700 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  41712 apres #1 +1000 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  42212 apres #1 +1500 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  42712 apres #1 +2000 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  43712 apres #1 +3000 — vv 165+361 (pageTop 165, échelle 1) · scrollY 165 · champ -86→-42 CACHÉ · feuille -125→480 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  53686 focusout input#search-lieu_r_7_ « Adresse ou ville » → window
+  62845 pointerdown button « suggestion IGN » @262,475.3
+  62845 touchstart button « suggestion IGN » @262,475.3
+  65882 touchend button « suggestion IGN » @274.3,483.3
+
+=== session 83kbaj · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1
+    écran 390×844 @3 · fenêtre 390×645 · http://192.168.1.26:5181/?loyer=1200&mer=160
+   1210 pointerdown button « Mer » @282.7,537.7
+   1211 touchstart button « Mer » @282.7,537.7
+   1531 touchend button « Mer » @311.7,342.3
+   3828 pointerdown input#search-lieu_r_7_ « Adresse ou ville » @288,486
+   3828 touchstart input#search-lieu_r_7_ « Adresse ou ville » @288,486
+   3904 pointerup input#search-lieu_r_7_ « Adresse ou ville » @288,486
+   3904 touchend input#search-lieu_r_7_ « Adresse ou ville » @288,486
+   3913 mousedown input#search-lieu_r_7_ « Adresse ou ville » @288,486
+   3939 focus-avant-react #1 input#search-lieu_r_7_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 461.8→505.8 VISIBLE · feuille 283.8→645 st 477/1441 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   3947 focus-apres-react #1 input#search-lieu_r_7_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   3947 apres #1 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   3949 mouseup span « 369 € · 12 km » @288,486 · sous le doigt : span « 369 € · 12 km »
+   3950 click div « feuille » @288,486 · sous le doigt : span « 369 € · 12 km »
+   3950 scroll [div « feuille »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   3950 apres #1 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   3999 apres #1 +50 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4049 apres #1 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 79→123 VISIBLE · feuille 40→645 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4085 vv-resize — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4085 scroll [document] — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4085 vv-scroll — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4148 apres #1 +200 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4249 apres #1 +300 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4449 apres #1 +500 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4648 apres #1 +700 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4949 apres #1 +1000 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   5448 apres #1 +1500 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   5949 apres #1 +2000 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   6949 apres #1 +3000 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -205→-161 CACHÉ · feuille -244→361 st 616/2046 · actif input#search-lieu_r_7_ « Adresse ou ville »
+  10932 pointerdown h2#titre-liste « Les 10 premières » @262.3,148
+  10932 touchstart h2#titre-liste « Les 10 premières » @262.3,148
+  12099 touchend h2#titre-liste « Les 10 premières » @270.7,380.3
+  17772 pointerdown button « suggestion IGN » @203,79.7
+  17773 touchstart button « suggestion IGN » @203,79.7
+  17867 pointerup button « suggestion IGN » @203,79.7
+  17868 touchend button « suggestion IGN » @203,79.7
+  17873 mousedown button « suggestion IGN » @203,80
+  17880 mouseup button « suggestion IGN » @203,80 · sous le doigt : button « suggestion IGN »
+  17880 click button « suggestion IGN » @203,80 · sous le doigt : button « suggestion IGN »
+  17898 focusout input#search-lieu_r_7_ « Adresse ou ville » → input#search-nom_r_8_ « Nom »
+  17900 focus-avant-react #2 input#search-nom_r_8_ « Nom » (proches 0) — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ 83→127 VISIBLE · feuille -244→361 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  17900 focus-apres-react #2 input#search-nom_r_8_ « Nom » — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ 83→127 VISIBLE · feuille -244→361 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  17900 apres #2 +microtâche — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ 83→127 VISIBLE · feuille -244→361 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  17951 apres #2 +50 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ 83→127 VISIBLE · feuille -244→361 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  17974 apres #2 +image — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ 83→127 VISIBLE · feuille -244→361 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18002 apres #2 +100 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18031 scroll [document] — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18031 vv-scroll — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18101 apres #2 +200 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18201 apres #2 +300 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18402 apres #2 +500 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18602 apres #2 +700 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  18902 apres #2 +1000 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  19402 apres #2 +1500 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  19902 apres #2 +2000 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  20902 apres #2 +3000 — vv 208.7+361 (pageTop 208.7, échelle 1) · scrollY 209 · champ 158→202 VISIBLE · feuille -169→436 st 403/2121 · actif input#search-nom_r_8_ « Nom »
+  24614 pointerdown div « Adresse ou villeNomAjouter » @286,237.7
+  24614 touchstart div « Adresse ou villeNomAjouter » @286,238
+  27471 touchend div « Adresse ou villeNomAjouter » @319.3,84.7
+  27805 pointerdown button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km » @257.7,243.3
+  27806 touchstart button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km » @257.7,243.7
+  28255 touchend button « 2 · Isigny-le-Buat (50) · 81 · 369 € · 13 km » @264.3,271.7
+  28706 pointerdown button « Ajouter » @78.7,147.3
+  28706 touchstart button « Ajouter » @78.7,147.7
+  28789 pointerup button « Ajouter » @78.7,147.3
+  28789 touchend button « Ajouter » @78.7,147.7
+  28796 mousedown button « Ajouter » @79,147
+  28797 mouseup button « Ajouter » @79,147 · sous le doigt : button « Ajouter »
+  28797 click button « Ajouter » @79,147 · sous le doigt : button « Ajouter »
+  29101 focusin button « + Ajouter un proche »

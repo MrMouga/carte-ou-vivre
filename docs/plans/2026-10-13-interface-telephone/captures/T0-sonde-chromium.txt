@@ -1,0 +1,81 @@
+# Sonde clavier vérifiée depuis le Mac, 2026-10-13 23:26 : Chromium 390 × 664 au toucher (isMobile), par le relais http://192.168.1.26:5181/ (serveur de dev 5180, main @ 0b1e5f4), vraies données, IGN réel, adresse publique « 12 rue de la Paix Nantes ».
+# Référence sans clavier : c'est ce que Chromium voit ; à comparer aux mesures de l'iPhone.
+
+=== session 4b3dmz · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36
+    écran 390×664 @1 · fenêtre 980×1669 · http://192.168.1.26:5181/
+   4247 pointerdown input#search-lieu_r_7_ « Adresse ou ville » @195,626.3
+   4247 touchstart input#search-lieu_r_7_ « Adresse ou ville » @195,626.3
+   4248 pointerup input#search-lieu_r_7_ « Adresse ou ville » @195,626.3
+   4248 touchend input#search-lieu_r_7_ « Adresse ou ville » @195,626.3
+   4248 mousedown input#search-lieu_r_7_ « Adresse ou ville » @195,626
+   4249 focus-avant-react #1 input#search-lieu_r_7_ « Adresse ou ville » (proches 0) — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 604.3→648.3 visible · feuille 292.2→664 st 348/1457 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4259 focus-apres-react #1 input#search-lieu_r_7_ « Adresse ou ville » — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4259 apres #1 +microtâche — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4260 mouseup span « Céaux (50) » @195,626 · sous le doigt : span « Céaux (50) »
+   4260 click div « feuille » @195,626 · sous le doigt : span « Céaux (50) »
+   4260 scroll [div « feuille »] — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4260 apres #1 +image — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4311 apres #1 +50 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4360 apres #1 +100 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4461 apres #1 +200 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4561 apres #1 +300 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4761 apres #1 +500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   4960 apres #1 +700 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   5261 apres #1 +1000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   5761 apres #1 +1500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   6261 apres #1 +2000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   7261 apres #1 +3000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.2→123.2 visible · feuille 40→664 st 621/2081 · actif input#search-lieu_r_7_ « Adresse ou ville »
+   9637 pointerdown button « 12 Rue de la Paix, 44000 Nantes » @195,154.4
+   9638 touchstart button « 12 Rue de la Paix, 44000 Nantes » @195,154.4
+   9638 pointerup button « 12 Rue de la Paix, 44000 Nantes » @195,154.4
+   9638 touchend button « 12 Rue de la Paix, 44000 Nantes » @195,154.4
+   9638 mousedown button « 12 Rue de la Paix, 44000 Nantes » @195,154
+   9638 mouseup button « 12 Rue de la Paix, 44000 Nantes » @195,154 · sous le doigt : button « 12 Rue de la Paix, 44000 Nantes »
+   9638 click button « 12 Rue de la Paix, 44000 Nantes » @195,154 · sous le doigt : button « 12 Rue de la Paix, 44000 Nantes »
+   9654 focusout input#search-lieu_r_7_ « Adresse ou ville » → input#search-nom_r_8_ « Nom »
+   9654 focus-avant-react #2 input#search-nom_r_8_ « Nom » (proches 0) — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9654 focus-apres-react #2 input#search-nom_r_8_ « Nom » — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9654 apres #2 +microtâche — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9670 apres #2 +image — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9704 apres #2 +50 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9755 apres #2 +100 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9855 apres #2 +200 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+   9955 apres #2 +300 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  10155 apres #2 +500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  10356 apres #2 +700 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  10655 apres #2 +1000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  11155 apres #2 +1500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  11655 apres #2 +2000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  12655 apres #2 +3000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 154.8→198.8 visible · feuille 40→664 st 621/2157 · actif input#search-nom_r_8_ « Nom »
+  13173 pointerdown button « Ajouter » @55.6,228.8
+  13173 touchstart button « Ajouter » @55.6,228.8
+  13173 pointerup button « Ajouter » @55.6,228.8
+  13173 touchend button « Ajouter » @55.6,228.8
+  13174 mousedown button « Ajouter » @56,229
+  13174 mouseup button « Ajouter » @56,229 · sous le doigt : button « Ajouter »
+  13174 click button « Ajouter » @56,229 · sous le doigt : button « Ajouter »
+  13209 focusout input#search-nom_r_8_ « Nom » → window
+  13217 focusin button « + Ajouter un proche »
+  14305 pointerdown button « + Ajouter un proche » @73.1,626.1
+  14305 touchstart button « + Ajouter un proche » @73.1,626.1
+  14305 pointerup button « + Ajouter un proche » @73.1,626.1
+  14305 touchend button « + Ajouter un proche » @73.1,626.1
+  14306 mousedown button « + Ajouter un proche » @73,626
+  14306 mouseup button « + Ajouter un proche » @73,626 · sous le doigt : button « + Ajouter un proche »
+  14306 click button « + Ajouter un proche » @73,626 · sous le doigt : button « + Ajouter un proche »
+  14307 focusout button « + Ajouter un proche » → window
+  14330 focus-avant-react #3 input#search-lieu_r_a_ « Adresse ou ville » (proches 1) — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14330 focus-apres-react #3 input#search-lieu_r_a_ « Adresse ou ville » — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14332 apres #3 +microtâche — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14337 scroll [div « feuille »] — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14337 apres #3 +image — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14382 apres #3 +50 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14431 apres #3 +100 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14532 apres #3 +200 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14632 apres #3 +300 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  14832 apres #3 +500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  15031 apres #3 +700 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  15331 apres #3 +1000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  15832 apres #3 +1500 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  16332 apres #3 +2000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
+  17332 apres #3 +3000 — vv 0+664 (pageTop 0, échelle 1) · scrollY 0 · champ 79.6→123.6 visible · feuille 40→664 st 703/2163 · actif input#search-lieu_r_a_ « Adresse ou ville »
