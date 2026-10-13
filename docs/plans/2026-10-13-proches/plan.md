@@ -1,5 +1,5 @@
 # Plan — proches
-2026-10-13 · brouillon (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-13-proches/spec.md) (D1–D14) · Critères : [acceptance.json](../../specs/2026-10-13-proches/acceptance.json) (13 actifs ; AC-12, AC-13, AC-15 reportés par D14) · Design : [README](../../design/proches/README.md) · Système : [contrat](../../design/system/README.md)
+2026-10-13 · validé (révisé après [review-plan.md](review-plan.md)) · Spec : [spec.md](../../specs/2026-10-13-proches/spec.md) (D1–D14) · Critères : [acceptance.json](../../specs/2026-10-13-proches/acceptance.json) (13 actifs ; AC-12, AC-13, AC-15 reportés par D14) · Design : [README](../../design/proches/README.md) · Système : [contrat](../../design/system/README.md)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici. Le site existe : tranche loyer-mer construite.)
 
 ## Ce que /build fera seul, et ce qu'il demandera
@@ -103,5 +103,5 @@ Demander d'abord : rien.
 - **Classer 35 000 mairies dans 24 zones bloque la page** → tâche 0 (c) mesure le Web Worker ; la décision est écrite dans le rapport.
 - **La limite de 5 requêtes par seconde est par adresse IP** : plusieurs onglets ou un réseau partagé peuvent la dépasser → la file espace les requêtes (tâche 2a) ; un refus (429) compte comme une panne (R13), testé en tâche 3.
 - **Corse et communes seules** (nom proposé, départ de la mairie) → tâche 0 (e).
-- **Réaction avec 7 critères** → tâche 0 (d) ; seuil : 100 ms de H9, avec la marge de 20 ms sur les 102 ms acceptées pour loyer-mer (choix de Claude, à valider par Vincent avec le plan).
+- **Réaction avec 7 critères** → tâche 0 (d) ; seuil : 100 ms de H9, avec la marge de 20 ms sur les 102 ms acceptées pour loyer-mer (validé par Vincent avec le plan, 2026-10-13).
 - **Mémoire du navigateur** : ≈ 465 Ko pour 5 proches en base64 (Safari limite autour de 5 Mo) → format fixé dans le rappel, taille mesurée en tâche 3.

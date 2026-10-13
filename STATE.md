@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : ui (tranche proches) — design validé le 2026-10-13 (docs/design/proches/) ; prochaine étape /breakdown de la tranche proches (tâche 0 : mesure des isochrones IGN, recoloration à 7 critères), avant /ship
+- Étape : breakdown (tranche proches) — plan validé le 2026-10-13 (docs/plans/2026-10-13-proches/plan.md) ; prochaine étape /build de la tranche proches, avant /ship
 - Statut : active
 
 ## Décisions
@@ -73,6 +73,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Spec proches révisée (D13) : champ de recherche replié derrière « + Ajouter un proche » dès qu'il y a un proche ; AC-7 reformulé | Choix de Vincent au vu de Figma, panneau plus court. Pastilles sur deux lignes à 4–5 proches acceptées (Nord et Manche cachés). |
 | 2026-10-13 | Design validé : proches | Fusion des pistes A et B : proches réglés dans le panneau de gauche (catégories repliables, lien « + Ajouter un proche »), pastilles de temps en haut de la carte (bureau), repère goutte terre cuite nommé ; jeton place-marker ajouté au système. |
 | 2026-10-13 | Spec proches révisée (D14) : la mer en minutes sort de la tranche | Choix de Vincent à /breakdown (« on fera ça plus tard »). AC-12, AC-13, AC-15 gardés dans acceptance.json (liste « reportes ») ; la tranche ne garde que l'IGN comme service extérieur. |
+| 2026-10-13 | Plan validé : proches | 7 tâches (0 mesure IGN et recoloration, 1 catégories repliables, 2a calcul des temps, 2b ajout dans le panneau, 3 états et mémoire, 4 repères, pastilles et fiche, 5 390 px et bout en bout) ; aucun paquet ; requêtes IGN de test à adresses publiques autorisées ; seuil de réaction 100 ms + 20 ms de marge. |
 
 ## Hypothèses à vérifier
 
@@ -129,6 +130,7 @@ Autres questions :
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
+- [Plan « Proches » — 2026-10-13](docs/plans/2026-10-13-proches/plan.md)
 - [Design « Loyer et mer » — 2026-10-12](docs/design/loyer-mer/README.md) · [système](docs/design/system/README.md)
 - [Plan « Loyer et mer » — 2026-10-12](docs/plans/2026-10-12-loyer-mer/plan.md) · [dossier du build](docs/plans/2026-10-12-loyer-mer/) : [progression](docs/plans/2026-10-12-loyer-mer/progress.md), [démo acceptée — 2026-10-13](docs/plans/2026-10-12-loyer-mer/demo.md)
 - Incubateur : /Users/mouga/git-repository/ideas/carte-ou-vivre/ (la discovery y reste)
