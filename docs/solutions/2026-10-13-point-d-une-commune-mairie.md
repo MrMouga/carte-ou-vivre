@@ -1,0 +1,8 @@
+# Le point d'une commune : prendre la mairie de geo.api.gouv.fr, pas son « centre », et un seul point pour tout
+Étiquettes : data, spec · Tranche : loyer-mer · Source : /build, démo, 2026-10-13
+
+**Problème** — Le rond du top 10 et la distance à la mer partaient de deux points différents (Vincent l'a vu à la démo, sur La Hague) : le rond au centre du plus grand morceau de la forme (calculé au build), la distance depuis le champ `centre` de geo.api.gouv.fr (H5, repris de la discovery).
+**Symptômes** — Écart médian de 242 m entre les deux points, jusqu'à 15 km. Le `centre` de l'API est le centre géométrique de toute la commune, îles comprises : hors de la commune pour 560 d'entre elles (Granville : en mer vers Chausey, 4,3 km du bord). Le centre de la forme calculé tombait hors de la commune 181 fois (communes en croissant).
+**Ce qui n'a pas marché** — Supposer qu'un « centre » fourni par une API est dans la commune ; ajouter un second point au build parce que le premier n'était pas dans le fichier servi.
+**Ce qui a marché** — Compter avant de basculer (point dans la forme, écart, effet sur la distance) ; le champ `mairie` de la même API : 32 hors de la commune seulement (toutes petites), point parlant (le bourg). Un seul point par commune pour la distance et le rond (D18) ; téléchargé dans un fichier à part pour ne pas rafraîchir les populations au passage. Effet : 17 685 communes changent d'environ 1 km, 79 basculent à 60 km, Bordeaux 40 → 39 km.
+**Prévention** — Toute mesure « depuis une commune » (mer, montagne, proches en tranche 2, temps de trajet) part de la mairie (`data-raw/communes-mairie.json`) ; une spec qui cite un point dit lequel ; un test vérifie que le rond est sur ce point.

@@ -4,6 +4,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
 | 2026-10-13 | Tuiles vectorielles avec tippecanoe : compter les communes à chaque zoom, et écrire les tuiles vides | data, perf, build | — | [2026-10-13-tuiles-vectorielles-tippecanoe.md](2026-10-13-tuiles-vectorielles-tippecanoe.md) |
+| 2026-10-13 | Le point d'une commune : prendre la mairie de geo.api.gouv.fr, pas son « centre », et un seul point pour tout | data, spec | — | [2026-10-13-point-d-une-commune-mairie.md](2026-10-13-point-d-une-commune-mairie.md) |
 | 2026-10-13 | Carte recolorée vite : rien de ce qui ne change pas ne doit dépendre de l'état des formes ; et l'adresse réécrite à chaque cran fait tomber la page sous Safari | perf, build, tests | — | [2026-10-13-maplibre-recoloriage-et-adresse-safari.md](2026-10-13-maplibre-recoloriage-et-adresse-safari.md) |
 | 2026-10-12 | Avec des styles de texte nommés (`text-pastille`), configurer tailwind-merge, sinon il efface la taille ou la couleur | build, design | — | [2026-10-12-tailwind-merge-styles-de-texte.md](2026-10-12-tailwind-merge-styles-de-texte.md) |
 | 2026-10-12 | Avec studio-browse, viser « localhost » et enregistrer les captures sous /private/tmp | outil, design | Revu le 2026-10-12 : une page WebGL (Map | [2026-10-12-studio-browse-localhost-et-captures.md](2026-10-12-studio-browse-localhost-et-captures.md) |
