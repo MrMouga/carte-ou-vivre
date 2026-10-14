@@ -271,7 +271,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "le réglage du prix est sur Appartement, Louer, Total, surface 52 m², plafond 1 200 € ; l'adresse devient /?loyer=1200&mer=60 ; A a le score 72, E 49, B 32 ; C, D et F ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -279,7 +279,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur met la surface à 72 m²",
       "then": "l'adresse devient /?loyer=1200&mer=60&surface=72 ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 62 · 900 € · moins d'1 km » et « 2 · Grandeville (33) · 19 · 1 152 € · 40 km » ; la fiche de Grandeville affiche « 1 152 € par mois pour 72 m² (16,0 €/m²) » ; celle de Quaibleu affiche « Loyer 1 512 € : au-dessus de ton plafond de 1 200 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -295,7 +295,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit l'unité au m², puis revient à Total",
       "then": "au m² : le libellé est « Loyer mensuel » et le plafond affiche 23 €/m², le champ surface n'est plus affiché, l'adresse est /?loyer=23&mer=60&unite=m2, la liste montre « 1 · Portmer (17) · 72 · 12,5 €/m² · moins d'1 km », « 2 · Quaibleu (13) · 49 · 21,0 €/m² · 7 km », « 3 · Grandeville (33) · 32 · 16,0 €/m² · 40 km » et la fiche de Grandeville affiche « 16,0 €/m² par mois » ; de retour en Total : plafond 1 200 €, surface 52 m², adresse /?loyer=1200&mer=60",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -303,7 +303,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit Acheter, puis Louer",
       "then": "après Acheter : l'unité passe au m², le plafond affiche 5 000 €/m², le champ surface n'est plus affiché ; l'adresse devient /?achat=5000&mer=60 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 61 · 3 800 €/m² · moins d'1 km », « 2 · Quaibleu (13) · 46 · 4 800 €/m² · 7 km », « 3 · Grandeville (33) · 23 · 4 400 €/m² · 40 km » ; la fiche de Grandeville affiche « 4 400 €/m² à l'achat » sans la ligne « Estimation du secteur ». Après Louer : unité Total, surface 52 m², plafond 1 200 €, adresse /?loyer=1200&mer=60",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -311,7 +311,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?achat=5000&mer=60",
       "when": "l'utilisateur choisit l'unité Total",
       "then": "le plafond affiche 260 000 € et la surface 52 m² ; l'adresse devient /?achat=260000&mer=60&unite=total ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 61 · 198 000 € · moins d'1 km », « 2 · Quaibleu (13) · 46 · 250 000 € · 7 km », « 3 · Grandeville (33) · 23 · 229 000 € · 40 km » ; la fiche de Grandeville affiche « 229 000 € pour 52 m² (4 400 €/m²) »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -351,7 +351,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=abc&unite=litre&bien=villa&surface=0",
       "then": "le réglage du prix est sur Appartement, Acheter, au m², plafond 5 000 €/m² ; l'adresse devient /?achat=5000&mer=60 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 61, Quaibleu (13) 46, Grandeville (33) 23",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -359,7 +359,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit Acheter",
       "then": "le pied de page contient « Prix d'achat : Demandes de valeurs foncières (DGFiP) » à côté des mentions de loyer-mer, avant comme après le changement (H61)",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",
