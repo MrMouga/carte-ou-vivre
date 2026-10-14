@@ -19,6 +19,8 @@ Simplification : faite — commits f23fb2c..36a8988 — comportement inchangé, 
 Relectures lancées (2026-10-14 20:45, serveur de dev http://localhost:5174/) : code-reviewer (spec) → review-spec.md ; qa-tester → qa.md. Les deux ont atteint leur limite de tours : relancés une fois pour écrire leur rapport.
 Relectures : review-spec.md (0 Bloquant, 1 Majeur, 4 Mineurs ; suite relancée par le relecteur : 142 + 238 verts) ; qa.md (0 Bloquant, 0 Majeur, 5 Mineurs ; passage incomplet : 390 et 375 × 548 surtout non vérifiés) → second qa-tester sur le reste → qa-2.md.
 Majeur de review-spec.md (prix d'appartement très bas en tête de liste en Acheter, mer sans limite, venus d'intercommunalités rurales à 5-50 ventes) : **Vincent l'accepte, à montrer à la démo** (21:05). Rien à corriger dans le code.
+qa-2.md : 0 Bloquant, 0 Majeur, 4 Mineurs. Aucune correction nécessaire (0 Bloquant, Majeur accepté). Version a09b46c relue par l'orchestrateur (liste, prix et mention conformes ; carte non dessinée dans l'outil, faute de WebGL).
+Démo écrite : demo.md (2026-10-14 21:05).
 ## Décisions prises à la place de Vincent
 - Orchestrateur : Vincent a demandé « Choisis pour moi » pour les 5 communes du test du risque (tâche 0) : Nantes, La Rochelle (17), Annecy, Saint-Malo, Lacanau. Coût si faux : le test vaut moins si Vincent les connaît mal.
 
@@ -35,5 +37,7 @@ Majeur de review-spec.md (prix d'appartement très bas en tête de liste en Ache
 - T5 : les lecteurs d'écran entendent encore « 60 km à vol d'oiseau » sur le curseur de la mer (seul le texte affiché retiré) ; largeur 340 écrite en clair dans le nouveau test ; contrat du design : ligne 300 → 340 pour le panneau.
 
 ## Preuves
+Voir demo.md § Preuves (captures/T0 à T5, qa, qa2 ; T5-bout-en-bout.txt ; mesure-tache-0.md).
 
 ## Coût
+Voir demo.md § Coût : ≈ 4 h 55, ≈ 2,6 M jetons d'agents.
