@@ -212,7 +212,8 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
       {/* Contenu : invisible feuille repliée (fin du repli), visible dès un dépli ou un glisser (src/index.css). */}
       <div className="feuille-contenu flex min-h-0 flex-1 flex-col">
         {affiche != null && !ajout && (
-          <div role="tablist" className="mx-4 mb-2 flex h-toucher shrink-0 gap-1 rounded-full bg-background p-1">
+          // Rail en pilule de 44 px ; chaque onglet se touche sur toute sa hauteur (44 px, H48), la pilule colorée à `space-1` du bord.
+          <div role="tablist" className="mx-4 mb-2 flex h-toucher shrink-0 gap-1 rounded-full bg-background px-1">
             {ONGLETS.map(([o, nom]) => (
               <button
                 key={o}
@@ -227,12 +228,16 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
                 tabIndex={onglet === o ? 0 : -1}
                 onClick={() => onOnglet(o)}
                 onKeyDown={(e) => clavier(e, o)}
-                className={cn(
-                  'h-full flex-1 cursor-pointer whitespace-nowrap rounded-full px-3 text-texte-fort',
-                  onglet === o ? 'bg-primary text-primary-foreground' : 'text-muted-foreground',
-                )}
+                className="h-full flex-1 cursor-pointer rounded-full py-1"
               >
-                {nom}
+                <span
+                  className={cn(
+                    'flex h-full items-center justify-center whitespace-nowrap rounded-full px-3 text-texte-fort',
+                    onglet === o ? 'bg-primary text-primary-foreground' : 'text-muted-foreground',
+                  )}
+                >
+                  {nom}
+                </span>
               </button>
             ))}
           </div>

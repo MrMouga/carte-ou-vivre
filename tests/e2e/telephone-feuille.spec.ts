@@ -96,6 +96,24 @@ test('onglets : flèches droite et gauche déplacent le focus et la sélection ;
   await expect(panneau(page, 'Les 10 premières')).toBeHidden();
 });
 
+// Hors AC (contrat « Onglets de feuille », H48 ; corrections, relecture navigateur) : chaque onglet se touche sur toute la
+// hauteur du rail, 44 px ; la pilule colorée reste à `space-1` du bord du rail.
+test('onglets : 44 px de haut au toucher, pilule de l’onglet choisi à `space-1` du bord du rail', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page);
+  const rail = await boite(page.getByRole('tablist'));
+  expect(rail.height).toBe(size['taille-toucher']);
+  for (const nom of ['Critères', 'Les 10 premières'] as const) {
+    const o = await boite(onglet(page, nom));
+    expect(o.height, nom).toBe(size['taille-toucher']);
+    expect(o.y, nom).toBe(rail.y);
+  }
+  const pilule = await boite(onglet(page, 'Critères').locator('span'));
+  expect(pilule.y - rail.y).toBe(space['space-1']);
+  expect(rail.y + rail.height - (pilule.y + pilule.height)).toBe(space['space-1']);
+  expect(pilule.x - rail.x).toBe(space['space-1']);
+});
+
 // Hors AC (R18) : chaque onglet garde sa position de défilement.
 test('défilement gardé : « Critères » défilé jusqu’à « Tes proches », passage à la liste, retour : même position', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
