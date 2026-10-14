@@ -1,0 +1,6 @@
+Réaction réglage (curseur de la mer, un cran) → carte redessinée ; vite preview, vraies données, 1 440 × 900, fond uni, CPU ×4, rendu logiciel ; médiane de 15 essais.
+Avant la tâche (commit a4af90d), relevé de la console pendant la tâche (avant 19:50) : ?loyer=1200&mer=60 médiane 109 ms ; min 96 max 137
+Essai écarté (deuxième couche pour la couleur neutre), relevé de la console pendant la tâche (avant 19:50) : médiane 164 ms ; min 156 max 221
+Après (une couche, opacité portée par la couleur), 19:57 :
+http://localhost:4174/?loyer=1200&mer=60 médiane 106 ms ; min 98 max 151 ; adresse ?loyer=1200&mer=65 ; essais 151 122 112 105 106 105 111 114 106 105 131 104 103 98 100
+http://localhost:4174/?achat=5000&mer=60 médiane 103 ms ; min 96 max 157 ; adresse ?achat=5000&mer=65 ; essais 157 128 109 103 106 103 108 101 104 97 96 103 99 98 113

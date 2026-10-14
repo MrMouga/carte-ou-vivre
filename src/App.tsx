@@ -195,13 +195,14 @@ export function App() {
         : [],
     [donnees, resultat, index],
   );
-  // Couleur de chaque commune : palier de son score ; page « sans plafond » : sable si elle a la bonne taille (D5, D17).
+  // Couleur de chaque commune : palier de son score ; couleur neutre (sable) si elle passe sans score, c'est-à-dire page
+  // « sans plafond » (D5, D17) ou commune sans note (prix inconnu, R25 d'immobilier) ; non peinte si elle ne passe pas.
   const couleurs = useMemo(() => {
     if (!donnees || !resultat) return [];
     return donnees.communes.map((c) => {
       const e = resultat.parCode.get(c.code)!;
-      if (!resultat.actif) return e.passe ? color['area-unranked'] : null;
-      return e.palier ? PALIERS[e.palier - 1] : null;
+      if (e.palier) return PALIERS[e.palier - 1];
+      return e.passe ? color['area-unranked'] : null;
     });
   }, [donnees, resultat]);
 
@@ -247,7 +248,6 @@ export function App() {
           reperes={donnees.reperes}
           couleurs={couleurs}
           choisie={indexChoisie}
-          sansPlafond={resultat?.actif === false}
           ronds={ronds}
           proches={reperesProches}
           onChoisir={(i) => choisir(donnees.communes[i].code)}

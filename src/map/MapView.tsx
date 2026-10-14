@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Map as MapLibreMap, type StyleSpecification } from './maplibre';
-import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, filtreChoisie, opaciteCommunes, SOURCE_COMMUNES, sourceCommunes } from './style';
+import { CHOISIE_LAYERS, COMMUNES_LAYER, COUCHE_TUILES, ESTOMPAGE_LAYER, ESTOMPAGE_SOURCE, filtreChoisie, SOURCE_COMMUNES, sourceCommunes } from './style';
 import { chargerStyleIgn, COUCHE_COTE, NOUVEL_ESSAI_MS, SOCLE_LAYER, styleSecours } from './fallback';
 import { cadreDe, emprise, type Padding, type Repere } from './view';
 import { RankMarkers, type Rond } from './RankMarkers';
@@ -12,12 +12,10 @@ import { map as carte } from '@/theme/tokens';
 type Props = {
   /** Repères des communes (centre, cadre), dans l'ordre de communes.json. */
   reperes: Repere[];
-  /** Couleur de chaque commune, indexée par l'identifiant de sa forme ; null = non peinte. */
+  /** Couleur de chaque commune, indexée par l'identifiant de sa forme ; null = non peinte ; `area-unranked` = neutre, à 70 %. */
   couleurs: (string | null)[];
   /** Index de la commune choisie (fiche ouverte), ou null. */
   choisie: number | null;
-  /** Page « sans plafond » : toutes les communes peintes sont en sable (D17). */
-  sansPlafond: boolean;
   ronds: Rond[];
   /** Repères des proches (spec proches D4), dans l'ordre d'ajout. */
   proches: RepereProche[];
@@ -37,14 +35,14 @@ export type Fond = 'ign' | 'secours';
 
 // La carte : fond IGN et estompage, ou fond de secours (R8) ; communes recolorées par état (tâche 1b : seulement
 // celles qui changent), commune choisie en double contour avec zoom sur elle (D14), ronds du top 10, repères des proches.
-export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding, sansZoom }: Props) {
+export function MapView({ reperes, couleurs, choisie, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding, sansZoom }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const marqueurs = useRef<RankMarkers | null>(null);
   const reperesProches = useRef<ProcheMarkers | null>(null);
   const peintes = useRef<(string | null | undefined)[]>([]);
-  const etat = useRef({ couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding });
-  etat.current = { couleurs, choisie, sansPlafond, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding };
+  const etat = useRef({ couleurs, choisie, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding });
+  etat.current = { couleurs, choisie, ronds, proches, onChoisir, onPrete, onErreur, onFond, padding };
   const france = useMemo(() => emprise(reperes), [reperes]);
 
   useEffect(() => {
@@ -89,7 +87,6 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proche
         poserCouches(m, france, fondCourant === 'secours');
         peintes.current = [];
         peindre(m, etat.current.couleurs, peintes.current);
-        m.setPaintProperty(COMMUNES_LAYER.id, 'fill-opacity', opaciteCommunes(etat.current.sansPlafond));
         surligner(m, etat.current.choisie);
         m.triggerRepaint();
       });
@@ -142,11 +139,6 @@ export function MapView({ reperes, couleurs, choisie, sansPlafond, ronds, proche
     const map = mapRef.current;
     if (map?.getSource(SOURCE_COMMUNES)) peindre(map, couleurs, peintes.current);
   }, [couleurs]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (map?.getSource(SOURCE_COMMUNES)) map.setPaintProperty(COMMUNES_LAYER.id, 'fill-opacity', opaciteCommunes(sansPlafond));
-  }, [sansPlafond]);
 
   useEffect(() => {
     marqueurs.current?.update(ronds, choisie);

@@ -26,7 +26,8 @@ export function ligneProche(p: Proche, index: number): string {
   return `${p.nom} : ${duree(p.temps[index])} en voiture`;
 }
 
-// Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond.
+// Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond ; commune sans
+// note (R25 d'immobilier : passe, prix inconnu, aucun autre critère qui note) : ni score ni rang, la ligne dit pourquoi.
 // Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
 export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: Props) {
   const c = e.commune;

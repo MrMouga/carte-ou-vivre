@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { chiffresListe, compte, ligneListe, nomAffiche } from '@/domain/format';
+import { chiffresListe, compte, ligneListe, messageAucune, messageSansPlafond, nomAffiche } from '@/domain/format';
 import type { ReglagePrix } from '@/domain/prix';
 import type { Resultat } from '@/domain/score';
 import { cn } from '@/lib/cn';
@@ -32,13 +32,10 @@ export function List({ resultat, prix, onChoisir, focusCode, avecProche = false 
         {actif && classement.length > 0 && <p className="text-texte-fort">{compte(classement.length)}</p>}
       </div>
       {!actif ? (
-        <p className="text-texte">Fixe un loyer ou une distance à la mer pour classer les communes.</p>
+        <p className="text-texte">{messageSansPlafond(prix)}</p>
       ) : classement.length === 0 ? (
-        <p className="text-texte">
-          {avecProche
-            ? 'Aucune commune ne passe tes critères. Relâche le loyer, la mer, la taille ou un proche.'
-            : 'Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.'}
-        </p>
+        // Des communes sans note (prix inconnu, R25) peuvent passer : elles restent hors de la liste et du compte.
+        <p className="text-texte">{messageAucune(prix, avecProche)}</p>
       ) : (
         <ol className="flex flex-col">
           {classement.slice(0, 10).map((e) => (

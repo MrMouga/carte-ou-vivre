@@ -2,8 +2,10 @@ import { expect, test, type Page } from '@playwright/test';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
 import { apresRendu, attendreCouleurs, ouvrir, vue, type Jeu } from './lib/carte';
 import { mobile, voirCriteres, voirListe } from './lib/feuille';
+import { servirIgn } from './lib/ign';
+import { ajouter, pret } from './lib/proches';
 
-// Tranche immobilier, tâches 2 et 3 : le réglage du prix, appartement ou maison (R21 à R24, R26), sur la fixture « 6 communes »
+// Tranche immobilier, tâches 2 à 4 : le réglage du prix, appartement ou maison, communes sans prix (R21 à R26), sur la fixture « 6 communes »
 // (A à F, acceptance.json d'immobilier ; tuiles : python3 scripts/data/tuiles.py --fixture).
 const SIX: Jeu = { items: immobilier.fixture.items, tuiles: new URL('../fixtures/tuiles-immobilier/', import.meta.url) };
 type Six = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
@@ -314,4 +316,125 @@ test('titre « Où vivre en France » : lu par les lecteurs d’écran partout, 
   const b = (await h1.boundingBox())!;
   if (mobile(page)) expect(b.height).toBeLessThanOrEqual(1);
   else expect(b.height).toBeGreaterThan(20);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 4 : les communes sans prix (R25, D6, D21 de loyer-mer). Une commune sans prix passe le filtre du prix ; sa note
+// vient des autres critères ; sans autre note, couleur neutre (`area-unranked`, 70 %), hors de la liste et du compte.
+
+/** Rouvre la même adresse : la carte revient à la vue d'ouverture, où l'on choisit une autre commune sur la carte. */
+async function rouvrir(page: Page) {
+  await page.goto(adresse(page));
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+}
+/** Fiche sans score ni rang (états « commune sans note » et « ne passe pas »). */
+function sansScoreNiRang(t: string) {
+  expect(t).not.toContain('/ 100');
+  expect(t).not.toMatch(/sur \d+ communes? qui passen?t/);
+}
+
+test('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e · 10 · prix inconnu ; sa fiche « trop peu de ventes dans le secteur », 10, 4e sur 4 ; C et F non colorées', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=5000&mer=200');
+  expect(adresse(page)).toBe('/?achat=5000&mer=200');
+  await attendreCouleurs<Six>(page, { A: 'score-4', E: 'score-3', B: 'score-3', D: 'score-1', C: null, F: null }, { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('4 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 62 · 3 800 €/m² · moins d'1 km",
+    '2 · Quaibleu (13) · 50 · 4 800 €/m² · 7 km',
+    '3 · Grandeville (33) · 46 · 4 400 €/m² · 40 km',
+    '4 · Terrebasse (23) · 10 · prix inconnu · 180 km',
+  ]);
+  await ficheDeListe(page, 'Terrebasse');
+  const t = await texteFiche(page);
+  expect(t).toContain("Prix d'achat inconnu : trop peu de ventes dans le secteur");
+  expect(t).toMatch(/\b10\s*\/ 100/);
+  expect(t).toContain('4e sur 4 communes qui passent');
+});
+
+test('AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quaibleu 4 ; D et F neutres, C non colorée ; fiche de Rhinval « Alsace-Moselle », sans score ni rang', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=5000&mer=aucun');
+  expect(adresse(page)).toBe('/?achat=5000&mer=aucun');
+  await attendreCouleurs<Six>(page, { A: 'score-2', B: 'score-1', E: 'score-1', D: 'area-unranked', F: 'area-unranked', C: null }, { jeu: SIX });
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  const t = await texteFiche(page);
+  expect(t).toContain("Prix d'achat inconnu : les ventes ne sont pas publiées en Alsace-Moselle");
+  sansScoreNiRang(t);
+  await expect(fiche(page).getByRole('heading', { name: 'Ne passe pas tes critères' })).toHaveCount(0);
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  const l = await lignes(page);
+  expect(l.map((x) => x.split(' · ').slice(0, 3).join(' · '))).toEqual(['1 · Portmer (17) · 24', '2 · Grandeville (33) · 12', '3 · Quaibleu (13) · 4']);
+});
+
+test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 € ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € »', async ({ page }) => {
+  const chemin = '/?achat=300000&mer=aucun&bien=maison&unite=total&surface=100';
+  await ouvrirSix(page, chemin);
+  await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choix(page, 'Louer ou acheter', 'Acheter')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
+  await expect(surface(page)).toHaveValue('100');
+  await expect(plafond(page, '300 000 €')).toBeVisible();
+  await expect(plafond(page, 'Sans limite')).toBeVisible(); // la mer
+  expect(adresse(page)).toBe(chemin);
+  await attendreCouleurs<Six>(page, { D: 'score-3', F: 'area-unranked', A: null, B: null, C: null, E: null }, { jeu: SIX });
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  expect(await texteFiche(page)).toContain('Achat 350 000 € : au-dessus de ton plafond de 300 000 €');
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirListe(page);
+  await expect(liste(page)).toContainText('1 commune passe tes critères');
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 57 · 130 000 € · 180 km']);
+  expect(adresse(page)).toBe(chemin);
+});
+
+test('AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1 100 € ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; F neutre ; fiches de Rhinval « Loyer inconnu » et de Grandeville', async ({ page }) => {
+  const chemin = '/?loyer=1100&mer=aucun&bien=maison';
+  await ouvrirSix(page, chemin);
+  await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choix(page, 'Louer ou acheter', 'Louer')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
+  await expect(surface(page)).toHaveValue('92');
+  await expect(plafond(page, '1 100 €')).toBeVisible();
+  expect(adresse(page)).toBe(chemin);
+  await attendreCouleurs<Six>(page, { D: 'score-3', A: 'score-1', F: 'area-unranked', B: null, C: null, E: null }, { jeu: SIX });
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  const t = await texteFiche(page);
+  expect(t).toContain('Loyer inconnu');
+  sansScoreNiRang(t);
+  await rouvrir(page);
+  await ficheDeCarte(page, 'B', 'Grandeville (33)');
+  expect(await texteFiche(page)).toContain('Loyer 1 196 € : au-dessus de ton plafond de 1 100 €');
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 46 · 598 € · 180 km', "2 · Portmer (17) · 12 · 966 € · moins d'1 km"]);
+  expect(adresse(page)).toBe(chemin);
+});
+
+// Hors AC (details.md, états de la page en mode Acheter ; R25).
+test('aucune commune en Acheter, seules des communes sans prix passent : « Relâche le prix, la mer ou la taille. », D et F restent neutres, compte « Aucune commune »', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=500&mer=aucun');
+  await attendreCouleurs<Six>(page, { D: 'area-unranked', F: 'area-unranked', A: null, B: null, C: null, E: null }, { jeu: SIX });
+  await expect(page.getByRole('status')).toHaveText('Aucune commune ne passe tes critères');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le prix, la mer ou la taille.');
+  await expect(liste(page).getByRole('button')).toHaveCount(0);
+});
+
+test('sans plafond en Acheter : « Fixe un prix d’achat ou une distance à la mer pour classer les communes. », les 6 communes neutres', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=aucun&mer=aucun');
+  const neutres = Object.fromEntries((['A', 'B', 'C', 'D', 'E', 'F'] as Six[]).map((id) => [id, 'area-unranked' as const]));
+  await attendreCouleurs<Six>(page, neutres, { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText("Fixe un prix d'achat ou une distance à la mer pour classer les communes.");
+});
+
+test('aucune commune en Acheter avec un proche prêt : « Relâche le prix, la mer, la taille ou un proche. »', async ({ page }) => {
+  await ouvrir(page, '/?achat=5000&mer=60'); // fixture « 5 communes » : aucun prix d'achat, toutes passent le prix
+  await servirIgn(page);
+  await ajouter(page, 'Brestville'); // tout à 3 h ou plus de 3 h : rien ne tient 2 h
+  await pret(page, 'Brestville (29)');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le prix, la mer, la taille ou un proche.');
 });

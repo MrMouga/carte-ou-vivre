@@ -30,26 +30,32 @@ export function sourceCommunes(bounds: [number, number, number, number]): Vector
   return { type: 'vector', tiles: [`${location.origin}/tuiles/{z}/{x}/{y}.pbf`], minzoom: 3, maxzoom: 11, bounds };
 }
 
-/**
- * Opacité des communes, la même pour toutes : H10 (classées) : 88 % à l'échelle de la France (jusqu'au zoom 7),
- * 70 % au zoom d'une ville (dès le zoom 11) ; « Sans plafond » (sable) : 70 % à toutes les échelles (D17).
- * Elle ne dépend pas de l'état des formes : MapLibre ne la recalcule pas à chaque recoloriage (budget H9).
- */
-export function opaciteCommunes(sansPlafond: boolean): ExpressionSpecification | number {
-  if (sansPlafond) return carte['opacite-sans-plafond'];
-  return ['interpolate', ['linear'], ['zoom'], carte['zoom-france'], carte['opacite-france'], carte['zoom-ville'], carte['opacite-zoom']];
-}
+const NEUTRE = color['area-unranked'];
+const ETAT: ExpressionSpecification = ['feature-state', 'c'];
+/** Couleur de l'état `c` à une opacité donnée ; la couleur neutre toujours à 70 % ; sans état : non peinte. */
+const teinte = (opacite: number): ExpressionSpecification => [
+  'case',
+  ['==', ETAT, null],
+  'transparent',
+  ['let', 'v', ['to-rgba', ['to-color', ETAT]],
+    ['rgba', ['at', 0, ['var', 'v']], ['at', 1, ['var', 'v']], ['at', 2, ['var', 'v']], ['case', ['==', ETAT, NEUTRE], carte['opacite-sans-plafond'], opacite]]],
+];
 
-/** Couleur d'une commune : état `c` posé par la carte (jeton de palier), sinon non peinte. */
+/**
+ * Couleur d'une commune : état `c` posé par la carte (jeton de palier ou couleur neutre), sinon non peinte.
+ * Opacité portée par la couleur, la couche restant à 100 % : H10 (classées) : 88 % à l'échelle de la France (jusqu'au
+ * zoom 7), 70 % au zoom d'une ville (dès le zoom 11) ; couleur neutre (`area-unranked`) : 70 % à toutes les échelles
+ * (D17 de loyer-mer), sur la page « sans plafond » comme pour une commune sans note (R25 d'immobilier, prix inconnu).
+ * Une seule propriété lit l'état des formes : MapLibre ne recalcule qu'elle à chaque recoloriage (budget H9 ; une
+ * seconde couche pour la couleur neutre coûtait 55 ms de plus).
+ */
 export const COMMUNES_LAYER: FillLayerSpecification = {
   id: 'communes',
   type: 'fill',
   source: SOURCE_COMMUNES,
   'source-layer': COUCHE_TUILES,
   paint: {
-    'fill-color': ['coalesce', ['feature-state', 'c'], 'transparent'] as ExpressionSpecification,
-    'fill-opacity': opaciteCommunes(false),
-    'fill-opacity-transition': { duration: 0 }, // changement de mode instantané, comme les couleurs
+    'fill-color': ['interpolate', ['linear'], ['zoom'], carte['zoom-france'], teinte(carte['opacite-france']), carte['zoom-ville'], teinte(carte['opacite-zoom'])],
   },
 };
 

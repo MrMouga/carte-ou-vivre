@@ -41,6 +41,19 @@ export function compte(n: number): string {
 
 type PourListe = { nom: string; dep: string; merKm: number | null } & PrixCommune;
 
+/**
+ * Message de la liste quand aucune commune ne passe (état **aucune commune**) ; en Acheter, « le prix » remplace « le
+ * loyer » (details.md d'immobilier) ; en Louer, les textes de loyer-mer et de proches.
+ */
+export function messageAucune(p: ReglagePrix, avecProche: boolean): string {
+  const prix = p.mode === 'acheter' ? 'le prix' : 'le loyer';
+  return `Aucune commune ne passe tes critères. Relâche ${prix}, ${avecProche ? 'la mer, la taille ou un proche' : 'la mer ou la taille'}.`;
+}
+
+/** Message de la liste sans plafond (prix et mer sur « Sans limite », aucun proche prêt). */
+export const messageSansPlafond = (p: ReglagePrix) =>
+  `Fixe ${p.mode === 'acheter' ? "un prix d'achat" : 'un loyer'} ou une distance à la mer pour classer les communes.`;
+
 /** Colonne du prix de la liste (R24) : « 198 000 € », « 12,5 €/m² », « 3 800 €/m² », « prix inconnu ». */
 export function prixListe(c: PrixCommune, p: ReglagePrix): string {
   const v = valeurAffichee(c, p);
