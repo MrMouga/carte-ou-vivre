@@ -3,6 +3,8 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-14 | Changer la valeur d'un jeton : chercher aussi le nombre écrit en dur dans les tests, pas seulement les libellés | tests, process, design | — | [2026-10-14-valeur-d-un-jeton-ecrite-en-dur-dans-un-test.md](2026-10-14-valeur-d-un-jeton-ecrite-en-dur-dans-un-test.md) |
+| 2026-10-14 | Un test du risque sur des données doit aussi regarder les extrêmes que la carte met en tête, pas seulement des communes connues | data, spec, process | — | [2026-10-14-test-du-risque-sur-les-extremes.md](2026-10-14-test-du-risque-sur-les-extremes.md) |
 | 2026-10-14 | Une tranche qui remplace un réglage doit d'abord chercher les libellés et les noms que lisent les tests protégés des tranches précédentes | spec, tests, process | Revu le 2026-10-14 (relecture du plan) : | [2026-10-14-spec-libelles-lus-par-les-tests-proteges.md](2026-10-14-spec-libelles-lus-par-les-tests-proteges.md) |
 | 2026-10-14 | Agrandir la feuille mobile se paie en carte : mesurer la bande restante contre le critère de vue de départ, et réduire les captures avant de les commiter | design, tests, process | — | [2026-10-14-feuille-plus-haute-et-cadrage-de-la-carte.md](2026-10-14-feuille-plus-haute-et-cadrage-de-la-carte.md) |
 | 2026-10-14 | Feuille à onglets : un panneau court fait glisser une page `overflow-hidden` et recentre le focus ; poser `overflow-clip` et donner le focus sans défiler | build, tests, design | Revu le 2026-10-14 (corrections de inter | [2026-10-14-feuille-a-onglets-panneau-court-et-page-qui-glisse.md](2026-10-14-feuille-a-onglets-panneau-court-et-page-qui-glisse.md) |

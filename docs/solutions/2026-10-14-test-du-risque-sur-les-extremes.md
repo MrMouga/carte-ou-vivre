@@ -1,0 +1,8 @@
+# Un test du risque sur des données doit aussi regarder les extrêmes que la carte met en tête, pas seulement des communes connues
+Étiquettes : data, spec, process · Tranche : immobilier · Source : /build immobilier, tâche 1 (constat du builder) et review-spec.md (Majeur)
+
+**Problème** — Le plan testait le risque « fausse précision » des prix d'achat en faisant juger à Vincent 5 communes qu'il connaît. Elles sont toutes grandes, toutes au prix propre de la commune : le test est passé.
+**Symptômes** — Sur les vraies données, la tête de liste en Acheter montrait d'abord les prix les plus faux : Guérigny à 21 €/m², Civray à 26 €/m² (ventes mal décrites dans le fichier d'Etalab), puis, après un seuil à 300 €/m², des prix d'intercommunalités rurales à 5-50 ventes (Montdardier 300 €/m², Cher 312 €/m²). Des îles sans prix passaient aussi en tête, notées par la mer seule. Trouvé par un builder (tâche 1) et par la relecture, pas par le test du risque.
+**Ce qui n'a pas marché** — Choisir des exemples connus : le jugement humain porte sur le milieu de la distribution, là où les données sont bonnes.
+**Ce qui a marché** — Regarder la liste que l'utilisateur voit en premier dans les réglages extrêmes (plafond haut, autre critère « Sans limite ») et les queues de la distribution (`min`, 1er centile, compte sous un seuil, par source). Deux décisions de Vincent en sont sorties : plancher de 300 €/m², communes sans prix toujours après celles qui ont un prix.
+**Prévention** — Dans /breakdown, la tâche de données d'une tranche qui classe des lieux donne aussi : les 10 premières sur les vraies données dans les réglages extrêmes, et les 1 % les plus bas et les plus hauts par source. Dans /spec, le test du risque nomme ces extrêmes à côté des exemples connus.
