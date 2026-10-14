@@ -1,9 +1,11 @@
 import { useId } from 'react';
 import { Slider } from '@/components/ui/slider';
-import { plafondLoyer, plafondMer } from '@/domain/format';
-import { SURFACE_M2, type Reglages } from '@/domain/score';
+import { plafondMer } from '@/domain/format';
+import type { Changement, ReglagePrix as Reglage } from '@/domain/prix';
+import type { Reglages } from '@/domain/score';
 import { BORNES } from '@/domain/url';
 import { Categorie } from './Categorie';
+import { ReglagePrix } from './ReglagePrix';
 
 type CurseurProps = {
   libelle: string;
@@ -42,25 +44,28 @@ function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange, disabled
   );
 }
 
-/** `inactif` : pendant le chargement (details.md), les curseurs ne bougent pas. */
-type Props = { reglages: Reglages; onChange: (r: Reglages) => void; inactif?: boolean; children?: React.ReactNode };
+/**
+ * `prix` : réglage du prix (spec immobilier) ; son plafond est `reglages.loyer`. `onPrix` reçoit le réglage et le plafond
+ * ensemble (R21, R23 : changer de mode ou d'unité change aussi le plafond). `inactif` : pendant le chargement (details.md),
+ * les réglages ne bougent pas.
+ */
+type Props = {
+  reglages: Reglages;
+  onChange: (r: Reglages) => void;
+  prix: Reglage;
+  onPrix: (c: Changement) => void;
+  inactif?: boolean;
+  children?: React.ReactNode;
+};
 
-// Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, plafond de loyer, plafond de mer, en catégories repliables.
-export function Settings({ reglages, onChange, inactif = false, children }: Props) {
+// Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, réglage du prix (design F d'immobilier), plafond de mer,
+// en catégories repliables. Sous 1 024 px, le titre n'est pas affiché, seulement lu (D11 d'interface-telephone : la place
+// gagnée garde le curseur du prix visible à 375 × 548).
+export function Settings({ reglages, onChange, prix, onPrix, inactif = false, children }: Props) {
   return (
     <section aria-label="Réglages" className="flex flex-col gap-3 p-4 max-bureau:pb-2 bureau:min-h-0 bureau:overflow-y-auto bureau:pb-0 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
-      <h1 className="font-serif text-marque">Où vivre en France</h1>
-      <Categorie titre="Loyer" resume={plafondLoyer(reglages.loyer)}>
-        <Curseur
-          libelle="Loyer maximum"
-          sousTexte={`par mois pour ${SURFACE_M2} m²`}
-          bornes={BORNES.loyer}
-          valeur={reglages.loyer}
-          texte={plafondLoyer}
-          onChange={(loyer) => onChange({ ...reglages, loyer })}
-          disabled={inactif}
-        />
-      </Categorie>
+      <h1 className="font-serif text-marque max-bureau:sr-only">Où vivre en France</h1>
+      <ReglagePrix prix={prix} plafond={reglages.loyer} onChange={onPrix} disabled={inactif} />
       <Categorie titre="Mer" resume={plafondMer(reglages.mer)}>
         <Curseur
           libelle="Mer à moins de"

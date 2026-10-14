@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { duree, loyerTexte, merFiche, nomAffiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
+import { duree, estimationTexte, merFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
+import type { ReglagePrix } from '@/domain/prix';
 import type { Evaluation } from '@/domain/score';
 import { cn } from '@/lib/cn';
 import type { Proche } from '@/proches/useProches';
@@ -10,6 +11,8 @@ type Props = {
   evaluation: Evaluation;
   /** Nombre de communes qui passent (R6). */
   total: number;
+  /** Réglage du prix : la ligne du prix est celle du mode et de l'unité choisis (R24, D7). */
+  prix: ReglagePrix;
   /** Proches dans l'ordre d'ajout, et l'index de la commune dans communes.json (ordre de leurs temps). */
   proches: Proche[];
   index: number;
@@ -25,8 +28,9 @@ export function ligneProche(p: Proche, index: number): string {
 
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond.
 // Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
-export function Fiche({ evaluation: e, total, proches, index, onRetour }: Props) {
+export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: Props) {
   const c = e.commune;
+  const estimation = estimationTexte(c, prix);
   const titre = useRef<HTMLHeadingElement>(null);
   // Le focus suit la commune choisie (la liste qui avait le focus a disparu).
   useEffect(() => titre.current?.focus(), [c.code]);
@@ -64,8 +68,8 @@ export function Fiche({ evaluation: e, total, proches, index, onRetour }: Props)
         </div>
       )}
       <div className="flex flex-col">
-        <p className="text-texte tabular-nums">{loyerTexte(c.loyerM2)}</p>
-        {c.loyerM2 != null && !c.estimationPropre && <p className="text-secondaire text-muted-foreground">Estimation du secteur (communes voisines)</p>}
+        <p className="text-texte tabular-nums">{prixFiche(c, prix)}</p>
+        {estimation && <p className="text-secondaire text-muted-foreground">{estimation}</p>}
       </div>
       <p className="text-texte tabular-nums">{merFiche(c.merKm)}</p>
       {proches.length > 0 && (

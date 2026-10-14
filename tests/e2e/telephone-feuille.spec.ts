@@ -36,7 +36,7 @@ test('AC-9 à 1 440 × 900 : ni onglets, ni « Replier la feuille », ni barre r
   await expect(page.getByRole('button', { name: 'Déplier la feuille' })).toHaveCount(0);
   await expect(compte(page)).toHaveCount(0);
 
-  const loyer = page.getByText('Loyer maximum', { exact: true });
+  const loyer = page.getByText('Loyer mensuel', { exact: true });
   const liste = page.getByRole('region', { name: 'Les 10 premières' });
   await expect(loyer).toBeInViewport({ ratio: 1 });
   await expect(liste).toBeInViewport({ ratio: 1 });
@@ -197,7 +197,7 @@ test('ajout d’un proche : ni onglets ni compte au-dessus du champ ; ils revien
 const replier = (page: Page) => page.getByRole('button', { name: 'Replier la feuille' });
 const deplier = (page: Page) => page.getByRole('button', { name: 'Déplier la feuille' });
 const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
-const loyer = (page: Page) => page.getByText('Loyer maximum', { exact: true });
+const loyer = (page: Page) => page.getByText('Loyer mensuel', { exact: true });
 const H = (page: Page) => page.viewportSize()!.height;
 
 /** Attend que la feuille soit posée (plus aucune transition en cours, dans la feuille ni dans son contenu). */

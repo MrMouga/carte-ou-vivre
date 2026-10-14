@@ -11,7 +11,7 @@
 
 Prérequis : python3 scripts/data/sources.py et communes.py (écrit data-raw/formes-100m.json) ; tippecanoe (brew install tippecanoe).
 Usage : python3 scripts/data/tuiles.py  ·  python3 scripts/data/tuiles.py --fixture  (tuiles des tests : la fixture
-« 5 communes », et le jeu « métropole » d'AC-1 d'interface-telephone)
+« 5 communes », le jeu « métropole » d'AC-1 d'interface-telephone, et la fixture « 6 communes » d'immobilier)
 """
 import json
 import math
@@ -31,6 +31,9 @@ FIXTURE_METROPOLE = os.path.join(ROOT, 'tests', 'fixtures', 'tuiles-metropole')
 DECALAGE = (-1, 45)  # lon, lat
 EMPRISE_METROPOLE = (-5.2, 41.3, 9.6, 51.1)  # ouest, sud, est, nord
 ACCEPTANCE = os.path.join(ROOT, 'docs', 'specs', '2026-10-12-loyer-mer', 'acceptance.json')
+# Fixture « 6 communes » (spec immobilier) : les 5 carrés, plus F (Rhinval) en [2 ; 2,5] × [1 ; 1,5], dans l'ordre A à F.
+ACCEPTANCE_IMMOBILIER = os.path.join(ROOT, 'docs', 'specs', '2026-10-14-immobilier', 'acceptance.json')
+FIXTURE_IMMOBILIER = os.path.join(ROOT, 'tests', 'fixtures', 'tuiles-immobilier')
 SRC = os.path.join(ROOT, 'data-raw', 'formes-100m.json')
 MAIRIES = os.path.join(ROOT, 'data-raw', 'communes-mairie.json')
 COMMUNES = os.path.join(ROOT, 'public', 'data', 'communes.json')
@@ -146,11 +149,14 @@ def tuiles_fixture(items, dest, avec_vides=True):
 
 
 def fixture():
-    """Tuiles des tests, mêmes options : fixture « 5 communes » (tests/fixtures/tuiles) et jeu « métropole » d'AC-1
-    (tests/fixtures/metropole.json et tests/fixtures/tuiles-metropole)."""
+    """Tuiles des tests, mêmes options : fixture « 5 communes » (tests/fixtures/tuiles), jeu « métropole » d'AC-1
+    (tests/fixtures/metropole.json et tests/fixtures/tuiles-metropole) et fixture « 6 communes » d'immobilier
+    (tests/fixtures/tuiles-immobilier)."""
     with open(ACCEPTANCE, encoding='utf-8') as f:
         items = json.load(f)['fixture']['items']
     tuiles_fixture(items, FIXTURE)
+    with open(ACCEPTANCE_IMMOBILIER, encoding='utf-8') as f:
+        tuiles_fixture(json.load(f)['fixture']['items'], FIXTURE_IMMOBILIER)
     jeu = jeu_metropole(items)
     with open(METROPOLE, 'w', encoding='utf-8') as f:
         lignes = ',\n'.join('  ' + json.dumps(it, ensure_ascii=False) for it in jeu)

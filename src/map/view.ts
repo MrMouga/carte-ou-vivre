@@ -20,7 +20,7 @@ export function paddingBureau(): Padding {
   };
 }
 
-/** Hauteur de la feuille mobile ouverte dans une fenêtre de `hauteur` px : 45 %, au moins 272 px (D9 d'interface-telephone ; classe `h-feuille`). */
+/** Hauteur de la feuille mobile ouverte dans une fenêtre de `hauteur` px : 45 %, au moins `taille-feuille-min` (338 px depuis D11 d'interface-telephone ; classe `h-feuille`). */
 export const hauteurFeuille = (hauteur: number) => Math.max(hauteur * layout['part-feuille'], size['taille-feuille-min']);
 
 /**

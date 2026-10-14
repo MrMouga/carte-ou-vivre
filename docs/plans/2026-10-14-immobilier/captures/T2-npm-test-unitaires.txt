@@ -1,0 +1,38 @@
+
+> carte-ou-vivre@0.0.0 test
+> vitest run && node scripts/check-tokens.mjs && playwright test
+
+
+ RUN  v5.0.3 /Users/mouga/git-repository/carte-ou-vivre
+
+ ❯ src/map/view.test.ts (4 tests | 1 failed) 4ms
+   ❯ hauteur de la feuille et cadrage de la carte (4)
+     × 375 × 548 : 45 % ferait 246,6 px, le plancher de 272 px joue 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/map/view.test.ts > hauteur de la feuille et cadrage de la carte > 375 × 548 : 45 % ferait 246,6 px, le plancher de 272 px joue
+AssertionError: expected 354 to be 288 // Object.is equality
+
+- Expected
++ Received
+
+- 288
++ 354
+
+ ❯ src/map/view.test.ts:14:43
+     12|   it('375 × 548 : 45 % ferait 246,6 px, le plancher de 272 px joue', (…
+     13|     expect(hauteurFeuille(548)).toBe(size['taille-feuille-min']);
+     14|     expect(paddingCarte(375, 548).bottom).toBe(272 + space['space-4']);
+       |                                           ^
+     15|   });
+     16|   it('une hauteur de feuille mesurée passe avant le calcul', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 140 passed (141)
+   Start at  18:24:09
+   Duration  647ms (tests 43%, transform 39%, import 16%, worker 2%)
+

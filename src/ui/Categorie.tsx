@@ -1,8 +1,9 @@
 import { useId, useState } from 'react';
 
 // Catégorie repliable du panneau de réglages (Figma « Catégorie repliable » 20:180, design proches decisions.md).
-// Motif « disclosure » : h2 > button[aria-expanded]. Ouverte au départ. Repliée : le résumé du réglage à droite du titre.
-// Ouverte : l'action de la catégorie à droite du titre (ex. « Effacer mes proches »).
+// Motif « disclosure » : h2 > button[aria-expanded]. Ouverte au départ. Repliée : le résumé du réglage sous le titre, aligné
+// à gauche, dans le bouton (/ui immobilier) ; on ne coupe la ligne qu'avant un « · », jamais dans un morceau (les
+// montants ont déjà leurs espaces insécables : « 5 800 €/m² »). Ouverte : l'action de la catégorie à droite du titre.
 type Props = {
   titre: string;
   resume: string;
@@ -29,10 +30,12 @@ export function Categorie({ titre, resume, idTitre, action, children }: Props) {
             <svg viewBox="0 0 24 24" className="size-echantillon shrink-0 text-muted-foreground" aria-hidden="true">
               <path d={ouverte ? 'm6 9 6 6 6-6' : 'm9 6 6 6-6 6'} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span id={idTitre} className="text-categorie uppercase text-muted-foreground">
-              {titre}
+            <span className="flex min-w-0 flex-col">
+              <span id={idTitre} className="text-categorie uppercase text-muted-foreground">
+                {titre}
+              </span>
+              {!ouverte && <span className="text-pastille text-foreground tabular-nums">{resume.split(' · ').join(' ·\u00a0')}</span>}
             </span>
-            {!ouverte && <span className="ml-auto pl-2 text-right text-pastille text-foreground tabular-nums">{resume}</span>}
           </button>
         </h2>
         {ouverte && action}

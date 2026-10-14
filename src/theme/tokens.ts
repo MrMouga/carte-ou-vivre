@@ -75,9 +75,10 @@ export const size = {
   // 390 px : taille du texte des champs de saisie. Sous 16 px, Safari sur iPhone agrandit la page quand un champ prend le
   // focus ; le style `texte` (15) reste le reste du temps. Classe : `max-bureau:text-(length:--taille-saisie)`.
   'taille-saisie': 16,
-  // Sous 1 024 px : hauteur minimale de la feuille ouverte (D9 et H48 d'interface-telephone), pour que le curseur du loyer
-  // reste visible à 375 × 548. Classes : `h-feuille`, `max-h-feuille`, `bottom-feuille` (voir `layout`).
-  'taille-feuille-min': 272,
+  // Sous 1 024 px : hauteur minimale de la feuille ouverte (D9 et H48 d'interface-telephone), pour que le curseur du prix
+  // reste visible à 375 × 548. 272 → 338 (D11 d'interface-telephone, /ui immobilier : le réglage du prix est plus haut ; le
+  // titre est masqué sous 1 024 px et la France reste peinte au-dessus). Classes : `h-feuille`, `max-h-feuille`, `bottom-feuille`.
+  'taille-feuille-min': 338,
   // Sous 1 024 px : barre de la feuille repliée, poignée et compte (Figma « Tête de feuille », état Repliée ≈ 51 px ; H48 :
   // au plus 64 px), à quoi s'ajoute la marge du geste d'accueil de l'iPhone. Classe : `h-barre-feuille`.
   'taille-barre-feuille': 51,
@@ -86,7 +87,7 @@ export const size = {
 /**
  * Mise en page (tâche 6 de loyer-mer) : en dessous de `largeur-bureau`, la page passe en feuille mobile ; la feuille ouverte
  * couvre `part-feuille` de la hauteur, jamais moins de `taille-feuille-min` (D9 d'interface-telephone : 45 %, au moins
- * 272 px ; 56 % avant). Classes : `bureau:`, `max-bureau:`, `h-feuille`.
+ * 338 px depuis D11 ; 56 % et 272 px avant). Classes : `bureau:`, `max-bureau:`, `h-feuille`.
  */
 export const layout = {
   'largeur-bureau': 1024,
@@ -125,6 +126,8 @@ export const text: Record<string, TextStyle> = {
   texte: { family: 'sans', size: 15, weight: 400, lineHeight: 1.4, tracking: 0 },
   'texte-fort': { family: 'sans', size: 15, weight: 600, lineHeight: 1.4, tracking: 0 },
   valeur: { family: 'sans', size: 18, weight: 700, lineHeight: 1.25, tracking: 0 },
+  // Valeur d'un curseur (prix, mer, proches), /ui immobilier : 16 au lieu de 18 ; `valeur` reste pour le compte et le zoom.
+  'valeur-curseur': { family: 'sans', size: 16, weight: 700, lineHeight: 1.25, tracking: 0 },
   'score-grand': { family: 'sans', size: 30, weight: 700, lineHeight: 1.1, tracking: 0 },
   pastille: { family: 'sans', size: 13, weight: 400, lineHeight: 1.25, tracking: 0 },
   secondaire: { family: 'sans', size: 12, weight: 400, lineHeight: 1.3, tracking: 0 },

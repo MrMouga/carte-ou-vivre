@@ -6,7 +6,7 @@ import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
 import { evaluer, type Commune, type Reglages } from './domain/score';
 import { ecrireAdresse, lireAdresse, lirePrix } from './domain/url';
-import { joindreAchats, type AchatJson } from './domain/prix';
+import { joindreAchats, type AchatJson, type Changement } from './domain/prix';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
@@ -70,8 +70,13 @@ async function charger(): Promise<Donnees> {
 export function App() {
   const [donnees, setDonnees] = useState<Donnees | null>(null);
   const [reglages, setReglages] = useState<Reglages>(() => lireAdresse(location.search));
-  // Réglage du prix (spec immobilier, R21, R26) : lu dans l'adresse ; son bloc de réglage arrive en tâche 2.
-  const [prix] = useState(() => lirePrix(location.search));
+  // Réglage du prix (spec immobilier, R21, R26) : lu dans l'adresse ; son plafond est `reglages.loyer`.
+  const [prix, setPrix] = useState(() => lirePrix(location.search));
+  /** R21, R23 : un changement du réglage du prix porte aussi son plafond (mode et unité le changent). */
+  const changerPrix = (c: Changement) => {
+    setPrix(c.prix);
+    setReglages((r) => ({ ...r, loyer: c.plafond }));
+  };
   // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique. Un curseur glissé dépasse
   // les limites des navigateurs : Safari lève une erreur après 100 réécritures en 30 s, Chrome ignore sans rien dire
   // au-delà de 200 en 10 s. On relit l'adresse et on réessaie plus tard, sans faire tomber la page.
@@ -203,7 +208,7 @@ export function App() {
   // Compte annoncé aux lecteurs d'écran : l'unique zone `role=status` de la page, vide sans plafond (D17 de loyer-mer).
   const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
   const reglagesUI = (pied?: React.ReactNode) => (
-    <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
+    <Settings reglages={reglages} onChange={setReglages} prix={prix} onPrix={changerPrix} inactif={!prete}>
       <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
       <Proches
         proches={proches.proches}
@@ -222,9 +227,16 @@ export function App() {
   );
   const fiche =
     resultat && choisie ? (
-      <Fiche evaluation={resultat.parCode.get(choisie)!} total={resultat.classement.length} proches={proches.proches} index={indexChoisie!} onRetour={retourListe} />
+      <Fiche
+        evaluation={resultat.parCode.get(choisie)!}
+        total={resultat.classement.length}
+        prix={prix}
+        proches={proches.proches}
+        index={indexChoisie!}
+        onRetour={retourListe}
+      />
     ) : null;
-  const liste = resultat && <List resultat={resultat} onChoisir={choisir} focusCode={retour} avecProche={proches.prets.length > 0} />;
+  const liste = resultat && <List resultat={resultat} prix={prix} onChoisir={choisir} focusCode={retour} avecProche={proches.prets.length > 0} />;
 
   return (
     // `overflow-clip` et non `overflow-hidden` : la page ne défile jamais, même quand un élément se fait voir (`focus()`,

@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { chiffresListe, compte, ligneListe, nomAffiche } from '@/domain/format';
+import type { ReglagePrix } from '@/domain/prix';
 import type { Resultat } from '@/domain/score';
 import { cn } from '@/lib/cn';
 import { CLASSES_PALIER } from './Legend';
 
 type Props = {
   resultat: Resultat;
+  /** Réglage du prix : la colonne du prix suit le mode et l'unité (R24). */
+  prix: ReglagePrix;
   onChoisir: (code: string) => void;
   /** Au retour de la fiche : la ligne qui reprend le focus. */
   focusCode?: string | null;
@@ -14,7 +17,7 @@ type Props = {
 };
 
 // Les 10 premières (frame Figma 5:2, « Les 10 premières ») : compte, puis une ligne-bouton par commune (R5).
-export function List({ resultat, onChoisir, focusCode, avecProche = false }: Props) {
+export function List({ resultat, prix, onChoisir, focusCode, avecProche = false }: Props) {
   const { actif, classement } = resultat;
   const section = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -43,14 +46,14 @@ export function List({ resultat, onChoisir, focusCode, avecProche = false }: Pro
               <button
                 type="button"
                 data-code={e.commune.code}
-                aria-label={ligneListe(e.rang!, e.commune, e.score!)}
+                aria-label={ligneListe(e.rang!, e.commune, e.score!, prix)}
                 onClick={() => onChoisir(e.commune.code)}
                 className="flex w-full cursor-pointer items-center gap-2 rounded-base p-2 text-left hover:bg-background"
               >
                 <span className="w-rang shrink-0 text-texte-fort text-muted-foreground tabular-nums">{e.rang}</span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="text-texte-fort">{nomAffiche(e.commune)}</span>
-                  <span className="text-secondaire text-muted-foreground tabular-nums">{chiffresListe(e.commune)}</span>
+                  <span className="text-secondaire text-muted-foreground tabular-nums">{chiffresListe(e.commune, prix)}</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1">
                   <span className={cn('size-pastille-score rounded-pastille-score', CLASSES_PALIER[e.palier! - 1])} />

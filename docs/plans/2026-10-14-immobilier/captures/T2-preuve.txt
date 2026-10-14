@@ -1,0 +1,45 @@
+
+=== 1440 × 900
+  Louer · Total (départ) : adresse ?loyer=1200&mer=60 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 52 m² · surface 52 · 8 046 communes passent tes critères
+  capture T2-bureau-louer-total.png
+  liste : 1 · Lessay (50) · 81 · 433 € · 1 km | 2 · Saint-Jean-de-la-Rivière (50) · 80 · 433 € · 2 km | 3 · Flocques (76) · 80 · 436 € · 2 km
+  surface 70 m² : adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 950 communes passent tes critères
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 21 / / 100 / 7580e sur 7 950 communes qui passent / 1 120 € par mois pour 70 m² (16,0 €/m²) / 39 km de la mer à vol d'oiseau
+  capture T2-bureau-surface-70-bordeaux.png
+  Acheter · Au m² : adresse ?achat=5000&mer=60&surface=70 · choix Acheter, Appartement, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 913 communes passent tes critères
+  capture T2-bureau-acheter-m2.png
+  liste : 1 · Galéria (2B) · 91 · 818 €/m² · moins d'1 km | 2 · Meria (2B) · 90 · 920 €/m² · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 458 €/m² · 10 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 25 / / 100 / 7551e sur 7 913 communes qui passent / 4 233 €/m² à l'achat / 39 km de la mer à vol d'oiseau
+  capture T2-bureau-fiche-bordeaux-acheter.png
+  Acheter · Total : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · curseur « Prix d'achat, prix maximum » = 350 000 € pour 70 m² · surface 70 · 7 913 communes passent tes critères
+  capture T2-bureau-acheter-total.png
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km
+  rechargement de ?achat=350000&mer=60&unite=total&surface=70 → ?achat=350000&mer=60&unite=total&surface=70
+  après rechargement : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · curseur « Prix d'achat, prix maximum » = 350 000 € pour 70 m² · surface 70 · 7 913 communes passent tes critères
+  repliée : « LogementAcheter · Appartement · 70 m² · 350 000 € »
+  capture T2-bureau-repliee.png
+
+=== 390 × 844
+  Louer · Total (départ) : adresse ?loyer=1200&mer=60 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 52 m² · surface 52 · 8 046 communes passent tes critères
+  capture T2-390-louer-total.png
+  liste : 1 · Lessay (50) · 81 · 433 € · 1 km | 2 · Saint-Jean-de-la-Rivière (50) · 80 · 433 € · 2 km | 3 · Flocques (76) · 80 · 436 € · 2 km
+  surface 70 m² : adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 950 communes passent tes critères
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 21 / / 100 / 7580e sur 7 950 communes qui passent / 1 120 € par mois pour 70 m² (16,0 €/m²) / 39 km de la mer à vol d'oiseau
+  capture T2-390-surface-70-bordeaux.png
+  Acheter · Au m² : adresse ?achat=5000&mer=60&surface=70 · choix Acheter, Appartement, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 913 communes passent tes critères
+  capture T2-390-acheter-m2.png
+  liste : 1 · Galéria (2B) · 91 · 818 €/m² · moins d'1 km | 2 · Meria (2B) · 90 · 920 €/m² · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 458 €/m² · 10 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 25 / / 100 / 7551e sur 7 913 communes qui passent / 4 233 €/m² à l'achat / 39 km de la mer à vol d'oiseau
+  capture T2-390-fiche-bordeaux-acheter.png
+  Acheter · Total : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · curseur « Prix d'achat, prix maximum » = 350 000 € pour 70 m² · surface 70 · 7 913 communes passent tes critères
+  capture T2-390-acheter-total.png
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km
+  rechargement de ?achat=350000&mer=60&unite=total&surface=70 → ?achat=350000&mer=60&unite=total&surface=70
+  après rechargement : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · curseur « Prix d'achat, prix maximum » = 350 000 € pour 70 m² · surface 70 · 7 913 communes passent tes critères
+  repliée : « LogementAcheter · Appartement · 70 m² · 350 000 € »
+  capture T2-390-repliee.png
+
+=== 375 × 548 (ouverture)
+  feuille : haut 210 px, hauteur 338 px ; poignée du curseur : bas 537 px ; curseur (zone de toucher) : bas 550 px ; carte au-dessus : 210 px
+  tuiles des communes demandées, par zoom : {}
+  capture T2-375x548-ouverture.png

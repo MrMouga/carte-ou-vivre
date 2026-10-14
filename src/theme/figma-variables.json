@@ -1,5 +1,5 @@
 {
-  "_source": "Sortie brute de get_variable_defs (Figma uJG30M95NtOV9eDkv8oF0q), lue le 2026-10-12 sur les nœuds 9:636 (planche Système), 7:343 (Mobile 390 — classée) et 5:2 (Bureau — classée), fusionnées. place-marker et place-marker-foreground : get_variable_defs sur 20:168 (Ligne de proche), lu le 2026-10-13 (VariableID:17:680 et 17:681). space-6 (24) et space-8 (32) ne sont liés à aucun nœud : valeurs du contrat docs/design/system/README.md.",
+  "_source": "Sortie brute de get_variable_defs (Figma uJG30M95NtOV9eDkv8oF0q), lue le 2026-10-12 sur les nœuds 9:636 (planche Système), 7:343 (Mobile 390 — classée) et 5:2 (Bureau — classée), fusionnées. place-marker et place-marker-foreground : get_variable_defs sur 20:168 (Ligne de proche), lu le 2026-10-13 (VariableID:17:680 et 17:681). space-6 (24) et space-8 (32) ne sont liés à aucun nœud : valeurs du contrat docs/design/system/README.md. valeur-curseur : absent de Figma (pas de page « immobilier », choix de Vincent) ; valeur du contrat (/ui immobilier, 2026-10-14), à reporter dans Figma quand une page sera faite.",
   "var(--foreground)": "#1f2a2a",
   "var(--muted-foreground)": "#5b6664",
   "var(--background)": "#f7f4ee",
@@ -36,6 +36,7 @@
   "texte": "Font(family: \"Source Sans 3\", style: Regular, size: 15, weight: 400, lineHeight: 1.399999976158142, letterSpacing: 0)",
   "texte-fort": "Font(family: \"Source Sans 3\", style: SemiBold, size: 15, weight: 600, lineHeight: 1.399999976158142, letterSpacing: 0)",
   "valeur": "Font(family: \"Source Sans 3\", style: Bold, size: 18, weight: 700, lineHeight: 1.25, letterSpacing: 0)",
+  "valeur-curseur": "Font(family: \"Source Sans 3\", style: Bold, size: 16, weight: 700, lineHeight: 1.25, letterSpacing: 0)",
   "score-grand": "Font(family: \"Source Sans 3\", style: Bold, size: 30, weight: 700, lineHeight: 1.100000023841858, letterSpacing: 0)",
   "pastille": "Font(family: \"Source Sans 3\", style: Regular, size: 13, weight: 400, lineHeight: 1.25, letterSpacing: 0)",
   "secondaire": "Font(family: \"Source Sans 3\", style: Regular, size: 12, weight: 400, lineHeight: 1.2999999523162842, letterSpacing: 0)",
