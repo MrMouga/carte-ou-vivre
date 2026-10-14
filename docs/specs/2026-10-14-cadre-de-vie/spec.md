@@ -1,5 +1,5 @@
 # Cadre de vie
-2026-10-14 · validée · Pour les agents : [détails](details.md) · [critères](acceptance.json) · [recalage](recalage.md)
+2026-10-14 · validée · révisée 2026-10-14 (D9) · Pour les agents : [détails](details.md) · [critères](acceptance.json) · [recalage](recalage.md)
 
 **En une phrase** : une section « Cadre de vie » réunit la taille de la commune, son type d'environnement, la distance à la mer et la distance à la montagne.
 **Pourquoi** : on choisit souvent un cadre (la campagne, une ville moyenne, la montagne) avant une ville ; la carte ne connaît que la taille et la mer.
@@ -17,9 +17,10 @@
 - **D7** — Au départ, tout le cadre de vie sur Peu importe : le prix seul classe. *Pourquoi* : choix de Vincent, ne rien supposer du cadre de chacun. *Écarté* : mer à 50 km (Claude). Coût accepté : la tête de liste est faite de villages vosgiens à 326 €, à égalité.
 
 - **D8** — Les textes des états vides ne changent pas (« Relâche le loyer, la mer ou la taille. », « Fixe un loyer ou une distance à la mer… », et leurs variantes Acheter et avec un proche), même quand le type ou la montagne écarte tout. *Pourquoi* : choix de Vincent ; la fiche donne la raison. *Écarté* : des textes généraux (3 critères de plus à recaler). Coût accepté : un conseil incomplet dans ce cas.
+- **D9** — La source de la zone de montagne se tranche en tâche 0 : la règle testée par la discovery (zone de montagne 2017 × massifs 2021, 5 882 communes) et le zonage loi Montagne du Cerema, mesurés côte à côte sur les villes du risque, puis montrés à Vincent. AC-12 ne nomme plus la source. *Pourquoi* : choix de Vincent ; la discovery avait testé une autre source que celle de D5, ce que la spec avait manqué. *Écarté* : fixer l'une ou l'autre maintenant. Validé par Vincent le 2026-10-14.
 
-**Pas maintenant** : forêt, lac, plages ; minutes en voiture.
+**Pas maintenant** : forêt, lac, plages ; minutes en voiture ; choisir son massif (Alpes, Pyrénées…).
 **Hypothèses** : 14 choix par défaut (H69 à H83) dans [détails](details.md#hypothèses).
 **Taille** : 6 règles, 12 critères et le recalage ; ~7 tâches, au-dessus du gabarit perso (D4) ; passe par /ui.
-**Le risque** : la zone de la loi Montagne n'est pas « là où l'on voit des montagnes » (Morvan, plateau limousin dedans ; une ville au pied des montagnes peut en sortir). Test en tâche 0 puis à la démo : Vincent juge Chamonix, Grenoble, Annecy, Pau, Clermont-Ferrand, puis les extrêmes : les villes de plus de 50 000 habitants classées, et les 10 premières à « 10 km ». Deux jugées fausses → retour sur D5.
+**Le risque** : la zone de montagne n'est pas « là où l'on voit des montagnes ». Déjà mesuré par la discovery (2026-10-11) : Lyon à 13,8 km (monts du Lyonnais), Limoges à 18,9 km, Toulouse à 52 km par la Montagne Noire, pas les Pyrénées. Test en tâche 0 puis à la démo : Vincent juge Chamonix, Grenoble, Annecy, Pau, Clermont-Ferrand, puis les extrêmes : les villes de plus de 50 000 habitants classées, et les 10 premières à « 10 km ». Deux jugées fausses → retour sur D5.
 **Questions ouvertes** : aucune.

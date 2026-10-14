@@ -376,7 +376,7 @@
       "rule": "R30",
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
-      "then": "le pied de page contient « grille communale de densité » et « Insee », et « loi Montagne » et « Cerema », à côté des mentions des tranches précédentes",
+      "then": "le pied de page contient « grille communale de densité » et « Insee », et « Zone de montagne » (suivi de la source retenue en tâche 0, D9), à côté des mentions des tranches précédentes",
       "passes": false
     }
   ]
