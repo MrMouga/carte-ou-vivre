@@ -5,10 +5,12 @@ Jointure toujours par code INSEE (jamais par nom). Communes de métropole du COG
 Paris, Lyon et Marseille y sont déjà d'un seul tenant ; leurs 45 arrondissements (ARM) sont exclus des formes,
 et leur loyer au m² est la moyenne simple de ceux des arrondissements (D10), pour les appartements comme pour les maisons.
 
-Prix d'achat (tranche immobilier, D5, D8, H67, R24) : statistiques DVF d'Etalab (stats_whole_period.csv), médiane au m²
-des ventes de la commune pour le bien s'il y en a au moins 5, sinon celle de son intercommunalité (code_parent) si elle
-en compte au moins 5, sinon inconnu ; Moselle, Bas-Rhin et Haut-Rhin : inconnu (ventes non publiées). Paris, Lyon et
-Marseille : moyenne simple des prix de leurs arrondissements qui en ont un, « secteur » si l'un d'eux l'est.
+Prix d'achat (tranche immobilier, D5 révisée par Vincent le 2026-10-14, D8, H67, R24) : statistiques DVF d'Etalab.
+Pour la commune et le bien : (1) au moins 30 ventes de 2023-01 à 2025-12 → médiane approchée sur ces trois ans
+(stats_dvf.csv, mensuel : médiane pondérée des médianes mensuelles) ; (2) sinon au moins 5 ventes de 2021 à 2025 →
+médiane exacte (stats_whole_period.csv) ; (3) sinon la même chose pour son intercommunalité (code_parent), « secteur » ;
+sinon inconnu. Moselle, Bas-Rhin et Haut-Rhin : inconnu (ventes non publiées). Paris, Lyon et Marseille : la règle par
+arrondissement, puis moyenne simple de ceux qui ont un prix, « secteur » si l'un d'eux l'est (H67).
 
 Prérequis : python3 scripts/data/sources.py puis python3 scripts/data/mer.py
 Usage : python3 scripts/data/communes.py  (s'arrête sur le premier contrôle qui échoue)
@@ -32,6 +34,9 @@ CHAMPS_ACHAT = ['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'ma
 BIENS = ('appartement', 'maison')
 ALSACE_MOSELLE = ('57', '67', '68')
 MIN_VENTES = 5
+# Règle de Vincent (2026-10-14) : au moins 30 ventes du bien sur la fenêtre fixe 2023-01 à 2025-12 → prix récent.
+RECENT = ('2023-01', '2025-12')
+MIN_VENTES_RECENTES = 30
 # Comptes mesurés le 2026-10-14 (fichier DVF de juillet 2026), hors Alsace-Moselle et hors Paris, Lyon, Marseille.
 # Un écart de plus de 5 % arrête le script (condition d'arrêt de la tâche 0) ; au moins 5 communes d'écart permises.
 MESURES = {'appartement': {'commune': 6272, 'secteur': 24793, 'inconnu-secteur': 2073},
@@ -71,19 +76,24 @@ def loyer_commune(loy, code):
     return loy.get(code, (None, False))
 
 
-def dvf():
-    """Statistiques DVF : lignes commune (arrondissements compris) et epci, et l'empreinte notée par sources.py."""
-    path = os.path.join(RAW, 'stats_whole_period.csv')
+def empreinte(nom):
+    """Vérifie que le fichier DVF présent est celui noté par sources.py (date, Last-Modified, sha256)."""
+    path = os.path.join(RAW, nom)
     info = json.load(open(path + '.info.json'))
     sha = hashlib.sha256()
     with open(path, 'rb') as f:
         while chunk := f.read(1 << 20):
             sha.update(chunk)
-    print(f"DVF : stats_whole_period.csv, Last-Modified {info['last_modified']}, téléchargé le {info['telecharge_le']},"
+    print(f"DVF : {nom}, Last-Modified {info['last_modified']}, téléchargé le {info['telecharge_le']},"
           f" {info['octets']} octets, sha256 {info['sha256']}")
-    check(sha.hexdigest() == info['sha256'], 'DVF : le fichier est bien celui téléchargé (empreinte identique)')
+    check(sha.hexdigest() == info['sha256'], f'DVF : {nom} est bien celui téléchargé (empreinte identique)')
+    return path
+
+
+def dvf():
+    """Statistiques DVF sur toute la période : lignes commune (arrondissements compris) et epci."""
     com, epci = {}, {}
-    with open(path, encoding='utf-8') as f:
+    with open(empreinte('stats_whole_period.csv'), encoding='utf-8') as f:
         for r in csv.DictReader(f):
             if r['echelle_geo'] == 'commune':
                 com[r['code_geo']] = r
@@ -92,34 +102,91 @@ def dvf():
     return com, epci
 
 
+def dvf_mois():
+    """Statistiques DVF mensuelles, fenêtre RECENT seulement : (échelle, code) → bien → [(médiane du mois, ventes)]."""
+    mois = {}
+    vus = set()
+    lignes, doublons = {}, 0
+    with open(empreinte('stats_dvf.csv'), encoding='utf-8') as f:
+        lecteur = csv.reader(f)
+        tete = next(lecteur)
+        i_code, i_mois, i_ech = tete.index('code_geo'), tete.index('annee_mois'), tete.index('echelle_geo')
+        cols = {b: (tete.index(f'nb_ventes_{b}'), tete.index(f'med_prix_m2_{b}')) for b in BIENS}
+        for r in lecteur:
+            if r[i_ech] not in ('commune', 'epci') or not RECENT[0] <= r[i_mois] <= RECENT[1]:
+                continue
+            vus.add(r[i_mois])
+            # Une intercommunalité sur plusieurs départements a une ligne par département, aux chiffres identiques :
+            # on n'en garde qu'une par mois (sinon ses ventes comptent deux ou six fois).
+            cle = (r[i_ech], r[i_code], r[i_mois])
+            valeurs = tuple(r[i] for c in cols.values() for i in c)
+            if cle in lignes:
+                doublons += 1
+                if lignes[cle] != valeurs:
+                    check(False, f'fichier mensuel : deux lignes différentes pour {cle}')
+                continue
+            lignes[cle] = valeurs
+            par_bien = mois.setdefault((r[i_ech], r[i_code]), {b: [] for b in BIENS})
+            for b, (i_nb, i_med) in cols.items():
+                if r[i_nb] and int(r[i_nb]) > 0:
+                    par_bien[b].append((nombre(r[i_med]), int(r[i_nb])))
+    print(f'  info fichier mensuel : {doublons} lignes en double ignorées (intercommunalités sur plusieurs départements)')
+    check(len(vus) == 36, f'fichier mensuel : {len(vus)} mois dans la fenêtre {RECENT[0]} à {RECENT[1]} (attendu 36)')
+    return mois
+
+
+def mediane_ponderee(mois):
+    """Médiane approchée : mois triés par médiane, médiane du premier mois où le cumul des ventes atteint la moitié."""
+    total = sum(n for _, n in mois)
+    cumul = 0
+    for med, n in sorted(mois):
+        cumul += n
+        if 2 * cumul >= total:
+            return med
+
+
 def nombre(x):
     v = float(x)
     return int(v) if v.is_integer() else v
 
 
-def achat_commune(com, epci, code, bien):
-    """R24 : (€/m², source) d'une commune pour un bien, hors Alsace-Moselle et hors Paris, Lyon, Marseille."""
+def prix_ligne(ligne, mois, bien):
+    """Règle 1 puis 2 sur une ligne (commune ou epci) : (€/m², '1' | '2') ou None."""
+    m = (mois or {}).get(bien, [])
+    if sum(n for _, n in m) >= MIN_VENTES_RECENTES:
+        return mediane_ponderee(m), '1'
+    if ligne is not None and int(ligne[f'nb_ventes_whole_{bien}'] or 0) >= MIN_VENTES:
+        return nombre(ligne[f'med_prix_m2_whole_{bien}']), '2'
+    return None
+
+
+def achat_commune(d, code, bien):
+    """R24 révisée par Vincent (2026-10-14) : (€/m², source, règle) d'une commune pour un bien, hors Alsace-Moselle
+    et hors Paris, Lyon, Marseille. Règle 1 : prix récent ; 2 : toute la période ; 3-1, 3-2 : la même chose pour
+    l'intercommunalité ; inconnu."""
+    com, epci, mois = d
     r = com.get(code)
-    if r is None:
-        return None, 'inconnu-secteur'
-    if int(r[f'nb_ventes_whole_{bien}'] or 0) >= MIN_VENTES:
-        return nombre(r[f'med_prix_m2_whole_{bien}']), 'commune'
-    e = epci.get(r['code_parent'])
-    if e is not None and int(e[f'nb_ventes_whole_{bien}'] or 0) >= MIN_VENTES:
-        return nombre(e[f'med_prix_m2_whole_{bien}']), 'secteur'
-    return None, 'inconnu-secteur'
+    p = prix_ligne(r, mois.get(('commune', code)), bien)
+    if p:
+        return p[0], 'commune', p[1]
+    parent = r['code_parent'] if r else None
+    p = prix_ligne(epci.get(parent), mois.get(('epci', parent)), bien) if parent in epci else None
+    if p:
+        return p[0], 'secteur', '3-' + p[1]
+    return None, 'inconnu-secteur', 'inconnu'
 
 
-def achat(com, epci, code, dep, bien):
+def achat(d, code, dep, bien):
     if dep in ALSACE_MOSELLE:
-        return None, 'inconnu-alsace-moselle'
-    if code in PLM:  # H67
-        arr = [achat_commune(com, epci, k, bien) for k in sorted(com) if len(k) == 5 and k.startswith(PLM[code])]
+        return None, 'inconnu-alsace-moselle', 'alsace-moselle'
+    if code in PLM:  # H67, à la lettre : arrondissements estimés compris
+        arr = [achat_commune(d, k, bien) for k in sorted(d[0]) if len(k) == 5 and k.startswith(PLM[code])]
         connus = [a for a in arr if a[0] is not None]
         if not connus:
-            return None, 'inconnu-secteur'
-        return round(sum(a[0] for a in connus) / len(connus), 2), 'secteur' if any(a[1] == 'secteur' for a in connus) else 'commune'
-    return achat_commune(com, epci, code, bien)
+            return None, 'inconnu-secteur', 'inconnu'
+        return (round(sum(a[0] for a in connus) / len(connus), 2),
+                'secteur' if any(a[1] == 'secteur' for a in connus) else 'commune', 'H67')
+    return achat_commune(d, code, bien)
 
 
 def round_coords(geom, nd):
@@ -144,6 +211,8 @@ def main():
     loy = loyers('pred-app-mef-dhup.csv')
     loy_mai = loyers('pred-mai-mef-dhup.csv')
     ventes, epci = dvf()
+    donnees_achat = (ventes, epci, dvf_mois())
+    regles = {b: {} for b in BIENS}  # code → règle appliquée (1, 2, 3-1, 3-2, inconnu, H67, alsace-moselle)
     geo = {c['code']: c for c in json.load(open(os.path.join(RAW, 'communes-centre.json')))}
     with open(os.path.join(RAW, 'mer-km.csv')) as f:
         mer = {r['code']: float(r['km']) for r in csv.DictReader(f)}
@@ -161,7 +230,9 @@ def main():
                      None if m2_mai is None else round(m2_mai, 4), propre_mai])
         ligne = [code]
         for bien in BIENS:
-            ligne += achat(ventes, epci, code, com[code]['DEP'], bien)
+            prix_, source, regle = achat(donnees_achat, code, com[code]['DEP'], bien)
+            ligne += [prix_, source]
+            regles[bien][code] = regle
         achats.append(ligne)
 
     print('Contrôles')
@@ -200,8 +271,14 @@ def main():
     am = [a for a in achats if by[a[0]][2] in ALSACE_MOSELLE]
     check(len(am) == 1605 and all(a[2] == a[4] == 'inconnu-alsace-moselle' for a in am),
           f'Alsace-Moselle : {len(am)} communes inconnu-alsace-moselle pour les deux biens (attendu 1 605)')
-    check(ach['33063'][1:] == [4427, 'commune', 5188, 'commune'], f"Bordeaux (33063) : {ach['33063'][1:]} (attendu 4 427 et 5 188 €/m², commune)")
-    check(ach['33487'][1:3] == [3844, 'secteur'], f"Saint-Vincent-de-Paul (33487) : {ach['33487'][1:3]} (attendu 3 844 €/m², Bordeaux Métropole)")
+    for j, bien in enumerate(BIENS):
+        n = {r: sum(1 for a in hors if regles[bien][a[0]] == r) for r in ('1', '2', '3-1', '3-2', 'inconnu')}
+        print(f'  info {bien}, par règle (1 récent, 2 toute la période, 3 intercommunalité) : {n}')
+    check(ach['33063'][1:] == [4233, 'commune', 5067, 'commune'] and regles['appartement']['33063'] == regles['maison']['33063'] == '1',
+          f"Bordeaux (33063) : {ach['33063'][1:]}, règle 1 (attendu 4 233 et 5 067 €/m², prix récent 2023-2025)")
+    check(ach['33487'][1:5] == [3700, 'secteur', 2487, 'commune'] and regles['maison']['33487'] == '2',
+          f"Saint-Vincent-de-Paul (33487) : {ach['33487'][1:]} (attendu appartement 3 700 €/m², Bordeaux Métropole récent ;"
+          f" maison 2 487 €/m², 24 ventes récentes : règle 2)")
     for code in PLM:
         check(ach[code][1] is not None and ach[code][3] is not None, f'{by[code][1]} ({code}) : {ach[code][1:]}')
 

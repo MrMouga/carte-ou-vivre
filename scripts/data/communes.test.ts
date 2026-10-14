@@ -61,8 +61,9 @@ describe('public/data/communes.json', () => {
   });
 });
 
-// Prix d'achat (tranche immobilier, tâche 0 ; D5, D8, H67, R24) : statistiques DVF d'Etalab, fichier de juillet 2026
-// (ventes 2021 à 2025), médiane au m² de la commune si ≥ 5 ventes, sinon de son intercommunalité si ≥ 5 ventes.
+// Prix d'achat (tranche immobilier, tâche 0 ; D5 révisée par Vincent le 2026-10-14, D8, H67, R24) : statistiques DVF
+// d'Etalab, fichiers de juillet 2026. Règle 1 : ≥ 30 ventes du bien de 2023 à 2025 → médiane approchée 2023-2025 ;
+// règle 2 : sinon ≥ 5 ventes de 2021 à 2025 → médiane 2021-2025 ; règle 3 : sinon l'intercommunalité (1 puis 2).
 type Achat = { champs: string[]; communes: (string | number | null)[][] };
 let lu: Achat | undefined; // lu une fois, au premier test (le fichier n'existe pas avant la tâche 0)
 const achat = () => (lu ??= JSON.parse(readFileSync(new URL('../../public/data/achat.json', import.meta.url), 'utf8')) as Achat);
@@ -86,12 +87,19 @@ describe('public/data/achat.json', () => {
     }
   });
 
-  it('D5 Bordeaux (33063) : appartement 4 427 €/m², maison 5 188 €/m², prix de la commune', () => {
-    expect(prix('33063')).toEqual({ code: '33063', appartement_m2: 4427, appartement_source: 'commune', maison_m2: 5188, maison_source: 'commune' });
+  it('D5 règle 1 Bordeaux (33063) : 9 654 ventes d’appartement 2023-2025 → 4 233 €/m² ; maison 5 067 €/m² (3 005 ventes)', () => {
+    expect(prix('33063')).toEqual({ code: '33063', appartement_m2: 4233, appartement_source: 'commune', maison_m2: 5067, maison_source: 'commune' });
   });
 
-  it("D5 Saint-Vincent-de-Paul (33487) : 1 vente d'appartement, prix de Bordeaux Métropole (3 844 €/m²) ; maison de la commune", () => {
-    expect(prix('33487')).toMatchObject({ appartement_m2: 3844, appartement_source: 'secteur', maison_source: 'commune' });
+  it('D5 règle 2 : sous 30 ventes récentes, la médiane 2021-2025 de la commune', () => {
+    // Saint-Vincent-de-Paul (33487) : 24 ventes de maisons 2023-2025, 50 sur 2021-2025 → 2 487 €/m².
+    expect(prix('33487')).toMatchObject({ maison_m2: 2487, maison_source: 'commune' });
+    // Templeuve-en-Pévèle (59586) : 28 ventes d'appartements 2023-2025, 134 sur 2021-2025 → 3 519 €/m².
+    expect(prix('59586')).toMatchObject({ appartement_m2: 3519, appartement_source: 'commune' });
+  });
+
+  it("D5 règle 3 Saint-Vincent-de-Paul (33487) : 1 vente d'appartement, prix récent de Bordeaux Métropole (3 700 €/m²)", () => {
+    expect(prix('33487')).toMatchObject({ appartement_m2: 3700, appartement_source: 'secteur' });
   });
 
   it('D8 Strasbourg (67482) : inconnu-alsace-moselle pour les deux biens, comme toute la Moselle, le Bas-Rhin et le Haut-Rhin', () => {
@@ -107,9 +115,9 @@ describe('public/data/achat.json', () => {
   });
 
   it('H67 Paris, Lyon, Marseille : moyenne simple des arrondissements, avec un prix pour les deux biens', () => {
-    expect(prix('75056')).toMatchObject({ appartement_m2: 11080.25, appartement_source: 'commune', maison_source: 'secteur' });
-    expect(prix('69123')).toMatchObject({ appartement_m2: 4912.89, appartement_source: 'commune', maison_source: 'secteur' });
-    expect(prix('13055')).toMatchObject({ appartement_m2: 2884.44, appartement_source: 'commune', maison_source: 'secteur' });
+    expect(prix('75056')).toMatchObject({ appartement_m2: 10640.35, appartement_source: 'commune', maison_source: 'secteur' });
+    expect(prix('69123')).toMatchObject({ appartement_m2: 4652.22, appartement_source: 'commune', maison_source: 'secteur' });
+    expect(prix('13055')).toMatchObject({ appartement_m2: 2945.12, appartement_source: 'commune', maison_source: 'secteur' });
     for (const code of ['75056', '69123', '13055']) expect(prix(code).maison_m2).toBeGreaterThan(0);
   });
 });

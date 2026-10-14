@@ -13,7 +13,8 @@ import urllib.request
 RAW = os.path.join(os.path.dirname(__file__), '..', '..', 'data-raw')
 
 DVF = 'stats_whole_period.csv'
-DVF_INFO = os.path.join(RAW, DVF + '.info.json')  # date de téléchargement, Last-Modified, sha256 (lu par communes.py)
+DVF_MOIS = 'stats_dvf.csv'
+# Pour chaque fichier DVF : <nom>.info.json = date de téléchargement, Last-Modified, sha256 (relus par communes.py).
 
 SOURCES = {
     # COG 2025 (Insee) : communes au 1er janvier 2025.
@@ -23,8 +24,10 @@ SOURCES = {
     # Même jeu, maisons (logement de référence 92 m²) : loyer des maisons (tranche immobilier).
     'pred-mai-mef-dhup.csv': 'https://static.data.gouv.fr/resources/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2025/20251211-145039/pred-mai-mef-dhup.csv',
     # Statistiques DVF d'Etalab, toute la période (prix d'achat, tranche immobilier). Adresse non versionnée : le
-    # fichier change à chaque mise à jour, d'où sa date et son empreinte notées dans DVF_INFO.
+    # fichier change à chaque mise à jour, d'où sa date et son empreinte notées à côté.
     DVF: 'https://data-pipeline-open.s3.sbg.io.cloud.ovh.net/dvf/stats_whole_period.csv',
+    # Même jeu, par mois (~277 Mo) : prix récent 2023-2025 des communes et intercommunalités assez vendues.
+    DVF_MOIS: 'https://data-pipeline-open.s3.sbg.io.cloud.ovh.net/dvf/stats_dvf.csv',
     # Populations légales Insee (H6), via geo.api.gouv.fr (le centre n'est plus utilisé : D18).
     'communes-centre.json': 'https://geo.api.gouv.fr/communes?fields=code,nom,population,centre,codeDepartement&format=json',
     # Mairie de chaque commune (H5, D18) : point de la distance à la mer et du rond du top 10.
@@ -54,12 +57,12 @@ def main():
                 f.write(chunk)
                 sha.update(chunk)
         os.replace(path + '.part', path)
-        if name == DVF:
+        if name in (DVF, DVF_MOIS):
             info = {'url': url, 'telecharge_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
                     'last_modified': modifie, 'octets': os.path.getsize(path), 'sha256': sha.hexdigest()}
-            with open(DVF_INFO, 'w') as f:
+            with open(path + '.info.json', 'w') as f:
                 json.dump(info, f, indent=1)
-            print(f'  {DVF} : {info}')
+            print(f'  {name} : {info}')
     ltm = os.path.join(RAW, 'Limite_terre_mer_France_metropolitaine')
     if not os.path.isdir(ltm):
         print('extraction de la limite terre-mer (bsdtar)')
