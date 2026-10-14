@@ -1,7 +1,7 @@
 {
   "slice": "loyer-mer",
   "fixture": {
-    "description": "Fixture inventée « 5 communes », aux valeurs connues, à la place des ~35 000 communes réelles. Codes INSEE et noms inventés (99xxx), pour ne jamais confondre fixture et vraies données ; la jointure se fait par code. Entrées : loyer_m2 (loyer au m² de la commune), estimation_propre (faux = estimation du secteur), mer_km (distance à vol d'oiseau, non arrondie), population. Formes : carrés de 0,5° côte à côte, en longitude/latitude. Nom affiché attendu = nom + « (département) », par ex. « Portmer (17) ».",
+    "description": "Fixture inventée « 5 communes », aux valeurs connues, à la place des ~35 000 communes réelles. Codes INSEE et noms inventés (99xxx), pour ne jamais confondre fixture et vraies données ; la jointure se fait par code. Entrées : loyer_m2 (loyer au m² de la commune), estimation_propre (faux = estimation du secteur), mer_km (distance à vol d'oiseau, non arrondie), population. Formes : carrés de 0,5° côte à côte, en longitude/latitude. Nom affiché attendu = nom + « (département) », par ex. « Portmer (17) ». Révision cadre-de-vie (2026-10-14) : chaque commune gagne type_env, montagne_classee et montagne_km, valeurs de la fixture « 6 communes · cadre de vie » de la tranche cadre-de-vie.",
     "items": [
       {
         "id": "A",
@@ -181,120 +181,120 @@
       "rule": "R3",
       "given": "Fixture « 5 communes », page ouverte sur / (réglages de départ)",
       "when": "la carte est affichée",
-      "then": "A a le score 72 et la couleur de la tranche 60–80 de la légende, E 49 (tranche 40–60), B 32 (tranche 20–40) ; C et D ne sont pas colorées",
-      "passes": true
+      "then": "D a le score 65 et la couleur de la tranche 60–80 de la légende, A 46 (tranche 40–60), B 31 (tranche 20–40), E 9 (tranche 0–20) ; C n'est pas colorée",
+      "passes": false
     },
     {
       "id": "AC-2",
       "rule": "R2",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
-      "when": "l'utilisateur règle la mer sur « Sans limite »",
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
+      "when": "l'utilisateur règle la mer sur « Peu importe »",
       "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C n'est pas colorée",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-3",
       "rule": "R1",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
-      "when": "l'utilisateur règle la mer sur 40 km",
-      "then": "B passe avec le score 15 (39,9 km affiché 40 km, égal au plafond) ; A a 72, E 46 ; C et D ne sont pas colorées",
-      "passes": true
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
+      "when": "l'utilisateur règle le loyer sur 650 €",
+      "then": "A passe avec le score 49 (650 € affiché, égal au plafond) ; B, C, D et E ne sont pas colorées",
+      "passes": false
     },
     {
       "id": "AC-4",
       "rule": "R5",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "la liste est affichée",
-      "then": "la liste montre « 3 communes passent tes critères » puis, dans l'ordre : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km »",
-      "passes": true
+      "then": "la liste montre « 3 communes passent tes critères » puis, dans l'ordre : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 48 · 1 092 € · 7 km », « 3 · Grandeville (33) · 25 · 832 € · 40 km »",
+      "passes": false
     },
     {
       "id": "AC-5",
       "rule": "R1",
       "given": "Fixture « 5 communes »",
-      "when": "l'utilisateur règle le loyer sur 300 € et la mer sur 5 km",
+      "when": "l'utilisateur règle le loyer sur 300 € et la mer sur 10 km",
       "then": "aucune des communes A, B, C, D et E n'est colorée et la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-6",
       "rule": "R3",
       "given": "Fixture « 5 communes », taille « Peu importe »",
-      "when": "l'utilisateur règle le loyer et la mer sur « Sans limite »",
+      "when": "l'utilisateur règle le loyer sur « Sans limite », la mer et la montagne restant sur « Peu importe »",
       "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. »",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-7",
       "rule": "R4",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Grandeville (33) dans la liste",
-      "then": "la fiche affiche « Grandeville (33) », « Grande ville · 260 000 habitants », le score 32, « 3e sur 3 communes qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » sans la ligne « Estimation du secteur », et « 40 km de la mer à vol d'oiseau »",
-      "passes": true
+      "then": "la fiche affiche « Grandeville (33) », « Grand centre urbain · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » sans la ligne « Estimation du secteur », et « 40 km de la mer à vol d'oiseau »",
+      "passes": false
     },
     {
       "id": "AC-8",
       "rule": "R4",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Portmer (17)",
-      "then": "la fiche affiche « Portmer (17) », « Petite ville · 23 000 habitants », « 1re sur 3 communes qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) », « Estimation du secteur (communes voisines) » et « moins d'1 km de la mer »",
-      "passes": true
+      "then": "la fiche affiche « Portmer (17) », « Centre urbain intermédiaire · 23 000 habitants », « 1re sur 3 communes qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) », « Estimation du secteur (communes voisines) » et « moins d'1 km de la mer »",
+      "passes": false
     },
     {
       "id": "AC-9",
       "rule": "R1",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Montcher (75) sur la carte",
-      "then": "la fiche affiche « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » et « Mer 148 km : au-dessus de ton plafond de 60 km », sans score ni rang",
-      "passes": true
+      "then": "la fiche affiche « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » et « Mer 148 km : au-dessus de ton plafond de 50 km », sans score ni rang",
+      "passes": false
     },
     {
       "id": "AC-10",
       "rule": "R1",
-      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 60 km, taille « Peu importe »",
-      "when": "l'utilisateur coche la taille « Petite ville »",
-      "then": "seule A passe (score 72) et la liste affiche « 1 commune passe tes critères » ; la fiche de Grandeville (33) affiche « Taille : grande ville (260 000 habitants) » ; D, E, B et C ne sont pas colorées",
-      "passes": true
+      "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
+      "when": "l'utilisateur coche la taille « 10 000 – 50 000 hab. »",
+      "then": "seule A passe (score 72) et la liste affiche « 1 commune passe tes critères » ; la fiche de Grandeville (33) affiche « Taille : 260 000 habitants, hors des tailles choisies » ; D, E, B et C ne sont pas colorées",
+      "passes": false
     },
     {
       "id": "AC-11",
       "rule": "R7",
       "given": "Fixture « 5 communes »",
-      "when": "l'utilisateur ouvre /?loyer=800&mer=60",
-      "then": "les réglages affichent 800 € et 60 km ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 59 · 650 € · moins d'1 km »",
-      "passes": true
+      "when": "l'utilisateur ouvre /?loyer=800&mer=50",
+      "then": "les réglages affichent 800 € et 50 km ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 58 · 650 € · moins d'1 km »",
+      "passes": false
     },
     {
       "id": "AC-12",
       "rule": "R7",
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?loyer=abc&mer=aucun&taille=village",
-      "then": "les réglages affichent 1 200 €, « Sans limite » et « Peu importe » ; l'adresse devient /?loyer=1200&mer=aucun ; la liste montre dans l'ordre Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
-      "passes": true
+      "then": "les réglages affichent 1 200 €, la mer sur « Peu importe » et aucune taille cochée ; l'adresse devient /?loyer=1200 ; la liste montre dans l'ordre Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
+      "passes": false
     },
     {
       "id": "AC-13",
       "rule": "R7",
       "given": "Fixture « 5 communes », page ouverte sur /",
       "when": "l'utilisateur règle le loyer sur 800 €",
-      "then": "l'adresse de la page est /?loyer=800&mer=60, et l'historique du navigateur n'a pas gagné d'entrée",
-      "passes": true
+      "then": "l'adresse de la page est /?loyer=800, et l'historique du navigateur n'a pas gagné d'entrée",
+      "passes": false
     },
     {
       "id": "AC-14",
       "rule": "R7",
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?taille=petite-ville,ville-moyenne",
-      "then": "les pastilles « Petite ville » et « Ville moyenne » sont cochées ; l'adresse devient /?loyer=1200&mer=60&taille=petite-ville,ville-moyenne ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 72 et Quaibleu (13) 49",
-      "passes": true
+      "then": "les pastilles « 10 000 – 50 000 hab. » et « 50 000 – 200 000 hab. » sont cochées ; l'adresse devient /?loyer=1200&taille=petite-ville,ville-moyenne ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 46 et Quaibleu (13) 9",
+      "passes": false
     },
     {
       "id": "AC-15",
       "rule": "R8",
       "given": "Fixture « 5 communes », réglages de départ, fond IGN en panne (service simulé)",
       "when": "la page s'ouvre",
-      "then": "A (72), E (49) et B (32) sont colorées sur le fond uni, la mention « Fond de carte indisponible » est visible, et la liste montre « 3 communes passent tes critères »",
-      "passes": true
+      "then": "D (65), A (46), B (31) et E (9) sont colorées sur le fond uni, la mention « Fond de carte indisponible » est visible, et la liste montre « 4 communes passent tes critères »",
+      "passes": false
     }
   ]
 }

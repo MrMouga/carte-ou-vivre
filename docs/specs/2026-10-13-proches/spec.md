@@ -1,5 +1,5 @@
 # Proches
-2026-10-13 · validée · révisée 2026-10-13 (D10 à D16) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-13 · validée · révisée 2026-10-13 (D10 à D16) · révisée 2026-10-14 (D17, tranche cadre-de-vie) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : on ajoute jusqu'à 5 proches avec un temps maximum en voiture, et la carte se recolore.
 **Pourquoi** : c'est la Différence du pitch. Sans les adresses que toi seul connais, la carte ressemble à villeideale.fr.
@@ -25,6 +25,8 @@
 - **D14** — La mer en minutes sort de cette tranche : pas de bascule, la mer reste en km à vol d'oiseau (D8 de loyer-mer) et la fiche ne montre que les km. Remplace D1 pour la mer et D9 ; R14, H23, H25, H27 et AC-12, AC-13, AC-15 sont reportés (gardés dans acceptance.json, liste « reportes »). *Pourquoi* : choix de Vincent à /breakdown (« on fera ça plus tard ») ; la tranche rapetisse et ne garde qu'un service extérieur. *Écarté* : la garder (une source à trouver et 34 746 trajets à précalculer).
 - **D15** — Le plafond d'un proche va de 15 min à **3 h** ; au-delà, « plus de 3 h ». 12 zones par proche au lieu de 24. Remplace « 6 h » dans D2 et D5. *Pourquoi* : mesure de la tâche 0 — jusqu'à 6 h, un proche prend 60 s et l'IGN abandonne 2 à 5 zones sur 24 (erreur après 60 s) ; jusqu'à 3 h, 14 à 16 s. Choix de Vincent. *Écarté* : l'IGN jusqu'à 3 h et une estimation au-delà (proposé par Claude, pour garder l'exemple du pitch) ; 2 h 30 au plus ; 6 h calculées progressivement (2 min par proche) ; un serveur de calcul à nous. Coût accepté : l'exemple Léa et Karim (Nantes et Toulouse) ne se joue plus.
 - **D16** — Un temps de proche est juste « à quelques minutes près » : les zones de l'IGN peuvent le placer jusqu'à 7 min sous l'itinéraire IGN (Bordeaux depuis Nantes : zone de 3 h 30, itinéraire 3 h 34 à 3 h 37). Remplace « jamais le sous-estimer » de D11. *Pourquoi* : mesure de la tâche 0 sur 12 villes ; choix de Vincent. *Écarté* : afficher la tranche suivante pour ne jamais sous-estimer (10 à 15 min de trop le plus souvent).
+
+- **D17** — Étendue par la tranche [cadre-de-vie](../2026-10-14-cadre-de-vie/spec.md) : la montagne note comme la mer (R11) ; le départ n'a plus de mer (D7 de cadre-de-vie), donc les critères partent de l'adresse explicite `/?loyer=1200&mer=50` ; AC-1 à AC-11, AC-14 et AC-16 recalés selon [recalage.md](../2026-10-14-cadre-de-vie/recalage.md) ; les critères reportés (AC-12, AC-13, AC-15) seront réécrits avec la mer en minutes. *Pourquoi* : D4 et D7 de cadre-de-vie. *Écarté* : garder la mer à 60 km dans ces seuls critères. Validé par Vincent le 2026-10-14.
 
 **Pas maintenant** : la mer en minutes (D14), les proches au-delà de 3 h (D15), « Copier le lien », les proches ou la commune dans l'adresse de la page, les poids, les transports en commun, l'heure de départ, la mesure d'audience (à /ship, sans jamais l'adresse), la montagne, l'emploi, l'achat.
 **Hypothèses** : choix par défaut H19 à H30 dans [détails](details.md#hypothèses).

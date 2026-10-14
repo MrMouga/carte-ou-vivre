@@ -1,5 +1,5 @@
 # Immobilier
-2026-10-14 · validée · révisée 2026-10-14 (D10, /ui ; D5, D6 et le risque, /build — choix de Vincent) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-14 · validée · révisée 2026-10-14 (D10, /ui ; D5, D6 et le risque, /build — choix de Vincent) · révisée 2026-10-14 (D11, tranche cadre-de-vie) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : le critère loyer devient immobilier : appartement ou maison, louer ou acheter, en montant total pour une surface choisie ou au m².
 **Pourquoi** : on s'installe pour longtemps, on peut vouloir acheter, et une maison ne coûte pas le prix d'un appartement ; la carte ne répond qu'à « louer 52 m² en appartement ».
@@ -19,6 +19,8 @@
 - **D9** — Le fichier des prix d'achat est exclu des moteurs de recherche, le site reste indexé. *Pourquoi* : condition du fichier des ventes. *Écarté* : renoncer à l'achat (avis de la discovery).
 
 - **D10** — Retours du design (/ui) : libellés du curseur « Loyer mensuel » et « Prix d'achat » (H65) ; pas de sous-texte sous le curseur du prix, pas de libellé « Surface » devant son champ (H56) ; légende inchangée (H60) ; AC-4 suit (« 23 €/m² » sans « par mois »), et AC-2, AC-5, AC-9 d'interface-telephone (« Loyer mensuel », D12 de cette tranche). *Pourquoi* : choix de Vincent sur le prototype ; le libellé dit déjà « mensuel », le champ dit déjà « m² ». *Écarté* : la légende « Prix inconnu : pas de score » ; les sous-textes du brief. Validé par Vincent le 2026-10-14, AC-4 compris.
+
+- **D11** — Étendue par la tranche [cadre-de-vie](../2026-10-14-cadre-de-vie/spec.md) : R25, la montagne fait partie des critères qui notent une commune sans prix ; R26, l'adresse gagne `montagne` et `env` et n'écrit plus `mer` quand elle est sur Peu importe (R31) ; le départ n'a plus de mer (D7) ; AC-1 à AC-8, AC-10, AC-11 et AC-13 recalés selon [recalage.md](../2026-10-14-cadre-de-vie/recalage.md) (AC-8 passe de `mer=200` à `montagne=100`) ; AC-9 et AC-12 inchangés. *Pourquoi* : D4, D6 et D7 de cadre-de-vie. *Écarté* : —. Validé par Vincent le 2026-10-14.
 
 **Pas maintenant** : un prix au m² qui varie avec la surface, les terrains, le neuf, loyer et achat côte à côte.
 **Hypothèses** : 13 choix par défaut (libellés, plages, arrondis, adresse) dans [détails](details.md#hypothèses).

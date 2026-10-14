@@ -1,0 +1,383 @@
+{
+  "slice": "cadre-de-vie",
+  "fixture": {
+    "description": "Fixture inventée « 6 communes » d'immobilier, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix d'achat et mer_km ; chaque commune gagne type_env (type d'environnement, nom de H71), montagne_classee (vrai = classée en zone de montagne, en tout ou partie) et montagne_km (distance à vol d'oiseau de la mairie à la zone, non arrondie ; 0 si classée). Les fixtures « 5 communes » (A à E) de loyer-mer, proches et interface-telephone gagnent les mêmes champs. Valeurs affichées : types A « Centre urbain intermédiaire », B et C « Grand centre urbain », D « Bourg rural », E « Ceinture urbaine », F « Petite ville » ; montagne A 140 km, B 50 km (49,6, égal au plafond de 50), C 280 km, D « Commune de montagne », E 62 km, F « moins d'1 km » (comparée comme 1 km, non classée). Au départ (prix 1 200 € pour 52 m², tout le cadre de vie sur Peu importe) : loyers A 650, B 832, C 1 560, D 416, E 1 092, F 572 ; mer A « moins d'1 km », B 40, C 148, D 180, E 7, F 420.",
+    "items": [
+      {
+        "id": "A",
+        "code_insee": "99001",
+        "nom": "Portmer",
+        "dep": "17",
+        "population": 23000,
+        "loyer_m2": 12.5,
+        "estimation_propre": false,
+        "loyer_m2_maison": 10.5,
+        "estimation_propre_maison": false,
+        "achat_appartement": {
+          "m2": 3800,
+          "source": "commune"
+        },
+        "achat_maison": {
+          "m2": 3500,
+          "source": "secteur"
+        },
+        "mer_km": 0.9,
+        "forme": [
+          [
+            0,
+            0
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.5,
+            0.5
+          ],
+          [
+            0,
+            0.5
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "type_env": "centre-urbain-intermediaire",
+        "montagne_classee": false,
+        "montagne_km": 140
+      },
+      {
+        "id": "B",
+        "code_insee": "99002",
+        "nom": "Grandeville",
+        "dep": "33",
+        "population": 260000,
+        "loyer_m2": 16.0,
+        "estimation_propre": true,
+        "loyer_m2_maison": 13.0,
+        "estimation_propre_maison": true,
+        "achat_appartement": {
+          "m2": 4400,
+          "source": "commune"
+        },
+        "achat_maison": {
+          "m2": 5100,
+          "source": "commune"
+        },
+        "mer_km": 39.9,
+        "forme": [
+          [
+            1,
+            0
+          ],
+          [
+            1.5,
+            0
+          ],
+          [
+            1.5,
+            0.5
+          ],
+          [
+            1,
+            0.5
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "type_env": "grand-centre-urbain",
+        "montagne_classee": false,
+        "montagne_km": 49.6
+      },
+      {
+        "id": "C",
+        "code_insee": "99003",
+        "nom": "Montcher",
+        "dep": "75",
+        "population": 2100000,
+        "loyer_m2": 30.0,
+        "estimation_propre": true,
+        "loyer_m2_maison": 24.0,
+        "estimation_propre_maison": true,
+        "achat_appartement": {
+          "m2": 10200,
+          "source": "commune"
+        },
+        "achat_maison": {
+          "m2": 9800,
+          "source": "commune"
+        },
+        "mer_km": 148.2,
+        "forme": [
+          [
+            2,
+            0
+          ],
+          [
+            2.5,
+            0
+          ],
+          [
+            2.5,
+            0.5
+          ],
+          [
+            2,
+            0.5
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "type_env": "grand-centre-urbain",
+        "montagne_classee": false,
+        "montagne_km": 280
+      },
+      {
+        "id": "D",
+        "code_insee": "99004",
+        "nom": "Terrebasse",
+        "dep": "23",
+        "population": 4200,
+        "loyer_m2": 8.0,
+        "estimation_propre": false,
+        "loyer_m2_maison": 6.5,
+        "estimation_propre_maison": false,
+        "achat_appartement": {
+          "m2": null,
+          "source": "inconnu-secteur"
+        },
+        "achat_maison": {
+          "m2": 1300,
+          "source": "commune"
+        },
+        "mer_km": 180.3,
+        "forme": [
+          [
+            0,
+            1
+          ],
+          [
+            0.5,
+            1
+          ],
+          [
+            0.5,
+            1.5
+          ],
+          [
+            0,
+            1.5
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "type_env": "bourg-rural",
+        "montagne_classee": true,
+        "montagne_km": 0
+      },
+      {
+        "id": "E",
+        "code_insee": "99005",
+        "nom": "Quaibleu",
+        "dep": "13",
+        "population": 85000,
+        "loyer_m2": 21.0,
+        "estimation_propre": true,
+        "loyer_m2_maison": 17.0,
+        "estimation_propre_maison": true,
+        "achat_appartement": {
+          "m2": 4800,
+          "source": "commune"
+        },
+        "achat_maison": {
+          "m2": 4600,
+          "source": "commune"
+        },
+        "mer_km": 7.0,
+        "forme": [
+          [
+            1,
+            1
+          ],
+          [
+            1.5,
+            1
+          ],
+          [
+            1.5,
+            1.5
+          ],
+          [
+            1,
+            1.5
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "type_env": "ceinture-urbaine",
+        "montagne_classee": false,
+        "montagne_km": 62
+      },
+      {
+        "id": "F",
+        "code_insee": "99006",
+        "nom": "Rhinval",
+        "dep": "67",
+        "population": 30000,
+        "loyer_m2": 11.0,
+        "estimation_propre": true,
+        "loyer_m2_maison": null,
+        "estimation_propre_maison": null,
+        "achat_appartement": {
+          "m2": null,
+          "source": "inconnu-alsace-moselle"
+        },
+        "achat_maison": {
+          "m2": null,
+          "source": "inconnu-alsace-moselle"
+        },
+        "mer_km": 420.0,
+        "forme": [
+          [
+            2,
+            1
+          ],
+          [
+            2.5,
+            1
+          ],
+          [
+            2.5,
+            1.5
+          ],
+          [
+            2,
+            1.5
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "type_env": "petite-ville",
+        "montagne_classee": false,
+        "montagne_km": 0.6
+      }
+    ],
+    "services": {
+      "fond IGN (Géoplateforme)": {
+        "normal": {
+          "réponse": "tuiles servies"
+        }
+      }
+    }
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R32",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /",
+      "then": "l'adresse devient /?loyer=1200 ; dans « Cadre de vie », « Peu importe » est cochée pour la mer et pour la montagne, aucune taille ni aucun type n'est coché ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 65 · 416 € · 180 km », « 2 · Rhinval (67) · 52 · 572 € · 420 km », « 3 · Portmer (17) · 46 · 650 € · moins d'1 km », « 4 · Grandeville (33) · 31 · 832 € · 40 km », « 5 · Quaibleu (13) · 9 · 1 092 € · 7 km » ; Montcher (75) n'est pas colorée",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R28",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur choisit la mer « 50 km »",
+      "then": "l'adresse devient /?loyer=1200&mer=50 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 48 · 1 092 € · 7 km », « 3 · Grandeville (33) · 25 · 832 € · 40 km » ; la fiche de Rhinval (67) affiche « Mer 420 km : au-dessus de ton plafond de 50 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R29",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur choisit la montagne « 10 km »",
+      "then": "l'adresse devient /?loyer=1200&montagne=10 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 180 km » et « 2 · Rhinval (67) · 71 · 572 € · 420 km » (Terrebasse, commune de montagne, a la note 100 en montagne) ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 10 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R29",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur choisit la montagne « En montagne »",
+      "then": "l'adresse devient /?loyer=1200&montagne=0 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km » (la montagne ne note pas) ; la fiche de Rhinval (67) affiche « Montagne : pas une commune de montagne (moins d'1 km) » et celle de Grandeville (33) « Montagne : pas une commune de montagne (50 km) »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R27",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur coche le type « Grand centre urbain », puis aussi « Bourg rural »",
+      "then": "après le premier : l'adresse devient /?loyer=1200&env=grand-centre-urbain ; la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km » ; la fiche de Portmer (17) affiche « Environnement : centre urbain intermédiaire, hors des types choisis ». Après le second : l'adresse devient /?loyer=1200&env=grand-centre-urbain,bourg-rural ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R27",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur coche la taille « 10 000 – 50 000 hab. »",
+      "then": "les pastilles de taille affichent, dans l'ordre, « Moins de 10 000 hab. », « 10 000 – 50 000 hab. », « 50 000 – 200 000 hab. », « Plus de 200 000 hab. » ; l'adresse devient /?loyer=1200&taille=petite-ville ; la liste montre « 2 communes passent tes critères » puis Rhinval (67) 52 et Portmer (17) 46 ; la fiche de Grandeville (33) affiche « Taille : 260 000 habitants, hors des tailles choisies »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R30",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer=50",
+      "when": "l'utilisateur choisit Grandeville (33), puis Terrebasse (23), puis Rhinval (67)",
+      "then": "la fiche de Grandeville affiche « Grand centre urbain · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 40 km de la mer à vol d'oiseau » et « 50 km de la montagne à vol d'oiseau » ; celle de Terrebasse « Bourg rural · 4 200 habitants », « Commune de montagne » et « Mer 180 km : au-dessus de ton plafond de 50 km » ; celle de Rhinval « Petite ville · 30 000 habitants » et « moins d'1 km de la montagne »",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R31",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-rural,village",
+      "then": "la mer est sur « Peu importe », la montagne sur « En montagne », la taille « Moins de 10 000 hab. » et le type « Bourg rural » sont cochés ; l'adresse devient /?loyer=1200&montagne=0&taille=petite-commune&env=bourg-rural ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R31",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?loyer=1200&mer=60, puis /?loyer=1200&mer=25",
+      "then": "avec mer=60 : la mer est sur « 100 km », l'adresse devient /?loyer=1200&mer=100, la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 72, Quaibleu (13) 51, Grandeville (33) 45. Avec mer=25 : la mer est sur « 30 km », l'adresse devient /?loyer=1200&mer=30, la liste montre « 2 communes passent tes critères » puis Portmer (17) 71 et Quaibleu (13) 43",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R29",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?loyer=aucun&montagne=0",
+      "then": "Terrebasse (23) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Terrebasse affiche « Commune de montagne », sans score ni rang",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R29",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?loyer=1200&mer=100&montagne=50",
+      "then": "la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 30 · 832 € · 40 km » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne ; loyer 31, mer 60) ; la fiche de Grandeville affiche « 50 km de la montagne à vol d'oiseau » ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 50 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R30",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /",
+      "then": "le pied de page contient « grille communale de densité » et « Insee », et « loi Montagne » et « Cerema », à côté des mentions des tranches précédentes",
+      "passes": false
+    }
+  ]
+}
