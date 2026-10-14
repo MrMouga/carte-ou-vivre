@@ -31,7 +31,8 @@ for (const fenetre of FENETRES) {
       // L'indicateur « Chargement de la carte… » reste au moins 300 ms, au centre de la bande, sur Quaibleu à cette échelle.
       await expect(page.getByText('Chargement de la carte…')).toBeHidden();
       // Les ronds du top 10 (22 px) couvrent les carrés de 0,5° à cette échelle : on lit la couleur de la carte dessous.
-      await page.addStyleTag({ content: '.maplibregl-marker { visibility: hidden; }' });
+      // Les boutons de zoom aussi : à 390 × 664 (feuille à 45 %, tâche 2), « Zoomer » couvre le coin nord-est (R2).
+      await page.addStyleTag({ content: '.maplibregl-marker, [aria-label="Zoomer"], [aria-label="Dézoomer"] { visibility: hidden; }' });
       await attendreCouleurs(
         page,
         { A: 'score-4', E: 'score-3', B: 'score-2', C: null, D: null, R1: null, R2: null },
