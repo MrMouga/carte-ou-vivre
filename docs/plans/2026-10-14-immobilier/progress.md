@@ -41,3 +41,6 @@ Voir demo.md § Preuves (captures/T0 à T5, qa, qa2 ; T5-bout-en-bout.txt ; mesu
 
 ## Coût
 Voir demo.md § Coût : ≈ 4 h 55, ≈ 2,6 M jetons d'agents.
+
+Démo acceptée par Vincent le 2026-10-14 ; décisions gardées reportées dans la spec (D5, D6, R24, R25, H4, H61, H62, H67, étape 4 de la vérification de bout en bout, « C'est réussi si »).
+Terminé 2026-10-14
