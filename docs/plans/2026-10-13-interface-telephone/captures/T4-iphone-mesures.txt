@@ -1,16 +1,16 @@
-Relevé de la sonde sur l'iPhone de Vincent — tâche 4 d'interface-telephone, 2026-10-14 (≈ 09:00–09:06)
+Relevé de la sonde sur l'iPhone de Vincent (iPhone 13 Pro, Safari 26.4) — tâche 4 d'interface-telephone, 2026-10-14 (≈ 09:00–09:13)
 Version construite 45fd2d3, servie par `vite preview` (5182) via le relais de la sonde (5183). Brut : probe/clavier-t4/mesures.jsonl (non versionné).
 Sessions ignorées : bo27e3 (Chromium sans tête du Mac, 08:58) et f2gf4t (navigateur du Mac en bureau, 1603 × 943, aucun champ touché).
 Lecture : t en ms depuis le chargement ; vv = partie visible (décalage + hauteur) ; clavier ouvert = vv de 361 px ; champ « VISIBLE » = entre 0 et la hauteur de vv.
-Adresses des suggestions et des proches masquées.
+Adresses des suggestions et des proches masquées (tout libellé avec un code postal ou un nom de voie), noms des proches remplacés par [proche].
 
 == Résumé calculé ==
 
 Session 84tjml · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.4 · écran 390×844 @3 · fenêtre 390×645 · /
-  focus #1 « input#search-lieu_r_8_ « Adresse ou ville » » (proches 0) à t 12241 :
+  focus #1 input#search-lieu_r_8_ « Adresse ou ville » (proches 0) à t 12241, après un toucher sur input#search-lieu_r_8_ « Adresse ou ville » (y 575) :
     au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
     3 s après : champ 87 → 131, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
-  focus #2 « input#search-nom_r_9_ « Nom » » (proches 0) à t 18687 :
+  focus #2 input#search-nom_r_9_ « Nom » (proches 0) à t 18687, après un toucher sur button « [adresse masquée] » (y 165) :
     au début du focus (avant notre code) : champ 162 → 206, vv 0+361, scrollY 0, feuille 40 → 645
     3 s après : champ 158 → 202, vv 3.7+361, scrollY 4 ; partie visible la plus courte 361 px ; défilement de la page au plus 4 px ; instants où le champ est caché : 0
 
@@ -22,6 +22,40 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   glisser de la tête/barre : t 23490 : de y 361 à 569 (vers le bas), départ button « Replier la feuille », arrivée button « Déplier la feuille »
   glisser de la tête/barre : t 24445 : de y 610 à 524 (vers le haut), départ span « compte-feuille », arrivée span « compte-feuille »
   glisser de la tête/barre : t 72174 : de y 363.7 à 488 (vers le bas), départ button « Replier la feuille », arrivée button « Déplier la feuille »
+
+Session p7ihed · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.4 · écran 390×844 @3 · fenêtre 390×645 · /
+  focus #1 input#search-lieu_r_8_ « Adresse ou ville » (proches 0) à t 3588, après un toucher sur input#search-lieu_r_8_ « Adresse ou ville » (y 572.3) :
+    au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
+    3 s après : champ 87 → 131, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
+  focus #2 input#search-nom_r_9_ « Nom » (proches 0) à t 8740, après un toucher sur button « [adresse masquée] » (y 169.3) :
+    au début du focus (avant notre code) : champ 162 → 206, vv 0+361, scrollY 0, feuille 40 → 645
+    3 s après : champ 0 → 0, vv 0+645, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 4 px ; instants où le champ est caché : 0
+  focus #3 input#search-lieu_r_b_ « Adresse ou ville » (proches 1) à t 20605, après un toucher sur button « + Ajouter un proche » (y 550.7) :
+    au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
+    3 s après : champ 87 → 131, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
+  focus #4 input#search-nom_r_c_ « Nom » (proches 1) à t 34116, après un toucher sur button « [adresse masquée] » (y 206.7) :
+    au début du focus (avant notre code) : champ 162 → 206, vv 0+361, scrollY 0, feuille 40 → 645
+    3 s après : champ 0 → 0, vv 0+645, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 4 px ; instants où le champ est caché : 0
+  focus #5 input#search-lieu_r_e_ « Adresse ou ville » (proches 0) à t 61848, après un toucher sur button « Effacer mes proches » (y 483.3) :
+    au début du focus (avant notre code) : champ 578.8 → 622.8, vv 0+645, scrollY 0, feuille 354.8 → 645
+    3 s après : champ 487.8 → 531.8, vv 0+645, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 284 px ; instants où le champ est caché : 6
+  focus #6 input#search-lieu_r_e_ « Adresse ou ville » (proches 0) à t 120904, après un toucher sur input#search-lieu_r_e_ « Adresse ou ville » (y 529.7) :
+    au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
+    3 s après : champ 87 → 131, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
+  focus #7 input#search-nom_r_f_ « Nom » (proches 0) à t 133832, après un toucher sur button « [adresse masquée] » (y 159.7) :
+    au début du focus (avant notre code) : champ 162 → 206, vv 0+361, scrollY 0, feuille 40 → 645
+    3 s après : champ 158 → 202, vv 3.7+361, scrollY 4 ; partie visible la plus courte 361 px ; défilement de la page au plus 4 px ; instants où le champ est caché : 0
+  focus #8 input#search-lieu_r_h_ « Adresse ou ville » (proches 1) à t 143082, après un toucher sur button « + Ajouter un proche » (y 511.7) :
+    au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
+    3 s après : champ 91 → 135, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
+  focus #9 input#search-nom_r_i_ « Nom » (proches 1) à t 150687, après un toucher sur button « [adresse masquée] » (y 172) :
+    au début du focus (avant notre code) : champ 166 → 210, vv 0+361, scrollY 0, feuille 40 → 645
+    3 s après : champ 158 → 202, vv 7.7+361, scrollY 8 ; partie visible la plus courte 361 px ; défilement de la page au plus 8 px ; instants où le champ est caché : 0
+  dépli d'un toucher sur la barre repliée à t 84621 (@280,620, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  dépli d'un toucher sur la barre repliée à t 105207 (@276.3,617.3, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  dépli d'un toucher sur la barre repliée à t 108358 (@242.3,613.3, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  dépli d'un toucher sur la barre repliée à t 111959 (@216,613, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  glisser de la tête/barre : t 17913 : de y 376.3 à 201.7 (vers le haut), départ span « compte-feuille », arrivée span « compte-feuille »
 
 == Fil des événements (analyser.mjs, sans pointerdown/up ni souris de synthèse ; « apres » réduits aux instants clés) ==
 
@@ -44,8 +78,8 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   12743 apres #1 +500 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
   13243 apres #1 +1000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
   15242 apres #1 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
-  18485 touchstart button « [adresse masquée], 33000 Bordeaux » @305,165
-  18670 click button « [adresse masquée], 33000 Bordeaux » @305,165 · sous le doigt : button « [adresse masquée], 33000 Bordeaux »
+  18485 touchstart button « [adresse masquée] » @305,165
+  18670 click button « [adresse masquée] » @305,165 · sous le doigt : button « [adresse masquée] »
   18686 focusout input#search-lieu_r_8_ « Adresse ou ville » → input#search-nom_r_9_ « Nom »
   18687 focus-avant-react #2 input#search-nom_r_9_ « Nom » (proches 0) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
   18687 focus-apres-react #2 input#search-nom_r_9_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
@@ -60,13 +94,13 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   21985 touchstart button « Ajouter » @31,222.3
   22111 click button « Ajouter » @31,222 · sous le doigt : button « Ajouter »
   22180 focusin button « + Ajouter un proche »
-  26679 touchstart div « Bordeaux (33) » @323,496.3
-  31354 focusout button « + Ajouter un proche » → span « Plafond de Bordeaux (33) »
-  31355 focusin span « Plafond de Bordeaux (33) »
-  31356 touchstart span « Plafond de Bordeaux (33) » @259.3,545.3
-  33748 touchstart div « Tes prochesEffacer mes prochesBordeaux ( » @286.7,469.7
+  26679 touchstart div « [proche] » @323,496.3
+  31354 focusout button « + Ajouter un proche » → span « Plafond de [proche] »
+  31355 focusin span « Plafond de [proche] »
+  31356 touchstart span « Plafond de [proche] » @259.3,545.3
+  33748 touchstart div « [ligne d'un proche, masquée] » @286.7,469.7
   35601 touchstart button#_r_0_onglet-liste « Les 10 premières » @307.7,422
-  35702 focusout span « Plafond de Bordeaux (33) » → button#_r_0_onglet-liste « Les 10 premières »
+  35702 focusout span « Plafond de [proche] » → button#_r_0_onglet-liste « Les 10 premières »
   35702 focusin button#_r_0_onglet-liste « Les 10 premières »
   35703 click button#_r_0_onglet-liste « Les 10 premières » @308,422 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
   36991 touchstart span « Le Teich (33) » @293.7,537
@@ -87,7 +121,7 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   48349 click canvas « Map » @220,154 · sous le doigt : canvas « Map »
   48363 focusout canvas « Map » → h2#titre-fiche « Nolay (58) »
   48363 focusin h2#titre-fiche « Nolay (58) »
-  49484 touchstart li « Bordeaux (33) plus de 3 h : au-dessus de » @343.3,559.3
+  49484 touchstart li « [proche] plus de 3 h : au-dessus de » @343.3,559.3
   54650 touchstart button « ← Les 10 premières » @42.7,415
   54835 focusout h2#titre-fiche « Nolay (58) » → window
   54835 click button « ← Les 10 premières » @43,415 · sous le doigt : button « ← Les 10 premières »
@@ -124,7 +158,7 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   31424 click button#_r_0_onglet-criteres « Critères » @150,430 · sous le doigt : button#_r_0_onglet-criteres « Critères »
   32043 touchstart button « Loyer » @282.3,531
   33227 touchstart footer « Estimations ANIL, à partir des données d » @285.3,570.7
-  33619 touchstart div#_r_6_ « Bordeaux (33)2 h2 [voie masquée]» @296.7,476.7
+  33619 touchstart div#_r_6_ « [adresse masquée] » @296.7,476.7
   36953 touchstart button « Dézoomer » @372.3,83
   36998 focusout button#_r_0_onglet-criteres « Critères » → window
   36998 click button « Dézoomer » @372,83 · sous le doigt : button « Dézoomer »
@@ -207,3 +241,236 @@ Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.
   73457 touchstart span « compte-feuille » @224.7,621.3
   73526 focusout button « Replier la feuille » → window
   73527 click button « Replier la feuille » @225,621 · sous le doigt : button « Replier la feuille »
+
+=== session p7ihed · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1
+    écran 390×844 @3 · fenêtre 390×645 · http://192.168.1.26:5183/
+   1282 touchstart span « Loyer » @55,529.7
+   3451 touchstart input#search-lieu_r_8_ « Adresse ou ville » @75.3,572.3
+   3588 focus-avant-react #1 input#search-lieu_r_8_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3589 focus-apres-react #1 input#search-lieu_r_8_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3589 apres #1 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3589 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3589 apres #1 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3690 apres #1 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   3737 vv-resize — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   4090 apres #1 +500 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   4590 apres #1 +1000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   6589 apres #1 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+   8620 touchstart button « [adresse masquée] » @299,169.3
+   8735 click button « [adresse masquée] » @299,169 · sous le doigt : button « [adresse masquée] »
+   8740 focusout input#search-lieu_r_8_ « Adresse ou ville » → input#search-nom_r_9_ « Nom »
+   8740 focus-avant-react #2 input#search-nom_r_9_ « Nom » (proches 0) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8741 focus-apres-react #2 input#search-nom_r_9_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8741 apres #2 +microtâche — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8842 apres #2 +100 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8855 apres #2 +image — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8904 scroll [document] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   8904 vv-scroll — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   9242 apres #2 +500 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+   9741 apres #2 +1000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  10005 touchstart button « Ajouter » @68.7,231.3
+  10080 click button « Ajouter » @69,231 · sous le doigt : button « Ajouter »
+  10140 focusin button « + Ajouter un proche »
+  10143 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 0→0 VISIBLE · feuille 350.8→641 st 0/290 · actif button « + Ajouter un proche »
+  10175 vv-resize — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  10175 scroll [document] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  10176 vv-scroll — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11032 touchstart p « [ligne d'un proche, masquée] » @330,532.7
+  11073 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11107 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11140 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11175 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11208 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11238 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11271 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11305 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11367 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11396 touchstart div#_r_6_ « [adresse masquée] » @308,484
+  11418 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11452 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11485 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11519 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11552 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11593 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11619 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11654 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11687 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11719 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11741 apres #2 +3000 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11753 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11786 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11819 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11852 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11886 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  11919 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  14473 focusout button « + Ajouter un proche » → span « Plafond de [proche] »
+  14473 focusin span « Plafond de [proche] »
+  14513 touchstart span @328.3,491.3
+  15666 touchstart span @314.7,518.7
+  17913 touchstart span « compte-feuille » @215.7,376.3
+  20479 touchstart button « + Ajouter un proche » @65.3,550.7
+  20593 focusout span « Plafond de [proche] » → window
+  20594 click button « + Ajouter un proche » @65,551 · sous le doigt : button « + Ajouter un proche »
+  20605 focus-avant-react #3 input#search-lieu_r_b_ « Adresse ou ville » (proches 1) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  20605 focus-apres-react #3 input#search-lieu_r_b_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  20606 apres #3 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  20614 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  20614 apres #3 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  20706 apres #3 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  21107 apres #3 +500 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  21607 apres #3 +1000 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  21643 touchstart input#search-lieu_r_b_ « Adresse ou ville » @312.3,108
+  21748 click input#search-lieu_r_b_ « Adresse ou ville » @312,108 · sous le doigt : input#search-lieu_r_b_ « Adresse ou ville »
+  21866 vv-resize — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  23606 apres #3 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_b_ « Adresse ou ville »
+  33951 touchstart button « [adresse masquée] » @299.7,206.7
+  34102 click button « [adresse masquée] » @300,207 · sous le doigt : button « [adresse masquée] »
+  34115 focusout input#search-lieu_r_b_ « Adresse ou ville » → input#search-nom_r_c_ « Nom »
+  34116 focus-avant-react #4 input#search-nom_r_c_ « Nom » (proches 1) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34116 focus-apres-react #4 input#search-nom_r_c_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34116 apres #4 +microtâche — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34185 apres #4 +image — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34215 scroll [document] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34215 vv-scroll — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34217 apres #4 +100 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  34617 apres #4 +500 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  35118 apres #4 +1000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/748 · actif input#search-nom_r_c_ « Nom »
+  35263 touchstart button « Ajouter » @64.3,232.3
+  35338 click button « Ajouter » @64,232 · sous le doigt : button « Ajouter »
+  35370 focusin button « + Ajouter un proche »
+  35371 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 0→0 VISIBLE · feuille 350.8→641 st 0/290 · actif button « + Ajouter un proche »
+  35415 vv-resize — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  35415 scroll [document] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  35415 vv-scroll — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  37118 apres #4 +3000 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 0→0 VISIBLE · feuille 354.8→645 st 0/290 · actif button « + Ajouter un proche »
+  38662 touchstart div « [adresse masquée] » @325.3,520.3
+  59422 touchstart button « Retirer [proche] » @62,605.7
+  59567 focusout button « + Ajouter un proche » → window
+  59567 click button « Retirer [proche] » @62,606 · sous le doigt : button « Retirer [proche] »
+  59609 focusin button « + Ajouter un proche »
+  60167 touchstart button « + Ajouter un proche » @44.7,528.3
+  60767 touchstart button « Retirer [proche] » @66,505.7
+  61183 touchstart div « [adresse masquée] » @79.3,540
+  61725 touchstart button « Effacer mes proches » @333,483.3
+  61785 focusout button « + Ajouter un proche » → window
+  61785 click button « Effacer mes proches » @333,483 · sous le doigt : button « Effacer mes proches »
+  61848 focus-avant-react #5 input#search-lieu_r_e_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 578.8→622.8 VISIBLE · feuille 354.8→645 st 0/718 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61849 focus-apres-react #5 input#search-lieu_r_e_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 578.8→622.8 VISIBLE · feuille 354.8→645 st 0/718 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61851 apres #5 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61852 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61873 apres #5 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61950 apres #5 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61964 vv-resize — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -197→-153 CACHÉ · feuille -244→361 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61964 scroll [document] — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -197→-153 CACHÉ · feuille -244→361 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  61964 vv-scroll — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -197→-153 CACHÉ · feuille -244→361 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  62349 apres #5 +500 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -197→-153 CACHÉ · feuille -244→361 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  62850 apres #5 +1000 — vv 284+361 (pageTop 284, échelle 1) · scrollY 284 · champ -197→-153 CACHÉ · feuille -244→361 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+  63415 focusout input#search-lieu_r_e_ « Adresse ou ville » → window
+  63463 vv-resize — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 479.8→523.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  63463 scroll [document] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 479.8→523.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  63463 vv-scroll — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 479.8→523.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64501 touchstart div « Adresse ou villeAjouter » @322.7,569
+  64539 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 457.8→501.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64572 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 426.8→470.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64606 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 411.8→455.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64639 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 406.8→450.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64708 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 409.8→453.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64742 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 419.8→463.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64775 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 435.8→479.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64808 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 453.8→497.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64841 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 487.8→531.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64850 apres #5 +3000 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 487.8→531.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64875 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 525.8→569.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64908 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 561.8→605.8 VISIBLE · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64941 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 602.8→646.8 CACHÉ · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  64975 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 625.8→669.8 CACHÉ · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  65005 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 627.8→671.8 CACHÉ · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  65038 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 646.8→690.8 CACHÉ · feuille 354.8→645 st 0/718 · actif body « 7 · 8 · 9 · 104 · 5 · 631 · 2+−8 046 com »
+  79813 touchstart span « compte-feuille » @284,378
+  79923 click button « Déplier la feuille » @284,378 · sous le doigt : button « Déplier la feuille »
+  84561 touchstart span « compte-feuille » @280,620
+  85377 touchstart button#_r_0_onglet-liste « Les 10 premières » @306.3,423.3
+  85439 focusin button#_r_0_onglet-liste « Les 10 premières »
+  85440 click button#_r_0_onglet-liste « Les 10 premières » @306,423 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
+ 104277 touchstart span « compte-feuille » @337,379.3
+ 104306 focusout button#_r_0_onglet-liste « Les 10 premières » → button « Déplier la feuille »
+ 104306 focusin button « Déplier la feuille »
+ 104308 focusout button « Déplier la feuille » → window
+ 104308 click span « compte-feuille » @337,379 · sous le doigt : span « compte-feuille »
+ 105127 touchstart span « compte-feuille » @276.3,617.3
+ 106143 touchstart span « compte-feuille » @306.3,372
+ 106248 click button « Déplier la feuille » @306,372 · sous le doigt : button « Déplier la feuille »
+ 106695 touchstart canvas « Map » @290,143.3
+ 107303 touchstart canvas « Map » @268.7,327
+ 108276 touchstart span « compte-feuille » @242.3,613.3
+ 110095 touchstart button#_r_0_onglet-criteres « Critères » @169.3,423
+ 110174 focusin button#_r_0_onglet-criteres « Critères »
+ 110175 click button#_r_0_onglet-criteres « Critères » @169,423 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+ 110644 touchstart span « compte-feuille » @256,378.7
+ 110728 focusout button#_r_0_onglet-criteres « Critères » → button « Déplier la feuille »
+ 110728 focusin button « Déplier la feuille »
+ 110732 focusout button « Déplier la feuille » → window
+ 110732 click button « Déplier la feuille » @256,379 · sous le doigt : button « Déplier la feuille »
+ 111861 touchstart span « compte-feuille » @216,613
+ 119213 touchstart button « Loyer » @295.7,521.3
+ 120842 touchstart input#search-lieu_r_e_ « Adresse ou ville » @284.3,529.7
+ 120904 focus-avant-react #6 input#search-lieu_r_e_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 120905 focus-apres-react #6 input#search-lieu_r_e_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 120905 apres #6 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 120905 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 120905 apres #6 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 121002 vv-resize — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 121005 apres #6 +100 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 121405 apres #6 +500 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 121995 apres #6 +1000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 123906 apres #6 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_e_ « Adresse ou ville »
+ 133740 touchstart button « [adresse masquée] » @288.3,159.7
+ 133824 click button « [adresse masquée] » @288,160 · sous le doigt : button « [adresse masquée] »
+ 133831 focusout input#search-lieu_r_e_ « Adresse ou ville » → input#search-nom_r_f_ « Nom »
+ 133832 focus-avant-react #7 input#search-nom_r_f_ « Nom » (proches 0) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133832 focus-apres-react #7 input#search-nom_r_f_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133832 apres #7 +microtâche — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133933 apres #7 +100 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133964 scroll [document] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133964 vv-scroll — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 133964 apres #7 +image — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 134333 apres #7 +500 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 134833 apres #7 +1000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 136833 apres #7 +3000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_f_ « Nom »
+ 139079 touchstart button « Ajouter » @65,231
+ 139174 click button « Ajouter » @65,231 · sous le doigt : button « Ajouter »
+ 139226 focusin button « + Ajouter un proche »
+ 141640 touchstart div « [adresse masquée] » @289.7,578.7
+ 142965 touchstart button « + Ajouter un proche » @118.3,511.7
+ 143076 focusout button « + Ajouter un proche » → window
+ 143076 click button « + Ajouter un proche » @118,512 · sous le doigt : button « + Ajouter un proche »
+ 143082 focus-avant-react #8 input#search-lieu_r_h_ « Adresse ou ville » (proches 1) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143082 focus-apres-react #8 input#search-lieu_r_h_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143083 apres #8 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143085 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum1 20 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143085 apres #8 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143183 apres #8 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 143583 apres #8 +500 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/744 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 144030 touchstart input#search-lieu_r_h_ « Adresse ou ville » @245,100.7
+ 144084 apres #8 +1000 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 91→135 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 144101 click input#search-lieu_r_h_ « Adresse ou ville » @245,101 · sous le doigt : input#search-lieu_r_h_ « Adresse ou ville »
+ 144235 vv-resize — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 91→135 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 146084 apres #8 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 91→135 VISIBLE · feuille 40→645 st 0/748 · actif input#search-lieu_r_h_ « Adresse ou ville »
+ 150583 touchstart button « [adresse masquée] » @268.7,172
+ 150662 click button « [adresse masquée] » @269,172 · sous le doigt : button « [adresse masquée] »
+ 150686 focusout input#search-lieu_r_h_ « Adresse ou ville » → input#search-nom_r_i_ « Nom »
+ 150687 focus-avant-react #9 input#search-nom_r_i_ « Nom » (proches 1) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 166→210 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150687 focus-apres-react #9 input#search-nom_r_i_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 166→210 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150687 apres #9 +microtâche — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 166→210 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150763 apres #9 +image — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 166→210 VISIBLE · feuille 40→645 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150788 apres #9 +100 — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150819 scroll [document] — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 150819 vv-scroll — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 151188 apres #9 +500 — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 151689 apres #9 +1000 — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 153689 apres #9 +3000 — vv 7.7+361 (pageTop 7.7, échelle 1) · scrollY 8 · champ 158→202 VISIBLE · feuille 32→637 st 0/748 · actif input#search-nom_r_i_ « Nom »
+ 154883 touchstart button « Ajouter » @68.3,232.7
+ 154942 click button « Ajouter » @68,232 · sous le doigt : button « Ajouter »
+ 154973 focusin button « + Ajouter un proche »
+ 164334 touchstart div « [adresse masquée] » @272.3,592.3
+ 166620 touchstart div « [adresse masquée] » @328.3,547.7
