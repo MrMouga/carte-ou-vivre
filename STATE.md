@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : build (tranche interface-telephone) — démo acceptée le 2026-10-14 (docs/plans/2026-10-13-interface-telephone/demo.md) ; prochaine étape /ship (rien n'est poussé : correctif du repère et tranche interface-telephone)
+- Étape : spec (tranche immobilier) — validée le 2026-10-14 (docs/specs/2026-10-14-immobilier/) ; prochaine étape /ui. Interface-telephone est en ligne (version 28305d0 servie sur https://ou-vivre-en-france.narnia-assistant.workers.dev/, vérifiée le 2026-10-14).
 - Statut : active
 
 ## Décisions
@@ -84,6 +84,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Spec interface-telephone révisée (D10) pendant /breakdown | Captures de l'iPhone sur une version construite servie par le Wi-Fi pendant le build (AC-8 reformulé) ; la version en ligne est vérifiée à /ship. Choix de Vincent. |
 | 2026-10-13 | Plan validé : interface-telephone | 5 tâches (0 cause du clavier sur l'iPhone par câble, 1 zoom 3 et AC-1, 2 feuille à onglets et ajout, 3 repli, glisser et fiche, 4 correction du clavier et vérification sur l'iPhone) ; aucun paquet ; navigation des tests 390 px adaptée avec l'accord de Vincent ; une seule annonce `role=status` gardée (tests protégés de loyer-mer). |
 | 2026-10-14 | Tranche construite : interface-telephone | Démo acceptée : communes colorées dès l'ouverture sur téléphone (tuiles du zoom 3), feuille à deux onglets dont la tête replie et déplie (toucher, glisser, clavier), fiche à la place des onglets, clavier iPhone corrigé (cause mesurée : Safari lit la place du champ avant notre code ; 0 px de défilement sur l'iPhone 13 Pro de Vincent) ; 11 critères verts, ceux de loyer-mer et proches toujours verts ; décisions du build gardées (H51–H55). |
+| 2026-10-14 | Spec validée : immobilier | Trois bascules (Appartement / Maison, Louer / Acheter, Total / Au m²) et une surface (52 m², 92 m² pour un lien en Maison, gardée au changement de bien) ; prix d'achat = médiane des ventes 2021–2025, secteur sous 5 ventes ; commune sans prix qui passe (amende loyer-mer, D21) ; Alsace-Moselle sans prix d'achat ; fichier des prix non indexé ; 9 décisions, 6 règles, 13 critères. |
 
 ## Hypothèses à vérifier
 
@@ -140,6 +141,7 @@ Autres questions :
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
 - [Spec « Interface téléphone » — 2026-10-13](docs/specs/2026-10-13-interface-telephone/spec.md)
+- [Spec « Immobilier » — 2026-10-14](docs/specs/2026-10-14-immobilier/spec.md)
 - [Design « Interface téléphone » — 2026-10-13](docs/design/interface-telephone/README.md)
 - [Plan « Interface téléphone » — 2026-10-13](docs/plans/2026-10-13-interface-telephone/plan.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
