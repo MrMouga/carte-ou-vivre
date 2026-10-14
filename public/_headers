@@ -1,0 +1,4 @@
+# Cloudflare : en-têtes par chemin. Le fichier des prix d'achat (ventes DVF) est exclu des moteurs de recherche (D9 d'immobilier) ;
+# le reste du site reste indexé.
+/data/achat.json
+  X-Robots-Tag: noindex

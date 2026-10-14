@@ -3,17 +3,28 @@
 Usage : python3 scripts/data/sources.py  (ne retélécharge pas un fichier déjà présent)
 Sources, licences et mentions : CLAUDE.md (Données).
 """
+import datetime
+import hashlib
+import json
 import os
 import subprocess
 import urllib.request
 
 RAW = os.path.join(os.path.dirname(__file__), '..', '..', 'data-raw')
 
+DVF = 'stats_whole_period.csv'
+DVF_INFO = os.path.join(RAW, DVF + '.info.json')  # date de téléchargement, Last-Modified, sha256 (lu par communes.py)
+
 SOURCES = {
     # COG 2025 (Insee) : communes au 1er janvier 2025.
     'v_commune_2025.csv': 'https://www.insee.fr/fr/statistiques/fichier/8377162/v_commune_2025.csv',
     # Carte des loyers 2025 (ANIL), appartements, €/m² charges comprises, logement de référence 52 m².
     'pred-app-mef-dhup.csv': 'https://static.data.gouv.fr/resources/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2025/20251211-145010/pred-app-mef-dhup.csv',
+    # Même jeu, maisons (logement de référence 92 m²) : loyer des maisons (tranche immobilier).
+    'pred-mai-mef-dhup.csv': 'https://static.data.gouv.fr/resources/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2025/20251211-145039/pred-mai-mef-dhup.csv',
+    # Statistiques DVF d'Etalab, toute la période (prix d'achat, tranche immobilier). Adresse non versionnée : le
+    # fichier change à chaque mise à jour, d'où sa date et son empreinte notées dans DVF_INFO.
+    DVF: 'https://data-pipeline-open.s3.sbg.io.cloud.ovh.net/dvf/stats_whole_period.csv',
     # Populations légales Insee (H6), via geo.api.gouv.fr (le centre n'est plus utilisé : D18).
     'communes-centre.json': 'https://geo.api.gouv.fr/communes?fields=code,nom,population,centre,codeDepartement&format=json',
     # Mairie de chaque commune (H5, D18) : point de la distance à la mer et du rond du top 10.
@@ -36,10 +47,19 @@ def main():
             continue
         print(f'téléchargement : {name}')
         req = urllib.request.Request(url, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)'})
+        sha = hashlib.sha256()
         with urllib.request.urlopen(req) as r, open(path + '.part', 'wb') as f:
+            modifie = r.headers.get('Last-Modified')
             while chunk := r.read(1 << 20):
                 f.write(chunk)
+                sha.update(chunk)
         os.replace(path + '.part', path)
+        if name == DVF:
+            info = {'url': url, 'telecharge_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
+                    'last_modified': modifie, 'octets': os.path.getsize(path), 'sha256': sha.hexdigest()}
+            with open(DVF_INFO, 'w') as f:
+                json.dump(info, f, indent=1)
+            print(f'  {DVF} : {info}')
     ltm = os.path.join(RAW, 'Limite_terre_mer_France_metropolitaine')
     if not os.path.isdir(ltm):
         print('extraction de la limite terre-mer (bsdtar)')

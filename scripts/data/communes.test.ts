@@ -47,4 +47,69 @@ describe('public/data/communes.json', () => {
     for (const code of ['75056', '69123', '13055']) expect(byCode.has(code)).toBe(true);
     expect([...byCode.keys()].filter((c) => /^(751\d\d|6938\d|132\d\d)$/.test(c))).toEqual([]);
   });
+
+  // Tranche immobilier, tâche 0 : loyer des maisons (Carte des loyers 2025, fichier maisons), colonnes ajoutées à la fin.
+  it('loyer des maisons : toutes les communes en ont un ; Bordeaux 15,5 €/m², estimation propre', () => {
+    expect(communes.filter((r) => r[col('loyer_maison_m2')] == null)).toEqual([]);
+    expect(get('33063', 'loyer_maison_m2')).toBeCloseTo(15.5092, 4);
+    expect(byCode.get('33063')![col('estimation_propre_maison')]).toBe(true);
+  });
+
+  it("loyer des maisons de Paris : moyenne des 20 arrondissements, aucun n'est estimé seul (D10 de loyer-mer)", () => {
+    expect(get('75056', 'loyer_maison_m2')).toBeGreaterThan(20);
+    expect(byCode.get('75056')![col('estimation_propre_maison')]).toBe(false);
+  });
+});
+
+// Prix d'achat (tranche immobilier, tâche 0 ; D5, D8, H67, R24) : statistiques DVF d'Etalab, fichier de juillet 2026
+// (ventes 2021 à 2025), médiane au m² de la commune si ≥ 5 ventes, sinon de son intercommunalité si ≥ 5 ventes.
+type Achat = { champs: string[]; communes: (string | number | null)[][] };
+let lu: Achat | undefined; // lu une fois, au premier test (le fichier n'existe pas avant la tâche 0)
+const achat = () => (lu ??= JSON.parse(readFileSync(new URL('../../public/data/achat.json', import.meta.url), 'utf8')) as Achat);
+const prix = (code: string) => {
+  const { champs: c, communes: l } = achat();
+  const r = l.find((x) => x[0] === code)!;
+  return Object.fromEntries(c.map((n, i) => [n, r[i]]));
+};
+
+describe('public/data/achat.json', () => {
+  it('34 746 lignes, une par commune de communes.json, jointes par code INSEE', () => {
+    const { champs: c, communes: l } = achat();
+    expect(c).toEqual(['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'maison_source']);
+    expect(l).toHaveLength(34746);
+    expect(new Set(l.map((r) => r[0]))).toEqual(new Set(byCode.keys()));
+    const sources = new Set(['commune', 'secteur', 'inconnu-secteur', 'inconnu-alsace-moselle']);
+    for (const r of l) {
+      expect(sources.has(r[2] as string) && sources.has(r[4] as string)).toBe(true);
+      expect(r[1] == null).toBe((r[2] as string).startsWith('inconnu'));
+      expect(r[3] == null).toBe((r[4] as string).startsWith('inconnu'));
+    }
+  });
+
+  it('D5 Bordeaux (33063) : appartement 4 427 €/m², maison 5 188 €/m², prix de la commune', () => {
+    expect(prix('33063')).toEqual({ code: '33063', appartement_m2: 4427, appartement_source: 'commune', maison_m2: 5188, maison_source: 'commune' });
+  });
+
+  it("D5 Saint-Vincent-de-Paul (33487) : 1 vente d'appartement, prix de Bordeaux Métropole (3 844 €/m²) ; maison de la commune", () => {
+    expect(prix('33487')).toMatchObject({ appartement_m2: 3844, appartement_source: 'secteur', maison_source: 'commune' });
+  });
+
+  it('D8 Strasbourg (67482) : inconnu-alsace-moselle pour les deux biens, comme toute la Moselle, le Bas-Rhin et le Haut-Rhin', () => {
+    expect(prix('67482')).toEqual({ code: '67482', appartement_m2: null, appartement_source: 'inconnu-alsace-moselle', maison_m2: null, maison_source: 'inconnu-alsace-moselle' });
+    const am = communes.filter((r) => ['57', '67', '68'].includes(r[col('dep')] as string)).map((r) => prix(r[0] as string));
+    expect(am).toHaveLength(1605);
+    expect(am.every((p) => p.appartement_source === 'inconnu-alsace-moselle' && p.maison_source === 'inconnu-alsace-moselle')).toBe(true);
+  });
+
+  it("R24 sans prix hors Alsace-Moselle : Agnicourt-et-Séchelles (02004) en appartement, Île-de-Sein (29083) en maison", () => {
+    expect(prix('02004')).toMatchObject({ appartement_m2: null, appartement_source: 'inconnu-secteur' });
+    expect(prix('29083')).toMatchObject({ maison_m2: null, maison_source: 'inconnu-secteur' });
+  });
+
+  it('H67 Paris, Lyon, Marseille : moyenne simple des arrondissements, avec un prix pour les deux biens', () => {
+    expect(prix('75056')).toMatchObject({ appartement_m2: 11080.25, appartement_source: 'commune', maison_source: 'secteur' });
+    expect(prix('69123')).toMatchObject({ appartement_m2: 4912.89, appartement_source: 'commune', maison_source: 'secteur' });
+    expect(prix('13055')).toMatchObject({ appartement_m2: 2884.44, appartement_source: 'commune', maison_source: 'secteur' });
+    for (const code of ['75056', '69123', '13055']) expect(prix(code).maison_m2).toBeGreaterThan(0);
+  });
 });
