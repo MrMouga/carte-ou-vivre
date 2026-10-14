@@ -125,7 +125,7 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
     }
     const passe = raisons.length === 0;
     const sansNote = passe && actif && notes.length === 0;
-    const score = passe && !sansNote && actif ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : null;
+    const score = passe && notes.length > 0 ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : null;
     const e: Evaluation = { commune: c, passe, score, sansNote, valeurPrix, palier: score == null ? null : palier(score), rang: null, raisons };
     parCode.set(c.code, e);
     if (score != null) passent.push(e);

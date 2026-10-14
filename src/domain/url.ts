@@ -2,13 +2,16 @@
 // Spec immobilier, R26 : le plafond du prix s'écrit `loyer` (Louer) ou `achat` (Acheter) ; `bien`, `unite` et `surface`
 // n'apparaissent que s'ils diffèrent de leur valeur de départ.
 import { REGLAGES_DEPART, type Reglages, type Taille } from './score';
-import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type ReglagePrix } from './prix';
+import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 
 /** H2 : plage et pas de chaque plafond ; `aucun` = « Sans limite ». Le prix dépend de son réglage (H57, `bornesPrix`). */
 export const BORNES = {
   loyer: bornesPrix(PRIX_DEPART),
   mer: { min: 5, max: 200, pas: 5 },
 } as const;
+
+/** R26 : nom du plafond du prix dans l'adresse, selon le mode. */
+const CLE_PRIX: Record<Mode, string> = { louer: 'loyer', acheter: 'achat' };
 
 /** Ordre de D11, celui de l'adresse. */
 export const ORDRE_TAILLES: Taille[] = ['petite-commune', 'petite-ville', 'ville-moyenne', 'grande-ville'];
@@ -38,7 +41,7 @@ export function lireAdresse(search: string): Reglages {
   const prix = lirePrix(search);
   const demandees = (q.get('taille') ?? '').split(',');
   return {
-    loyer: plafond(q.get(prix.mode === 'louer' ? 'loyer' : 'achat'), bornesPrix(prix), plafondDepart(prix)),
+    loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: plafond(q.get('mer'), BORNES.mer, REGLAGES_DEPART.mer),
     tailles: ORDRE_TAILLES.filter((t) => demandees.includes(t)),
   };
@@ -46,7 +49,7 @@ export function lireAdresse(search: string): Reglages {
 
 /** Ordre de R26 : plafond du prix, `mer`, `taille`, `bien`, `unite`, `surface`. */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
-  const parts = [`${prix.mode === 'louer' ? 'loyer' : 'achat'}=${r.loyer ?? 'aucun'}`, `mer=${r.mer ?? 'aucun'}`];
+  const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`, `mer=${r.mer ?? 'aucun'}`];
   const tailles = ORDRE_TAILLES.filter((t) => r.tailles.includes(t));
   if (tailles.length) parts.push(`taille=${tailles.join(',')}`);
   if (prix.bien !== PRIX_DEPART.bien) parts.push(`bien=${prix.bien}`);

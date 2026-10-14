@@ -8,6 +8,8 @@ export type Unite = 'total' | 'm2';
 /** Source d'un prix d'achat (`public/data/achat.json`, tâche 0) : « secteur » = prix de l'intercommunalité. */
 export type SourceAchat = 'commune' | 'secteur' | 'inconnu-secteur' | 'inconnu-alsace-moselle';
 export type Achat = { m2: number | null; source: SourceAchat };
+/** Prix d'achat inconnu : champ absent (jeu sans prix d'achat) ou commune absente de `achat.json`. */
+const ACHAT_INCONNU: Achat = { m2: null, source: 'inconnu-secteur' };
 
 /**
  * Réglage du prix, sans son plafond : le plafond reste `Reglages.loyer` (nom gardé par l'adresse d'une tranche 1 et par
@@ -22,9 +24,9 @@ export const SURFACE_DEPART: Record<Bien, number> = { appartement: 52, maison: 9
 export const PRIX_DEPART: ReglagePrix = { mode: 'louer', bien: 'appartement', unite: 'total', surface: SURFACE_DEPART.appartement };
 /** R21, D3 : unité et plafond qu'on prend en passant dans un mode. */
 export const UNITE_DEPART: Record<Mode, Unite> = { louer: 'total', acheter: 'm2' };
-export const PLAFOND_DEPART: Record<Mode, number> = { louer: 1200, acheter: 5000 };
+const PLAFOND_DEPART: Record<Mode, number> = { louer: 1200, acheter: 5000 };
 /** H58 : surface entière, de 10 à 300 m². */
-export const SURFACE = { min: 10, max: 300 } as const;
+const SURFACE = { min: 10, max: 300 } as const;
 
 /** H57 : plage et cran du plafond ; le cran après le maximum est « Sans limite ». */
 const BORNES_PRIX: Record<Mode, Record<Unite, Bornes>> = {
@@ -72,7 +74,7 @@ export type PrixCommune = Pick<Commune, 'loyerM2'> &
 
 /** Prix d'achat du bien choisi ; un champ absent (jeu sans prix d'achat) est inconnu. */
 export const achatDe = (c: PrixCommune, bien: Bien): Achat =>
-  (bien === 'appartement' ? c.achatAppartement : c.achatMaison) ?? { m2: null, source: 'inconnu-secteur' };
+  (bien === 'appartement' ? c.achatAppartement : c.achatMaison) ?? ACHAT_INCONNU;
 
 /** R24 : prix au m² exact du mode et du bien, ou null (inconnu). */
 export function prixM2(c: PrixCommune, p: Pick<ReglagePrix, 'mode' | 'bien'>): number | null {
@@ -104,13 +106,12 @@ export type AchatJson = { champs: string[]; communes: [string, number | null, st
 /** H68 : prix d'achat joints par code INSEE, jamais par position ; une commune absente du fichier a un prix inconnu. */
 export function joindreAchats<C extends Commune>(communes: C[], achat: AchatJson): C[] {
   const parCode = new Map(achat.communes.map((l) => [l[0], l]));
-  const inconnu: Achat = { m2: null, source: 'inconnu-secteur' };
   return communes.map((c) => {
     const l = parCode.get(c.code);
     return {
       ...c,
-      achatAppartement: l ? { m2: l[1], source: l[2] as SourceAchat } : inconnu,
-      achatMaison: l ? { m2: l[3], source: l[4] as SourceAchat } : inconnu,
+      achatAppartement: l ? { m2: l[1], source: l[2] as SourceAchat } : ACHAT_INCONNU,
+      achatMaison: l ? { m2: l[3], source: l[4] as SourceAchat } : ACHAT_INCONNU,
     };
   });
 }
