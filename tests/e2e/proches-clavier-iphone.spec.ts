@@ -179,3 +179,28 @@ for (const n of [0, 4]) {
     expect(b.y + b.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
   });
 }
+
+// Hors AC (corrections, défaut vu sur l'iPhone en tâche 4 : taches/T4.md, « Ce qui reste »). Quand le bouton touché
+// disparaît, le focus revient au champ d'adresse (règle de la tranche proches). Sur l'iPhone, après « Effacer mes
+// proches », le champ le recevait resté en bas (578,8 → 622,8), Safari faisait défiler la page de 284 px et le clavier le
+// cachait. Comme pour « + Ajouter un proche » (R20) : la feuille monte et se place d'abord, le champ prend le focus
+// ensuite. Même relevé qu'AC-8 : place du champ au tout début du focus, avant le code de la page.
+for (const bouton of ['Effacer mes proches', 'Retirer Nantesville (44)'] as const) {
+  test(`iPhone : « ${bouton} » (dernier proche) rend le focus au champ — au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus`, async ({ page }) => {
+    await releverDesLeChargement(page);
+    await ouvrir(page);
+    await servirIgn(page);
+    await ajouter(page, 'Nantesville');
+    await pret(page, 'Nantesville (44)');
+    await page.evaluate(() => (window.__auFocus = {}));
+    await zone(page).getByRole('button', { name: bouton }).tap();
+
+    await expect(champ(page)).toBeFocused();
+    const adresse = await auFocus(page, 'Adresse ou ville');
+    expect(adresse, 'place du champ d’adresse au début du focus').toBeDefined();
+    expect(adresse!.top).toBeGreaterThanOrEqual(size['taille-bande-carte'] + POIGNEE);
+    expect(adresse!.bottom).toBeLessThanOrEqual(CLAVIER_IPHONE);
+    await deuxImages(page);
+    expect(Math.abs((await champ(page).boundingBox())!.y - adresse!.top)).toBeLessThanOrEqual(1);
+  });
+}

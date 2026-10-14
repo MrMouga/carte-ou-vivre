@@ -332,6 +332,20 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
       if (actif instanceof HTMLElement && section.current?.contains(actif)) actif.scrollIntoView({ block: 'nearest' });
     }
   });
+  // Le focus revient au champ d'adresse (plus aucun proche, ou l'ajout était ouvert). Sous 1 024 px, par le chemin de
+  // « + Ajouter un proche » : l'ajout s'ouvre avec le focus demandé, la feuille monte et se place, puis le champ prend le
+  // focus (`useLayoutEffect` de l'ajout). Safari sur iPhone note la place du champ au début du focus : donné au champ
+  // resté en bas, il le faisait cacher par le clavier (défaut vu en tâche 4, corrigé en corrections). Un ajout déjà
+  // affiché ne remonte pas : la feuille monte ici. En bureau, le focus est rendu comme avant.
+  const ajoutAffiche = !plein && (vide || ouvert);
+  const versLeChamp = () => {
+    if (enBureau()) {
+      refocus.current = true;
+      return;
+    }
+    setOuvert(true);
+    if (ajoutAffiche) onAjout?.(true);
+  };
   const effacer = (
     <Button
       variant="lien"
@@ -339,7 +353,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
       onClick={() => {
         onEffacer();
         setOuvert(false);
-        refocus.current = true;
+        versLeChamp();
       }}
     >
       Effacer mes proches
@@ -362,7 +376,8 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
                 onReessayer={() => onReessayer(p)}
                 onRetirer={() => {
                   onRetirer(p.id);
-                  refocus.current = true;
+                  if (proches.length === 1 || ouvert) versLeChamp();
+                  else refocus.current = true;
                 }}
               />
             ))}
@@ -372,7 +387,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
           <p ref={messagePlein} tabIndex={-1} className="text-texte text-muted-foreground">
             5 proches au maximum. Retire-en un pour en ajouter un autre.
           </p>
-        ) : vide || ouvert ? (
+        ) : ajoutAffiche ? (
           <Ajout
             champ={champ}
             libelles={proches.map((p) => p.lieu.libelle)}
