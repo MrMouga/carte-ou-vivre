@@ -1,0 +1,110 @@
+Relevé de la vérification de bout en bout — tranche immobilier (details.md, étapes 1 à 8), tâche 5, 2026-10-14
+Version construite au commit 55f680d (dist/version.txt = 55f680d10f39…, relu sur http://localhost:4174/version.txt).
+Script Playwright du brouillon (non versionné), parcours continu par largeur, comme un utilisateur : bascules et champ
+touchés à l'écran, communes choisies par un clic sur la carte. Captures réduites à 1 200 px (sips -Z 1200).
+
+Comparaison avec details.md :
+- Étape 1 : « 832 € par mois pour 52 m² (16,0 €/m²) » — conforme ; adresse /?loyer=1200&mer=60 — conforme.
+- Étape 2 : 1 120 € — conforme ; adresse avec surface=70 — conforme.
+- Étape 3 : surface 70 gardée, adresse bien=maison&surface=70 — conforme ; loyer de maison de Bordeaux : 1 086 € pour 70 m² (15,5 €/m²).
+- Étape 4 : plafond 5 000 €/m² — conforme ; Bordeaux « 4 233 €/m² à l'achat » et passe (25/100). ÉCART ATTENDU : details.md
+  écrit 4 427 (relevé avant la règle de Vincent : médiane 2023-2025 dès 30 ventes, sinon 2021-2025 dès 5, sinon
+  intercommunalité, aucun prix < 300 €/m²) ; 4 233 est la valeur de achat.json. La spec sera amendée à la démo.
+- Étape 5 : « Prix d'achat inconnu : les ventes ne sont pas publiées en Alsace-Moselle » — conforme. La fiche dit aussi
+  « Ne passe pas tes critères · Mer 468 km : au-dessus de ton plafond de 60 km » : Strasbourg est à 468 km de la mer.
+- Étape 6 : plafond 350 000 €, champ surface à 70 — conforme.
+- Étape 7 : nouveau contexte de navigateur (sans stockage, comme une fenêtre privée) : mêmes choix, même plafond, même
+  surface, même compte, mêmes 10 premières — conforme.
+- Étape 8 : poignée du curseur du prix de 519 à 537 px sur un écran de 548 px, France peinte au-dessus — conforme.
+- Étape 9 (non-indexation en ligne) : à /ship, hors de cette tâche.
+
+Design F (tâche 5) relevé sur la même version :
+- bureau : panneau de réglages de 340 px ; valeur de la mer en 16 px gras ; « à vol d'oiseau » absent des réglages.
+- 390 × 844 : idem (capture T5-390-mer-sans-vol-oiseau.png) ; le nom lu du curseur de la mer garde « 60 km à vol d'oiseau ».
+- la fiche garde « 39 km de la mer à vol d'oiseau » (Bordeaux) et « 468 km de la mer à vol d'oiseau » (Strasbourg).
+
+Vérification de bout en bout — immobilier, tâche 5 — début 20:15
+Version construite (npm run build), servie par `npx vite preview --port 4174` ; vraies données (public/data), vrai fond Plan IGN ; Chromium de Playwright, rendu WebGL logiciel.
+
+=== 1440 × 900
+Étape 1 — ouvrir / ; fiche de Bordeaux
+  adresse ?loyer=1200&mer=60 · choix Louer, Appartement, Total · plafond affiché 1 200 € · surface 52 · « 8 046 communes passent tes critères »
+  sous le curseur de la mer : « à vol d'oiseau » absent ; valeur de la mer en 16px 700
+  largeur du panneau de réglages : 340 px
+  capture : captures/T5-bureau-e1-ouverture.png
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 33 | / 100 | 7270e sur 8 046 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-bureau-e1-fiche-bordeaux.png
+Étape 2 — surface à 70 m²
+  adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · plafond affiché 1 200 € · surface 70 · « 7 950 communes passent tes critères »
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 21 | / 100 | 7580e sur 7 950 communes qui passent | 1 120 € par mois pour 70 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-bureau-e2-surface-70-bordeaux.png
+Étape 3 — Maison
+  adresse ?loyer=1200&mer=60&bien=maison&surface=70 · choix Louer, Maison, Total · plafond affiché 1 200 € · surface 70 · « 7 918 communes passent tes critères »
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 22 | / 100 | 7766e sur 7 918 communes qui passent | 1 086 € par mois pour 70 m² (15,5 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-bureau-e3-maison-bordeaux.png
+Étape 4 — Appartement, puis Acheter
+  adresse ?achat=5000&mer=60&surface=70 · choix Acheter, Appartement, Au m² · plafond affiché 5 000 €/m² · surface (caché) · « 7 913 communes passent tes critères »
+  capture : captures/T5-bureau-e4-acheter.png
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 25 | / 100 | 7551e sur 7 913 communes qui passent | 4 233 €/m² à l'achat | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-bureau-e4-acheter-bordeaux.png
+Étape 5 — fiche de Strasbourg (zoom à la molette, puis clic)
+  fiche : ← Les 10 premières | Strasbourg (67) | Grande ville · 294 000 habitants | NE PASSE PAS TES CRITÈRES | Mer 468 km : au-dessus de ton plafond de 60 km | Prix d'achat inconnu : les ventes ne sont pas publiées en Alsace-Moselle | 468 km de la mer à vol d'oiseau
+  capture : captures/T5-bureau-e5-fiche-strasbourg.png
+Étape 6 — Total
+  adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · plafond affiché 350 000 € · surface 70 · « 7 913 communes passent tes critères »
+  capture : captures/T5-bureau-e6-acheter-total.png
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km | 4 · Isolaccio-di-Fiumorbo (2B) · 87 · 35 000 € · 10 km | 5 · Sommervieu (14) · 87 · 59 000 € · 5 km | 6 · Canari (2B) · 87 · 85 000 € · moins d'1 km | 7 · Renno (2A) · 86 · 28 000 € · 12 km | 8 · Béthencourt-sur-Mer (80) · 86 · 71 000 € · 5 km | 9 · Bourseville (80) · 86 · 71 000 € · 5 km | 10 · Tully (80) · 86 · 71 000 € · 5 km
+Étape 7 — copier l'adresse, l'ouvrir dans une fenêtre privée (nouveau contexte, sans stockage)
+  adresse copiée : ?achat=350000&mer=60&unite=total&surface=70
+  fenêtre privée : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · plafond affiché 350 000 € · surface 70 · « 7 913 communes passent tes critères »
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km | 4 · Isolaccio-di-Fiumorbo (2B) · 87 · 35 000 € · 10 km | 5 · Sommervieu (14) · 87 · 59 000 € · 5 km | 6 · Canari (2B) · 87 · 85 000 € · moins d'1 km | 7 · Renno (2A) · 86 · 28 000 € · 12 km | 8 · Béthencourt-sur-Mer (80) · 86 · 71 000 € · 5 km | 9 · Bourseville (80) · 86 · 71 000 € · 5 km | 10 · Tully (80) · 86 · 71 000 € · 5 km
+  mêmes choix : oui ; même liste : oui
+  capture : captures/T5-bureau-e7-fenetre-privee.png
+
+=== 390 × 844
+Étape 1 — ouvrir / ; fiche de Bordeaux
+  adresse ?loyer=1200&mer=60 · choix Louer, Appartement, Total · plafond affiché 1 200 € · surface 52 · « 8 046 communes passent tes critères »
+  sous le curseur de la mer : « à vol d'oiseau » absent ; valeur de la mer en 16px 700
+  capture : captures/T5-390-e1-ouverture.png
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 33 | / 100 | 7270e sur 8 046 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-390-e1-fiche-bordeaux.png
+Étape 2 — surface à 70 m²
+  adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · plafond affiché 1 200 € · surface 70 · « 7 950 communes passent tes critères »
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 21 | / 100 | 7580e sur 7 950 communes qui passent | 1 120 € par mois pour 70 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-390-e2-surface-70-bordeaux.png
+Étape 3 — Maison
+  adresse ?loyer=1200&mer=60&bien=maison&surface=70 · choix Louer, Maison, Total · plafond affiché 1 200 € · surface 70 · « 7 918 communes passent tes critères »
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 22 | / 100 | 7766e sur 7 918 communes qui passent | 1 086 € par mois pour 70 m² (15,5 €/m²) | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-390-e3-maison-bordeaux.png
+Étape 4 — Appartement, puis Acheter
+  adresse ?achat=5000&mer=60&surface=70 · choix Acheter, Appartement, Au m² · plafond affiché 5 000 €/m² · surface (caché) · « 7 913 communes passent tes critères »
+  capture : captures/T5-390-e4-acheter.png
+  fiche : ← Les 10 premières | Bordeaux (33) | Grande ville · 268 000 habitants | 25 | / 100 | 7551e sur 7 913 communes qui passent | 4 233 €/m² à l'achat | 39 km de la mer à vol d'oiseau
+  capture : captures/T5-390-e4-acheter-bordeaux.png
+Étape 5 — fiche de Strasbourg (zoom à la molette, puis clic)
+  fiche : ← Les 10 premières | Strasbourg (67) | Grande ville · 294 000 habitants | NE PASSE PAS TES CRITÈRES | Mer 468 km : au-dessus de ton plafond de 60 km | Prix d'achat inconnu : les ventes ne sont pas publiées en Alsace-Moselle | 468 km de la mer à vol d'oiseau
+  capture : captures/T5-390-e5-fiche-strasbourg.png
+Étape 6 — Total
+  adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · plafond affiché 350 000 € · surface 70 · « 7 913 communes passent tes critères »
+  capture : captures/T5-390-e6-acheter-total.png
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km | 4 · Isolaccio-di-Fiumorbo (2B) · 87 · 35 000 € · 10 km | 5 · Sommervieu (14) · 87 · 59 000 € · 5 km | 6 · Canari (2B) · 87 · 85 000 € · moins d'1 km | 7 · Renno (2A) · 86 · 28 000 € · 12 km | 8 · Béthencourt-sur-Mer (80) · 86 · 71 000 € · 5 km | 9 · Bourseville (80) · 86 · 71 000 € · 5 km | 10 · Tully (80) · 86 · 71 000 € · 5 km
+Étape 7 — copier l'adresse, l'ouvrir dans une fenêtre privée (nouveau contexte, sans stockage)
+  adresse copiée : ?achat=350000&mer=60&unite=total&surface=70
+  fenêtre privée : adresse ?achat=350000&mer=60&unite=total&surface=70 · choix Acheter, Appartement, Total · plafond affiché 350 000 € · surface 70 · « 7 913 communes passent tes critères »
+  liste : 1 · Galéria (2B) · 91 · 57 000 € · moins d'1 km | 2 · Meria (2B) · 90 · 64 000 € · 1 km | 3 · Poggio-di-Nazza (2B) · 87 · 32 000 € · 10 km | 4 · Isolaccio-di-Fiumorbo (2B) · 87 · 35 000 € · 10 km | 5 · Sommervieu (14) · 87 · 59 000 € · 5 km | 6 · Canari (2B) · 87 · 85 000 € · moins d'1 km | 7 · Renno (2A) · 86 · 28 000 € · 12 km | 8 · Béthencourt-sur-Mer (80) · 86 · 71 000 € · 5 km | 9 · Bourseville (80) · 86 · 71 000 € · 5 km | 10 · Tully (80) · 86 · 71 000 € · 5 km
+  mêmes choix : oui ; même liste : oui
+  capture : captures/T5-390-e7-fenetre-privee.png
+
+=== 375 × 548 — Étape 8 : ouverture, curseur du prix entièrement visible
+  adresse ?loyer=1200&mer=60 · choix Louer, Appartement, Total · plafond affiché 1 200 € · surface 52 · « 8 046 communes passent tes critères »
+  feuille : haut 210 px, hauteur 338 px ; carte au-dessus : 210 px
+  libellé « Loyer mensuel » : haut 481 px ; poignée du curseur : de 519 à 537 px ; zone de toucher : bas 550 px ; écran : 548 px
+  tuiles des communes chargées : 0
+  capture : captures/T5-375x548-e8-ouverture.png
+
+fin 20:16
+
+Compléments (20:17) :
+390 × 844 : bloc de la mer « Mer à moins de | 60 km » ; valeur en 16px 700 ; nom lu du curseur : 60 km à vol d'oiseau
+  capture : captures/T5-390-mer-sans-vol-oiseau.png
+375 × 548 : « tuiles des communes chargées : 0 » ci-dessus ne veut pas dire « pas de tuiles » : MapLibre les charge dans un worker, que la mesure du navigateur (performance) ne voit pas (21 entrées en tout, dont achat.json, communes.json, reperes.json). La capture T5-375x548-e8-ouverture.png montre les communes peintes.
