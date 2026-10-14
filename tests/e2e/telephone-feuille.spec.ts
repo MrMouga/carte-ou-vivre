@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { amenerEnBas, mobile, onglet } from './lib/feuille';
 import { servirIgn } from './lib/ign';
-import { champ, lignes, liste, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
+import { ADRESSES, ajouter, champ, lignes, liste, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
 import { BORNES } from '../../src/domain/url';
 import { hauteurFeuille, paddingCarte } from '../../src/map/view';
 import { geste, size, space } from '../../src/theme/tokens';
@@ -522,3 +522,37 @@ test('glisser commencé sur « Adresse ou ville » : « Critères » défile, le
   await expect(page.getByRole('tablist')).toBeVisible();
   expect(await panneau(page, 'Critères').evaluate((el) => el.scrollTop)).toBeGreaterThan(defilement);
 });
+
+// Hors AC (corrections, relecture spec : Majeur). Après « Ajouter », la feuille redescend sur « Critères » : le titre
+// « Tes proches » et « Effacer mes proches » se posent sous la liste d'onglets, entièrement visibles (le premier écran vu
+// après l'ajout, parcours 5 de details.md). Avant : l'onglet défilait comme si son haut était celui de la feuille, et le
+// titre passait à moitié sous les onglets (captures/T4-e2e-4-ajoute-calcul-390x664.png).
+for (const hauteur of [664, 844]) {
+  for (const n of [0, 1]) {
+    test(`après « Ajouter » à 390 × ${hauteur}, ${n} proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets`, async ({ page }) => {
+      test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+      await page.setViewportSize({ width: 390, height: hauteur });
+      await ouvrir(page);
+      await servirIgn(page);
+      if (n) await ajouter(page, 'Nantesville');
+      // Le dernier ajout au doigt, comme sur le téléphone.
+      if (n) await zone(page).getByRole('button', { name: '+ Ajouter un proche' }).tap();
+      else await champ(page).tap();
+      await expect(champ(page)).toBeFocused();
+      await champ(page).fill(ADRESSES.Lilleville[0]);
+      await zone(page).getByRole('button', { name: ADRESSES.Lilleville[1] }).tap();
+      await zone(page).getByRole('button', { name: 'Ajouter', exact: true }).tap();
+      await expect(zone(page).getByRole('listitem').filter({ hasText: 'Lilleville (59)' })).toBeVisible();
+      await expect(page.getByRole('tablist')).toBeVisible();
+      await apresRendu(page);
+
+      const onglets = await boite(page.getByRole('tablist'));
+      const p = await boite(panneau(page, 'Critères'));
+      for (const nom of ['Tes proches', 'Effacer mes proches']) {
+        const b = await boite(zone(page).getByRole('button', { name: nom }));
+        expect(b.y, `haut de « ${nom} » sous le bas des onglets`).toBeGreaterThanOrEqual(onglets.y + onglets.height);
+        expect(b.y + b.height, `bas de « ${nom} » dans l'onglet`).toBeLessThanOrEqual(p.y + p.height);
+      }
+    });
+  }
+}

@@ -312,7 +312,11 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
   const montrer = useRef(false);
   // Sous 1 024 px, le focus est donné sans faire défiler : le navigateur centrerait « + Ajouter un proche », au bout d'un
   // onglet trop court pour le centrer, et le titre comme la ligne du nouveau proche sortiraient du haut (feuille à 45 %,
-  // interface-telephone). On fait voir ensuite le titre, la ligne du nouveau proche, puis ce qui a le focus.
+  // interface-telephone). L'onglet défile pour poser le titre en haut, juste sous les onglets, entier avec « Effacer mes
+  // proches » (relecture des corrections : avant, la ligne du nouveau proche puis « + Ajouter un proche » étaient amenés
+  // en entier, et le titre passait à moitié sous les onglets). La ligne du nouveau proche commence alors dans l'onglet,
+  // en entier ou en partie ; si elle tombe tout entière sous son bas (3 proches et plus à 390 × 664), elle passe avant le
+  // titre, puis ce qui a le focus (le message « 5 proches au maximum… » après le 5ᵉ).
   useEffect(() => {
     const montrerIci = montrer.current && !enBureau();
     montrer.current = false;
@@ -320,7 +324,10 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
     refocus.current = false;
     if (montrerIci) {
       section.current?.scrollIntoView({ block: 'start' });
-      section.current?.querySelector('ul > li:last-child')?.scrollIntoView({ block: 'nearest' });
+      const nouveau = section.current?.querySelector('ul > li:last-child');
+      const onglet = section.current?.closest('[role="tabpanel"]');
+      if (!nouveau || !onglet || nouveau.getBoundingClientRect().top < onglet.getBoundingClientRect().bottom) return;
+      nouveau.scrollIntoView({ block: 'nearest' });
       const actif = document.activeElement;
       if (actif instanceof HTMLElement && section.current?.contains(actif)) actif.scrollIntoView({ block: 'nearest' });
     }
@@ -339,7 +346,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
     </Button>
   );
   return (
-    <section ref={section} aria-labelledby="titre-proches" className="max-bureau:scroll-mt-6">
+    <section ref={section} aria-labelledby="titre-proches">
       <Categorie titre="Tes proches" resume={resumeDe(proches)} idTitre="titre-proches" action={vide ? undefined : effacer}>
         {memoireRefusee && <p className="text-texte text-foreground">Tes proches ne seront pas gardés sur ce navigateur.</p>}
         {vide ? (
