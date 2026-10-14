@@ -20,6 +20,6 @@
 - **D10** — Les captures de l'iPhone (AC-8, vérification de bout en bout) se font pendant le build sur une version construite, servie au Mac par le Wi-Fi ; la version en ligne est vérifiée à /ship. Remplace « sur la version en ligne » d'AC-8 et de details.md. *Pourquoi* : choix de Vincent à /breakdown ; la mise en ligne vient après le build. *Écarté* : laisser AC-8 ouvert jusqu'à /ship.
 
 **Pas maintenant** : le téléphone tenu à l'horizontale (feuille repliable, sans promesse sur le vert au départ), le partage, la mer en minutes, une feuille en plein écran ou à trois positions, les pastilles de temps sur téléphone, le bureau.
-**Hypothèses** : H41 à H50 dans [détails](details.md#hypothèses).
+**Hypothèses** : H41 à H55 dans [détails](details.md#hypothèses).
 **Le risque** : (1) le défaut du clavier n'a pas de cause connue (un correctif a échoué alors que les tests passaient) : le reproduire sur l'iPhone vient avant tout code (tâche 0 de /breakdown) ; sans reproduction en une tâche, D7 revient à Vincent. (2) À l'échelle de la France sur téléphone, une commune fait moins d'un point et peut ne pas se dessiner (H14 de loyer-mer) : la tâche 0 mesure le vert visible à 390 × 664 ; si la côte ne se lit pas, D2 revient à Vincent.
 **Questions ouvertes** : aucune.

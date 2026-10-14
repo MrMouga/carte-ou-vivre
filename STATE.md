@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : breakdown (tranche interface-telephone) — plan validé le 2026-10-13 (docs/plans/2026-10-13-interface-telephone/plan.md) ; prochaine étape /build (iPhone de Vincent par câble en tâches 0 et 4). Correctif « repère au-dessus des panneaux » (855cd46) pas encore poussé
+- Étape : build (tranche interface-telephone) — démo acceptée le 2026-10-14 (docs/plans/2026-10-13-interface-telephone/demo.md) ; prochaine étape /ship (rien n'est poussé : correctif du repère et tranche interface-telephone)
 - Statut : active
 
 ## Décisions
@@ -83,6 +83,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-13 | Design validé : interface-telephone | Fusion F sur la base C (compte en tête, même ligne ouverte et repliée), onglets en pilule de 44 px, pas de chevron, fiche sous la poignée ; pari de Vincent : A, relecture à l'aveugle : C. Figma léger (captures du prototype, tableau des états, composants Onglets de feuille et Tête de feuille). Zoom 3 des tuiles essayé : la côte se lit à 390 × 664. Relecture des écrans finaux non faite (temps écoulé). |
 | 2026-10-13 | Spec interface-telephone révisée (D10) pendant /breakdown | Captures de l'iPhone sur une version construite servie par le Wi-Fi pendant le build (AC-8 reformulé) ; la version en ligne est vérifiée à /ship. Choix de Vincent. |
 | 2026-10-13 | Plan validé : interface-telephone | 5 tâches (0 cause du clavier sur l'iPhone par câble, 1 zoom 3 et AC-1, 2 feuille à onglets et ajout, 3 repli, glisser et fiche, 4 correction du clavier et vérification sur l'iPhone) ; aucun paquet ; navigation des tests 390 px adaptée avec l'accord de Vincent ; une seule annonce `role=status` gardée (tests protégés de loyer-mer). |
+| 2026-10-14 | Tranche construite : interface-telephone | Démo acceptée : communes colorées dès l'ouverture sur téléphone (tuiles du zoom 3), feuille à deux onglets dont la tête replie et déplie (toucher, glisser, clavier), fiche à la place des onglets, clavier iPhone corrigé (cause mesurée : Safari lit la place du champ avant notre code ; 0 px de défilement sur l'iPhone 13 Pro de Vincent) ; 11 critères verts, ceux de loyer-mer et proches toujours verts ; décisions du build gardées (H51–H55). |
 
 ## Hypothèses à vérifier
 

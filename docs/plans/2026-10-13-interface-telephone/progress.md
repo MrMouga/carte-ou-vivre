@@ -28,3 +28,7 @@ Corrections 1 : faites — commits c95568f..914dd6d — titre « Tes proches » 
 ## Preuves
 
 ## Coût
+- Agents : T0 237 k · T1 149 k · T2 318 k · T3 214 k · T4 276 k · simplification 127 k · relecture code 186 k · QA 62 k · corrections 197 k (≈ 1,77 M). Temps de Vincent : ≈ 15 min (iPhone, deux essais), 3 questions.
+
+Démo acceptée par Vincent le 2026-10-14 (pari : « tout marche »). Décisions gardées reportées dans details.md (H51 à H55).
+Terminé 2026-10-14
