@@ -314,9 +314,10 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
   // onglet trop court pour le centrer, et le titre comme la ligne du nouveau proche sortiraient du haut (feuille à 45 %,
   // interface-telephone). L'onglet défile pour poser le titre en haut, juste sous les onglets, entier avec « Effacer mes
   // proches » (relecture des corrections : avant, la ligne du nouveau proche puis « + Ajouter un proche » étaient amenés
-  // en entier, et le titre passait à moitié sous les onglets). La ligne du nouveau proche commence alors dans l'onglet,
-  // en entier ou en partie ; si elle tombe tout entière sous son bas (3 proches et plus à 390 × 664), elle passe avant le
-  // titre, puis ce qui a le focus (le message « 5 proches au maximum… » après le 5ᵉ).
+  // en entier, et le titre passait à moitié sous les onglets). Pour le 1er et le 2e proche, le titre reste en haut, même
+  // si la ligne du 2e tombe sous le bas de l'onglet (390 × 664, 1er proche prêt : il en manque 14 px). À partir du 3e, si
+  // la ligne du nouveau proche tombe tout entière sous le bas de l'onglet, elle passe avant le titre, puis ce qui a le
+  // focus (le message « 5 proches au maximum… » après le 5ᵉ).
   useEffect(() => {
     const montrerIci = montrer.current && !enBureau();
     montrer.current = false;
@@ -326,7 +327,7 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
       section.current?.scrollIntoView({ block: 'start' });
       const nouveau = section.current?.querySelector('ul > li:last-child');
       const onglet = section.current?.closest('[role="tabpanel"]');
-      if (!nouveau || !onglet || nouveau.getBoundingClientRect().top < onglet.getBoundingClientRect().bottom) return;
+      if (proches.length <= 2 || !nouveau || !onglet || nouveau.getBoundingClientRect().top < onglet.getBoundingClientRect().bottom) return;
       nouveau.scrollIntoView({ block: 'nearest' });
       const actif = document.activeElement;
       if (actif instanceof HTMLElement && section.current?.contains(actif)) actif.scrollIntoView({ block: 'nearest' });

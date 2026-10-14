@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { amenerEnBas, mobile, onglet } from './lib/feuille';
 import { servirIgn } from './lib/ign';
-import { ADRESSES, ajouter, champ, lignes, liste, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
+import { ADRESSES, ajouter, champ, lignes, liste, pret, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
 import { BORNES } from '../../src/domain/url';
 import { hauteurFeuille, paddingCarte } from '../../src/map/view';
 import { geste, size, space } from '../../src/theme/tokens';
@@ -552,7 +552,11 @@ for (const hauteur of [664, 844]) {
       await page.setViewportSize({ width: 390, height: hauteur });
       await ouvrir(page);
       await servirIgn(page);
-      if (n) await ajouter(page, 'Nantesville');
+      if (n) {
+        // Le premier proche est prêt, avec son curseur de plafond : sa ligne est à sa plus grande hauteur (le cas courant).
+        await ajouter(page, 'Nantesville');
+        await pret(page, 'Nantesville (44)');
+      }
       // Le dernier ajout au doigt, comme sur le téléphone.
       if (n) await zone(page).getByRole('button', { name: '+ Ajouter un proche' }).tap();
       else await champ(page).tap();
