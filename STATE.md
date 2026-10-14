@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : build (tranche immobilier) — démo acceptée le 2026-10-14 (docs/plans/2026-10-14-immobilier/demo.md, 13 critères sur 13) ; pas encore en ligne ; prochaine étape /ship. Interface-telephone est en ligne (version 28305d0 servie sur https://ou-vivre-en-france.narnia-assistant.workers.dev/, vérifiée le 2026-10-14).
+- Étape : spec (tranche cadre-de-vie) — validée le 2026-10-14 (docs/specs/2026-10-14-cadre-de-vie/spec.md, révisée D9) ; prochaine étape /ui. Immobilier poussé sur main le 2026-10-14 et mis en ligne par le déploiement automatique, d'après Vincent (version en ligne non vérifiée par /ship).
 - Statut : active
 
 ## Décisions
@@ -88,6 +88,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-14 | Design validé : immobilier | Fusion F sur la base de B : catégorie « Logement » repliable, Louer / Acheter soulignés, tuiles Appartement / Maison avec icône, curseur « Loyer mensuel » / « Prix d'achat », Total / Au m² et surface sous le curseur ; feuille ≥ 338 px et titre masqué sur téléphone (D11 d'interface-telephone) ; spec immobilier révisée (D10, AC-4) ; pas de Figma, le prototype fait foi. |
 | 2026-10-14 | Plan validé : immobilier | 6 tâches : données (achat.json non indexé, loyers des maisons, test des 5 communes de Vincent), règles du prix sans écran, réglage pour un appartement (feuille 338 px), maison, communes sans prix, finitions ; aucun paquet ; AC-2, AC-5, AC-9 d'interface-telephone révisés (D12, « Loyer mensuel »). |
 | 2026-10-14 | Tranche construite : immobilier | Démo acceptée : catégorie « Logement » (Louer / Acheter, Appartement / Maison, Total / Au m², surface) ; carte, liste, fiche, résumé replié et adresse suivent ; 13 critères verts, ceux des tranches précédentes toujours verts. Décisions de Vincent pendant le build, reportées dans la spec : prix d'achat 2023-2025 dès 30 ventes sinon 2021-2025, plancher 300 €/m² (D5, H61, H62) ; commune sans prix toujours après celles qui ont un prix (D6, R25) ; H67 à la lettre ; risque des prix ruraux en tête de liste accepté. Mineurs notés dans la démo (légende sans le sable, raison inexacte après le seuil). |
+| 2026-10-14 | Spec validée : cadre-de-vie | Section « Cadre de vie » : taille en chiffres, type d'environnement Insee (filtre), mer en choix fixes 10/30/50/100 km (au lieu du curseur), montagne à vol d'oiseau depuis la mairie (filtre + note, « En montagne »), tout sur Peu importe au départ ; forêt et lac en tranche B ; 50 critères des tranches construites recalés de 60 à 50 km ; source de la montagne tranchée en tâche 0 (D9, test de la discovery manqué à l'écriture). Claude recommandait la mer à 50 km au départ (tête de liste : villages vosgiens à 326 €) : coût accepté par Vincent. |
 
 ## Hypothèses à vérifier
 
@@ -140,6 +141,7 @@ Autres questions :
 
 ## Documents
 
+- [Spec « Cadre de vie » — 2026-10-14](docs/specs/2026-10-14-cadre-de-vie/spec.md) · [recalage des tranches précédentes](docs/specs/2026-10-14-cadre-de-vie/recalage.md) · [relecture](docs/specs/2026-10-14-cadre-de-vie/relecture.md)
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
 - [Spec « Proches » — 2026-10-13](docs/specs/2026-10-13-proches/spec.md)
