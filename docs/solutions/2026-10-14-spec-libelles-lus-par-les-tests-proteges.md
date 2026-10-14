@@ -6,3 +6,5 @@
 **Ce qui n'a pas marché** — Classer l'impact à partir des specs seules (règles, hypothèses) : les tests lisent des textes et des noms que les specs ne fixent pas toujours.
 **Ce qui a marché** — Garder le libellé existant et en ajouter un (H60), fixer le nom du curseur dans l'état de départ (H65), et faire de la contrainte de place une contrainte pour /ui, dans le tableau d'impact.
 **Prévention** — Pour /spec : avant d'écrire « Ne change pas », chercher dans `tests/` chaque libellé, nom accessible et contrainte de place de la zone remplacée (`grep -rn "<texte>" tests`), et classer chacun dans le tableau d'impact.
+
+Revu le 2026-10-14 (relecture du plan) : la leçon a été appliquée aux tests mais pas aux critères : au design, le libellé « Loyer mensuel » a contredit AC-2, AC-5 et AC-9 d'interface-telephone, qui citent « Loyer maximum » affiché. Chercher aussi dans `docs/specs/*/acceptance.json` (`grep -rn "<texte>" docs/specs tests`) avant d'accepter un libellé au design, et distinguer nom lu (`getByRole(…, { name })`) et texte affiché (`getByText`).

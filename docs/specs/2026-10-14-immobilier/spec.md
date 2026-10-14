@@ -18,7 +18,7 @@
 - **D8** — Pas de prix d'achat en Alsace-Moselle (1 605 communes). *Pourquoi* : ses ventes ne sont pas publiées. *Écarté* : les 17 communes des notaires, sous droits réservés et sur une autre période.
 - **D9** — Le fichier des prix d'achat est exclu des moteurs de recherche, le site reste indexé. *Pourquoi* : condition du fichier des ventes. *Écarté* : renoncer à l'achat (avis de la discovery).
 
-- **D10** — Retours du design (/ui) : libellés du curseur « Loyer mensuel » et « Prix d'achat » (H65) ; pas de sous-texte sous le curseur du prix, pas de libellé « Surface » devant son champ (H56) ; légende inchangée (H60) ; AC-4 suit (« 23 €/m² » sans « par mois »). *Pourquoi* : choix de Vincent sur le prototype ; le libellé dit déjà « mensuel », le champ dit déjà « m² ». *Écarté* : la légende « Prix inconnu : pas de score » ; les sous-textes du brief. Validé par Vincent le 2026-10-14, AC-4 compris.
+- **D10** — Retours du design (/ui) : libellés du curseur « Loyer mensuel » et « Prix d'achat » (H65) ; pas de sous-texte sous le curseur du prix, pas de libellé « Surface » devant son champ (H56) ; légende inchangée (H60) ; AC-4 suit (« 23 €/m² » sans « par mois »), et AC-2, AC-5, AC-9 d'interface-telephone (« Loyer mensuel », D12 de cette tranche). *Pourquoi* : choix de Vincent sur le prototype ; le libellé dit déjà « mensuel », le champ dit déjà « m² ». *Écarté* : la légende « Prix inconnu : pas de score » ; les sous-textes du brief. Validé par Vincent le 2026-10-14, AC-4 compris.
 
 **Pas maintenant** : un prix au m² qui varie avec la surface, les terrains, le neuf, loyer et achat côte à côte.
 **Hypothèses** : 13 choix par défaut (libellés, plages, arrondis, adresse) dans [détails](details.md#hypothèses).

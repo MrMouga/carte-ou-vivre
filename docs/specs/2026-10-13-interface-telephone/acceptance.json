@@ -19,7 +19,7 @@
       "rule": "R17",
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844 : feuille ouverte, onglet « Critères » sélectionné, bouton « Replier la feuille » à l'état déplié",
       "when": "l'utilisateur touche « Replier la feuille », puis « Déplier la feuille »",
-      "then": "après le premier toucher, la feuille est une barre de 64 px de haut au plus, qui dit « 3 communes passent tes critères », avec « Déplier la feuille » à l'état replié ; le rond « 1 » de Portmer n'a pas bougé sur l'écran ; après le second, la feuille est ouverte sur « Critères », « Loyer maximum » visible",
+      "then": "après le premier toucher, la feuille est une barre de 64 px de haut au plus, qui dit « 3 communes passent tes critères », avec « Déplier la feuille » à l'état replié ; le rond « 1 » de Portmer n'a pas bougé sur l'écran ; après le second, la feuille est ouverte sur « Critères », « Loyer mensuel » visible",
       "passes": true
     },
     {
@@ -43,7 +43,7 @@
       "rule": "R18",
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
       "when": "l'utilisateur touche l'onglet « Les 10 premières », replie la feuille, puis la déplie",
-      "then": "l'onglet « Les 10 premières » est sélectionné et montre « 3 communes passent tes critères » puis les lignes « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km » ; « Loyer maximum » n'est pas affiché ; après repli et dépli, c'est toujours « Les 10 premières » qui est affiché",
+      "then": "l'onglet « Les 10 premières » est sélectionné et montre « 3 communes passent tes critères » puis les lignes « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 49 · 1 092 € · 7 km », « 3 · Grandeville (33) · 32 · 832 € · 40 km » ; « Loyer mensuel » n'est pas affiché ; après repli et dépli, c'est toujours « Les 10 premières » qui est affiché",
       "passes": true
     },
     {
@@ -75,7 +75,7 @@
       "rule": "R18",
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 1 440 × 900",
       "when": "la page a fini de s'afficher",
-      "then": "ni onglets, ni bouton « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste « Les 10 premières » à droite sont visibles ensemble, comme avant cette tranche",
+      "then": "ni onglets, ni bouton « Replier la feuille », ni barre repliée ; « Loyer mensuel » à gauche et la liste « Les 10 premières » à droite sont visibles ensemble, comme avant cette tranche",
       "passes": true
     },
     {
