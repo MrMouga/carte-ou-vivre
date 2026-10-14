@@ -9,7 +9,7 @@ export type Message = 'chargement' | 'erreur' | 'fond-indisponible' | null;
 // Chargement et erreur au centre de la zone de carte ; fond indisponible en haut (à 390 px, en bas de la bande
 // visible, juste au-dessus de la feuille, ouverte ou repliée (H50 d'interface-telephone) : le haut est pris par la légende
 // et le zoom).
-export function Status({ message, onReessayer, repliee = false }: { message: Message; onReessayer: () => void; repliee?: boolean }) {
+export function Status({ message, onReessayer, repliee }: { message: Message; onReessayer: () => void; repliee: boolean }) {
   return (
     <div className={cn('pointer-events-none absolute inset-4 flex gap-4', repliee ? 'max-bureau:bottom-(--hauteur-repliee)' : 'max-bureau:bottom-feuille')}>
       <div className="w-reglages shrink-0 max-bureau:hidden" />

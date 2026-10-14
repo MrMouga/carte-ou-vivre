@@ -257,7 +257,7 @@ export function App() {
           onglet={onglet}
           onOnglet={setOnglet}
           ajout={ajout}
-          compte={resultat ? (resultat.actif ? compte(resultat.classement.length) : 'Aucun plafond fixé') : ''}
+          compte={resultat?.actif === false ? 'Aucun plafond fixé' : annonce}
           annonce={annonce}
           criteres={
             <>
