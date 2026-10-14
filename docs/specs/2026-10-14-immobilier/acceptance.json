@@ -294,7 +294,7 @@
       "rule": "R23",
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit l'unité au m², puis revient à Total",
-      "then": "au m² : le plafond affiche 23 €/m² par mois, le champ surface n'est plus affiché, l'adresse est /?loyer=23&mer=60&unite=m2, la liste montre « 1 · Portmer (17) · 72 · 12,5 €/m² · moins d'1 km », « 2 · Quaibleu (13) · 49 · 21,0 €/m² · 7 km », « 3 · Grandeville (33) · 32 · 16,0 €/m² · 40 km » et la fiche de Grandeville affiche « 16,0 €/m² par mois » ; de retour en Total : plafond 1 200 €, surface 52 m², adresse /?loyer=1200&mer=60",
+      "then": "au m² : le libellé est « Loyer mensuel » et le plafond affiche 23 €/m², le champ surface n'est plus affiché, l'adresse est /?loyer=23&mer=60&unite=m2, la liste montre « 1 · Portmer (17) · 72 · 12,5 €/m² · moins d'1 km », « 2 · Quaibleu (13) · 49 · 21,0 €/m² · 7 km », « 3 · Grandeville (33) · 32 · 16,0 €/m² · 40 km » et la fiche de Grandeville affiche « 16,0 €/m² par mois » ; de retour en Total : plafond 1 200 €, surface 52 m², adresse /?loyer=1200&mer=60",
       "passes": false
     },
     {
