@@ -7,6 +7,8 @@ Tâche 1 : faite — commits 979511c..009ea6f — preuve : captures/T1-ouverture
 Tâche 2 : faite — commits 13db79d..3a23013 — preuve : captures/T2-*.png (bureau avant/après : 0 pixel d'écart ; curseur du loyer 520→538 à 375 × 548) (2026-10-14) — ≈ 3 h 20 — agent : 318 k jetons — rapport : taches/T2.md. Question à Vincent (test d'AC-1 sous le bouton zoom) : option A, boutons de zoom masqués pendant la lecture.
 Tâche 3 : faite — commits 5765c52..7a63ab4 — preuve : captures/T3-*.png, version construite 5765c52 (2026-10-14) — ≈ 33 min — agent : 214 k jetons — rapport : taches/T3.md. Barre repliée 51 px ; rond « 1 · 2 » immobile au repli (x 89,32 ; y 74). 24 tests ignorés : 22 propres à une largeur, 2 d'avant la tranche.
 Tâche 4 : faite — commits 45fd2d3..de9d0a0 — preuve : captures/T4-iphone-*.png (iPhone 13 Pro, 2026-10-14 09:11–09:13), captures/T4-iphone-mesures.txt (0 px de défilement par Safari, 4 fois sur 4), captures/T4-e2e-*.png — ≈ 50 min dont ≈ 10 min de Vincent — agent : 276 k jetons — rapport : taches/T4.md. Défaut restant trouvé sur l'iPhone : après « Effacer mes proches », le focus revient au champ sans monter la feuille (Safari défile de 284 px, champ caché) — à corriger en phase de corrections (même logique que « + Ajouter un proche », R20).
+Simplification : faite — commits 27c76a8..6f8691f — comportement inchangé (88 + 180 verts, vérifié par l'orchestrateur) — agent : 127 k jetons — rapport : taches/simplification.md.
+Relectures lancées (2026-10-14) : code-reviewer (spec) → review-spec.md ; qa-tester → qa.md.
 
 ## Décisions prises à la place de Vincent
 - T0 : mesure par une page relais sur le Wi-Fi (sans câble ni console) au lieu de la console Safari par câble du plan ; mesure sur le serveur de dev (le plan le disait). Coût si faux : aucun, la cause est appuyée par trois mesures concordantes.
@@ -16,6 +18,8 @@ Tâche 4 : faite — commits 45fd2d3..de9d0a0 — preuve : captures/T4-iphone-*.
 - T3 : repli par glissement vers le bas (`translateY`) plutôt que par changement de hauteur (la fiche courte s'anime aussi) ; jetons `taille-barre-feuille` (51) et `geste` (300 ms, 10 / 80 px, 400 ms) ajoutés au contrat ; AC-3 amène « Taille de ville » à l'écran avant de le glisser (sous l'écran à 390 × 844) ; test du clic fantôme à 390 × 664, animations réduites ; « Chargement… » et l'erreur restent au centre de la bande (pas de repli dans ces états). Coût si faux : un relecteur qui mesure la boîte de la feuille repliée trouve sa hauteur ouverte (la partie visible fait 51 px).
 - T4 : la correction n'agit qu'au relâchement d'un toucher immobile (< 10 px) ; au-delà, c'est un défilement et le navigateur garde son comportement. Coût si faux : un toucher un peu glissé sur le champ ne monte pas la feuille (défilement normal).
 - Orchestrateur : deux captures de Vincent montrant des adresses non publiques écartées du dépôt ; seules les captures avec « 12 Rue de la Paix » ou sans adresse sont versionnées.
+- Simplification : la copie du défilement dans le corps du test d'AC-8 remplacée par l'aide commune `amenerEnBas` (même instruction, given / when / then inchangés). Coût si faux : 4 lignes à remettre.
+- Orchestrateur : défaut « focus après Effacer mes proches » (trouvé sur l'iPhone en tâche 4) corrigé en phase de corrections par l'option A (placer le champ avant le focus, comme « + Ajouter un proche ») — c'est R20 ; l'option B (focus sur le titre) aurait changé une règle de la tranche proches.
 
 ## Preuves
 
