@@ -1,5 +1,5 @@
 # Système de design — Carte où vivre
-2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches et /ui interface-telephone · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
+2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches et /ui interface-telephone · le 2026-10-14 par /ui immobilier (sans Figma : le prototype F fait foi) · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
 
 **Le contrat de tout agent qui produit de l'interface.** Toute valeur visuelle (couleur, rayon, espacement, taille de texte) vient d'un jeton ci-dessous. Une valeur manque → on ajoute un jeton ici et dans Figma, et on le dit ; jamais de valeur arbitraire (`[13px]`, `#3a3a3a`).
 
@@ -37,7 +37,8 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | `titre-fiche` | Serif 4 SemiBold 22 | nom de la commune dans la fiche |
 | `categorie` | Sans 3 Bold 12, capitales, +6 % | « Loyer », « Mer », « Les 10 premières » |
 | `texte` / `texte-fort` | Sans 3 Regular / SemiBold 15 | corps, compte, noms dans la liste, raisons |
-| `valeur` | Sans 3 Bold 18 | valeur d'un curseur |
+| `valeur` | Sans 3 Bold 18 | compte en tête de feuille, bouton de zoom |
+| `valeur-curseur` | Sans 3 Bold 16 | valeur d'un curseur (prix, mer, proches) — /ui immobilier, remplace `valeur` sur les curseurs |
 | `score-grand` | Sans 3 Bold 30 | score de la fiche |
 | `pastille` · `secondaire` · `mentions` · `rang` | 13 · 12 · 11 · Bold 12 | pastilles, sous-textes, mentions, rangs des ronds |
 
@@ -58,11 +59,15 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Repère proche | marqueur MapLibre (élément HTML), ne se clique pas | État : Prêt (goutte `place-marker`, maison) · Calcul (« … », anneau qui pulse 1,2 s) · Indisponible (goutte `card`, bord pointillé `place-marker`, « ! ») ; nom dans une étiquette à droite ; au-dessus des ronds du top 10 |
 | Pastille de temps | `li` d'une `ul` « Temps vers tes proches » (pas un bouton) | une seule ; textes Nom, Valeur (« 4 h au plus », « 3 h 30 », « 3 h 30 · au-dessus de 3 h », « calcul en cours », « trajets indisponibles ») ; bureau seulement |
 | Ligne de proche | `li` (composé) : repère en petit 24 px, nom, adresse, Slider 15 min → 6 h, Button lien « Retirer » | État : Prêt · En attente · Calcul · Indisponible (+ « Réessayer ») |
-| Catégorie repliable | `h2 > button[aria-expanded]` | Ouverte Oui/Non ; repliée : résumé à droite ; ouverte : l'action de la catégorie à droite (Bascule mer, « Effacer mes proches ») |
+| Catégorie repliable | `h2 > button[aria-expanded]` | Ouverte Oui/Non ; repliée : résumé **sous le titre, aligné à gauche**, dans le bouton, chaque morceau séparé par « · » insécable (« 5 800 €/m² » jamais coupé ; /ui immobilier) ; ouverte : l'action de la catégorie à droite (Bascule mer, « Effacer mes proches ») |
 | Bascule mer | groupe `role=group` nommé « Unité de la mer », deux `button[aria-pressed]` « km » et « min » | Unité km / min ; segment actif `primary` ; 24 px de haut en bureau, 44 px à 390 px |
 | Suggestion d'adresse | bouton dans la liste des suggestions ; nom accessible « Ligne 1, Ligne 2 » ; le champ porte `aria-controls` vers la liste | textes Ligne 1, Ligne 2 ; icône de lieu `muted-foreground` |
 | Onglets de feuille | `role=tablist` de deux `button role=tab` (« Critères », « Les 10 premières »), flèches gauche/droite (tranche interface-telephone) | Actif Critères / Les 10 premières ; rail `background` en pilule, padding `space-1`, 44 px de haut ; actif `primary` / `primary-foreground`, inactif `muted-foreground` ; style `texte-fort` ; sous 1 024 px seulement |
 | Tête de feuille | `button[aria-expanded]` « Replier la feuille » / « Déplier la feuille » qui porte la poignée et le compte (style `valeur`, une ligne, annoncé à part en `role=status`) ; se touche et se glisse, sans chevron (D9 de interface-telephone) | État : Ouverte (≈ 47 px) · Repliée (barre entière ≈ 51 px, `ombre-feuille`, + marge du geste d'accueil) · Fiche (poignée seule) ; `card`, coins hauts `radius-sheet` |
+| Choix souligné | groupe `role=group` nommé (« Louer ou acheter »), deux `button[aria-pressed]` en texte `texte-fort`, trait `border` dessous, actif : trait 2 px `primary` et texte `foreground` (/ui immobilier) | Actif gauche / droite ; 24 px de haut en bureau, 44 px à 390 px |
+| Tuile de bien | groupe « Type de logement », deux `button[aria-pressed]` : icône SVG 24 px à gauche (immeuble, maison ; trait 2 px `currentColor`) et libellé `pastille` ; `radius-chip`, `border`, actif `primary` (/ui immobilier) | Appartement / Maison ; 44 px de haut partout |
+| Segmenté d'unité | groupe « Unité du prix », deux `button[aria-pressed]` « Total » / « Au m² » collés dans un cadre `border` `radius-chip`, actif `primary` ; moitié de la largeur (/ui immobilier) | Total / Au m² ; 28 px en bureau, 44 px à 390 px |
+| Champ surface | `input inputMode=numeric` nommé « Surface en m² », sans libellé visible, suivi de « m² » ; `taille-toucher` de large, centré, chiffres tabulaires, 16 px à 390 px (/ui immobilier) | Repos / Focus / En saisie |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)
@@ -71,6 +76,8 @@ Ajoutées par /build proches (tâche 4, le 2026-10-13), à reporter dans Figma :
 Ajoutées par /build proches (tâche 5, le 2026-10-13), à reporter dans Figma : `taille-bande-carte` 40 (390 px : bande de carte au-dessus de la feuille montée pendant l'ajout d'un proche, Figma 27:1160 ; classe `top-bande-carte`) ; `taille-saisie` 16 (390 px : texte des champs de saisie, car sous 16 px Safari sur iPhone agrandit la page au focus ; classe `max-bureau:text-(length:--taille-saisie)` ; Figma dessine 15).
 Ajoutée par /build interface-telephone (tâche 2, le 2026-10-14), à reporter dans Figma : `taille-feuille-min` 272 (plancher de la feuille mobile ouverte, D9) ; `part-feuille` passe de 0,56 à 0,45 (`layout` de `tokens.ts`) : `h-feuille`, `max-h-feuille` et `bottom-feuille` valent `max(45dvh, 272px)`.
 Ajoutées par /build interface-telephone (tâche 3, le 2026-10-14), à reporter dans Figma : `taille-barre-feuille` 51 (barre de la feuille repliée, poignée et compte, état « Repliée » de la Tête de feuille ; classe `h-barre-feuille`) ; variables CSS `--marge-geste` (marge du geste d'accueil de l'iPhone, `env(safe-area-inset-bottom)`, avec `viewport-fit=cover`) et `--hauteur-repliee` (barre + marge : ce qu'on voit de la feuille repliée ; classe `bottom-(--hauteur-repliee)`) ; `geste` de `tokens.ts` : `duree-feuille-ms` 300 (passage d'une position à l'autre, `--duree-feuille`, 0 s si l'on réduit les animations), `seuil-toucher` 10 px, `seuil-change` 80 px, `avaler-clic-ms` 400 (H45, H46).
+
+Ajoutés par /ui immobilier (2026-10-14), à reporter dans Figma si une page « immobilier » est faite : style `valeur-curseur` (Sans 3 Bold 16) ; `taille-reglages` 300 → **340** (panneau de réglages en bureau) ; `taille-feuille-min` 272 → **338** (D11 d'interface-telephone : curseur du prix visible à 375 × 548, France encore peinte au-dessus). Sous 1 024 px, le titre « Où vivre en France » n'est pas affiché dans la feuille (`sr-only`), D11.
 
 ## Dans le code
 Source unique : `src/theme/tokens.ts` (variables CSS sur `:root` sous les noms ci-dessus, thème Tailwind, couleurs du style MapLibre). Le thème par défaut de Tailwind est **vidé** : une classe hors de cette liste ne produit aucun style. Contrôle : `npm run check-tokens`.

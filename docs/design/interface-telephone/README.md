@@ -1,5 +1,5 @@
 2026-10-13 · validé
-À revoir (2026-10-14) : l'onglet « Critères » reçoit le réglage du prix à la place du réglage du loyer (tranche immobilier) ; curseur visible à 375 × 548 (H48) ; à redessiner par /ui d'immobilier.
+Revu (2026-10-14, /ui immobilier, voir ../immobilier/README.md) : l'onglet « Critères » reçoit le réglage du prix à la place du réglage du loyer (tranche immobilier) ; curseur visible à 375 × 548 (H48) ; à redessiner par /ui d'immobilier.
 # Design — interface téléphone
 
 Spec : [docs/specs/2026-10-13-interface-telephone/](../../specs/2026-10-13-interface-telephone/spec.md) (révisée D9) · Temps convenu : 1 h 30, 1 session · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « interface-telephone » (`36:1757`) et composants sur « Système » · Étend le design [loyer-mer](../loyer-mer/README.md) et [proches](../proches/README.md) (construits : le code fait foi) et le [système](../system/README.md).
