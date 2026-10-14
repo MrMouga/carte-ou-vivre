@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
+import immobilier from '../../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
 import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
@@ -8,7 +9,7 @@ import { readPixels } from './pixels';
 
 // Fixture « 5 communes » servie à la place de public/data, et fond IGN remplacé par un style local uni (aucun appel réseau).
 export type Id = 'A' | 'B' | 'C' | 'D' | 'E';
-type Item = (typeof acceptance.fixture.items)[number] | (typeof metropole.items)[number];
+type Item = (typeof acceptance.fixture.items)[number] | (typeof metropole.items)[number] | (typeof immobilier.fixture.items)[number];
 /** Un jeu de communes servi aux tests : ses lignes, ses carrés et le dossier de ses tuiles. */
 export type Jeu = { items: Item[]; tuiles: URL };
 const items = acceptance.fixture.items;
@@ -19,9 +20,23 @@ export const FIXTURE: Jeu = { items, tuiles: new URL('../../fixtures/tuiles/', i
  */
 export const METROPOLE: Jeu = { items: metropole.items, tuiles: new URL('../../fixtures/tuiles-metropole/', import.meta.url) };
 
+// Loyer des maisons et prix d'achat (spec immobilier) : un champ absent du jeu (5 communes de loyer-mer, métropole) est
+// servi inconnu, `null` et source « inconnu-secteur ».
 const communesJson = ({ items }: Jeu) => ({
-  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km'],
-  communes: items.map((it) => [it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km]),
+  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km', 'loyer_maison_m2', 'estimation_propre_maison'],
+  communes: items.map((it) => [
+    it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km,
+    'loyer_m2_maison' in it ? it.loyer_m2_maison : null,
+    'estimation_propre_maison' in it ? it.estimation_propre_maison : null,
+  ]),
+});
+const INCONNU = { m2: null, source: 'inconnu-secteur' };
+const achatJson = ({ items }: Jeu) => ({
+  champs: ['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'maison_source'],
+  communes: items.map((it) => {
+    const [a, m] = 'achat_appartement' in it ? [it.achat_appartement, it.achat_maison] : [INCONNU, INCONNU];
+    return [it.code_insee, a.m2, a.source, m.m2, m.source];
+  }),
 });
 // Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
 const reperesJson = ({ items }: Jeu) => ({
@@ -38,6 +53,7 @@ export const STYLE_LOCAL = { version: 8, sources: {}, layers: [{ id: 'fond', typ
 export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIXTURE } = {}) {
   await page.route('**/data/communes.json', (r) => r.fulfill({ json: communesJson(jeu) }));
   await page.route('**/data/reperes.json', (r) => r.fulfill({ json: reperesJson(jeu) }));
+  await page.route('**/data/achat.json', (r) => r.fulfill({ json: achatJson(jeu) }));
   await page.route('**/tuiles/**', (r) => {
     const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });

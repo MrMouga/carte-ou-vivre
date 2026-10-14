@@ -5,7 +5,8 @@ import { paddingCarte, type Repere } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
 import { evaluer, type Commune, type Reglages } from './domain/score';
-import { ecrireAdresse, lireAdresse } from './domain/url';
+import { ecrireAdresse, lireAdresse, lirePrix } from './domain/url';
+import { joindreAchats, type AchatJson } from './domain/prix';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
@@ -24,7 +25,7 @@ import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
 const REPRISE_ADRESSE_MS = 1000;
-type Ligne = [string, string, string, number | null, number | null, boolean, number | null];
+type Ligne = [string, string, string, number | null, number | null, boolean, number | null, number | null, boolean | null];
 
 /** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
 const REQUETE_BUREAU = `(min-width: ${layout['largeur-bureau']}px)`;
@@ -45,9 +46,14 @@ async function lire<T>(url: string): Promise<T> {
   return (await r.json()) as T;
 }
 
+// H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE.
 async function charger(): Promise<Donnees> {
-  const [c, r] = await Promise.all([lire<{ communes: Ligne[] }>('/data/communes.json'), lire<{ reperes: Repere[] }>('/data/reperes.json')]);
-  const communes = c.communes.map(([code, nom, dep, population, loyerM2, estimationPropre, merKm]) => ({
+  const [c, r, a] = await Promise.all([
+    lire<{ communes: Ligne[] }>('/data/communes.json'),
+    lire<{ reperes: Repere[] }>('/data/reperes.json'),
+    lire<AchatJson>('/data/achat.json'),
+  ]);
+  const communes = c.communes.map(([code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison]) => ({
     code,
     nom,
     dep,
@@ -55,18 +61,22 @@ async function charger(): Promise<Donnees> {
     loyerM2,
     estimationPropre,
     merKm,
+    loyerM2Maison,
+    estimationPropreMaison,
   }));
-  return { communes, reperes: r.reperes };
+  return { communes: joindreAchats(communes, a), reperes: r.reperes };
 }
 
 export function App() {
   const [donnees, setDonnees] = useState<Donnees | null>(null);
   const [reglages, setReglages] = useState<Reglages>(() => lireAdresse(location.search));
+  // Réglage du prix (spec immobilier, R21, R26) : lu dans l'adresse ; son bloc de réglage arrive en tâche 2.
+  const [prix] = useState(() => lirePrix(location.search));
   // R7 : l'adresse reflète les réglages effectifs, sans ajouter d'entrée à l'historique. Un curseur glissé dépasse
   // les limites des navigateurs : Safari lève une erreur après 100 réécritures en 30 s, Chrome ignore sans rien dire
   // au-delà de 200 en 10 s. On relit l'adresse et on réessaie plus tard, sans faire tomber la page.
   useEffect(() => {
-    const voulue = ecrireAdresse(reglages);
+    const voulue = ecrireAdresse(reglages, prix);
     let reprise: ReturnType<typeof setTimeout> | undefined;
     const ecrire = () => {
       try {
@@ -78,7 +88,7 @@ export function App() {
     };
     ecrire();
     return () => clearTimeout(reprise);
-  }, [reglages]);
+  }, [reglages, prix]);
 
   // États de la page (details.md) : chargement → prête ou erreur ; « Réessayer » relance tout (H9).
   const [essai, setEssai] = useState(0);
@@ -166,7 +176,10 @@ export function App() {
     () => proches.proches.map((p) => ({ id: p.id, nom: p.nom, etat: p.etat, lngLat: p.depart ?? p.lieu.point })),
     [proches.proches],
   );
-  const resultat = useMemo(() => (donnees ? evaluer(donnees.communes, reglages, proches.prets) : null), [donnees, reglages, proches.prets]);
+  const resultat = useMemo(
+    () => (donnees ? evaluer(donnees.communes, reglages, proches.prets, prix) : null),
+    [donnees, reglages, proches.prets, prix],
+  );
   const ronds = useMemo<Rond[]>(
     () =>
       donnees && resultat

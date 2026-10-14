@@ -1,0 +1,96 @@
+
+ RUN  v5.0.3 /Users/mouga/git-repository/carte-ou-vivre
+
+ ✓ src/domain/chargement.test.ts > indicateur de chargement (H9) > chargement fini avant 300 ms : jamais montré 2ms
+ ✓ src/domain/chargement.test.ts > indicateur de chargement (H9) > montré à 300 ms, pas avant 1ms
+ ✓ src/domain/chargement.test.ts > indicateur de chargement (H9) > fini à 350 ms : reste montré jusqu’à 600 ms 0ms
+ ✓ src/domain/chargement.test.ts > indicateur de chargement (H9) > fini à 2 s : masqué tout de suite 0ms
+ ✓ src/domain/chargement.test.ts > délai des données (H9) > rien après 15 s : échec 1ms
+ ✓ src/domain/chargement.test.ts > délai des données (H9) > réponse avant 15 s : la valeur passe 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > plafond : de 15 min à 3 h par pas de 15 min, 2 h à l’ajout (H19) 1ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > Nantesville à 2 h : Portmer seule passe, score 65 ; Grandeville (2 h 15) et Quaibleu (plus de 3 h) ne passent pas 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > Nantesville à 2 h 15 : Portmer 67, Grandeville 21 (fin de tranche égale au plafond : passe, note 0) 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > Nantesville à 2 h 15 et Toulouseville à 2 h 45 : Portmer 50, Grandeville 30 ; Quaibleu ne passe pas 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > loyer et mer sur « Sans limite », Nantesville à 2 h 15 : la page classe (Portmer 56, palier 40–60 ; Grandeville 0, palier 0–20) 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > sans proche prêt, rien ne change (loyer-mer : 72, 49, 32) 0ms
+ ✓ src/domain/proches.test.ts > R11 — plafond, note et score des proches > raisons : après loyer, mer et taille, une par proche non tenu, dans l’ordre d’ajout ; « plus de 3 h » vaut 0 0ms
+ ✓ src/domain/proches.test.ts > H22 — formats des temps des proches > « 15 min », « 45 min », « 1 h », « 1 h 15 », « 2 h 15 », « 3 h », « plus de 3 h » 0ms
+ ✓ src/domain/proches.test.ts > H22 — formats des temps des proches > raison d’un proche : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » 1ms
+ ✓ src/domain/format.test.ts > H3 — formats > euros : espace insécable avant les milliers et avant € 1ms
+ ✓ src/domain/format.test.ts > H3 — formats > €/m² à une décimale, avec une virgule 0ms
+ ✓ src/domain/format.test.ts > H3 — formats > km entiers ; sous 1 km : « moins d’1 km » 0ms
+ ✓ src/domain/format.test.ts > H3 — formats > population : au millier dès 10 000 habitants, à la centaine en dessous 0ms
+ ✓ src/domain/format.test.ts > H3 — formats > valeurs des curseurs : « Sans limite » au dernier cran 0ms
+ ✓ src/domain/format.test.ts > H3 — formats > nom affiché : nom (département) 0ms
+ ✓ src/domain/format.test.ts > R5 — compte et lignes de la liste > compte : pluriel, singulier, aucune 0ms
+ ✓ src/domain/format.test.ts > R5 — compte et lignes de la liste > AC-4 (format) : « 1 · Portmer (17) · 72 · 650 € · moins d’1 km » 0ms
+ ✓ src/domain/format.test.ts > R4, R6, R1 — textes de la fiche > taille, loyer, mer (AC-7, AC-8) 0ms
+ ✓ src/domain/format.test.ts > R4, R6, R1 — textes de la fiche > valeurs inconnues 0ms
+ ✓ src/domain/format.test.ts > R4, R6, R1 — textes de la fiche > rang (R6) : 1re sur 1 commune qui passe, 3e sur 3 communes qui passent 0ms
+ ✓ src/domain/format.test.ts > R4, R6, R1 — textes de la fiche > raisons (R1, AC-9, AC-10) 0ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > AC-11 /?loyer=800&mer=60 → 800 €, 60 km, peu importe 2ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > AC-12 valeurs invalides → valeurs de départ de ces réglages seulement ; adresse réécrite /?loyer=1200&mer=aucun 1ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > AC-14 /?taille=petite-ville,ville-moyenne → deux tailles ; adresse /?loyer=1200&mer=60&taille=petite-ville,ville-moyenne 0ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > H7 : hors plage ou hors pas = invalide (loyer=1234, loyer=250, mer=7, mer=205, 1200.0) 1ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > tailles : noms inconnus ignorés, ordre de D11, doublons retirés 0ms
+ ✓ src/domain/url.test.ts > R7, H7 — réglages dans l’adresse > adresse vide → réglages de départ 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > AC-10 (adresse) : /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 relue puis réécrite à l’identique 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > AC-11 (adresse) : /?achat=abc&unite=litre&bien=villa&surface=0 → Appartement, Acheter, Au m², 5 000 €/m² ; /?achat=5000&mer=60 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > H66 : `loyer` et `achat` ensemble → Louer, `achat` retiré, même si `loyer` est invalide (1 200 €) 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > surface selon le bien : 52 m² au départ, 92 m² en Maison ; écrite seulement si elle en diffère, dans toutes les unités 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > unité : Total au départ en Louer, Au m² en Acheter ; écrite seulement si elle en diffère 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > ordre : plafond du prix, mer, taille, bien, unite, surface 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > H57 : plafond hors plage ou hors cran → plafond de départ du réglage (5 000 €/m² × la surface en Acheter · Total) 0ms
+ ✓ src/domain/url.test.ts > R26, H66 — le réglage du prix dans l’adresse (spec immobilier) > une adresse de la tranche 1 s’ouvre à l’identique (D1) 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-1 ouverture de / : Appartement, Louer, Total, 52 m², 1 200 € ; /?loyer=1200&mer=60 ; A 72, E 49, B 32 ; C, D, F non colorées 3ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-2 surface 72 m² : /?loyer=1200&mer=60&surface=72 ; Portmer 62 · 900 €, Grandeville 19 · 1 152 € ; raison de Quaibleu 1 512 € 1ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-3 Maison depuis 72 m² : surface et plafond gardés ; Portmer 68 · 756 €, Grandeville 28 · 936 € ; Estimation du secteur ; Quaibleu 1 224 € 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-4 Au m² puis Total : 23 €/m², /?loyer=23&mer=60&unite=m2, liste au m² ; retour : 1 200 €, 52 m², /?loyer=1200&mer=60 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-5 Acheter puis Louer : Au m², 5 000 €/m², /?achat=5000&mer=60, 3 communes ; retour : Total, 52 m², 1 200 € 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-6 Total depuis /?achat=5000&mer=60 : 260 000 €, 52 m², /?achat=260000&mer=60&unite=total ; 198 000 €, 250 000 €, 229 000 € 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-7 Maison depuis /?achat=5000&mer=60 : /?achat=5000&mer=60&bien=maison&surface=52 ; Portmer 64, Quaibleu 48 ; Grandeville 5 100 €/m² 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e avec 10 et « prix inconnu » ; C et F non colorées 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-9 /?achat=5000&mer=aucun : Portmer 24, Grandeville 12, Quaibleu 4 ; D et F sans note (neutres) ; C ne passe pas ; Rhinval : Alsace-Moselle 1ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : réglage relu, adresse inchangée, Terrebasse 57 · 130 000 € ; F neutre ; Portmer 350 000 € 1ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-11 /?achat=abc&unite=litre&bien=villa&surface=0 : Appartement, Acheter, Au m², 5 000 €/m² ; /?achat=5000&mer=60 ; Portmer 61, Quaibleu 46, Grandeville 23 0ms
+ ✓ src/domain/prix.test.ts > AC-1 à AC-13 — la même page, calculée par l’évaluation seule > AC-13 /?loyer=1100&mer=aucun&bien=maison : 92 m², 1 100 €, adresse inchangée ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; Rhinval « Loyer inconnu », neutre ; Grandeville 1 196 € 0ms
+ ✓ src/domain/prix.test.ts > R21 — changer de mode, de bien, de surface > Acheter met Au m² et 5 000 €/m², même depuis « Sans limite » ; Louer met Total et 1 200 € ; bien et surface gardés 0ms
+ ✓ src/domain/prix.test.ts > R21 — changer de mode, de bien, de surface > changer de bien ne change ni la surface ni l’unité (le plafond n’est pas touché : la fonction ne le reçoit pas) 0ms
+ ✓ src/domain/prix.test.ts > R21 — changer de mode, de bien, de surface > H58 surface : entier de 10 à 300 m² ; sinon la dernière surface valide reste 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > loyer 1 200 € pour 52 m² → 23 €/m² → 1 200 € (23 × 52 = 1 196) 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > achat 5 000 €/m² × 52 m² → 260 000 € ; 12 000 €/m² × 92 m² → 1 000 000 € (ramené à la borne) 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > ramené à la borne basse : 5 €/m² × 10 m² = 50 € → 300 € 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > « Sans limite » le reste quand on change d’unité 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > au cran le plus proche, moitié vers le haut : 1 225 € → 1 250 € ; 1 224 € → 1 200 € 0ms
+ ✓ src/domain/prix.test.ts > R23, H57 — changer d’unité, crans et bornes > H57 : plages et crans des quatre réglages 0ms
+ ✓ src/domain/prix.test.ts > R22, H59 — valeur affichée > montant d’achat au millier d’euros, moitié vers le haut : 229 500 € → 230 000 € ; 229 499 € → 229 000 € 0ms
+ ✓ src/domain/prix.test.ts > R22, H59 — valeur affichée > achat au m² à l’euro ; loyer au m² à une décimale ; loyer total à l’euro 0ms
+ ✓ src/domain/prix.test.ts > R22, H59 — valeur affichée > prix inconnu : null, quel que soit le réglage 0ms
+ ✓ src/domain/prix.test.ts > R24 — textes du prix > ligne de la fiche dans les quatre modes (tableau de R24) 0ms
+ ✓ src/domain/prix.test.ts > R24 — textes du prix > raisons quand le prix dépasse (tableau de R24) 0ms
+ ✓ src/domain/prix.test.ts > R24 — textes du prix > résumé de la catégorie : surface seulement en Total ; « Sans limite » 0ms
+ ✓ src/domain/prix.test.ts > R24 — textes du prix > estimation du secteur : loyer estimé (communes voisines) ; achat de l’intercommunalité (moins de 5 ventes) ; rien sans prix 0ms
+ ✓ src/domain/prix.test.ts > H68 — prix d’achat joints par code INSEE > une ligne par code, dans n’importe quel ordre ; une commune absente a un prix inconnu 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > AC-1 réglages de départ : A 72 (palier 60–80), E 49 (40–60), B 32 (20–40) ; C et D ne passent pas 1ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > AC-2 mer « Sans limite » : D 65, A 46, B 31, E 9 ; seule C ne passe pas 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > AC-3 mer 40 km : B passe avec 15 (39,9 km affiché 40 km, égal au plafond) ; A 72, E 46 ; C et D ne passent pas 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > palier : [0, 20) → 1 … [80, 100] → 5 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > distance sous 1 km comparée comme 1 km (cas limite) : plafond 5 km, A (0,9 km) passe 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > raisons par critère non tenu : Montcher au-dessus des deux plafonds 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > classement : communes qui passent, score affiché décroissant, puis loyer croissant, puis nom 0ms
+ ✓ src/domain/score.test.ts > R1, R2, R3 — passage, score et palier > sans aucun plafond : aucune commune notée, page « sans plafond » 1ms
+ ✓ src/domain/score.test.ts > D11 — taille de ville > seuils : la population exactement sur un seuil prend la taille du dessus 1ms
+ ✓ src/domain/score.test.ts > D11 — taille de ville > AC-10 (règle) : « Petite ville » cochée, seule A passe (72) ; Grandeville a la raison de taille 0ms
+ ✓ src/domain/score.test.ts > D11 — taille de ville > AC-14 (règle) : Petite ville + Ville moyenne → Portmer 72, Quaibleu 49 0ms
+ ✓ src/domain/score.test.ts > D11 — taille de ville > sans plafond : les communes de la bonne taille passent, sans score 0ms
+ ✓ src/domain/score.test.ts > D11 — taille de ville > taille inconnue : ne passe pas quand une taille est cochée, avec cette raison 0ms
+ ✓ src/domain/score.test.ts > R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer) > un prix inconnu ne fait pas échouer le critère du prix et ne donne pas de note : le score vient de la mer 0ms
+ ✓ src/domain/score.test.ts > R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer) > commune qui passe sans aucune note : « sans note », ni score, ni rang, hors du compte et du classement 0ms
+ ✓ src/domain/score.test.ts > R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer) > les communes notées ne sont jamais « sans note » ; sans plafond non plus (page « sans plafond ») 0ms
+ ✓ src/domain/score.test.ts > R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer) > à score affiché égal : prix affiché croissant, prix inconnu en dernier, puis nom 5ms
+
+ Test Files  6 passed (6)
+      Tests  87 passed (87)
+   Start at  17:50:14
+   Duration  180ms (transform 66%, import 18%, tests 11%, worker 4%)
+

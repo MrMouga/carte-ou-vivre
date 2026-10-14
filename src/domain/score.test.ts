@@ -111,3 +111,38 @@ describe('D11 — taille de ville', () => {
     expect(res.parCode.get('99999')!.raisons).toEqual([{ critere: 'taille-inconnue' }]);
   });
 });
+
+describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)', () => {
+  const sansLoyer: Commune = { ...fixture[0], code: '99901', nom: 'Sansloyer', loyerM2: null };
+
+  it('un prix inconnu ne fait pas échouer le critère du prix et ne donne pas de note : le score vient de la mer', () => {
+    const e = evaluer([sansLoyer], { loyer: 1200, mer: 60, tailles: [] }).parCode.get('99901')!;
+    expect(e).toMatchObject({ passe: true, sansNote: false, score: 98, raisons: [] }); // 100 × (1 − 1 / 60)
+  });
+
+  it('commune qui passe sans aucune note : « sans note », ni score, ni rang, hors du compte et du classement', () => {
+    const res = evaluer([...fixture, sansLoyer], { loyer: 1200, mer: null, tailles: [] });
+    expect(res.parCode.get('99901')).toMatchObject({ passe: true, sansNote: true, score: null, palier: null, rang: null });
+    expect(res.classement.map((e) => e.commune.nom)).toEqual(['Terrebasse', 'Portmer', 'Grandeville', 'Quaibleu']);
+    expect([...res.parCode.values()].filter((e) => e.sansNote).map((e) => e.commune.nom)).toEqual(['Sansloyer']);
+  });
+
+  it('les communes notées ne sont jamais « sans note » ; sans plafond non plus (page « sans plafond »)', () => {
+    const res = evaluer(fixture, REGLAGES_DEPART);
+    expect([...res.parCode.values()].some((e) => e.sansNote)).toBe(false);
+    const sans = evaluer([sansLoyer], { loyer: null, mer: null, tailles: [] }).parCode.get('99901')!;
+    expect(sans).toMatchObject({ passe: true, sansNote: false, score: null });
+  });
+
+  it('à score affiché égal : prix affiché croissant, prix inconnu en dernier, puis nom', () => {
+    const a = { ...fixture[0], merKm: 7 }; // mêmes notes de mer, pas de plafond de prix : scores égaux
+    const communes: Commune[] = [
+      { ...a, code: '1', nom: 'Aval', loyerM2: null },
+      { ...a, code: '2', nom: 'Zénith', loyerM2: 20 },
+      { ...a, code: '3', nom: 'Moulin', loyerM2: 10 },
+      { ...a, code: '4', nom: 'Bourg', loyerM2: null },
+    ];
+    const res = evaluer(communes, { loyer: null, mer: 60, tailles: [] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Moulin', 88], ['Zénith', 88], ['Aval', 88], ['Bourg', 88]]);
+  });
+});
