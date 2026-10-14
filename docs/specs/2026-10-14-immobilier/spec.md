@@ -1,0 +1,25 @@
+# Immobilier
+2026-10-14 · validée · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+
+**En une phrase** : le critère loyer devient immobilier : appartement ou maison, louer ou acheter, en montant total pour une surface choisie ou au m².
+**Pourquoi** : on s'installe pour longtemps, on peut vouloir acheter, et une maison ne coûte pas le prix d'un appartement ; la carte ne répond qu'à « louer 52 m² en appartement ».
+**C'est réussi si** : en ligne, en Achat, Bordeaux affiche son prix médian d'appartement au m² (4 427 € au fichier de juillet 2026) et passe sous 5 000 €/m² ; en Maison, son loyer change ; la fiche de Strasbourg en Achat dit pourquoi elle n'a pas de prix ; l'adresse rouvre les mêmes choix ailleurs.
+
+**Ce qu'on voit** : le réglage du prix gagne trois bascules (Appartement / Maison, Louer / Acheter, Total / Au m²) et un champ surface ; fiche et liste suivent.
+
+**Décisions à valider**
+- **D1** — Au départ : Appartement · Louer · Total, 52 m², 1 200 €, la carte d'aujourd'hui. *Pourquoi* : un lien de la tranche 1 s'ouvre à l'identique. *Écarté* : le loyer seul.
+- **D2** — Champ surface, 52 m² au départ ; changer de bien garde la surface et le plafond ; une adresse en Maison sans surface ouvre à 92 m² (référence de l'ANIL). *Pourquoi* : choix de Vincent, seul le prix au m² change avec le bien. *Écarté* : remettre la surface du bien (proposé par Claude) ; remettre le plafond.
+- **D3** — Passer en Acheter met l'unité Au m² et le plafond 5 000 €/m² ; revenir à Louer remet Total et 1 200 €. *Pourquoi* : choix de Vincent ; 5 000 €/m² laisse passer Bordeaux et La Rochelle, comme 1 200 €. *Écarté* : 3 000 ou 4 000 €/m².
+- **D4** — Changer d'unité convertit le plafond par la surface, arrondi au cran (1 200 € pour 52 m² → 23 €/m²). *Pourquoi* : le même budget, autrement dit. *Écarté* : remettre le plafond de départ.
+- **D5** — Prix d'achat : médiane au m² des ventes 2021–2025 de la commune, pour le bien choisi ; sous 5 ventes, celle de l'intercommunalité, avec « Estimation du secteur ». *Pourquoi* : hors Alsace-Moselle, 21 940 communes n'ont aucune vente d'appartement ; avec le secteur, il en reste 2 073 (maisons : 1). Comme les loyers (D12 de loyer-mer). *Écarté* : la commune seule avec « prix peu fiable » ; appartements et maisons mélangés.
+- **D6** — Une commune sans prix passe le filtre du prix, en loyer comme en achat : sa note vient des autres critères et, à score égal, elle suit celles qui ont un prix. Sans autre critère qui note, elle prend la couleur neutre, hors de la liste et du compte. Sa fiche dit pourquoi. *Pourquoi* : choix de Vincent, ne pas cacher Strasbourg faute de données. *Écarté* : l'exclure (amende loyer-mer, D21) ; une option pour l'exclure. Coût accepté : une commune sans prix près de la mer peut passer devant une commune moins chère.
+- **D7** — Fiche et liste ne montrent que le prix du mode et de l'unité choisis. *Pourquoi* : choix de Vincent, une fiche courte. *Écarté* : loyer et achat côte à côte.
+- **D8** — Pas de prix d'achat en Alsace-Moselle (1 605 communes). *Pourquoi* : ses ventes ne sont pas publiées. *Écarté* : les 17 communes des notaires, sous droits réservés et sur une autre période.
+- **D9** — Le fichier des prix d'achat est exclu des moteurs de recherche, le site reste indexé. *Pourquoi* : condition du fichier des ventes. *Écarté* : renoncer à l'achat (avis de la discovery).
+
+**Pas maintenant** : un prix au m² qui varie avec la surface, les terrains, le neuf, loyer et achat côte à côte.
+**Hypothèses** : 13 choix par défaut (libellés, plages, arrondis, adresse) dans [détails](details.md#hypothèses).
+**Taille** : 6 règles, 13 critères, ~6 tâches ; passe par /ui (trois bascules sur la feuille du téléphone, curseur visible à 375 × 548).
+**Le risque** : en Appartement · Achat, 3 communes sur 4 ont une estimation du secteur, et la médiane mêle 2021 et 2025 : la carte peut sembler plus précise qu'elle n'est. Test : à la démo, Vincent juge le prix de 5 communes qu'il connaît ; si 2 lui paraissent faux, retour sur D5.
+**Questions ouvertes** : aucune.

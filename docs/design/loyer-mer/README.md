@@ -1,4 +1,5 @@
 2026-10-12 · validé
+À revoir (2026-10-14) : le réglage du loyer devient le réglage du prix (tranche immobilier, D21 de loyer-mer) ; à redessiner par /ui d'immobilier.
 # Design — loyer-mer
 
 Spec : [docs/specs/2026-10-12-loyer-mer/](../../specs/2026-10-12-loyer-mer/spec.md) · Temps convenu : 4 h, 2 sessions · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q) (compte perso), pages « Système » et « loyer-mer ».
