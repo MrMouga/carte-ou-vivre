@@ -21,7 +21,7 @@ const ONGLETS: [Onglet, string][] = [
 ];
 
 type Props = {
-  ref?: React.Ref<HTMLDivElement>;
+  ref: React.RefObject<HTMLDivElement | null>;
   onglet: Onglet;
   onOnglet: (o: Onglet) => void;
   /** Le focus est dans l'ajout d'un proche (champ, suggestions, « Nom », « Ajouter ») : la feuille monte. */
@@ -42,11 +42,12 @@ type Props = {
 
 /**
  * Glisser vertical de la tête (ouverte) ou de la barre (repliée), au doigt ou à la souris (H46) : la feuille suit le
- * pointeur ; un déplacement de moins de `seuil-toucher` px est un toucher (`onToucher`) ; au lâcher, la position change
- * au-delà de `seuil-change` px, sans règle de vitesse. Leçon « feuille glissable » : le pointeur n'est capturé qu'après
- * `seuil-toucher` px, et le clic qui suit le lâcher est avalé (il tomberait sur ce qui apparaît sous le doigt).
+ * pointeur ; un déplacement de moins de `seuil-toucher` px est un toucher, qui change la position (`onChanger`) ; au
+ * lâcher d'un glisser, la position change au-delà de `seuil-change` px, sans règle de vitesse. Leçon « feuille
+ * glissable » : le pointeur n'est capturé qu'après `seuil-toucher` px, et le clic qui suit le lâcher est avalé (il
+ * tomberait sur ce qui apparaît sous le doigt).
  */
-function useGlisser({ actif, repliee, onChanger, onToucher }: { actif: boolean; repliee: boolean; onChanger: () => void; onToucher: () => void }) {
+function useGlisser({ actif, repliee, onChanger }: { actif: boolean; repliee: boolean; onChanger: () => void }) {
   const [dy, setDy] = useState<number | null>(null);
   const depart = useRef<{ y: number; course: number } | null>(null);
   const bouge = useRef(false);
@@ -87,8 +88,7 @@ function useGlisser({ actif, repliee, onChanger, onToucher }: { actif: boolean; 
         };
         window.addEventListener('click', avaler, { capture: true, once: true });
         setTimeout(() => window.removeEventListener('click', avaler, { capture: true }), geste['avaler-clic-ms']);
-        if (touche) onToucher();
-        else if (repliee ? d < -geste['seuil-change'] : d > geste['seuil-change']) onChanger();
+        if (touche || (repliee ? d < -geste['seuil-change'] : d > geste['seuil-change'])) onChanger();
       },
       onPointerCancel: fin,
     },
@@ -126,12 +126,11 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
 
   // Repli (H47) : le focus qui était dans la feuille, ailleurs que sur la tête, passe à « Déplier la feuille » ; sur la tête,
   // il y reste (même bouton).
-  const racine = useRef<HTMLDivElement | null>(null);
   const tete = useRef<HTMLButtonElement | null>(null);
   const rendreFocus = useRef(false);
   const changer = (r: boolean) => {
     const actif = document.activeElement;
-    rendreFocus.current = r && actif !== tete.current && !!racine.current?.contains(actif);
+    rendreFocus.current = r && actif !== tete.current && !!ref.current?.contains(actif);
     onRepliee(r);
   };
   useEffect(() => {
@@ -139,7 +138,7 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
     rendreFocus.current = false;
     tete.current?.focus();
   }, [repliee]);
-  const g = useGlisser({ actif: pret && !ajout, repliee, onChanger: () => changer(!repliee), onToucher: () => changer(!repliee) });
+  const g = useGlisser({ actif: pret && !ajout, repliee, onChanger: () => changer(!repliee) });
   const glisse = g.dy != null;
   const decalage = `${g.dy ?? 0}px`;
   const transform = repliee ? `translateY(calc(100% - var(--hauteur-repliee) + ${decalage}))` : glisse ? `translateY(${decalage})` : undefined;
@@ -165,11 +164,7 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
 
   return (
     <div
-      ref={(el) => {
-        racine.current = el;
-        if (typeof ref === 'function') ref(el);
-        else if (ref) ref.current = el;
-      }}
+      ref={ref}
       data-testid="feuille"
       data-repliee={repliee || undefined}
       data-glisse={glisse || undefined}
