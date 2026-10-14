@@ -3,7 +3,7 @@ import { ouvrir } from './lib/carte';
 import { amenerEnBas } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { ADRESSES, ajouter, champ, pret, zone } from './lib/proches';
-import { size } from '../../src/theme/tokens';
+import { size, space } from '../../src/theme/tokens';
 
 // Défaut vu sur l'iPhone de Vincent (Safari, iOS 18.7, 2026-10-13, captures/T5-iphone-vincent-bug-clavier.png) : il touche
 // « Adresse ou ville », le clavier s'ouvre, et le champ n'est plus à l'écran (on voit le haut de la liste).
@@ -19,7 +19,9 @@ import { size } from '../../src/theme/tokens';
 // clavier et sa barre commencent à y ≈ 342 dans cette fenêtre (449 px sur l'écran, moins les 107 px de la barre de Safari).
 const FENETRE_SAFARI = { width: 390, height: 664 };
 const CLAVIER_IPHONE = 342;
-const POIGNEE = 12; // la poignée collée en haut de la feuille (pt-2 + rail de 4 px)
+// Tête de la feuille montée, au-dessus du champ : la poignée seule, `space-2` + rail + `space-2` (FeuilleMobile.tsx ;
+// mesuré le 2026-10-14 à 390 × 664 : de y = 40 à 60). Avant interface-telephone, la poignée collée faisait 12 px.
+const POIGNEE = space['space-2'] + size['taille-rail'] + space['space-2'];
 
 test.use({ viewport: FENETRE_SAFARI, hasTouch: true });
 
