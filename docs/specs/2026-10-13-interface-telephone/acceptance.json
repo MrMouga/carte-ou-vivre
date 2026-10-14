@@ -76,7 +76,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 1 440 × 900",
       "when": "la page a fini de s'afficher",
       "then": "ni onglets, ni bouton « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste « Les 10 premières » à droite sont visibles ensemble, comme avant cette tranche",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -84,7 +84,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=60 à 390 × 844, feuille ouverte sur « Critères »",
       "when": "l'utilisateur règle « Loyer maximum » sur 1 000 €",
       "then": "sans changer d'onglet, le compte visible en haut de la feuille passe de « 3 communes passent tes critères » à « 2 communes passent tes critères »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
