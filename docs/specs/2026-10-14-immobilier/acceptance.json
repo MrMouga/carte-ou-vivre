@@ -327,7 +327,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=5000&mer=200",
       "then": "la liste montre « 4 communes passent tes critères » puis « 1 · Portmer (17) · 62 · 3 800 €/m² · moins d'1 km », « 2 · Quaibleu (13) · 50 · 4 800 €/m² · 7 km », « 3 · Grandeville (33) · 46 · 4 400 €/m² · 40 km », « 4 · Terrebasse (23) · 10 · prix inconnu · 180 km » ; la fiche de Terrebasse affiche « Prix d'achat inconnu : trop peu de ventes dans le secteur », le score 10 et « 4e sur 4 communes qui passent » ; C et F ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -335,7 +335,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=5000&mer=aucun",
       "then": "la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 24, Grandeville (33) 12, Quaibleu (13) 4 ; D et F ont la couleur neutre de la légende, sans score ; C n'est pas colorée ; la fiche de Rhinval (67) affiche « Prix d'achat inconnu : les ventes ne sont pas publiées en Alsace-Moselle », sans score ni rang",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -343,7 +343,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100",
       "then": "le réglage du prix est sur Maison, Acheter, Total, surface 100 m², plafond 300 000 € ; la mer sur « Sans limite » ; l'adresse ne change pas ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 57 · 130 000 € · 180 km » ; F a la couleur neutre ; la fiche de Portmer affiche « Achat 350 000 € : au-dessus de ton plafond de 300 000 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -367,7 +367,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1100&mer=aucun&bien=maison",
       "then": "le réglage du prix est sur Maison, Louer, Total, surface 92 m², plafond 1 100 € ; l'adresse ne change pas ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 46 · 598 € · 180 km » et « 2 · Portmer (17) · 12 · 966 € · moins d'1 km » ; F a la couleur neutre de la légende ; la fiche de Rhinval (67) affiche « Loyer inconnu », sans score ni rang ; celle de Grandeville affiche « Loyer 1 196 € : au-dessus de ton plafond de 1 100 € »",
-      "passes": false
+      "passes": true
     }
   ]
 }
