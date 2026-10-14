@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { ouvrir } from './lib/carte';
 import { servirIgn } from './lib/ign';
-import { ADRESSES, ajouter, champ, zone } from './lib/proches';
+import { ADRESSES, ajouter, champ, pret, zone } from './lib/proches';
 import { size } from '../../src/theme/tokens';
 
 // Défaut vu sur l'iPhone de Vincent (Safari, iOS 18.7, 2026-10-13, captures/T5-iphone-vincent-bug-clavier.png) : il touche
@@ -103,3 +103,85 @@ test('iPhone : les champs de l’ajout ne ressemblent pas à un formulaire d’a
     await expect(l).toHaveAttribute('id', /search/);
   }
 });
+
+// AC-8 (interface-telephone, R20, D7). Mesure de la tâche 0 sur l'iPhone de Vincent (mesure-tache-0.md) : Safari note la
+// place du champ au tout début du focus, **avant** notre code, puis, à l'ouverture du clavier, fait défiler la page pour
+// centrer cette ancienne place dans la partie visible (165 px mesurés, 165,3 calculés) ; le champ remonté entre-temps
+// part au-dessus de l'écran. On relève donc la place de chaque champ par un écouteur `focusin` en **capture** sur `window`,
+// posé avant le chargement de la page : il passe avant tout écouteur de la page, donc avant notre code.
+type AuFocus = Partial<Record<'Adresse ou ville' | 'Nom', Boite>>;
+declare global {
+  interface Window {
+    __auFocus?: AuFocus;
+  }
+}
+
+async function releverDesLeChargement(page: Page) {
+  await page.addInitScript(() => {
+    window.__auFocus = {};
+    addEventListener(
+      'focusin',
+      (e) => {
+        const el = e.target as HTMLInputElement;
+        const nom = el.labels?.[0]?.textContent?.trim();
+        if (nom !== 'Adresse ou ville' && nom !== 'Nom') return;
+        const r = el.getBoundingClientRect();
+        window.__auFocus![nom] = { top: r.top, bottom: r.bottom };
+      },
+      true,
+    );
+  });
+}
+
+const auFocus = (page: Page, nom: keyof AuFocus) => page.evaluate((n) => window.__auFocus?.[n], nom);
+const deuxImages = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
+const PROCHES_AC8 = ['Nantesville', 'Toulouseville', 'Lyonville', 'Brestville'] as const;
+const NOMS_AC8 = ['Nantesville (44)', 'Toulouseville (31)', 'Lyonville (69)', 'Brestville (29)'];
+
+for (const n of [0, 4]) {
+  test(`AC-8 à 390 × 664, au toucher, ${n ? '4 proches prêts, « + Ajouter un proche »' : 'sans proche, « Adresse ou ville »'} : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi`, async ({ page }) => {
+    test.setTimeout(60_000);
+    await releverDesLeChargement(page);
+    await ouvrir(page, '/?loyer=1200&mer=60');
+    await servirIgn(page);
+    for (const c of PROCHES_AC8.slice(0, n)) await ajouter(page, c);
+    for (const nom of NOMS_AC8.slice(0, n)) await pret(page, nom, 30_000);
+    // Comme Vincent : faire défiler « Critères » jusqu'à voir le champ (ou le lien) en bas de l'écran, puis le toucher.
+    const cible = n ? zone(page).getByRole('button', { name: '+ Ajouter un proche' }) : champ(page);
+    await cible.evaluate((el) => {
+      const onglet = el.closest('[role="tabpanel"]') as HTMLElement;
+      onglet.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
+    });
+    await page.evaluate(() => (window.__auFocus = {}));
+    await cible.tap();
+
+    // Le champ d'adresse : au focus, déjà sous la poignée de la feuille montée, et au-dessus du clavier.
+    await expect(champ(page)).toBeFocused();
+    const adresse = await auFocus(page, 'Adresse ou ville');
+    expect(adresse, 'place du champ d’adresse au début du focus').toBeDefined();
+    expect(adresse!.top).toBeGreaterThanOrEqual(size['taille-bande-carte'] + POIGNEE);
+    expect(adresse!.bottom).toBeLessThanOrEqual(CLAVIER_IPHONE);
+
+    // La saisie : le champ ne bouge plus ; la première suggestion est entièrement au-dessus du clavier.
+    await champ(page).pressSequentially('1 rue Test');
+    const suggestions = zone(page).getByRole('list', { name: 'Suggestions' }).getByRole('button');
+    await expect(suggestions.first()).toHaveAccessibleName('1 rue Test, 44000 Nantesville');
+    await deuxImages(page);
+    expect(Math.abs((await champ(page).boundingBox())!.y - adresse!.top)).toBeLessThanOrEqual(1);
+    const s = (await suggestions.first().boundingBox())!;
+    expect(s.y + s.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+
+    // Le choix : « Nom » a le focus, déjà à sa place au début du focus ; « Nom » et « Ajouter » au-dessus du clavier.
+    await suggestions.first().tap();
+    const nom = zone(page).getByRole('textbox', { name: 'Nom' });
+    await expect(nom).toBeFocused();
+    const nomAuFocus = await auFocus(page, 'Nom');
+    expect(nomAuFocus, 'place de « Nom » au début du focus').toBeDefined();
+    await deuxImages(page);
+    const nomApres = (await nom.boundingBox())!;
+    expect(Math.abs(nomApres.y - nomAuFocus!.top)).toBeLessThanOrEqual(1);
+    expect(nomAuFocus!.bottom).toBeLessThanOrEqual(CLAVIER_IPHONE);
+    const b = (await zone(page).getByRole('button', { name: 'Ajouter', exact: true }).boundingBox())!;
+    expect(b.y + b.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+  });
+}

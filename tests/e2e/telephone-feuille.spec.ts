@@ -503,3 +503,25 @@ test('H50 « Fond de carte indisponible » juste au-dessus de la barre ; « Aucu
   await attendreRepliee(page, 'Aucune commune ne passe tes critères');
   await expect(page.getByTestId('carte-vide')).toHaveCount(0);
 });
+
+// Hors AC (tâche 4, R20) : le toucher du champ d'adresse est repris au relâchement du doigt (feuille montée et placée avant
+// le focus) ; un doigt qui glisse sur le champ fait défiler « Critères », sans focus ni montée de la feuille.
+test('glisser commencé sur « Adresse ou ville » : « Critères » défile, le champ ne prend pas le focus, la feuille ne monte pas', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await page.setViewportSize({ width: 390, height: 664 });
+  await ouvrir(page);
+  await servirIgn(page);
+  await champ(page).evaluate((el) => {
+    const onglet = el.closest('[role="tabpanel"]') as HTMLElement;
+    onglet.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
+  });
+  const haut = (await boite(feuille(page))).y;
+  const defilement = await panneau(page, 'Critères').evaluate((el) => el.scrollTop);
+  const c = await boite(champ(page));
+  await glisser(page, c.x + c.width / 2, c.y + c.height / 2, -60);
+  await apresRendu(page);
+  await expect(champ(page)).not.toBeFocused();
+  expect((await boite(feuille(page))).y).toBe(haut);
+  await expect(page.getByRole('tablist')).toBeVisible();
+  expect(await panneau(page, 'Critères').evaluate((el) => el.scrollTop)).toBeGreaterThan(defilement);
+});

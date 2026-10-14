@@ -1,8 +1,9 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { rechercher, type Suggestion } from '@/proches/ign';
 import { MAX_PROCHES, NOM_MAX, nomPropose, type Proche } from '@/proches/useProches';
-import { layout } from '@/theme/tokens';
+import { geste, layout } from '@/theme/tokens';
 import { Categorie } from './Categorie';
 import { LigneProche } from './LigneProche';
 
@@ -106,6 +107,28 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
     // Ouvert par « + Ajouter un proche » : le focus vient seulement maintenant, champ déjà en place (même raison).
     if (focus && !bloc.current?.contains(document.activeElement)) champ.current?.focus();
   }, [monte]);
+  // 390 px, toucher du champ alors que la feuille n'est pas montée (interface-telephone, R20 ; mesure de la tâche 0) :
+  // Safari sur iPhone note la place du champ au tout début du focus, avant notre code, puis, à l'ouverture du clavier, fait
+  // défiler la page pour centrer cette ancienne place ; le champ, remonté entre-temps, partait au-dessus de l'écran. On
+  // fait donc comme « + Ajouter un proche » : au relâchement du doigt, on annule le focus du navigateur (et le clic qui
+  // suit), on monte et on place la feuille tout de suite (`flushSync` : rendu et `useLayoutEffect` ci-dessus), puis on
+  // donne le focus, champ déjà à sa place. Dans un `touchend`, iOS ouvre le clavier. Un doigt qui a bougé (défilement)
+  // garde le comportement du navigateur ; le clavier physique et le bureau ne passent pas par ici.
+  const toucher = useRef<{ x: number; y: number } | null>(null);
+  const toucherDebut = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    toucher.current = e.touches.length === 1 ? { x: t.clientX, y: t.clientY } : null;
+  };
+  const toucherFin = (e: React.TouchEvent<HTMLInputElement>) => {
+    const debut = toucher.current;
+    toucher.current = null;
+    const t = e.changedTouches[0];
+    if (!debut || !t || monte || enBureau() || inactif || !e.cancelable) return;
+    if (Math.hypot(t.clientX - debut.x, t.clientY - debut.y) >= geste['seuil-toucher']) return;
+    e.preventDefault();
+    flushSync(() => onAjout?.(true));
+    e.currentTarget.focus({ preventScroll: true });
+  };
   const entrer = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget)) onAjout?.(true);
   };
@@ -179,6 +202,8 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
         aria-controls={idListe}
         value={texte}
         disabled={inactif}
+        onTouchStart={toucherDebut}
+        onTouchEnd={toucherFin}
         onChange={(e) => {
           setTexte(e.target.value);
           setChoisie(null);
