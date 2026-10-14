@@ -287,7 +287,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer=60&surface=72",
       "when": "l'utilisateur choisit Maison",
       "then": "la surface reste 72 m² et le plafond 1 200 € ; l'adresse devient /?loyer=1200&mer=60&bien=maison&surface=72 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 68 · 756 € · moins d'1 km » et « 2 · Grandeville (33) · 28 · 936 € · 40 km » ; la fiche de Portmer affiche « 756 € par mois pour 72 m² (10,5 €/m²) » et « Estimation du secteur (communes voisines) » ; celle de Quaibleu affiche « Loyer 1 224 € : au-dessus de ton plafond de 1 200 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -319,7 +319,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?achat=5000&mer=60",
       "when": "l'utilisateur choisit Maison",
       "then": "l'adresse devient /?achat=5000&mer=60&bien=maison&surface=52 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 64 · 3 500 €/m² · moins d'1 km » et « 2 · Quaibleu (13) · 48 · 4 600 €/m² · 7 km » ; la fiche de Portmer affiche « 3 500 €/m² à l'achat » et « Estimation du secteur (moins de 5 ventes dans la commune) » ; celle de Grandeville affiche « Achat 5 100 €/m² : au-dessus de ton plafond de 5 000 €/m² »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
