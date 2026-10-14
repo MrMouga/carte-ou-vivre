@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
-import { mobile, onglet } from './lib/feuille';
+import { amenerEnBas, mobile, onglet } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { champ, lignes, liste, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
 import { BORNES } from '../../src/domain/url';
@@ -14,7 +14,7 @@ test.use({ hasTouch: true });
 const feuille = (page: Page) => page.getByTestId('feuille');
 const compte = (page: Page) => page.getByTestId('compte-feuille');
 const panneau = (page: Page, nom: 'Critères' | 'Les 10 premières') => page.getByRole('tabpanel', { name: nom });
-const boite = async (l: ReturnType<Page['locator']>) => (await l.boundingBox())!;
+const boite = async (l: Locator) => (await l.boundingBox())!;
 
 /** Touche le rail de « Loyer maximum » là où tombe `euros` (Radix : valeur proportionnelle à la largeur du curseur). */
 async function toucherLoyer(page: Page, euros: number) {
@@ -511,10 +511,7 @@ test('glisser commencé sur « Adresse ou ville » : « Critères » défile, le
   await page.setViewportSize({ width: 390, height: 664 });
   await ouvrir(page);
   await servirIgn(page);
-  await champ(page).evaluate((el) => {
-    const onglet = el.closest('[role="tabpanel"]') as HTMLElement;
-    onglet.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
-  });
+  await amenerEnBas(champ(page));
   const haut = (await boite(feuille(page))).y;
   const defilement = await panneau(page, 'Critères').evaluate((el) => el.scrollTop);
   const c = await boite(champ(page));

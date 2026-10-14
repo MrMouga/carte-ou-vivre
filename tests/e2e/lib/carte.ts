@@ -83,7 +83,7 @@ export function vue(page: Page, { items } = FIXTURE) {
   const lecture = (id: string) => ecran(forme(id)[0][0] + 0.1, forme(id)[0][1] + 0.1);
   const opacite = Math.max(carte['opacite-zoom'], Math.min(carte['opacite-france'],
     carte['opacite-france'] + ((z - carte['zoom-france']) / (carte['zoom-ville'] - carte['zoom-france'])) * (carte['opacite-zoom'] - carte['opacite-france'])));
-  return { z, centre, lecture, opacite, ecran, padding: p };
+  return { z, centre, lecture, opacite, ecran };
 }
 
 const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));

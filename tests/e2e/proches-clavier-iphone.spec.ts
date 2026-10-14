@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { ouvrir } from './lib/carte';
+import { amenerEnBas } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { ADRESSES, ajouter, champ, pret, zone } from './lib/proches';
 import { size } from '../../src/theme/tokens';
@@ -46,13 +47,13 @@ async function releverAuFocus(page: Page) {
 
 /** Fait défiler la feuille comme Vincent : juste assez pour voir le champ en bas de l'écran. */
 async function defilerJusquAuChamp(page: Page) {
-  await champ(page).evaluate((el) => {
-    const feuille = el.closest('[role="tabpanel"]') as HTMLElement; // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
-    feuille.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
-  });
+  await amenerEnBas(champ(page)); // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
   const b = (await champ(page).boundingBox())!;
   expect(b.y + b.height).toBeLessThanOrEqual(FENETRE_SAFARI.height);
 }
+
+/** Attend deux images et 100 ms : tout est rendu. */
+const deuxImages = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
 
 async function verifier(page: Page) {
   await expect(champ(page)).toBeFocused();
@@ -62,7 +63,7 @@ async function verifier(page: Page) {
   expect(auFocus!.top).toBeGreaterThanOrEqual(size['taille-bande-carte'] + POIGNEE);
   expect(auFocus!.bottom).toBeLessThanOrEqual(CLAVIER_IPHONE);
   // 2. Après : le champ n'a pas bougé (deux images plus tard, une fois tout rendu).
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
+  await deuxImages(page);
   const apres = (await champ(page).boundingBox())!;
   expect(Math.abs(apres.y - auFocus!.top)).toBeLessThanOrEqual(1);
 }
@@ -81,10 +82,7 @@ test('iPhone : toucher « + Ajouter un proche » (1 proche) — au focus, le cha
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   const lien = zone(page).getByRole('button', { name: '+ Ajouter un proche' });
-  await lien.evaluate((el) => {
-    const feuille = el.closest('[role="tabpanel"]') as HTMLElement; // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
-    feuille.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
-  });
+  await amenerEnBas(lien); // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
   await releverAuFocus(page);
   await lien.tap();
   await verifier(page);
@@ -134,7 +132,6 @@ async function releverDesLeChargement(page: Page) {
 }
 
 const auFocus = (page: Page, nom: keyof AuFocus) => page.evaluate((n) => window.__auFocus?.[n], nom);
-const deuxImages = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
 const PROCHES_AC8 = ['Nantesville', 'Toulouseville', 'Lyonville', 'Brestville'] as const;
 const NOMS_AC8 = ['Nantesville (44)', 'Toulouseville (31)', 'Lyonville (69)', 'Brestville (29)'];
 
@@ -148,10 +145,7 @@ for (const n of [0, 4]) {
     for (const nom of NOMS_AC8.slice(0, n)) await pret(page, nom, 30_000);
     // Comme Vincent : faire défiler « Critères » jusqu'à voir le champ (ou le lien) en bas de l'écran, puis le toucher.
     const cible = n ? zone(page).getByRole('button', { name: '+ Ajouter un proche' }) : champ(page);
-    await cible.evaluate((el) => {
-      const onglet = el.closest('[role="tabpanel"]') as HTMLElement;
-      onglet.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
-    });
+    await amenerEnBas(cible);
     await page.evaluate(() => (window.__auFocus = {}));
     await cible.tap();
 
