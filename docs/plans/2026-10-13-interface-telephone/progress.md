@@ -9,6 +9,8 @@ Tâche 3 : faite — commits 5765c52..7a63ab4 — preuve : captures/T3-*.png, ve
 Tâche 4 : faite — commits 45fd2d3..de9d0a0 — preuve : captures/T4-iphone-*.png (iPhone 13 Pro, 2026-10-14 09:11–09:13), captures/T4-iphone-mesures.txt (0 px de défilement par Safari, 4 fois sur 4), captures/T4-e2e-*.png — ≈ 50 min dont ≈ 10 min de Vincent — agent : 276 k jetons — rapport : taches/T4.md. Défaut restant trouvé sur l'iPhone : après « Effacer mes proches », le focus revient au champ sans monter la feuille (Safari défile de 284 px, champ caché) — à corriger en phase de corrections (même logique que « + Ajouter un proche », R20).
 Simplification : faite — commits 27c76a8..6f8691f — comportement inchangé (88 + 180 verts, vérifié par l'orchestrateur) — agent : 127 k jetons — rapport : taches/simplification.md.
 Relectures lancées (2026-10-14) : code-reviewer (spec) → review-spec.md ; qa-tester → qa.md.
+Relectures : review-spec.md (0 Bloquant, 1 Majeur, 4 Mineurs), qa.md (0 Bloquant, 0 Majeur, 4 Mineurs ; glisser non testable par l'outil).
+Corrections 1 : faites — commits c95568f..914dd6d — titre « Tes proches » entier sous les onglets après un ajout (Majeur) ; focus après « Effacer mes proches » / « Retirer » du dernier proche placé avant le clavier ; onglets touchables sur 44 px ; constante de test mise à jour — 88 + 189 verts, vérifié par l'orchestrateur — agent : 197 k jetons — rapport : taches/corrections-1.md. Le défaut « Effacer mes proches » est corrigé à ce point (pas avant).
 
 ## Décisions prises à la place de Vincent
 - T0 : mesure par une page relais sur le Wi-Fi (sans câble ni console) au lieu de la console Safari par câble du plan ; mesure sur le serveur de dev (le plan le disait). Coût si faux : aucun, la cause est appuyée par trois mesures concordantes.
@@ -20,6 +22,8 @@ Relectures lancées (2026-10-14) : code-reviewer (spec) → review-spec.md ; qa-
 - Orchestrateur : deux captures de Vincent montrant des adresses non publiques écartées du dépôt ; seules les captures avec « 12 Rue de la Paix » ou sans adresse sont versionnées.
 - Simplification : la copie du défilement dans le corps du test d'AC-8 remplacée par l'aide commune `amenerEnBas` (même instruction, given / when / then inchangés). Coût si faux : 4 lignes à remettre.
 - Orchestrateur : défaut « focus après Effacer mes proches » (trouvé sur l'iPhone en tâche 4) corrigé en phase de corrections par l'option A (placer le champ avant le focus, comme « + Ajouter un proche ») — c'est R20 ; l'option B (focus sur le titre) aurait changé une règle de la tranche proches.
+- Corrections 1 : à 390 × 664, après l'ajout du 2e proche, le titre reste en haut et la ligne du nouveau proche tombe 14 px sous le bas de l'onglet (visible par son repère) ; dès le 3e, la ligne passe avant le titre (exigé par proches-mobile.spec.ts). Le focus clavier reste sur « + Ajouter un proche » même hors écran. L'anneau de focus entoure l'onglet entier (44 px). Coût si faux : un défilement de plus pour voir le 2e proche.
+- T3 (relevé par review-spec.md) : « Chargement… » et l'erreur restent au centre de la carte (H50 ne visait que les messages posés au-dessus de la feuille) ; la feuille ne se replie pas dans ces états.
 
 ## Preuves
 
