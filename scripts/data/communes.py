@@ -111,7 +111,6 @@ def dvf():
 def dvf_mois():
     """Statistiques DVF mensuelles, fenêtre RECENT seulement : (échelle, code) → bien → [(médiane du mois, ventes)]."""
     mois = {}
-    vus = set()
     lignes, doublons = {}, 0
     with open(empreinte('stats_dvf.csv'), encoding='utf-8') as f:
         lecteur = csv.reader(f)
@@ -121,7 +120,6 @@ def dvf_mois():
         for r in lecteur:
             if r[i_ech] not in ('commune', 'epci') or not RECENT[0] <= r[i_mois] <= RECENT[1]:
                 continue
-            vus.add(r[i_mois])
             # Une intercommunalité sur plusieurs départements a une ligne par département, aux chiffres identiques :
             # on n'en garde qu'une par mois (sinon ses ventes comptent deux ou six fois).
             cle = (r[i_ech], r[i_code], r[i_mois])
@@ -137,6 +135,7 @@ def dvf_mois():
                 if r[i_nb] and int(r[i_nb]) > 0:
                     par_bien[b].append((nombre(r[i_med]), int(r[i_nb])))
     print(f'  info fichier mensuel : {doublons} lignes en double ignorées (intercommunalités sur plusieurs départements)')
+    vus = {m for _, _, m in lignes}
     check(len(vus) == 36, f'fichier mensuel : {len(vus)} mois dans la fenêtre {RECENT[0]} à {RECENT[1]} (attendu 36)')
     return mois
 
@@ -159,8 +158,10 @@ def nombre(x):
 def prix_ligne(ligne, mois, bien):
     """Règle 1 puis 2 sur une ligne (commune ou epci) : (€/m², '1' | '2') ou None ; un prix sous le seuil est sauté."""
     m = (mois or {}).get(bien, [])
-    if sum(n for _, n in m) >= MIN_VENTES_RECENTES and mediane_ponderee(m) >= PRIX_ACHAT_MIN_M2:
-        return mediane_ponderee(m), '1'
+    if sum(n for _, n in m) >= MIN_VENTES_RECENTES:
+        p = mediane_ponderee(m)
+        if p >= PRIX_ACHAT_MIN_M2:
+            return p, '1'
     if ligne is not None and int(ligne[f'nb_ventes_whole_{bien}'] or 0) >= MIN_VENTES:
         p = nombre(ligne[f'med_prix_m2_whole_{bien}'])
         if p >= PRIX_ACHAT_MIN_M2:
