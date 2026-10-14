@@ -1,0 +1,209 @@
+Relevé de la sonde sur l'iPhone de Vincent — tâche 4 d'interface-telephone, 2026-10-14 (≈ 09:00–09:06)
+Version construite 45fd2d3, servie par `vite preview` (5182) via le relais de la sonde (5183). Brut : probe/clavier-t4/mesures.jsonl (non versionné).
+Sessions ignorées : bo27e3 (Chromium sans tête du Mac, 08:58) et f2gf4t (navigateur du Mac en bureau, 1603 × 943, aucun champ touché).
+Lecture : t en ms depuis le chargement ; vv = partie visible (décalage + hauteur) ; clavier ouvert = vv de 361 px ; champ « VISIBLE » = entre 0 et la hauteur de vv.
+Adresses des suggestions et des proches masquées.
+
+== Résumé calculé ==
+
+Session 84tjml · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.4 · écran 390×844 @3 · fenêtre 390×645 · /
+  focus #1 « input#search-lieu_r_8_ « Adresse ou ville » » (proches 0) à t 12241 :
+    au début du focus (avant notre code) : champ 87 → 131, vv 0+645, scrollY 0, feuille 40 → 645
+    3 s après : champ 87 → 131, vv 0+361, scrollY 0 ; partie visible la plus courte 361 px ; défilement de la page au plus 0 px ; instants où le champ est caché : 0
+  focus #2 « input#search-nom_r_9_ « Nom » » (proches 0) à t 18687 :
+    au début du focus (avant notre code) : champ 162 → 206, vv 0+361, scrollY 0, feuille 40 → 645
+    3 s après : champ 158 → 202, vv 3.7+361, scrollY 4 ; partie visible la plus courte 361 px ; défilement de la page au plus 4 px ; instants où le champ est caché : 0
+
+Session pitojg · iPhone; CPU iPhone OS 18_7 like Mac OS X) Apple… Version/26.4 · écran 390×844 @3 · fenêtre 390×645 · /?loyer=2000&mer=60
+  aucun focus sur « Adresse ou ville » ni « Nom »
+  dépli d'un toucher sur la barre repliée à t 26372 (@231.3,616, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  dépli d'un toucher sur la barre repliée à t 29256 (@278.7,612.7, cible span « compte-feuille ») : clic qui suit aucun ; fiche ouverte dans la seconde : non
+  dépli d'un toucher sur la barre repliée à t 73517 (@224.7,621.3, cible span « compte-feuille ») : clic qui suit ['button « Replier la feuille » sous le doigt : button « Replier la feuille »'] ; fiche ouverte dans la seconde : non
+  glisser de la tête/barre : t 23490 : de y 361 à 569 (vers le bas), départ button « Replier la feuille », arrivée button « Déplier la feuille »
+  glisser de la tête/barre : t 24445 : de y 610 à 524 (vers le haut), départ span « compte-feuille », arrivée span « compte-feuille »
+  glisser de la tête/barre : t 72174 : de y 363.7 à 488 (vers le bas), départ button « Replier la feuille », arrivée button « Déplier la feuille »
+
+== Fil des événements (analyser.mjs, sans pointerdown/up ni souris de synthèse ; « apres » réduits aux instants clés) ==
+
+=== session 84tjml · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1
+    écran 390×844 @3 · fenêtre 390×645 · http://192.168.1.26:5183/
+   1777 touchstart button « Loyer » @43.3,540.3
+   5314 touchstart span « compte-feuille » @72,384.7
+   6307 focusin span
+   6376 touchstart span @343.3,611.3
+   7017 touchstart div « LoyerLoyer maximum2 000 €par mois pour 5 » @306.7,552.3
+  12149 touchstart input#search-lieu_r_8_ « Adresse ou ville » @287,575
+  12210 focusout span → input#search-lieu_r_8_ « Adresse ou ville »
+  12241 focus-avant-react #1 input#search-lieu_r_8_ « Adresse ou ville » (proches 0) — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12241 focus-apres-react #1 input#search-lieu_r_8_ « Adresse ou ville » — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12242 apres #1 +microtâche — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12243 scroll [div#_r_0_panneau-criteres « Où vivre en FranceLoyerLoyer maximum2 00 »] — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12243 apres #1 +image — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12342 apres #1 +100 — vv 0+645 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12564 vv-resize — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  12743 apres #1 +500 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  13243 apres #1 +1000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  15242 apres #1 +3000 — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 87→131 VISIBLE · feuille 40→645 st 0/640 · actif input#search-lieu_r_8_ « Adresse ou ville »
+  18485 touchstart button « [adresse masquée], 33000 Bordeaux » @305,165
+  18670 click button « [adresse masquée], 33000 Bordeaux » @305,165 · sous le doigt : button « [adresse masquée], 33000 Bordeaux »
+  18686 focusout input#search-lieu_r_8_ « Adresse ou ville » → input#search-nom_r_9_ « Nom »
+  18687 focus-avant-react #2 input#search-nom_r_9_ « Nom » (proches 0) — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18687 focus-apres-react #2 input#search-nom_r_9_ « Nom » — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18687 apres #2 +microtâche — vv 0+361 (pageTop 0, échelle 1) · scrollY 0 · champ 162→206 VISIBLE · feuille 40→645 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18788 apres #2 +100 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18789 scroll [document] — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18789 vv-scroll — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  18789 apres #2 +image — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  19189 apres #2 +500 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  19689 apres #2 +1000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  21691 apres #2 +3000 — vv 3.7+361 (pageTop 3.7, échelle 1) · scrollY 4 · champ 158→202 VISIBLE · feuille 36→641 st 0/640 · actif input#search-nom_r_9_ « Nom »
+  21985 touchstart button « Ajouter » @31,222.3
+  22111 click button « Ajouter » @31,222 · sous le doigt : button « Ajouter »
+  22180 focusin button « + Ajouter un proche »
+  26679 touchstart div « Bordeaux (33) » @323,496.3
+  31354 focusout button « + Ajouter un proche » → span « Plafond de Bordeaux (33) »
+  31355 focusin span « Plafond de Bordeaux (33) »
+  31356 touchstart span « Plafond de Bordeaux (33) » @259.3,545.3
+  33748 touchstart div « Tes prochesEffacer mes prochesBordeaux ( » @286.7,469.7
+  35601 touchstart button#_r_0_onglet-liste « Les 10 premières » @307.7,422
+  35702 focusout span « Plafond de Bordeaux (33) » → button#_r_0_onglet-liste « Les 10 premières »
+  35702 focusin button#_r_0_onglet-liste « Les 10 premières »
+  35703 click button#_r_0_onglet-liste « Les 10 premières » @308,422 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
+  36991 touchstart span « Le Teich (33) » @293.7,537
+  37117 focusout button#_r_0_onglet-liste « Les 10 premières » → window
+  37117 click span « Le Teich (33) » @294,537 · sous le doigt : span « Le Teich (33) »
+  37137 focusin h2#titre-fiche « Le Teich (33) »
+  39164 touchstart canvas « Map » @337,211.7
+  41284 touchstart section « ← Les 10 premièresLe Teich (33)Petite co » @307.3,591.7
+  43786 touchstart section « ← Les 10 premièresLe Teich (33)Petite co » @320.7,527.3
+  45019 touchstart section « ← Les 10 premièresLe Teich (33)Petite co » @352.3,485.7
+  46346 touchstart button « ← Les 10 premières » @58,412
+  46569 focusout h2#titre-fiche « Le Teich (33) » → window
+  46570 click button « ← Les 10 premières » @58,412 · sous le doigt : button « ← Les 10 premières »
+  46589 focusin button « 1 · Le Teich (33) · 71 · 724 € · moins d'1 km »
+  48196 touchstart canvas « Map » @220,154.3
+  48347 focusout button « 1 · Le Teich (33) · 71 · 724 € · moins d'1 km » → canvas « Map »
+  48347 focusin canvas « Map »
+  48349 click canvas « Map » @220,154 · sous le doigt : canvas « Map »
+  48363 focusout canvas « Map » → h2#titre-fiche « Nolay (58) »
+  48363 focusin h2#titre-fiche « Nolay (58) »
+  49484 touchstart li « Bordeaux (33) plus de 3 h : au-dessus de » @343.3,559.3
+  54650 touchstart button « ← Les 10 premières » @42.7,415
+  54835 focusout h2#titre-fiche « Nolay (58) » → window
+  54835 click button « ← Les 10 premières » @43,415 · sous le doigt : button « ← Les 10 premières »
+  56939 touchstart button#_r_0_onglet-criteres « Critères » @92.3,435.3
+  57083 focusin button#_r_0_onglet-criteres « Critères »
+  57083 click button#_r_0_onglet-criteres « Critères » @92,435 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+  57984 touchstart button « Loyer » @354,522
+  60361 touchstart footer « Estimations ANIL, à partir des données d » @322,549.7
+  61834 touchstart span « compte-feuille » @289.7,383.3
+  63208 touchstart button « Loyer » @309,537.3
+  66121 touchstart div « Petite communemoins de 10 000 hab.Petite » @292.7,519.7
+  67004 touchstart section « Réglages » @310.3,528.7
+  67492 touchstart canvas « Map » @49.3,291
+
+=== session pitojg · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1
+    écran 390×844 @3 · fenêtre 390×645 · http://192.168.1.26:5183/?loyer=2000&mer=60
+  23490 touchstart button « Replier la feuille » @239,361
+  24445 touchstart span « compte-feuille » @223,610
+  25512 touchstart button « Replier la feuille » @240,364.3
+  25599 click main « 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10Bo » @240,364 · sous le doigt : canvas « Map »
+  26312 touchstart span « compte-feuille » @231.3,616
+  27279 touchstart button#_r_0_onglet-liste « Les 10 premières » @266.7,416.7
+  27322 focusin button#_r_0_onglet-liste « Les 10 premières »
+  27323 click button#_r_0_onglet-liste « Les 10 premières » @267,417 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
+  27812 touchstart button « Replier la feuille » @219.3,369.7
+  27873 focusout button#_r_0_onglet-liste « Les 10 premières » → button « Déplier la feuille »
+  27874 focusin button « Déplier la feuille »
+  27877 focusout button « Déplier la feuille » → window
+  27878 click button « Déplier la feuille » @219,370 · sous le doigt : button « Déplier la feuille »
+  29179 touchstart span « compte-feuille » @278.7,612.7
+  30080 touchstart span « 734 € · 2 km » @291,603.3
+  31358 touchstart button#_r_0_onglet-criteres « Critères » @149.7,430.3
+  31423 focusin button#_r_0_onglet-criteres « Critères »
+  31424 click button#_r_0_onglet-criteres « Critères » @150,430 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+  32043 touchstart button « Loyer » @282.3,531
+  33227 touchstart footer « Estimations ANIL, à partir des données d » @285.3,570.7
+  33619 touchstart div#_r_6_ « Bordeaux (33)2 h2 [voie masquée]» @296.7,476.7
+  36953 touchstart button « Dézoomer » @372.3,83
+  36998 focusout button#_r_0_onglet-criteres « Critères » → window
+  36998 click button « Dézoomer » @372,83 · sous le doigt : button « Dézoomer »
+  37131 touchstart button « Dézoomer » @354.7,91
+  37280 touchstart button « Dézoomer » @352.3,95.7
+  37411 click button « Dézoomer » @352,96 · sous le doigt : button « Dézoomer »
+  37661 touchstart button « Zoomer » @351.7,47
+  37749 click button « Zoomer » @352,47 · sous le doigt : button « Zoomer »
+  37845 touchstart button « Zoomer » @353.3,32
+  37927 click button « Zoomer » @353,32 · sous le doigt : button « Zoomer »
+  38011 touchstart button « Zoomer » @356,29.3
+  38076 click button « Zoomer » @353,32 · sous le doigt : button « Zoomer »
+  38194 touchstart button « Zoomer » @355.3,23.7
+  38267 click button « Zoomer » @355,24 · sous le doigt : button « Zoomer »
+  38378 touchstart canvas « Map » @365.3,7
+  38443 click button « Zoomer » @355,23 · sous le doigt : button « Zoomer »
+  39296 touchstart canvas « Map » @274.3,121
+  39987 touchstart canvas « Map » @239,264.3
+  40737 touchstart button « Zoomer » @355.7,40
+  40817 click button « Zoomer » @356,40 · sous le doigt : button « Zoomer »
+  40881 touchstart button « Zoomer » @357.7,30
+  41048 touchstart button « Zoomer » @362,24.7
+  41120 click button « Zoomer » @362,25 · sous le doigt : button « Zoomer »
+  41564 touchstart canvas « Map » @251,71.7
+  41996 touchstart canvas « Map » @263,198
+  42719 touchstart canvas « Map » @256,31.3
+  52473 touchstart canvas « Map » @322.7,169
+  53373 touchstart canvas « Map » @324,288.7
+  54029 touchstart canvas « Map » @286,139.7
+  54788 touchstart canvas « Map » @347,232
+  55353 touchstart canvas « Map » @237.3,85.7
+  55371 touchstart canvas « Map » @313.3,306.3
+  56254 touchstart button « Dézoomer » @369.3,76
+  56335 click button « Dézoomer » @369,76 · sous le doigt : button « Dézoomer »
+  57254 touchstart button « Zoomer » @363.3,31.7
+  57367 click button « Zoomer » @363,32 · sous le doigt : button « Zoomer »
+  57480 touchstart button « Zoomer » @369,25.7
+  57562 click button « Zoomer » @363,31 · sous le doigt : button « Zoomer »
+  57683 touchstart button « Zoomer » @374.7,20.3
+  57750 click button « Zoomer » @375,20 · sous le doigt : button « Zoomer »
+  59441 touchstart canvas « Map » @281.7,216.3
+  59566 focusin canvas « Map »
+  59568 click canvas « Map » @282,216 · sous le doigt : canvas « Map »
+  59586 focusout canvas « Map » → h2#titre-fiche « Gans (33) »
+  59586 focusin h2#titre-fiche « Gans (33) »
+  59631 touchstart canvas « Map » @280.7,231.3
+  59700 focusout h2#titre-fiche « Gans (33) » → canvas « Map »
+  59700 focusin canvas « Map »
+  59701 click canvas « Map » @281,216 · sous le doigt : canvas « Map »
+  59707 focusout canvas « Map » → h2#titre-fiche « Puybarban (33) »
+  59707 focusin h2#titre-fiche « Puybarban (33) »
+  60564 touchstart canvas « Map » @307.3,241.7
+  61199 touchstart canvas « Map » @261.7,66.7
+  61230 touchstart canvas « Map » @320.7,250.3
+  65959 touchstart button « ← Les 10 premières » @77.7,407
+  66052 focusout h2#titre-fiche « Puybarban (33) » → window
+  66052 click button « ← Les 10 premières » @78,407 · sous le doigt : button « ← Les 10 premières »
+  67173 touchstart button#_r_0_onglet-criteres « Critères » @143,410
+  67252 focusin button#_r_0_onglet-criteres « Critères »
+  67253 click button#_r_0_onglet-criteres « Critères » @143,410 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+  68174 touchstart button#_r_0_onglet-liste « Les 10 premières » @320.7,424
+  68288 focusout button#_r_0_onglet-criteres « Critères » → button#_r_0_onglet-liste « Les 10 premières »
+  68288 focusin button#_r_0_onglet-liste « Les 10 premières »
+  68288 click button#_r_0_onglet-liste « Les 10 premières » @321,424 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
+  69040 touchstart button#_r_0_onglet-criteres « Critères » @141.3,433.7
+  69102 focusout button#_r_0_onglet-liste « Les 10 premières » → button#_r_0_onglet-criteres « Critères »
+  69102 focusin button#_r_0_onglet-criteres « Critères »
+  69102 click button#_r_0_onglet-criteres « Critères » @141,434 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+  70350 touchstart button#_r_0_onglet-liste « Les 10 premières » @333.3,427.7
+  70473 focusout button#_r_0_onglet-criteres « Critères » → button#_r_0_onglet-liste « Les 10 premières »
+  70473 focusin button#_r_0_onglet-liste « Les 10 premières »
+  70474 click button#_r_0_onglet-liste « Les 10 premières » @333,428 · sous le doigt : button#_r_0_onglet-liste « Les 10 premières »
+  71038 touchstart button#_r_0_onglet-criteres « Critères » @148.3,422.3
+  71140 focusout button#_r_0_onglet-liste « Les 10 premières » → button#_r_0_onglet-criteres « Critères »
+  71140 focusin button#_r_0_onglet-criteres « Critères »
+  71141 click button#_r_0_onglet-criteres « Critères » @148,422 · sous le doigt : button#_r_0_onglet-criteres « Critères »
+  72174 touchstart button « Replier la feuille » @310,363.7
+  72468 focusout button#_r_0_onglet-criteres « Critères » → button « Déplier la feuille »
+  72468 focusin button « Déplier la feuille »
+  73457 touchstart span « compte-feuille » @224.7,621.3
+  73526 focusout button « Replier la feuille » → window
+  73527 click button « Replier la feuille » @225,621 · sous le doigt : button « Replier la feuille »
