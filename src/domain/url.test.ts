@@ -96,3 +96,12 @@ describe('R26, H66 — le réglage du prix dans l’adresse (spec immobilier)', 
     expect(allerRetour('?loyer=800&mer=60&taille=petite-ville')).toBe('/?loyer=800&mer=60&taille=petite-ville');
   });
 });
+
+describe('Spec immobilier, tâche 3 — surface de départ selon le bien (D2, R26)', () => {
+  it('surface de départ lue selon le bien : /?bien=maison → 92 m² ; /?bien=maison&surface=52 → 52 m²', () => {
+    expect(lirePrix('?bien=maison')).toEqual({ mode: 'louer', bien: 'maison', unite: 'total', surface: 92 });
+    expect(lirePrix('?bien=maison&surface=52')).toEqual({ mode: 'louer', bien: 'maison', unite: 'total', surface: 52 });
+    expect(lirePrix('?achat=5000&bien=maison').surface).toBe(92);
+    expect(lirePrix('?bien=maison&surface=0').surface).toBe(92); // invalide → départ du bien (H58)
+  });
+});

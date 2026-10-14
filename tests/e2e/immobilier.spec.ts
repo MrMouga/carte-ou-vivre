@@ -3,7 +3,7 @@ import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json' 
 import { apresRendu, attendreCouleurs, ouvrir, vue, type Jeu } from './lib/carte';
 import { mobile, voirCriteres, voirListe } from './lib/feuille';
 
-// Tranche immobilier, tâche 2 : le réglage du prix pour un appartement (R21 à R24, R26), sur la fixture « 6 communes »
+// Tranche immobilier, tâches 2 et 3 : le réglage du prix, appartement ou maison (R21 à R24, R26), sur la fixture « 6 communes »
 // (A à F, acceptance.json d'immobilier ; tuiles : python3 scripts/data/tuiles.py --fixture).
 const SIX: Jeu = { items: immobilier.fixture.items, tuiles: new URL('../fixtures/tuiles-immobilier/', import.meta.url) };
 type Six = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
@@ -170,6 +170,65 @@ test('AC-12 pied de page : « Prix d’achat : Demandes de valeurs foncières (D
   await basculer(page, 'Louer ou acheter', 'Acheter');
   await expect(pied).toContainText("Prix d'achat : Demandes de valeurs foncières (DGFiP)");
   await expect(pied).toContainText('Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin');
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 3 : Appartement ou maison (R21, R24, D2).
+
+test('AC-3 Maison depuis /?loyer=1200&mer=60&surface=72 : 72 m² et 1 200 € gardés ; Portmer 68 · 756 €, Grandeville 28 · 936 € ; fiches de Portmer et de Quaibleu', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=60&surface=72');
+  await basculer(page, 'Type de logement', 'Maison');
+  await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
+  await expect(surface(page)).toHaveValue('72');
+  await expect(plafond(page, '1 200 €')).toBeVisible();
+  expect(adresse(page)).toBe('/?loyer=1200&mer=60&bien=maison&surface=72');
+  await ficheDeCarte(page, 'E', 'Quaibleu (13)');
+  expect(await texteFiche(page)).toContain('Loyer 1 224 € : au-dessus de ton plafond de 1 200 €');
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 68 · 756 € · moins d'1 km", '2 · Grandeville (33) · 28 · 936 € · 40 km']);
+  await ficheDeListe(page, 'Portmer');
+  const t = await texteFiche(page);
+  expect(t).toContain('756 € par mois pour 72 m² (10,5 €/m²)');
+  expect(t).toContain('Estimation du secteur (communes voisines)');
+});
+
+test('AC-7 Maison depuis /?achat=5000&mer=60 : adresse bien=maison&surface=52 ; Portmer 64 · 3 500 €/m², Quaibleu 48 · 4 600 €/m² ; fiches de Portmer et de Grandeville', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=5000&mer=60');
+  await basculer(page, 'Type de logement', 'Maison');
+  await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
+  await expect(plafond(page, '5 000 €/m²')).toBeVisible();
+  expect(adresse(page)).toBe('/?achat=5000&mer=60&bien=maison&surface=52');
+  await ficheDeCarte(page, 'B', 'Grandeville (33)');
+  expect(await texteFiche(page)).toContain('Achat 5 100 €/m² : au-dessus de ton plafond de 5 000 €/m²');
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 64 · 3 500 €/m² · moins d'1 km", '2 · Quaibleu (13) · 48 · 4 600 €/m² · 7 km']);
+  await ficheDeListe(page, 'Portmer');
+  const t = await texteFiche(page);
+  expect(t).toContain("3 500 €/m² à l'achat");
+  expect(t).toContain('Estimation du secteur (moins de 5 ventes dans la commune)');
+});
+
+test('D2 : /?loyer=1200&mer=60&bien=maison s’ouvre en Maison à 92 m², adresse gardée ; retour à Appartement : 92 m² gardés, surface=92', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=60&bien=maison');
+  await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
+  await expect(surface(page)).toHaveValue('92');
+  expect(adresse(page)).toBe('/?loyer=1200&mer=60&bien=maison');
+  await basculer(page, 'Type de logement', 'Appartement');
+  await expect(surface(page)).toHaveValue('92');
+  await expect(plafond(page, '1 200 €')).toBeVisible();
+  expect(adresse(page)).toBe('/?loyer=1200&mer=60&surface=92');
+});
+
+test('R21 : « Sans limite » le reste quand on change de bien', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=aucun&mer=60');
+  await expect(plafond(page, 'Sans limite')).toBeVisible();
+  await basculer(page, 'Type de logement', 'Maison');
+  await expect(plafond(page, 'Sans limite')).toBeVisible();
+  expect(adresse(page)).toBe('/?achat=aucun&mer=60&bien=maison&surface=52');
 });
 
 // ---------------------------------------------------------------------------------------------------------------------

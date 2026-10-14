@@ -1,0 +1,40 @@
+
+=== 1440 × 900
+  Appartement · Louer · 70 m² : adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 950 communes passent tes critères
+  Maison · Louer · Total : adresse ?loyer=1200&mer=60&bien=maison&surface=70 · choix Louer, Maison, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 918 communes passent tes critères
+  capture T3-bureau-maison-louer.png
+  liste : 1 · Agon-Coutainville (50) · 78 · 504 € · 1 km | 2 · Blainville-sur-Mer (50) · 78 · 504 € · moins d'1 km | 3 · Tourville-sur-Sienne (50) · 78 · 504 € · moins d'1 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 22 / / 100 / 7766e sur 7 918 communes qui passent / 1 086 € par mois pour 70 m² (15,5 €/m²) / 39 km de la mer à vol d'oiseau
+  capture T3-bureau-maison-louer-bordeaux.png
+  Maison · Acheter · Au m² : adresse ?achat=5000&mer=60&bien=maison&surface=70 · choix Acheter, Maison, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 854 communes passent tes critères
+  capture T3-bureau-maison-acheter.png
+  liste : 1 · Trégarvan (29) · 90 · 891 €/m² · moins d'1 km | 2 · Servon (50) · 88 · 1 000 €/m² · 3 km | 3 · Marignana (2A) · 86 · 607 €/m² · 9 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / NE PASSE PAS TES CRITÈRES / Achat 5 067 €/m² : au-dessus de ton plafond de 5 000 €/m² / 5 067 €/m² à l'achat / 39 km de la mer à vol d'oiseau
+  capture T3-bureau-maison-acheter-bordeaux.png
+  fiche : ← Les 10 premières / Marseille (13) / Grande ville · 886 000 habitants / 51 / / 100 / 5145e sur 7 854 communes qui passent / 4 853 €/m² à l'achat / Estimation du secteur (moins de 5 ventes dans la commune) / moins d'1 km de la mer
+  capture T3-bureau-maison-acheter-marseille.png
+  rechargement de ?achat=5000&mer=60&bien=maison&surface=70 → ?achat=5000&mer=60&bien=maison&surface=70
+  après rechargement : adresse ?achat=5000&mer=60&bien=maison&surface=70 · choix Acheter, Maison, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 854 communes passent tes critères
+  adresse /?loyer=1200&mer=60&bien=maison : adresse ?loyer=1200&mer=60&bien=maison · choix Louer, Maison, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 92 m² · surface 92 · 7 565 communes passent tes critères
+  capture T3-bureau-adresse-maison-92.png
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / NE PASSE PAS TES CRITÈRES / Loyer 1 427 € : au-dessus de ton plafond de 1 200 € / 1 427 € par mois pour 92 m² (15,5 €/m²) / 39 km de la mer à vol d'oiseau
+
+=== 390 × 844
+  Appartement · Louer · 70 m² : adresse ?loyer=1200&mer=60&surface=70 · choix Louer, Appartement, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 950 communes passent tes critères
+  Maison · Louer · Total : adresse ?loyer=1200&mer=60&bien=maison&surface=70 · choix Louer, Maison, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 70 m² · surface 70 · 7 918 communes passent tes critères
+  capture T3-390-maison-louer.png
+  liste : 1 · Agon-Coutainville (50) · 78 · 504 € · 1 km | 2 · Blainville-sur-Mer (50) · 78 · 504 € · moins d'1 km | 3 · Tourville-sur-Sienne (50) · 78 · 504 € · moins d'1 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / 22 / / 100 / 7766e sur 7 918 communes qui passent / 1 086 € par mois pour 70 m² (15,5 €/m²) / 39 km de la mer à vol d'oiseau
+  capture T3-390-maison-louer-bordeaux.png
+  Maison · Acheter · Au m² : adresse ?achat=5000&mer=60&bien=maison&surface=70 · choix Acheter, Maison, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 854 communes passent tes critères
+  capture T3-390-maison-acheter.png
+  liste : 1 · Trégarvan (29) · 90 · 891 €/m² · moins d'1 km | 2 · Servon (50) · 88 · 1 000 €/m² · 3 km | 3 · Marignana (2A) · 86 · 607 €/m² · 9 km
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / NE PASSE PAS TES CRITÈRES / Achat 5 067 €/m² : au-dessus de ton plafond de 5 000 €/m² / 5 067 €/m² à l'achat / 39 km de la mer à vol d'oiseau
+  capture T3-390-maison-acheter-bordeaux.png
+  fiche : ← Les 10 premières / Marseille (13) / Grande ville · 886 000 habitants / 51 / / 100 / 5145e sur 7 854 communes qui passent / 4 853 €/m² à l'achat / Estimation du secteur (moins de 5 ventes dans la commune) / moins d'1 km de la mer
+  capture T3-390-maison-acheter-marseille.png
+  rechargement de ?achat=5000&mer=60&bien=maison&surface=70 → ?achat=5000&mer=60&bien=maison&surface=70
+  après rechargement : adresse ?achat=5000&mer=60&bien=maison&surface=70 · choix Acheter, Maison, Au m² · curseur « Prix d'achat, prix maximum au m² » = 5 000 €/m² au m², prix médian des ventes · surface (caché) · 7 854 communes passent tes critères
+  adresse /?loyer=1200&mer=60&bien=maison : adresse ?loyer=1200&mer=60&bien=maison · choix Louer, Maison, Total · curseur « Loyer mensuel, loyer maximum » = 1 200 € par mois pour 92 m² · surface 92 · 7 565 communes passent tes critères
+  capture T3-390-adresse-maison-92.png
+  fiche : ← Les 10 premières / Bordeaux (33) / Grande ville · 268 000 habitants / NE PASSE PAS TES CRITÈRES / Loyer 1 427 € : au-dessus de ton plafond de 1 200 € / 1 427 € par mois pour 92 m² (15,5 €/m²) / 39 km de la mer à vol d'oiseau
