@@ -1,5 +1,5 @@
 # Corrections 1 — relectures spec et navigateur
-Statut : faite · Début 09:44 · Fin 10:37 · Commits : c95568f..(commit de ce rapport)
+Statut : faite · Début 09:44 · Fin 10:37 · Commits : c95568f..580ed45
 
 ## Ce que l'utilisateur peut faire maintenant
 - Sur téléphone, après « Ajouter » un proche, il voit le titre « Tes proches » et « Effacer mes proches » en entier, juste sous les onglets. Ensuite viennent la ligne du proche et « + Ajouter un proche ».
