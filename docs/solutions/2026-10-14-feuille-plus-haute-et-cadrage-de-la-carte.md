@@ -1,0 +1,8 @@
+# Agrandir la feuille mobile se paie en carte : mesurer la bande restante contre le critère de vue de départ, et réduire les captures avant de les commiter
+Étiquettes : design, tests, process · Tranche : immobilier · Source : docs/design/immobilier/decisions.md
+
+**Problème** — Le réglage du prix (trois bascules, une surface) est plus haut que l'ancien réglage du loyer ; à 375 × 548, son curseur sortait de la feuille (45 %, au moins 272 px). Vincent acceptait d'agrandir la feuille.
+**Symptômes** — Feuille de 430 px puis de 376 px : il ne reste que 118 ou 172 px de carte, la carte se cadre sur l'Europe sous le zoom des tuiles et aucune commune n'est peinte. Le critère protégé AC-1 d'interface-telephone (métropole visible et peinte à 375 × 548) aurait cassé ; rien ne l'aurait signalé avant /build.
+**Ce qui n'a pas marché** — Raisonner en pourcentage de feuille sans regarder la carte au-dessus ; mettre la ligne d'unité au-dessus du curseur.
+**Ce qui a marché** — Mesurer dans le prototype, avec Playwright (WebGL par SwiftShader, sans la fenêtre de studio-browse), le bas du curseur et la carte restante pour chaque option ; gagner de la hauteur dans le bloc (ligne d'unité sous le curseur, 54 px) et masquer le titre sur téléphone (≈ 40 px) : plancher 338 px, 210 px de carte, France peinte.
+**Prévention** — Pour /ui : toute option qui agrandit un panneau posé sur la carte se juge avec une capture de la carte restante au plus petit écran du critère de vue de départ. Captures des directions : réduire (`sips -Z 1200`) avant de les copier dans `docs/design/` — celles d'immobilier font 16 Mo.
