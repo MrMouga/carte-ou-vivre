@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, attendreCouleurs, ouvrir } from './lib/carte';
+import { voirListe, voirCriteres } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 
 // Tâche 2b (proches) : ajouter un proche dans le panneau « Tes proches » ; la liste et la carte en tiennent compte.
@@ -54,6 +55,7 @@ test('AC-1 ajouter « 1 rue Test 44000 Nantesville » : nom proposé, calcul, pu
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '120');
   await expect(zone(page)).not.toContainText('Calcul des trajets');
 
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('1 commune passe tes critères');
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
   await attendreCouleurs(page, { A: 'score-4', B: null, E: null });
@@ -68,6 +70,7 @@ test('AC-2 plafond de Nantesville (44) sur 2 h 15 : Portmer 67, Grandeville 21 ;
 
   await regler(page, 'Plafond de Nantesville (44)', 'ArrowRight');
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 21 · 832 € · 40 km']);
   await attendreCouleurs(page, { E: null });
@@ -85,6 +88,7 @@ test('AC-4 Nantesville (44) à 2 h 15, puis Toulouseville (31) ajouté et régl�
   await regler(page, 'Plafond de Toulouseville (31)', 'ArrowRight', 3);
   await expect(plafond(page, 'Toulouseville (31)')).toHaveAttribute('aria-valuenow', '165');
 
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 50 · 650 € · moins d'1 km", '2 · Grandeville (33) · 30 · 832 € · 40 km']);
 });
@@ -97,6 +101,7 @@ test('AC-6 loyer et mer « Sans limite », Nantesville (44) à 2 h 15 : Portmer 
   await nantesville(page);
   await regler(page, 'Plafond de Nantesville (44)', 'ArrowRight');
 
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 56 · 650 € · moins d'1 km", '2 · Grandeville (33) · 0 · 832 € · 40 km']);
   await attendreCouleurs(page, { A: 'score-3', B: 'score-1', C: null, D: null, E: null });
@@ -149,11 +154,13 @@ test('« Retirer » sur un proche prêt : il disparaît, la liste revient sans c
   await zone(page).getByRole('button', { name: 'Retirer Nantesville (44)' }).click();
   await apresRendu(page);
   await expect(zone(page).getByRole('listitem')).toHaveCount(0);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual([
     "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
     '2 · Quaibleu (13) · 49 · 1 092 € · 7 km',
     '3 · Grandeville (33) · 32 · 832 € · 40 km',
   ]);
+  await voirCriteres(page); // 390 px : les réglages sont dans leur onglet (interface-telephone)
   await expect(zone(page).getByRole('textbox', { name: 'Adresse ou ville' })).toBeVisible();
   expect(demandes.zones.length).toBe(zones);
 });

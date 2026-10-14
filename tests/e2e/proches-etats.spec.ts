@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import loyerMer from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import { apresRendu, ouvrir, servirFixture } from './lib/carte';
+import { voirListe } from './lib/feuille';
 import { servirIgn, type OptionsIgn } from './lib/ign';
 import { ADRESSES, SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, plafond, pret, regler, zone } from './lib/proches';
 
@@ -56,6 +57,7 @@ test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / �
   await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
   await expect(ligne(p, 'Nantesville (44)')).toContainText(/2\sh\s15/);
   await expect(zone(p)).not.toContainText('Calcul des trajets');
+  await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(p)).toContainText('2 communes passent tes critères');
   expect(await lignes(p)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 21 · 832 € · 40 km']);
   await p.waitForTimeout(500);
@@ -81,6 +83,7 @@ test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proch
   await expect(zone(p)).toContainText("Ajoute l'adresse d'un proche : la carte calcule le temps en voiture jusqu'à chaque commune.");
   await expect(champ(p)).toBeVisible();
   await expect(zone(p).getByRole('button', { name: 'Effacer mes proches' })).toHaveCount(0);
+  await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(p)).toContainText('3 communes passent tes critères');
   expect(await lignes(p)).toEqual(SANS_PROCHE);
 });
@@ -92,6 +95,7 @@ test('AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantes
   await expect(zone(page)).toContainText(INDISPONIBLE_44);
   await expect(ligne(page, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' })).toBeVisible();
   await apresRendu(page);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual(SANS_PROCHE);
 });
@@ -103,6 +107,7 @@ test('AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponib
   await expect(zone(page)).toContainText("Recherche d'adresse indisponible. Réessaie dans un moment.");
   expect(demandes.recherches.length).toBeGreaterThan(0);
   await expect(zone(page).getByRole('button', AJOUTER)).toBeDisabled();
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
 });
 
@@ -155,6 +160,7 @@ test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simu
   await expect(ligne(page, 'Toulouseville (31)')).toContainText('Calcul des trajets');
   await page.clock.runFor(2_000);
   await expect(zone(page)).toContainText('Trajets indisponibles depuis Toulouseville (31).');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
 });
 
@@ -172,6 +178,7 @@ test('R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer »
   await ligne(page, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' }).click();
   await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets depuis Nantesville (44)…');
   await pret(page, 'Nantesville (44)');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
 });
 
@@ -189,6 +196,7 @@ test('« Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone 
   await page.waitForTimeout(1_500);
   expect(demandes.zones.length).toBe(n);
   expect(demandes.zones.some((u) => u.includes('point=3%2C-2') || u.includes('point=3,-2'))).toBe(false); // Toulouseville jamais calculé
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual(SANS_PROCHE);
   expect(await memoire(page)).toEqual([]);
 });
@@ -244,6 +252,7 @@ test('R12 mémoire refusée (le stockage lève une erreur) : message sous le tit
   await ajouter(page, 'Nantesville');
   await expect(zone(page)).toContainText('Tes proches ne seront pas gardés sur ce navigateur.');
   await pret(page, 'Nantesville (44)');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
 });
 
@@ -261,6 +270,7 @@ test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé re
   const { page: p, demandes } = await rouvrir(page, {}, (p) => p.route('**/data/communes.json', (r) => r.fulfill({ json: communes })));
   await expect(zone(p)).toContainText(INDISPONIBLE_44);
   await expect(ligne(p, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' })).toBeVisible();
+  await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(p)).toEqual(SANS_PROCHE);
   expect(demandes.zones).toEqual([]);
 });

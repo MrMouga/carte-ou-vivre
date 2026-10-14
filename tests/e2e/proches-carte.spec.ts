@@ -1,5 +1,6 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
 import { apresRendu, ouvrir, vue } from './lib/carte';
+import { voirListe } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { readPixels } from './lib/pixels';
 import { ajouter, liste, pret, regler, zone } from './lib/proches';
@@ -57,6 +58,7 @@ test('AC-5 Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de
   await pret(page, 'Toulouseville (31)');
   await regler(page, 'Toulouseville (31)', 'ArrowRight', 3); // 2 h 45
 
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await liste(page).getByRole('button', { name: /Grandeville \(33\)/ }).click();
   await expect(fiche(page)).toContainText('Grandeville (33)');
   let t = await texteFiche(page);
@@ -155,6 +157,7 @@ test('aucune commune avec un proche prêt : « Relâche le loyer, la mer, la tai
   await servirIgn(page);
   await ajouter(page, 'Brestville'); // tout à 3 h ou plus de 3 h : rien ne tient 2 h
   await pret(page, 'Brestville (29)');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le loyer, la mer, la taille ou un proche.');
 });
 

@@ -94,8 +94,9 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
     if (avis && enBureau()) bouton.current?.scrollIntoView({ block: 'center' });
   }, [avis]);
   // 390 px : le focus entre dans l'ajout → la feuille monte (App), puis elle défile pour mettre le champ en haut, sous la
-  // poignée : sur un iPhone, il ne reste qu'environ 340 px au-dessus du clavier. Marge `scroll-mt-4` : la poignée collée
-  // (12 px) et la moitié de l'écart qui précède, pour que rien de coupé ne dépasse sous la poignée.
+  // poignée : sur un iPhone, il ne reste qu'environ 340 px au-dessus du clavier. Marge `scroll-mt-1` : la moitié de l'écart
+  // qui précède, pour que rien de coupé ne dépasse sous la poignée (depuis interface-telephone, la poignée est hors de
+  // l'onglet qui défile ; avant, collée en haut de la feuille, elle couvrait 12 px de plus : `scroll-mt-4`).
   // Le défilement se fait dans le rendu qui monte la feuille (`useLayoutEffect`), avant la fin de l'événement `focus` :
   // c'est là que Safari sur iPhone relève où est le champ, pour faire glisser la page au-dessus du clavier. Un champ
   // déplacé plus tard (une image plus tard) sort de la partie glissée : le clavier s'ouvrait sur la liste, champ caché.
@@ -165,7 +166,7 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
   };
 
   return (
-    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-2 max-bureau:scroll-mt-4">
+    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-2 max-bureau:scroll-mt-1">
       <label htmlFor={idAdresse} className="text-secondaire text-muted-foreground">
         Adresse ou ville
       </label>
@@ -284,14 +285,20 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
   // proche quand elle est plus bas.
   const section = useRef<HTMLElement>(null);
   const montrer = useRef(false);
+  // Sous 1 024 px, le focus est donné sans faire défiler : le navigateur centrerait « + Ajouter un proche », au bout d'un
+  // onglet trop court pour le centrer, et le titre comme la ligne du nouveau proche sortiraient du haut (feuille à 45 %,
+  // interface-telephone). On fait voir ensuite le titre, la ligne du nouveau proche, puis ce qui a le focus.
   useEffect(() => {
-    if (montrer.current && !enBureau()) {
+    const montrerIci = montrer.current && !enBureau();
+    montrer.current = false;
+    if (refocus.current) (lien.current ?? champ.current ?? messagePlein.current)?.focus({ preventScroll: montrerIci });
+    refocus.current = false;
+    if (montrerIci) {
       section.current?.scrollIntoView({ block: 'start' });
       section.current?.querySelector('ul > li:last-child')?.scrollIntoView({ block: 'nearest' });
+      const actif = document.activeElement;
+      if (actif instanceof HTMLElement && section.current?.contains(actif)) actif.scrollIntoView({ block: 'nearest' });
     }
-    montrer.current = false;
-    if (refocus.current) (lien.current ?? champ.current ?? messagePlein.current)?.focus();
-    refocus.current = false;
   });
   const effacer = (
     <Button

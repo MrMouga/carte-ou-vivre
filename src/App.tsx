@@ -11,7 +11,7 @@ import { Legend } from './ui/Legend';
 import { List } from './ui/List';
 import { SizeChips } from './ui/SizeChips';
 import { compte, nomAffiche } from './domain/format';
-import { color, space } from './theme/tokens';
+import { color, layout, space } from './theme/tokens';
 import { avecDelai, DELAI_DONNEES_MS, indicateur } from './domain/chargement';
 import { Status, type Message } from './ui/Status';
 import { Mentions } from './ui/Mentions';
@@ -20,10 +20,24 @@ import { useProches } from './proches/useProches';
 import { Proches } from './ui/Proches';
 import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
+import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
 const REPRISE_ADRESSE_MS = 1000;
 type Ligne = [string, string, string, number | null, number | null, boolean, number | null];
+
+/** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
+const REQUETE_BUREAU = `(min-width: ${layout['largeur-bureau']}px)`;
+function useBureau() {
+  const [bureau, setBureau] = useState(() => matchMedia(REQUETE_BUREAU).matches);
+  useEffect(() => {
+    const m = matchMedia(REQUETE_BUREAU);
+    const maj = () => setBureau(m.matches);
+    m.addEventListener('change', maj);
+    return () => m.removeEventListener('change', maj);
+  }, []);
+  return bureau;
+}
 
 async function lire<T>(url: string): Promise<T> {
   const r = await fetch(url);
@@ -88,7 +102,8 @@ export function App() {
   const ind = useMemo(() => indicateur(setIndicateurVisible), []);
   useEffect(() => (prete || erreur ? ind.fin() : ind.debut()), [ind, prete, erreur]);
   useEffect(() => () => ind.arreter(), [ind]);
-  // Cadrage de la carte : à 390 px, la bande au-dessus de la feuille (sa hauteur réelle, fiche ou liste).
+  const bureau = useBureau();
+  // Cadrage de la carte : sous 1 024 px, la bande au-dessus de la feuille (sa hauteur réelle, onglets ou fiche).
   const feuille = useRef<HTMLDivElement>(null);
   const padding = () => {
     const f = feuille.current?.getBoundingClientRect();
@@ -115,6 +130,13 @@ export function App() {
   // restent au-dessus du clavier (Figma 27:1160).
   const [ajout, setAjout] = useState(false);
   const [retour, setRetour] = useState<string | null>(null);
+  // Sous 1 024 px : l'onglet affiché de la feuille, « Critères » au départ (D5) ; le retour de la fiche mène à la liste (R19).
+  const [onglet, setOnglet] = useState<Onglet>('criteres');
+  const retourListe = () => {
+    setRetour(choisie);
+    setChoisie(null);
+    setOnglet('liste');
+  };
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
   /** Index de la commune choisie dans communes.json (ordre des repères et des temps des proches), ou null. */
   const indexChoisie = choisie == null ? null : index.get(choisie)!;
@@ -148,8 +170,36 @@ export function App() {
     });
   }, [donnees, resultat]);
 
+  // Compte annoncé aux lecteurs d'écran : l'unique zone `role=status` de la page, vide sans plafond (D17 de loyer-mer).
+  const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
+  const reglagesUI = (pied?: React.ReactNode) => (
+    <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
+      <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
+      <Proches
+        proches={proches.proches}
+        onAjouter={proches.ajouter}
+        onPlafond={proches.regler}
+        onReessayer={proches.reessayer}
+        onRetirer={proches.retirer}
+        onEffacer={proches.effacer}
+        memoireRefusee={proches.memoireRefusee}
+        inactif={!prete}
+        onAjout={setAjout}
+        monte={ajout}
+      />
+      {pied}
+    </Settings>
+  );
+  const fiche =
+    resultat && choisie ? (
+      <Fiche evaluation={resultat.parCode.get(choisie)!} total={resultat.classement.length} proches={proches.proches} index={indexChoisie!} onRetour={retourListe} />
+    ) : null;
+  const liste = resultat && <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} avecProche={proches.prets.length > 0} />;
+
   return (
-    <main className="fixed inset-0 overflow-hidden bg-background text-foreground">
+    // `overflow-clip` et non `overflow-hidden` : la page ne défile jamais, même quand un élément se fait voir (`focus()`,
+    // `scrollIntoView`) au bout d'un panneau de la feuille trop court pour le centrer ; elle glissait alors vers le haut.
+    <main className="fixed inset-0 overflow-clip bg-background text-foreground">
       {donnees && !erreur && (
         <MapView
           reperes={donnees.reperes}
@@ -167,73 +217,49 @@ export function App() {
         />
       )}
       {donnees && !erreur && <Pastilles proches={proches.proches} commune={indexChoisie} />}
-      {/* Bureau : panneaux posés sur la carte (la boîte s'efface). 390 px : une feuille en bas qui défile, à 56 % de la
-          hauteur avec la liste (Figma 7:343) ; une fiche ouverte remplace les réglages et la feuille prend sa hauteur (11:667) ;
-          pendant l'ajout d'un proche, elle monte jusqu'à la bande de carte du haut (27:1160). */}
-      <div
-        ref={feuille}
-        data-testid="feuille"
-        className={cn(
-          'bureau:contents',
-          'max-bureau:absolute max-bureau:inset-x-0 max-bureau:bottom-0 max-bureau:flex max-bureau:flex-col max-bureau:overflow-y-auto',
-          'max-bureau:rounded-t-sheet max-bureau:bg-card max-bureau:shadow-feuille',
-          choisie ? 'max-bureau:max-h-feuille' : ajout ? 'max-bureau:top-bande-carte max-bureau:z-3' : 'max-bureau:h-feuille',
-        )}
-      >
-        {/* La poignée reste en haut quand la feuille défile : ce qui défile passe dessous, sans être coupé au bord. */}
-        <div className="sticky top-0 z-1 shrink-0 bg-card pt-2 bureau:hidden" aria-hidden="true">
-          <div className="mx-4 h-rail w-poignee-feuille rounded-full bg-border" />
-        </div>
-        {/* Bureau : le panneau s'arrête au-dessus de la légende et défile, le compte collé en bas (Figma 22:486). */}
-        <div
-          style={{ '--bas-reglages': `${basReglages}px` } as React.CSSProperties}
-          className={cn(
-            'bureau:pointer-events-none bureau:absolute bureau:left-4 bureau:top-4 bureau:bottom-(--bas-reglages) bureau:flex bureau:w-reglages bureau:flex-col bureau:*:pointer-events-auto',
-            choisie && 'max-bureau:hidden',
-          )}
-        >
-          <Settings reglages={reglages} onChange={setReglages} inactif={!prete}>
-            <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
-            <Proches
-              proches={proches.proches}
-              onAjouter={proches.ajouter}
-              onPlafond={proches.regler}
-              onReessayer={proches.reessayer}
-              onRetirer={proches.retirer}
-              onEffacer={proches.effacer}
-              memoireRefusee={proches.memoireRefusee}
-              inactif={!prete}
-              onAjout={setAjout}
-              monte={ajout}
-            />
-            {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. À 390 px, il est écrit en tête de la liste. */}
-            <p role="status" className="text-texte-fort max-bureau:sr-only bureau:sticky bureau:bottom-0 bureau:-mx-4 bureau:border-t bureau:border-border bureau:bg-card bureau:p-4">
-              {resultat?.actif ? compte(resultat.classement.length) : ''}
-            </p>
-          </Settings>
-        </div>
-        {resultat && (
-          <div className="bureau:absolute bureau:right-4 bureau:top-4 bureau:w-liste">
-            {choisie ? (
-              <Fiche
-                evaluation={resultat.parCode.get(choisie)!}
-                total={resultat.classement.length}
-                proches={proches.proches}
-                index={indexChoisie!}
-                onRetour={() => { setRetour(choisie); setChoisie(null); }}
-              />
-            ) : (
-              <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} avecProche={proches.prets.length > 0} />
+      {bureau ? (
+        // Bureau : panneaux posés sur la carte (la boîte s'efface), réglages à gauche, liste ou fiche à droite.
+        <div ref={feuille} data-testid="feuille" className="contents">
+          {/* Le panneau s'arrête au-dessus de la légende et défile, le compte collé en bas (Figma 22:486). */}
+          <div
+            style={{ '--bas-reglages': `${basReglages}px` } as React.CSSProperties}
+            className="pointer-events-none absolute left-4 top-4 bottom-(--bas-reglages) flex w-reglages flex-col *:pointer-events-auto"
+          >
+            {reglagesUI(
+              // Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond.
+              <p role="status" className="sticky bottom-0 -mx-4 border-t border-border bg-card p-4 text-texte-fort">
+                {annonce}
+              </p>,
             )}
           </div>
-        )}
-        {!choisie && <Mentions className="mx-4 mb-4 bureau:hidden" />}
-        {/* Pendant l'ajout, de quoi faire défiler le champ jusqu'en haut même quand la liste est courte. */}
-        {ajout && <div className="h-full shrink-0 bureau:hidden" aria-hidden="true" />}
-      </div>
+          {resultat && <div className="absolute right-4 top-4 w-liste">{fiche ?? liste}</div>}
+        </div>
+      ) : (
+        <FeuilleMobile
+          ref={feuille}
+          onglet={onglet}
+          onOnglet={setOnglet}
+          ajout={ajout}
+          compte={resultat ? (resultat.actif ? compte(resultat.classement.length) : 'Aucun plafond fixé') : ''}
+          annonce={annonce}
+          criteres={
+            <>
+              {reglagesUI()}
+              <Mentions className="mx-4 mb-4" />
+            </>
+          }
+          liste={
+            <>
+              {!choisie && liste}
+              <Mentions className="mx-4 mb-4" />
+            </>
+          }
+          fiche={fiche}
+        />
+      )}
       <Status message={message} onReessayer={() => setEssai((n) => n + 1)} />
-      {/* 390 px : la liste est sous les réglages, hors de l'écran ; la bande de carte dit pourquoi elle est vide (état
-          « aucune commune »), comme « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. */}
+      {/* Sous 1 024 px : la bande de carte dit pourquoi elle est vide (état « aucune commune », H12 de loyer-mer), comme
+          « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. */}
       {resultat?.actif && resultat.classement.length === 0 && !choisie && !ajout && message == null && (
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-4 bottom-feuille flex justify-center pb-2 bureau:hidden">
           <p data-testid="carte-vide" className="rounded-base border border-border bg-card px-2 py-1 text-secondaire">

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, attendreCouleurs, ouvrir } from './lib/carte';
+import { voirListe } from './lib/feuille';
 
 // Tâche 3 : les 10 premières, la taille de ville et les messages de liste (fixture « 5 communes »).
 const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
@@ -14,6 +15,7 @@ async function regler(page: Page, nom: string, touche: string, fois = 1) {
 
 test('AC-4 la liste : « 3 communes passent tes critères » puis Portmer, Quaibleu, Grandeville au format de R5', async ({ page }) => {
   await ouvrir(page);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
     "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
@@ -31,6 +33,7 @@ test('AC-5 loyer 300 € et mer 5 km : aucune commune colorée, message de liste
   await expect(page.getByRole('slider', { name: 'Loyer maximum' })).toHaveAttribute('aria-valuenow', '300');
   await expect(page.getByRole('slider', { name: 'Mer à moins de' })).toHaveAttribute('aria-valuenow', '5');
   await attendreCouleurs(page, { A: null, B: null, C: null, D: null, E: null });
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.');
 });
 
@@ -39,6 +42,7 @@ test('AC-6 loyer et mer « Sans limite » : couleur neutre sur les 5 communes, a
   await regler(page, 'Loyer maximum', 'End');
   await regler(page, 'Mer à moins de', 'End');
   await attendreCouleurs(page, { A: 'area-unranked', B: 'area-unranked', C: 'area-unranked', D: 'area-unranked', E: 'area-unranked' });
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Fixe un loyer ou une distance à la mer pour classer les communes.');
   await expect(liste(page).getByRole('button')).toHaveCount(0);
   await expect(page.getByRole('status')).toHaveText('');

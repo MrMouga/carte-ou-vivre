@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, ouvrir } from './lib/carte';
+import { voirListe } from './lib/feuille';
 
 // Tâche 5a : l'adresse garde les réglages (R7, H7), fixture « 5 communes ».
 const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
@@ -12,6 +13,7 @@ test('AC-11 /?loyer=800&mer=60 : réglages 800 € et 60 km ; « 1 commune passe
   await ouvrir(page, '/?loyer=800&mer=60');
   expect(await valeur(page, 'Loyer maximum')).toMatch(/^800 €/);
   expect(await valeur(page, 'Mer à moins de')).toMatch(/^60 km/);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('1 commune passe tes critères');
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 59 · 650 € · moins d'1 km"]);
 });
@@ -23,6 +25,7 @@ test('AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, Sans limite, Peu i
   for (const t of ['Petite commune', 'Petite ville', 'Ville moyenne', 'Grande ville'])
     await expect(page.getByRole('button', { name: new RegExp(`^${t}`) })).toHaveAttribute('aria-pressed', 'false');
   expect(adresse(page)).toBe('/?loyer=1200&mer=aucun');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' '))).toEqual(['Terrebasse (23) 65', 'Portmer (17) 46', 'Grandeville (33) 31', 'Quaibleu (13) 9']);
 });
 
@@ -41,6 +44,7 @@ test('AC-14 /?taille=petite-ville,ville-moyenne : deux pastilles cochées ; adre
   await expect(page.getByRole('button', { name: /^Petite ville/ })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByRole('button', { name: /^Ville moyenne/ })).toHaveAttribute('aria-pressed', 'true');
   expect(adresse(page)).toBe('/?loyer=1200&mer=60&taille=petite-ville,ville-moyenne');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
   expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' '))).toEqual(['Portmer (17) 72', 'Quaibleu (13) 49']);
 });

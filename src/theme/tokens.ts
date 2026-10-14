@@ -75,15 +75,19 @@ export const size = {
   // 390 px : taille du texte des champs de saisie. Sous 16 px, Safari sur iPhone agrandit la page quand un champ prend le
   // focus ; le style `texte` (15) reste le reste du temps. Classe : `max-bureau:text-(length:--taille-saisie)`.
   'taille-saisie': 16,
+  // Sous 1 024 px : hauteur minimale de la feuille ouverte (D9 et H48 d'interface-telephone), pour que le curseur du loyer
+  // reste visible à 375 × 548. Classes : `h-feuille`, `max-h-feuille`, `bottom-feuille` (voir `layout`).
+  'taille-feuille-min': 272,
 } as const;
 
 /**
- * Mise en page (tâche 6) : en dessous de `largeur-bureau`, la page passe en feuille mobile ; la feuille (liste)
- * couvre `part-feuille` de la hauteur (Figma 7:362, « 56 % de la hauteur »). Classes : `bureau:`, `max-bureau:`, `h-feuille`.
+ * Mise en page (tâche 6 de loyer-mer) : en dessous de `largeur-bureau`, la page passe en feuille mobile ; la feuille ouverte
+ * couvre `part-feuille` de la hauteur, jamais moins de `taille-feuille-min` (D9 d'interface-telephone : 45 %, au moins
+ * 272 px ; 56 % avant). Classes : `bureau:`, `max-bureau:`, `h-feuille`.
  */
 export const layout = {
   'largeur-bureau': 1024,
-  'part-feuille': 0.56,
+  'part-feuille': 0.45,
 } as const;
 
 export const shadow = {
@@ -164,7 +168,7 @@ export function themeCss(): string {
     theme.push(`--shadow-${k.replace('ombre-', '')}: ${s.x}px ${s.y}px ${s.blur}px ${rgba(s.color, s.alpha)};`);
   }
   theme.push(`--breakpoint-bureau: ${layout['largeur-bureau']}px;`);
-  theme.push(`--spacing-feuille: ${layout['part-feuille'] * 100}dvh;`);
+  theme.push(`--spacing-feuille: max(${layout['part-feuille'] * 100}dvh, ${size['taille-feuille-min']}px);`);
   for (const [k, v] of Object.entries(fontFamily)) theme.push(`--font-${k}: ${v};`);
   for (const [k, t] of Object.entries(text)) {
     theme.push(`--text-${k}: ${t.size}px;`);

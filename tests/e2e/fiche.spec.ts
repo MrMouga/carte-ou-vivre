@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, attendreCouleurs, ouvrir, vue } from './lib/carte';
+import { voirListe } from './lib/feuille';
 
 // Tâche 4 : la fiche, le zoom et les ronds du top 10 (fixture « 5 communes »).
 const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
@@ -14,6 +15,7 @@ async function regler(page: Page, nom: string, touche: string, fois = 1) {
 
 test('AC-7 choisir Grandeville (33) dans la liste : sa fiche, sans « Estimation du secteur »', async ({ page }) => {
   await ouvrir(page);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await ligne(page, 'Grandeville').click();
   const t = await texte(page);
   for (const attendu of ['Grandeville (33)', 'Grande ville · 260 000 habitants', '32', '3e sur 3 communes qui passent', '832 € par mois pour 52 m² (16,0 €/m²)', "40 km de la mer à vol d'oiseau"])
@@ -24,6 +26,7 @@ test('AC-7 choisir Grandeville (33) dans la liste : sa fiche, sans « Estimation
 
 test('AC-8 choisir Portmer (17) : petite ville, 1re sur 3, estimation du secteur, moins d’1 km', async ({ page }) => {
   await ouvrir(page);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await ligne(page, 'Portmer').click();
   const t = await texte(page);
   for (const attendu of ['Portmer (17)', 'Petite ville · 23 000 habitants', '1re sur 3 communes qui passent', '650 € par mois pour 52 m² (12,5 €/m²)', 'Estimation du secteur (communes voisines)', "moins d'1 km de la mer"])
@@ -45,6 +48,7 @@ test('AC-10 cocher « Petite ville » : seule A passe (72), « 1 commune passe t
   await ouvrir(page);
   await page.getByRole('button', { name: /^Petite ville/ }).click();
   await apresRendu(page);
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(page.getByRole('region', { name: 'Les 10 premières' })).toContainText('1 commune passe tes critères');
   await expect(ligne(page, 'Portmer')).toHaveAccessibleName(/^1 · Portmer \(17\) · 72 · /);
   await attendreCouleurs(page, { A: 'score-4', D: null, E: null, B: null, C: null });

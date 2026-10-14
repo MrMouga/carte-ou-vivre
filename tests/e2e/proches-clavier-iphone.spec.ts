@@ -47,7 +47,7 @@ async function releverAuFocus(page: Page) {
 /** Fait défiler la feuille comme Vincent : juste assez pour voir le champ en bas de l'écran. */
 async function defilerJusquAuChamp(page: Page) {
   await champ(page).evaluate((el) => {
-    const feuille = el.closest('[data-testid="feuille"]') as HTMLElement;
+    const feuille = el.closest('[role="tabpanel"]') as HTMLElement; // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
     feuille.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
   });
   const b = (await champ(page).boundingBox())!;
@@ -82,7 +82,7 @@ test('iPhone : toucher « + Ajouter un proche » (1 proche) — au focus, le cha
   await ajouter(page, 'Nantesville');
   const lien = zone(page).getByRole('button', { name: '+ Ajouter un proche' });
   await lien.evaluate((el) => {
-    const feuille = el.closest('[data-testid="feuille"]') as HTMLElement;
+    const feuille = el.closest('[role="tabpanel"]') as HTMLElement; // ce qui défile : l'onglet « Critères » de la feuille (interface-telephone)
     feuille.scrollTop += el.getBoundingClientRect().bottom - (innerHeight - 16);
   });
   await releverAuFocus(page);
