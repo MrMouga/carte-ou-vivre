@@ -130,10 +130,13 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
     parCode.set(c.code, e);
     if (score != null) passent.push(e);
   });
+  // Décision de Vincent (2026-10-14, remplace H4 étendue) : les communes sans prix viennent après toutes celles qui en ont
+  // un, dans le même ordre entre elles ; leur score et leur couleur ne changent pas.
   passent.sort(
     (a, b) =>
+      Number(a.valeurPrix == null) - Number(b.valeurPrix == null) ||
       b.score! - a.score! ||
-      (a.valeurPrix ?? Infinity) - (b.valeurPrix ?? Infinity) || // H4 étendue : prix inconnu en dernier
+      (a.valeurPrix ?? 0) - (b.valeurPrix ?? 0) || // H4 : prix affiché croissant
       a.commune.nom.localeCompare(b.commune.nom, 'fr'),
   );
   passent.forEach((e, i) => (e.rang = i + 1));

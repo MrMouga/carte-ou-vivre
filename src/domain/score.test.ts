@@ -134,6 +134,18 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
     expect(sans).toMatchObject({ passe: true, sansNote: false, score: null });
   });
 
+  it('décision de Vincent (2026-10-14) : une commune sans prix vient après toutes celles qui ont un prix, même à 98 contre 83 ; score et couleur inchangés', () => {
+    const avecPrix = { ...fixture[0], code: '1', nom: 'Avecprix', merKm: 7, loyerM2: 5 }; // (100 × (1 − 260 / 1 200) + 88,3) / 2 = 83
+    const sansPrix = { ...fixture[0], code: '2', nom: 'Sansprix', merKm: 0.9, loyerM2: null }; // mer seule : 98
+    const terre = { ...fixture[0], code: '3', nom: 'Terre', merKm: 50, loyerM2: null }; // mer seule : 17
+    const res = evaluer([terre, sansPrix, avecPrix], { loyer: 1200, mer: 60, tailles: [] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score, e.palier, e.rang])).toEqual([
+      ['Avecprix', 83, 5, 1],
+      ['Sansprix', 98, 5, 2],
+      ['Terre', 17, 1, 3],
+    ]);
+  });
+
   it('à score affiché égal : prix affiché croissant, prix inconnu en dernier, puis nom', () => {
     const a = { ...fixture[0], merKm: 7 }; // mêmes notes de mer, pas de plafond de prix : scores égaux
     const communes: Commune[] = [
