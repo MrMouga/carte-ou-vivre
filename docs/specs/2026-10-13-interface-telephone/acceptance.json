@@ -12,7 +12,7 @@
       "given": "Fixture avec les 5 carrés aux latitudes de la métropole et l'emprise de la métropole avec la Corse (voir fixture), page ouverte sur /?loyer=1200&mer=60, dans une fenêtre de 390 × 664 puis de 375 × 548",
       "when": "la carte a fini de s'afficher, sans aucun geste",
       "then": "dans les deux fenêtres, la carte montre toute l'emprise au-dessus de la feuille ouverte ; Portmer (17), Quaibleu (13) et Grandeville (33) sont peintes de la couleur de leur palier (4, 3 et 2) ; Montcher (75) et Terrebasse (23) ne sont pas peintes",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
