@@ -222,3 +222,30 @@ Au-delà de 100 ventes, l'écart est d'environ 1 % (comme mesuré par l'orchestr
 | Bordeaux (33063), pour mémoire | maison | 1 | **5 067 €/m²** | 3 005 | 5 862 | 5 188 |
 
 Bordeaux passe de 4 427 à **4 233 €/m²** en appartement : la valeur de la spec (« 4 427 € au fichier de juillet 2026 », étape 4 de la vérification de bout en bout) est à amender. Bordeaux reste sous 5 000 €/m².
+
+## Seuil 300 € (décision de Vincent, 2026-10-14, 18:20 — reprise de la tâche 1)
+Règle : un prix d'achat au m² sous 300 € (appartement ou maison) n'est retenu à aucun niveau. La commune passe au niveau suivant : récent 2023-2025 (≥ 30 ventes), puis 2021-2025 (≥ 5 ventes), puis l'intercommunalité avec la même règle, sinon « inconnu-secteur ». Le seuil vaut pour l'achat seulement, pas pour les loyers. Il est codé dans `PRIX_ACHAT_MIN_M2 = 300` (`scripts/data/communes.py`), et le contrôle « aucun prix d'achat retenu sous 300 €/m² » arrête le script s'il échoue. Mêmes fichiers DVF (mêmes empreintes sha256), `python3 scripts/data/communes.py` relancé.
+
+### Comptes par source (hors Alsace-Moselle et hors Paris, Lyon, Marseille : 33 138 communes)
+| Bien | Source | Avant | Après | Écart |
+|---|---|---|---|---|
+| appartement | commune | 6 272 | 6 265 | −7 |
+| appartement | secteur | 24 793 | 24 678 | −115 |
+| appartement | inconnu-secteur | 2 073 | 2 195 | +122 (+5,9 %) |
+| maison | commune | 30 912 | 30 878 | −34 |
+| maison | secteur | 2 225 | 2 259 | +34 |
+| maison | inconnu-secteur | 1 | 1 | 0 |
+
+Le contrôle des comptes (`MESURES`, écart permis de 5 %) s'est arrêté sur « appartement, inconnu-secteur : 2 195 (mesuré : 2 073) ». `MESURES` porte maintenant les comptes après le seuil, et les comptes d'avant restent écrits en commentaire.
+
+### Par règle
+- Appartement : règle 1 → 2 429 (inchangé) ; règle 2 → 3 836 (3 843 avant) ; règle 3 récent → 15 733 (15 728) ; règle 3 sur 2021-2025 → 8 945 (9 065) ; inconnu → 2 195 (2 073).
+- Maison : règle 1 → 9 925 ; règle 2 → 20 953 (20 987) ; règle 3 récent → 2 259 (2 225) ; règle 3 sur 2021-2025 → 0 ; inconnu → 1.
+
+### Lignes de `achat.json` qui changent (comparaison avec le commit `e109491`)
+- Appartement, 128 lignes : 6 passent de « commune » à « secteur », 1 de « commune » à « inconnu-secteur », 121 de « secteur » à « inconnu-secteur ». Ce sont des intercommunalités dont le prix était sous 300 €, par exemple 226 €/m² dans plusieurs communes de Haute-Saône.
+- Maison, 34 lignes : de « commune » à « secteur ».
+- Prix le plus bas après le seuil : 300 €/m² en appartement, 302 €/m² en maison. Avant : 21 et 159.
+- Guérigny (58131), appartement : 21 €/m² « commune » (39 ventes 2021-2025 ; 1 vente récente) → **795 €/m² « secteur »**, prix récent de la CC Les Bertranges (36 ventes 2023-2025).
+- Civray (18066), appartement : 26 €/m² « commune » (11 ventes, des ventes en bloc à 26 €/m²) → **873 €/m² « secteur »**, prix récent de la CC FerCher (31 ventes 2023-2025).
+- `communes.json` et les autres fichiers : inchangés. `achat.json` : 1,45 Mo brut, 0,23 Mo gzip (inchangé).

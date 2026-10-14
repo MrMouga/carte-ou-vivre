@@ -114,6 +114,18 @@ describe('public/data/achat.json', () => {
     expect(prix('29083')).toMatchObject({ maison_m2: null, maison_source: 'inconnu-secteur' });
   });
 
+  // Seuil de Vincent (2026-10-14, reprise de la tâche 1) : un prix d'achat sous 300 €/m² n'est pas crédible (ventes en
+  // bloc) ; le niveau suivant de la règle est pris (commune 1 → 2 → intercommunalité 1 → 2 → inconnu).
+  it('seuil 300 €/m² : aucun prix d’achat sous 300 €/m², ni en appartement ni en maison', () => {
+    const { communes: l } = achat();
+    expect(l.filter((r) => (r[1] != null && (r[1] as number) < 300) || (r[3] != null && (r[3] as number) < 300))).toEqual([]);
+  });
+
+  it('seuil 300 €/m² : Guérigny (58131, 21 €/m² sur 39 ventes) et Civray (18066, 26 €/m²) prennent le prix récent de leur intercommunalité', () => {
+    expect(prix('58131')).toMatchObject({ appartement_m2: 795, appartement_source: 'secteur' }); // CC Les Bertranges, 36 ventes 2023-2025
+    expect(prix('18066')).toMatchObject({ appartement_m2: 873, appartement_source: 'secteur' }); // CC FerCher, 31 ventes 2023-2025
+  });
+
   it('H67 Paris, Lyon, Marseille : moyenne simple des arrondissements, avec un prix pour les deux biens', () => {
     expect(prix('75056')).toMatchObject({ appartement_m2: 10640.35, appartement_source: 'commune', maison_source: 'secteur' });
     expect(prix('69123')).toMatchObject({ appartement_m2: 4652.22, appartement_source: 'commune', maison_source: 'secteur' });

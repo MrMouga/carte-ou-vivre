@@ -9,7 +9,8 @@ Prix d'achat (tranche immobilier, D5 révisée par Vincent le 2026-10-14, D8, H6
 Pour la commune et le bien : (1) au moins 30 ventes de 2023-01 à 2025-12 → médiane approchée sur ces trois ans
 (stats_dvf.csv, mensuel : médiane pondérée des médianes mensuelles) ; (2) sinon au moins 5 ventes de 2021 à 2025 →
 médiane exacte (stats_whole_period.csv) ; (3) sinon la même chose pour son intercommunalité (code_parent), « secteur » ;
-sinon inconnu. Moselle, Bas-Rhin et Haut-Rhin : inconnu (ventes non publiées). Paris, Lyon et Marseille : la règle par
+sinon inconnu. Un prix sous PRIX_ACHAT_MIN_M2 (300 €/m², seuil de Vincent du 2026-10-14) n'est pas crédible (ventes en
+bloc) : il n'est pas retenu, on passe au niveau suivant. Moselle, Bas-Rhin et Haut-Rhin : inconnu (ventes non publiées). Paris, Lyon et Marseille : la règle par
 arrondissement, puis moyenne simple de ceux qui ont un prix, « secteur » si l'un d'eux l'est (H67).
 
 Prérequis : python3 scripts/data/sources.py puis python3 scripts/data/mer.py
@@ -37,10 +38,15 @@ MIN_VENTES = 5
 # Règle de Vincent (2026-10-14) : au moins 30 ventes du bien sur la fenêtre fixe 2023-01 à 2025-12 → prix récent.
 RECENT = ('2023-01', '2025-12')
 MIN_VENTES_RECENTES = 30
+# Seuil de Vincent (2026-10-14, reprise de la tâche 1 d'immobilier) : un prix d'achat au m² sous 300 € (Guérigny 21 €/m²,
+# Civray 26 €/m² : ventes en bloc) n'est retenu à aucun niveau ; l'achat seulement, pas les loyers.
+PRIX_ACHAT_MIN_M2 = 300
 # Comptes mesurés le 2026-10-14 (fichier DVF de juillet 2026), hors Alsace-Moselle et hors Paris, Lyon, Marseille.
 # Un écart de plus de 5 % arrête le script (condition d'arrêt de la tâche 0) ; au moins 5 communes d'écart permises.
-MESURES = {'appartement': {'commune': 6272, 'secteur': 24793, 'inconnu-secteur': 2073},
-           'maison': {'commune': 30912, 'secteur': 2225, 'inconnu-secteur': 1}}
+# Remesurés avec le seuil de 300 €/m² (2026-10-14, 18:20) ; avant le seuil : appartement 6 272 / 24 793 / 2 073,
+# maison 30 912 / 2 225 / 1 (le seuil fait passer 122 communes à « inconnu-secteur » en appartement, +5,9 %).
+MESURES = {'appartement': {'commune': 6265, 'secteur': 24678, 'inconnu-secteur': 2195},
+           'maison': {'commune': 30878, 'secteur': 2259, 'inconnu-secteur': 1}}
 
 
 def check(cond, msg):
@@ -151,12 +157,14 @@ def nombre(x):
 
 
 def prix_ligne(ligne, mois, bien):
-    """Règle 1 puis 2 sur une ligne (commune ou epci) : (€/m², '1' | '2') ou None."""
+    """Règle 1 puis 2 sur une ligne (commune ou epci) : (€/m², '1' | '2') ou None ; un prix sous le seuil est sauté."""
     m = (mois or {}).get(bien, [])
-    if sum(n for _, n in m) >= MIN_VENTES_RECENTES:
+    if sum(n for _, n in m) >= MIN_VENTES_RECENTES and mediane_ponderee(m) >= PRIX_ACHAT_MIN_M2:
         return mediane_ponderee(m), '1'
     if ligne is not None and int(ligne[f'nb_ventes_whole_{bien}'] or 0) >= MIN_VENTES:
-        return nombre(ligne[f'med_prix_m2_whole_{bien}']), '2'
+        p = nombre(ligne[f'med_prix_m2_whole_{bien}'])
+        if p >= PRIX_ACHAT_MIN_M2:
+            return p, '2'
     return None
 
 
@@ -260,6 +268,8 @@ def main():
     print("Contrôles des prix d'achat")
     ach = {a[0]: a for a in achats}
     check(len(achats) == len(rows) and [a[0] for a in achats] == codes, f'{len(achats)} lignes, dans l\'ordre des codes de communes.json')
+    bas = [(a[0], a[1 + 2 * j]) for a in achats for j in range(2) if a[1 + 2 * j] is not None and a[1 + 2 * j] < PRIX_ACHAT_MIN_M2]
+    check(not bas, f'aucun prix d\'achat retenu sous {PRIX_ACHAT_MIN_M2} €/m² (trouvés : {len(bas)} {bas[:5]})')
     arr_dvf = {c: sum(1 for k in ventes if len(k) == 5 and k.startswith(p)) for c, p in PLM.items()}
     check(arr_dvf == {'75056': 20, '69123': 9, '13055': 16}, f'arrondissements dans le fichier DVF : {arr_dvf} (45, H67)')
     hors = [a for a in achats if a[0] not in PLM and by[a[0]][2] not in ALSACE_MOSELLE]
