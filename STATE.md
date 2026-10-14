@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : ui (tranche immobilier) — design validé le 2026-10-14 (docs/design/immobilier/, fusion F, sans Figma) ; prochaine étape /breakdown. Interface-telephone est en ligne (version 28305d0 servie sur https://ou-vivre-en-france.narnia-assistant.workers.dev/, vérifiée le 2026-10-14).
+- Étape : breakdown (tranche immobilier) — plan validé le 2026-10-14 (docs/plans/2026-10-14-immobilier/plan.md, 6 tâches) ; prochaine étape /build. Interface-telephone est en ligne (version 28305d0 servie sur https://ou-vivre-en-france.narnia-assistant.workers.dev/, vérifiée le 2026-10-14).
 - Statut : active
 
 ## Décisions
@@ -86,6 +86,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-14 | Tranche construite : interface-telephone | Démo acceptée : communes colorées dès l'ouverture sur téléphone (tuiles du zoom 3), feuille à deux onglets dont la tête replie et déplie (toucher, glisser, clavier), fiche à la place des onglets, clavier iPhone corrigé (cause mesurée : Safari lit la place du champ avant notre code ; 0 px de défilement sur l'iPhone 13 Pro de Vincent) ; 11 critères verts, ceux de loyer-mer et proches toujours verts ; décisions du build gardées (H51–H55). |
 | 2026-10-14 | Spec validée : immobilier | Trois bascules (Appartement / Maison, Louer / Acheter, Total / Au m²) et une surface (52 m², 92 m² pour un lien en Maison, gardée au changement de bien) ; prix d'achat = médiane des ventes 2021–2025, secteur sous 5 ventes ; commune sans prix qui passe (amende loyer-mer, D21) ; Alsace-Moselle sans prix d'achat ; fichier des prix non indexé ; 9 décisions, 6 règles, 13 critères. |
 | 2026-10-14 | Design validé : immobilier | Fusion F sur la base de B : catégorie « Logement » repliable, Louer / Acheter soulignés, tuiles Appartement / Maison avec icône, curseur « Loyer mensuel » / « Prix d'achat », Total / Au m² et surface sous le curseur ; feuille ≥ 338 px et titre masqué sur téléphone (D11 d'interface-telephone) ; spec immobilier révisée (D10, AC-4) ; pas de Figma, le prototype fait foi. |
+| 2026-10-14 | Plan validé : immobilier | 6 tâches : données (achat.json non indexé, loyers des maisons, test des 5 communes de Vincent), règles du prix sans écran, réglage pour un appartement (feuille 338 px), maison, communes sans prix, finitions ; aucun paquet ; AC-2, AC-5, AC-9 d'interface-telephone révisés (D12, « Loyer mensuel »). |
 
 ## Hypothèses à vérifier
 
@@ -144,6 +145,7 @@ Autres questions :
 - [Spec « Interface téléphone » — 2026-10-13](docs/specs/2026-10-13-interface-telephone/spec.md)
 - [Spec « Immobilier » — 2026-10-14](docs/specs/2026-10-14-immobilier/spec.md)
 - [Design « Immobilier » — 2026-10-14](docs/design/immobilier/README.md)
+- [Plan « Immobilier » — 2026-10-14](docs/plans/2026-10-14-immobilier/plan.md)
 - [Design « Interface téléphone » — 2026-10-13](docs/design/interface-telephone/README.md)
 - [Plan « Interface téléphone » — 2026-10-13](docs/plans/2026-10-13-interface-telephone/plan.md)
 - [Design « Proches » — 2026-10-13](docs/design/proches/README.md) · [décisions](docs/design/proches/decisions.md)
