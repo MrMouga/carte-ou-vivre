@@ -57,7 +57,7 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-baseline justify-between gap-2">
           <span className="min-w-0 text-texte-fort break-words">{nom}</span>
-          {pret && <span className="shrink-0 text-valeur tabular-nums">{duree(plafond)}</span>}
+          {pret && <span className="shrink-0 text-valeur-curseur tabular-nums">{duree(plafond)}</span>}
         </div>
         <span className="text-secondaire text-muted-foreground break-words">{adresseDe(proche)}</span>
         {pret && (

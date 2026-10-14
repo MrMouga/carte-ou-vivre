@@ -9,6 +9,7 @@ import { ReglagePrix } from './ReglagePrix';
 
 type CurseurProps = {
   libelle: string;
+  /** Lu par les lecteurs d'écran après la valeur, plus affiché sous le curseur (design F d'immobilier). */
   sousTexte: string;
   /** H2 ; le cran après le maximum = « Sans limite ». */
   bornes: { min: number; max: number; pas: number };
@@ -27,7 +28,7 @@ function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange, disabled
         <span id={id} className="text-texte">
           {libelle}
         </span>
-        <span className="text-valeur tabular-nums">{texte(valeur)}</span>
+        <span className="text-valeur-curseur tabular-nums">{texte(valeur)}</span>
       </div>
       <Slider
         aria-labelledby={id}
@@ -39,7 +40,6 @@ function Curseur({ libelle, sousTexte, bornes, valeur, texte, onChange, disabled
         onValueChange={([v]) => onChange(v >= sansLimite ? null : v)}
         disabled={disabled}
       />
-      {valeur != null && <p className="text-secondaire text-muted-foreground">{sousTexte}</p>}
     </div>
   );
 }

@@ -438,3 +438,32 @@ test('aucune commune en Acheter avec un proche prêt : « Relâche le prix, la m
   await voirListe(page);
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le prix, la mer, la taille ou un proche.');
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 5 : finitions du design F (docs/design/immobilier/decisions.md, retours de Vincent sur F).
+
+test('design F : panneau de réglages de 340 px à 1 440 × 900', async ({ page }) => {
+  test.skip(mobile(page), 'panneau de bureau seulement (1 024 px et plus)');
+  await ouvrirSix(page);
+  expect(page.viewportSize()).toEqual({ width: 1440, height: 900 });
+  expect((await reglages(page).boundingBox())!.width).toBe(340);
+});
+
+test('design F : valeur des curseurs du prix, de la mer et des proches en 16 px gras ; « à vol d’oiseau » plus sous le curseur de la mer, gardé dans la fiche', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=60'); // fixture « 5 communes » de loyer-mer : Grandeville à 40 km de la mer
+  await expect(reglages(page).getByText(/vol d.oiseau/)).toHaveCount(0);
+  await ficheDeListe(page, 'Grandeville');
+  expect(await texteFiche(page)).toContain("40 km de la mer à vol d'oiseau");
+  await fermerFiche(page);
+
+  await servirIgn(page);
+  await ajouter(page, 'Brestville');
+  await pret(page, 'Brestville (29)');
+  await voirCriteres(page);
+  const style = (l: ReturnType<typeof plafond>) => l.evaluate((e) => ({ taille: getComputedStyle(e).fontSize, graisse: getComputedStyle(e).fontWeight }));
+  const attendu = { taille: '16px', graisse: '700' };
+  expect(await style(plafond(page, '1 200 €')), 'prix').toEqual(attendu);
+  expect(await style(plafond(page, '60 km')), 'mer').toEqual(attendu);
+  expect(await style(page.getByRole('region', { name: 'Tes proches' }).getByText(ins('2 h'), { exact: true })), 'proche').toEqual(attendu);
+  await expect(reglages(page).getByText(/vol d.oiseau/)).toHaveCount(0);
+});

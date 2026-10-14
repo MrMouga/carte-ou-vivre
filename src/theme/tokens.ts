@@ -58,7 +58,7 @@ export const size = {
   'taille-pastille': 28,
   'taille-poignee': 18,
   'taille-rail': 4,
-  'taille-reglages': 300,
+  'taille-reglages': 340,
   'taille-liste': 320,
   'taille-echantillon': 14,
   'taille-ecart-echantillon': 2,
