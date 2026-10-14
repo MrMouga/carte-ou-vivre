@@ -1,11 +1,11 @@
-import { expect, test, type Page } from '@playwright/test';
-import { apresRendu, ouvrir } from './lib/carte';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { mobile, onglet } from './lib/feuille';
 import { servirIgn } from './lib/ign';
-import { champ, zone } from './lib/proches';
+import { champ, lignes, liste, PRET_MS, SANS_PROCHE, zone } from './lib/proches';
 import { BORNES } from '../../src/domain/url';
-import { hauteurFeuille } from '../../src/map/view';
-import { size, space } from '../../src/theme/tokens';
+import { hauteurFeuille, paddingCarte } from '../../src/map/view';
+import { geste, size, space } from '../../src/theme/tokens';
 
 // Tâche 2 d'interface-telephone (R18, D3, D5, D9, H42 à H44, H47) : sous 1 024 px, une feuille à deux onglets, « Critères »
 // au départ et « Les 10 premières », avec le compte en tête ; le bureau ne change pas. Au toucher (H41).
@@ -170,4 +170,336 @@ test('ajout d’un proche : ni onglets ni compte au-dessus du champ ; ils revien
   await expect(champ(page)).not.toBeFocused();
   await expect(page.getByRole('tablist')).toBeVisible();
   await expect(compte(page)).toBeVisible();
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 3 d'interface-telephone (R17, R19, D3, D4, D6, D8, H45 à H48, H50) : la tête de la feuille replie et déplie, au
+// toucher, au glisser et au clavier ; la fiche prend la place des onglets et ouvre la feuille repliée.
+
+const replier = (page: Page) => page.getByRole('button', { name: 'Replier la feuille' });
+const deplier = (page: Page) => page.getByRole('button', { name: 'Déplier la feuille' });
+const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
+const loyer = (page: Page) => page.getByText('Loyer maximum', { exact: true });
+const H = (page: Page) => page.viewportSize()!.height;
+
+/** Attend que la feuille soit posée (plus aucune transition en cours, dans la feuille ni dans son contenu). */
+async function posee(page: Page) {
+  await page.waitForFunction(() => document.querySelector('[data-testid="feuille"]')!.getAnimations({ subtree: true }).length === 0);
+}
+/** Hauteur de feuille visible à l'écran, du haut de la feuille au bas de la fenêtre. */
+const visible = async (page: Page) => H(page) - (await boite(feuille(page))).y;
+/** Haut de la feuille ouverte (sur ses onglets) : 45 % de la hauteur, au moins 272 px (D9). */
+const hautOuverte = (page: Page) => H(page) - hauteurFeuille(H(page));
+
+/** Repliée : barre de 64 px au plus (H48), « Déplier la feuille » à l'état replié, le compte `texte` dans la barre. */
+async function attendreRepliee(page: Page, texte?: string) {
+  await expect(deplier(page)).toHaveAttribute('aria-expanded', 'false');
+  await posee(page);
+  expect(await visible(page)).toBeLessThanOrEqual(64);
+  if (texte) await expect(deplier(page).getByTestId('compte-feuille')).toHaveText(texte);
+  await expect(deplier(page).getByTestId('compte-feuille')).toBeInViewport({ ratio: 1 });
+}
+/** Ouverte sur ses onglets : « Replier la feuille » à l'état déplié, la feuille à sa hauteur, l'onglet `nom` affiché. */
+async function attendreOuverte(page: Page, nom: 'Critères' | 'Les 10 premières') {
+  await expect(replier(page)).toHaveAttribute('aria-expanded', 'true');
+  await posee(page);
+  expect((await boite(feuille(page))).y).toBeCloseTo(hautOuverte(page), 0);
+  await expect(onglet(page, nom)).toHaveAttribute('aria-selected', 'true');
+  await expect(panneau(page, nom)).toBeVisible();
+}
+
+/**
+ * Glisser au doigt par le protocole du navigateur (H41 : des PointerEvent fabriqués ne font jamais défiler une liste) :
+ * `touchStart` en (x, y), dix `touchMove` répartis sur `ms`, puis `touchEnd`.
+ */
+async function glisser(page: Page, x: number, y: number, dy: number, ms = 300) {
+  const cdp = await page.context().newCDPSession(page);
+  const pas = 10;
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  for (let i = 1; i <= pas; i++) {
+    await page.waitForTimeout(ms / pas);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + (dy * i) / pas }] });
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await cdp.detach();
+}
+/** Point de la poignée (barre grise de 40 × 4 en haut de la tête). */
+async function poignee(tete: Locator) {
+  const b = await boite(tete.locator('span').first());
+  return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+}
+
+test('AC-2 à 390 × 844 : « Replier la feuille » puis « Déplier la feuille » ; barre de 64 px au plus avec le compte, le rond « 1 » ne bouge pas, puis « Critères » et « Loyer maximum »', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await attendreOuverte(page, 'Critères');
+  const rond = page.getByRole('button', { name: '1re : Portmer (17)' });
+  const avant = await boite(rond);
+
+  await replier(page).tap();
+  await attendreRepliee(page, '3 communes passent tes critères');
+  await expect(loyer(page)).toBeHidden();
+  expect(await boite(rond)).toEqual(avant); // D8 : la carte ne bouge pas
+
+  await deplier(page).tap();
+  await attendreOuverte(page, 'Critères');
+  await expect(loyer(page)).toBeInViewport({ ratio: 1 });
+  expect(await boite(rond)).toEqual(avant);
+});
+
+test('AC-3 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 px vers le bas, barre 200 px vers le haut, glisser dans « Taille de ville », puis toucher le texte de la barre', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await attendreOuverte(page, 'Critères');
+
+  // 30 px vers le bas : sous le seuil de 80 px, la feuille revient ouverte.
+  let p = await poignee(replier(page));
+  await glisser(page, p.x, p.y, 30);
+  await attendreOuverte(page, 'Critères');
+
+  // 200 px vers le bas : repliée.
+  p = await poignee(replier(page));
+  await glisser(page, p.x, p.y, 200);
+  await attendreRepliee(page, '3 communes passent tes critères');
+
+  // La barre, 200 px vers le haut : ouverte sur « Critères ».
+  p = await poignee(deplier(page));
+  await glisser(page, p.x, p.y, -200);
+  await attendreOuverte(page, 'Critères');
+
+  // Dans le réglage « Taille de ville », 200 px vers le haut : les réglages défilent, la feuille reste ouverte. À 390 × 844,
+  // le réglage est sous le bas de l'écran à l'ouverture (y ≈ 978) : on l'amène d'abord à l'écran, comme l'utilisateur
+  // qui a fait défiler les réglages pour le toucher.
+  const taille = page.getByRole('group', { name: 'Taille de ville' });
+  await taille.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+  const t = await boite(taille);
+  expect(t.y + t.height).toBeLessThanOrEqual(H(page));
+  const defile = () => panneau(page, 'Critères').evaluate((el) => el.scrollTop);
+  const avant = await defile();
+  await glisser(page, t.x + t.width / 2, t.y + t.height / 2, -200);
+  await expect.poll(async () => (await defile()) - avant).toBeGreaterThan(100);
+  await attendreOuverte(page, 'Critères');
+
+  // Repliée par le bouton, puis un toucher sur le texte de la barre : ouverte sur « Critères ».
+  await replier(page).tap();
+  await attendreRepliee(page);
+  await deplier(page).getByTestId('compte-feuille').tap();
+  await attendreOuverte(page, 'Critères');
+});
+
+test('AC-4 à 390 × 844 : repliée, la barre dit le compte de loyer-mer, « Aucun plafond fixé » sans plafond', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  const cas: [string, string][] = [
+    ['/?loyer=1200&mer=60', '3 communes passent tes critères'],
+    ['/?loyer=1000&mer=60', '2 communes passent tes critères'],
+    ['/?loyer=650&mer=60', '1 commune passe tes critères'],
+    ['/?loyer=300&mer=60', 'Aucune commune ne passe tes critères'],
+    ['/?loyer=aucun&mer=aucun', 'Aucun plafond fixé'],
+  ];
+  for (const [chemin, texte] of cas) {
+    await ouvrir(page, chemin);
+    await replier(page).tap();
+    await attendreRepliee(page, texte);
+  }
+});
+
+test('AC-5 à 390 × 844 : « Les 10 premières », repliée puis dépliée, c’est toujours la liste', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await onglet(page, 'Les 10 premières').tap();
+  const voir = async () => {
+    await attendreOuverte(page, 'Les 10 premières');
+    await expect(liste(page)).toContainText('3 communes passent tes critères');
+    expect(await lignes(page)).toEqual(SANS_PROCHE);
+    await expect(loyer(page)).toBeHidden();
+  };
+  await voir();
+  await replier(page).tap();
+  await attendreRepliee(page, '3 communes passent tes critères');
+  await deplier(page).tap();
+  await voir();
+});
+
+test('AC-6 à 390 × 844, feuille repliée : le rond « 1 » ouvre la feuille sur la fiche de Portmer (17), cadrée au-dessus de la feuille ouverte ; repliée puis dépliée, la fiche revient', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await replier(page).tap();
+  await attendreRepliee(page);
+
+  await page.getByRole('button', { name: '1re : Portmer (17)' }).tap();
+  const voirFiche = async () => {
+    await expect(replier(page)).toHaveAttribute('aria-expanded', 'true');
+    await expect(fiche(page)).toBeVisible();
+    await expect(fiche(page)).toHaveAccessibleName('Portmer (17)');
+    await expect(fiche(page).getByText('72', { exact: true })).toBeVisible();
+    await expect(fiche(page)).toContainText('1re sur 3 communes qui passent');
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    await expect(page.getByRole('tab')).toHaveCount(0);
+    await expect(replier(page).getByTestId('compte-feuille')).toHaveCount(0); // tête : la poignée seule
+  };
+  await voirFiche();
+  // Cadrage (R19) : la commune au milieu de la bande au-dessus de la feuille OUVERTE, calculée par les jetons, et non
+  // au-dessus de la barre d'où la feuille est partie.
+  const p = paddingCarte(390, H(page));
+  const milieu = { x: p.left + (390 - p.left - p.right) / 2, y: p.top + (H(page) - p.top - p.bottom) / 2 };
+  const rond = page.getByRole('button', { name: '1re : Portmer (17)' });
+  await expect
+    .poll(async () => {
+      const b = await boite(rond);
+      return Math.round(Math.hypot(b.x + b.width / 2 - milieu.x, b.y + b.height / 2 - milieu.y));
+    })
+    .toBeLessThanOrEqual(2);
+
+  await replier(page).tap();
+  await attendreRepliee(page, '3 communes passent tes critères');
+  await expect(fiche(page)).toBeHidden();
+  await deplier(page).tap();
+  await posee(page);
+  await voirFiche();
+});
+
+test('AC-7 à 390 × 844, sur « Critères » : le carré de Grandeville (33) ouvre sa fiche à la place des onglets ; « ← Les 10 premières » mène à la liste, focus sur sa ligne', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await attendreOuverte(page, 'Critères');
+  const { lecture } = vue(page); // dans le carré, loin de son rond
+  await page.touchscreen.tap(lecture('B').x, lecture('B').y);
+  await expect(fiche(page)).toHaveAccessibleName('Grandeville (33)');
+  await expect(fiche(page)).toContainText('3e sur 3 communes qui passent');
+  await expect(page.getByRole('tablist')).toHaveCount(0);
+
+  await fiche(page).getByRole('button', { name: '← Les 10 premières' }).tap();
+  await expect(onglet(page, 'Les 10 premières')).toHaveAttribute('aria-selected', 'true');
+  await expect(onglet(page, 'Critères')).toHaveAttribute('aria-selected', 'false');
+  const ligne3 = liste(page).getByRole('button', { name: /^3 · Grandeville \(33\) · 32 · 832\s€ · 40\skm$/ });
+  await expect(ligne3).toBeFocused();
+});
+
+test('AC-11 à 390 × 844 : repliée pendant le calcul de Nantesville (44), la barre passe de 3 à 1 commune sans être dépliée', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await servirIgn(page);
+  await champ(page).tap();
+  await champ(page).fill('1 rue Test');
+  await zone(page).getByRole('button', { name: '1 rue Test, 44000 Nantesville' }).tap();
+  await expect(zone(page).getByRole('textbox', { name: 'Nom' })).toHaveValue('Nantesville (44)'); // nom proposé
+  await zone(page).getByRole('button', { name: 'Ajouter', exact: true }).tap();
+  await expect(zone(page)).toContainText('Calcul des trajets depuis Nantesville (44)…');
+
+  await replier(page).tap();
+  await attendreRepliee(page, '3 communes passent tes critères');
+  // Repliée avant la fin du calcul (la zone est cachée, d'où `includeHidden`).
+  await expect(page.getByRole('region', { name: 'Tes proches', includeHidden: true })).toContainText('Calcul des trajets depuis Nantesville (44)…');
+  await expect(deplier(page).getByTestId('compte-feuille')).toHaveText('1 commune passe tes critères', { timeout: PRET_MS });
+  await expect(deplier(page)).toHaveAttribute('aria-expanded', 'false');
+  expect(await visible(page)).toBeLessThanOrEqual(64);
+});
+
+// Hors AC (leçon « feuille glissable ») : le clic qui suit le toucher qui déplie ne tombe pas sur la ligne apparue sous le
+// doigt. Sans animation, pour que la ligne soit là dès le dépli (le cas le plus défavorable).
+test.describe('animations réduites', () => {
+  test.use({ reducedMotion: 'reduce' });
+
+  test('déplier d’un toucher sur la barre n’ouvre aucune fiche (clic fantôme)', async ({ page }) => {
+    test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+    // 390 × 664 (fenêtre de Safari sur iPhone) : la liste y est assez longue pour amener une ligne sous la barre.
+    await page.setViewportSize({ width: 390, height: 664 });
+    await ouvrir(page, '/?loyer=1200&mer=60');
+    await onglet(page, 'Les 10 premières').tap();
+    // La ligne de Grandeville amenée au bas de l'écran, là où sera la barre repliée.
+    const ligne3 = liste(page).getByRole('button', { name: /^3 · Grandeville/ });
+    await ligne3.evaluate((el) => el.scrollIntoView({ block: 'end' }));
+    const l = await boite(ligne3);
+    await replier(page).tap();
+    await attendreRepliee(page);
+    const barre = H(page) - (await visible(page));
+    const y = l.y + l.height / 2;
+    expect(y).toBeGreaterThan(barre); // le toucher tombe sur la barre, et sur la ligne une fois dépliée
+
+    await page.touchscreen.tap(l.x + l.width / 2, y);
+    await attendreOuverte(page, 'Les 10 premières');
+    await page.waitForTimeout(geste['avaler-clic-ms']);
+    await expect(fiche(page)).toHaveCount(0);
+    expect(await boite(ligne3)).toEqual(l); // la ligne était bien sous le doigt
+  });
+
+  test('H45 sans animation si l’on réduit les animations : durée de transition 0 s', async ({ page }) => {
+    test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+    await ouvrir(page);
+    expect(await feuille(page).evaluate((el) => getComputedStyle(el).transitionDuration)).toBe('0s');
+  });
+});
+
+// Hors AC (H45) : le passage d'une position à l'autre dure 300 ms au plus.
+test('H45 transition de la feuille : 300 ms au plus', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page);
+  const duree = await feuille(page).evaluate((el) => getComputedStyle(el).transitionDuration);
+  expect(parseFloat(duree)).toBeGreaterThan(0);
+  expect(parseFloat(duree)).toBeLessThanOrEqual(0.3);
+});
+
+// Hors AC (H47) : au clavier, la tête est un vrai bouton ; au repli, le focus va à « Déplier la feuille », même s'il était
+// dans le contenu qui disparaît.
+test('focus : repli au clavier, puis repli au doigt avec le focus dans les réglages, le focus va à « Déplier la feuille »', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await ouvrir(page, '/?loyer=1200&mer=60');
+  await replier(page).focus();
+  await page.keyboard.press('Enter');
+  await attendreRepliee(page);
+  await expect(deplier(page)).toBeFocused();
+  await page.keyboard.press('Enter');
+  await attendreOuverte(page, 'Critères');
+  await expect(replier(page)).toBeFocused();
+
+  await page.getByRole('slider', { name: 'Loyer maximum' }).focus();
+  const p = await poignee(replier(page));
+  await glisser(page, p.x, p.y, 200);
+  await attendreRepliee(page);
+  await expect(deplier(page)).toBeFocused();
+});
+
+// Hors AC (details.md, états chargement et ajout) : ni repli ni glisser tant que la page n'est pas prête, ni pendant l'ajout.
+test('pendant le chargement, la tête est inactive ; pendant l’ajout d’un proche, il n’y a pas de tête à replier', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await servirFixture(page);
+  let lacher!: () => void;
+  const donnees = new Promise<void>((r) => (lacher = r));
+  await page.route('**/data/communes.json', async (r) => {
+    await donnees;
+    await r.fallback();
+  });
+  await page.goto('/');
+  await expect(replier(page)).toBeDisabled();
+  lacher();
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await expect(replier(page)).toBeEnabled();
+
+  await champ(page).tap();
+  await expect(champ(page)).toBeFocused();
+  await expect(replier(page)).toHaveCount(0);
+  await expect(deplier(page)).toHaveCount(0);
+});
+
+// Hors AC (H50) : les messages posés sur la carte se placent juste au-dessus de la feuille, ouverte ou repliée ; feuille
+// repliée, le message « Aucune commune » de la bande est caché (la barre le dit).
+test('H50 « Fond de carte indisponible » juste au-dessus de la barre ; « Aucune commune » de la bande caché feuille repliée', async ({ page }) => {
+  test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
+  await servirFixture(page, { fondEnPanne: true });
+  await page.goto('/?loyer=1200&mer=60');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  const message = page.getByText('Fond de carte indisponible');
+  await expect(message).toBeVisible();
+  let m = await boite(message);
+  expect(m.y + m.height).toBeCloseTo(hautOuverte(page), 0);
+  await replier(page).tap();
+  await attendreRepliee(page);
+  m = await boite(message);
+  expect(m.y + m.height).toBeCloseTo(H(page) - (await visible(page)), 0);
+
+  await ouvrir(page, '/?loyer=300&mer=60');
+  await expect(page.getByTestId('carte-vide')).toBeVisible();
+  await replier(page).tap();
+  await attendreRepliee(page, 'Aucune commune ne passe tes critères');
+  await expect(page.getByTestId('carte-vide')).toHaveCount(0);
 });

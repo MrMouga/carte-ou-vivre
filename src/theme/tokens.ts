@@ -78,6 +78,9 @@ export const size = {
   // Sous 1 024 px : hauteur minimale de la feuille ouverte (D9 et H48 d'interface-telephone), pour que le curseur du loyer
   // reste visible à 375 × 548. Classes : `h-feuille`, `max-h-feuille`, `bottom-feuille` (voir `layout`).
   'taille-feuille-min': 272,
+  // Sous 1 024 px : barre de la feuille repliée, poignée et compte (Figma « Tête de feuille », état Repliée ≈ 51 px ; H48 :
+  // au plus 64 px), à quoi s'ajoute la marge du geste d'accueil de l'iPhone. Classe : `h-barre-feuille`.
+  'taille-barre-feuille': 51,
 } as const;
 
 /**
@@ -88,6 +91,18 @@ export const size = {
 export const layout = {
   'largeur-bureau': 1024,
   'part-feuille': 0.45,
+} as const;
+
+/**
+ * Feuille mobile repliable (interface-telephone, H45, H46) : passage d'une position à l'autre en `duree-feuille-ms` (aucun si
+ * l'on réduit les animations) ; un geste de moins de `seuil-toucher` px est un toucher ; au-delà de `seuil-change` px, la
+ * feuille change de position au lâcher. `avaler-clic-ms` : délai pendant lequel le clic qui suit un toucher est avalé.
+ */
+export const geste = {
+  'duree-feuille-ms': 300,
+  'seuil-toucher': 10,
+  'seuil-change': 80,
+  'avaler-clic-ms': 400,
 } as const;
 
 export const shadow = {
@@ -163,6 +178,10 @@ export function themeCss(): string {
     root.push(`--${k}: ${v}px;`);
     if (k.startsWith('taille-')) theme.push(`--spacing-${k.replace('taille-', '')}: ${v}px;`);
   }
+  // Feuille mobile : marge du geste d'accueil (iPhone, avec `viewport-fit=cover`), hauteur visible repliée, durée du passage.
+  root.push('--marge-geste: env(safe-area-inset-bottom, 0px);');
+  root.push('--hauteur-repliee: calc(var(--taille-barre-feuille) + var(--marge-geste));');
+  root.push(`--duree-feuille: ${geste['duree-feuille-ms']}ms;`);
   for (const [k, s] of Object.entries(shadow)) {
     root.push(`--${k}: ${s.x}px ${s.y}px ${s.blur}px ${rgba(s.color, s.alpha)};`);
     theme.push(`--shadow-${k.replace('ombre-', '')}: ${s.x}px ${s.y}px ${s.blur}px ${rgba(s.color, s.alpha)};`);

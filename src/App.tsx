@@ -103,9 +103,16 @@ export function App() {
   useEffect(() => (prete || erreur ? ind.fin() : ind.debut()), [ind, prete, erreur]);
   useEffect(() => () => ind.arreter(), [ind]);
   const bureau = useBureau();
-  // Cadrage de la carte : sous 1 024 px, la bande au-dessus de la feuille (sa hauteur réelle, onglets ou fiche).
+  // Cadrage de la carte : sous 1 024 px, la bande au-dessus de la feuille (sa hauteur réelle, onglets ou fiche). Une
+  // commune choisie feuille repliée ouvre la feuille : on se cadre alors sur la hauteur de la feuille ouverte, calculée par
+  // les jetons, et non sur la feuille en train de monter (R19).
   const feuille = useRef<HTMLDivElement>(null);
+  const ouverture = useRef(false);
   const padding = () => {
+    if (ouverture.current) {
+      ouverture.current = false;
+      return paddingCarte(innerWidth, innerHeight);
+    }
     const f = feuille.current?.getBoundingClientRect();
     return paddingCarte(innerWidth, innerHeight, f && f.height > 0 ? innerHeight - f.top : undefined);
   };
@@ -126,16 +133,26 @@ export function App() {
   const message: Message = erreur ? 'erreur' : indicateurVisible ? 'chargement' : prete && fond === 'secours' ? 'fond-indisponible' : null;
 
   const [choisie, setChoisie] = useState<string | null>(null);
+  // Sous 1 024 px : feuille repliée en une barre (R17), ouverte au départ (D3). Plier ou déplier ne bouge pas la carte (D8).
+  const [repliee, setRepliee] = useState(false);
   // 390 px : tant que l'ajout d'un proche a le focus, la feuille monte en haut, pour que le champ et ses suggestions
   // restent au-dessus du clavier (Figma 27:1160).
   const [ajout, setAjout] = useState(false);
   const [retour, setRetour] = useState<string | null>(null);
+  // Ni repli pendant le chargement, l'erreur ou l'ajout : la feuille y est ouverte (details.md).
+  const feuilleRepliee = !bureau && repliee && prete && !erreur && !ajout;
   // Sous 1 024 px : l'onglet affiché de la feuille, « Critères » au départ (D5) ; le retour de la fiche mène à la liste (R19).
   const [onglet, setOnglet] = useState<Onglet>('criteres');
   const retourListe = () => {
     setRetour(choisie);
     setChoisie(null);
     setOnglet('liste');
+  };
+  // R19 : choisir une commune, sur la carte ou dans la liste, ouvre sa fiche et ouvre la feuille si elle était repliée.
+  const choisir = (code: string) => {
+    if (feuilleRepliee && code !== choisie) ouverture.current = true;
+    setRepliee(false);
+    setChoisie(code);
   };
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
   /** Index de la commune choisie dans communes.json (ordre des repères et des temps des proches), ou null. */
@@ -194,7 +211,7 @@ export function App() {
     resultat && choisie ? (
       <Fiche evaluation={resultat.parCode.get(choisie)!} total={resultat.classement.length} proches={proches.proches} index={indexChoisie!} onRetour={retourListe} />
     ) : null;
-  const liste = resultat && <List resultat={resultat} onChoisir={setChoisie} focusCode={retour} avecProche={proches.prets.length > 0} />;
+  const liste = resultat && <List resultat={resultat} onChoisir={choisir} focusCode={retour} avecProche={proches.prets.length > 0} />;
 
   return (
     // `overflow-clip` et non `overflow-hidden` : la page ne défile jamais, même quand un élément se fait voir (`focus()`,
@@ -208,7 +225,7 @@ export function App() {
           sansPlafond={resultat?.actif === false}
           ronds={ronds}
           proches={reperesProches}
-          onChoisir={(i) => setChoisie(donnees.communes[i].code)}
+          onChoisir={(i) => choisir(donnees.communes[i].code)}
           onPrete={() => setPrete(true)}
           onErreur={() => setErreur(true)}
           onFond={setFond}
@@ -255,12 +272,16 @@ export function App() {
             </>
           }
           fiche={fiche}
+          repliee={feuilleRepliee}
+          onRepliee={setRepliee}
+          pret={prete && !erreur}
         />
       )}
-      <Status message={message} onReessayer={() => setEssai((n) => n + 1)} />
+      <Status message={message} onReessayer={() => setEssai((n) => n + 1)} repliee={feuilleRepliee} />
       {/* Sous 1 024 px : la bande de carte dit pourquoi elle est vide (état « aucune commune », H12 de loyer-mer), comme
-          « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. */}
-      {resultat?.actif && resultat.classement.length === 0 && !choisie && !ajout && message == null && (
+          « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. Feuille repliée, la barre
+          le dit seule (H50). */}
+      {resultat?.actif && resultat.classement.length === 0 && !choisie && !ajout && !feuilleRepliee && message == null && (
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-4 bottom-feuille flex justify-center pb-2 bureau:hidden">
           <p data-testid="carte-vide" className="rounded-base border border-border bg-card px-2 py-1 text-secondaire">
             Aucune commune ne passe tes critères

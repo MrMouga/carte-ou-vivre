@@ -56,3 +56,26 @@
     animation: pulse-anneau var(--duree-pulse) ease-in-out infinite;
   }
 }
+
+/* Feuille mobile repliable (interface-telephone, H45, H46, R17) : repliée, elle descend jusqu'à ne laisser voir que sa barre
+   (`--hauteur-repliee`, posé par src/ui/FeuilleMobile.tsx), sans changer de taille ; une fiche courte se replie de même.
+   Le passage dure `--duree-feuille` ; pendant un glisser, la feuille suit le doigt sans transition. Le contenu (onglets,
+   réglages, liste, fiche) devient invisible à la fin du repli, et visible dès le début du dépli ou d'un glisser. */
+.feuille-mobile {
+  transition: transform var(--duree-feuille) ease-out;
+}
+.feuille-mobile[data-glisse] {
+  transition: none;
+}
+.feuille-contenu {
+  transition: visibility var(--duree-feuille);
+}
+.feuille-mobile[data-repliee]:not([data-glisse]) .feuille-contenu {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feuille-mobile,
+  .feuille-contenu {
+    transition-duration: 0s;
+  }
+}
