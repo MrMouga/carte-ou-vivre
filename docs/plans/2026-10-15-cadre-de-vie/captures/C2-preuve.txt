@@ -1,0 +1,11 @@
+Preuve corrections 2 — version construite 29d59b4895f5221db459aa4b3701b27d5113254a, npx vite preview --port 4181 (arrêté ensuite), vraies données, Chromium de Playwright — 2026-10-15 23:44
+[1440] 1. départ : /?loyer=1200 ; mer cochée : aucune ; montagne cochée : aucune ; pastilles mer : 10 km | 30 km | 50 km | 100 km
+[1440]    résumé replié : Cadre de viePeu importe
+[1440] 2. mer « 50 km » cochée : /?loyer=1200&mer=50 ; mer cochée : 50 km ; montagne cochée : aucune ; statut : 6 934 communes passent tes critères
+[1440] 3. mer « 50 km » décochée : /?loyer=1200 ; mer cochée : aucune ; montagne cochée : aucune ; statut : 34 674 communes passent tes critères
+[1440] 4. /?loyer=aucun&mer=100, fiche : ← Les 10 premières | Tréon (28) | Bourg et village · 1 400 habitants | 0 | / 100 | 12253e sur 12 267 communes qui passent | 656 € par mois pour 52 m² (12,6 €/m²) | 100 km de la mer à vol d'oiseau | 290 km de la montagne à vol d'oiseau
+[390] 1. départ : /?loyer=1200 ; mer cochée : aucune ; montagne cochée : aucune ; pastilles mer : 10 km | 30 km | 50 km | 100 km
+[390]    résumé replié : Cadre de viePeu importe
+[390] 2. mer « 50 km » cochée : /?loyer=1200&mer=50 ; mer cochée : 50 km ; montagne cochée : aucune ; statut : 6 934 communes passent tes critères
+[390] 3. mer « 50 km » décochée : /?loyer=1200 ; mer cochée : aucune ; montagne cochée : aucune ; statut : 34 674 communes passent tes critères
+[390] 4. /?loyer=aucun&mer=100, fiche : ← Les 10 premières | Tréon (28) | Bourg et village · 1 400 habitants | 0 | / 100 | 12253e sur 12 267 communes qui passent | 656 € par mois pour 52 m² (12,6 €/m²) | 100 km de la mer à vol d'oiseau | 290 km de la montagne à vol d'oiseau
