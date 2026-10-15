@@ -39,6 +39,12 @@ export const ORDRE_TAILLES: Taille[] = ['petite-commune', 'petite-ville', 'ville
 /** Ordre de R27 (noms de H71), celui des pastilles et de l'adresse. */
 export const ORDRE_TYPES: TypeEnv[] = ['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee'];
 
+/** `taille`, `env` (R7, R31) : noms séparés par des virgules ; inconnus ignorés, rendus dans `ordre`, sans doublon. */
+function lireListe<T extends string>(v: string | null, ordre: T[]): T[] {
+  const demandes = (v ?? '').split(',');
+  return ordre.filter((x) => demandes.includes(x));
+}
+
 function plafond(v: string | null, b: { min: number; max: number; pas: number }, depart: number | null): number | null {
   if (v === 'aucun') return null;
   if (v == null || !/^\d+$/.test(v)) return depart;
@@ -62,16 +68,14 @@ export function lirePrix(search: string): ReglagePrix {
 export function lireAdresse(search: string): Reglages {
   const q = new URLSearchParams(search);
   const prix = lirePrix(search);
-  const demandees = (q.get('taille') ?? '').split(',');
-  // R31 : comme `taille`, noms inconnus ignorés, ordre de R27, sans doublon ; `types` n'est renseigné que s'il en reste un
-  // (facultatif, comme `montagne` : les réglages écrits avant le type restent valables).
-  const env = (q.get('env') ?? '').split(',');
-  const types = ORDRE_TYPES.filter((t) => env.includes(t));
+  // R31 : `env` comme `taille` ; `types` n'est renseigné que s'il en reste un (facultatif, comme `montagne` : les réglages
+  // écrits avant le type restent valables).
+  const types = lireListe(q.get('env'), ORDRE_TYPES);
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: lireMer(q.get('mer')),
     montagne: lireMontagne(q.get('montagne')),
-    tailles: ORDRE_TAILLES.filter((t) => demandees.includes(t)),
+    tailles: lireListe(q.get('taille'), ORDRE_TAILLES),
     ...(types.length ? { types } : {}),
   };
 }
