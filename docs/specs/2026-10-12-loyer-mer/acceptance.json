@@ -190,7 +190,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur décoche la mer « 50 km »",
       "then": "les scores deviennent D 65, A 46, B 31, E 9 ; seule C n'est pas colorée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -222,7 +222,7 @@
       "given": "Fixture « 5 communes », taille « Peu importe »",
       "when": "l'utilisateur règle le loyer sur « Sans limite », aucune distance à la mer ni à la montagne n'étant cochée",
       "then": "A, B, C, D et E ont la couleur neutre « sans plafond » de la légende ; aucun score n'est affiché ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -270,7 +270,7 @@
       "given": "Fixture « 5 communes »",
       "when": "l'utilisateur ouvre /?loyer=abc&mer=aucun&taille=village",
       "then": "les réglages affichent 1 200 €, aucune distance à la mer cochée et aucune taille cochée ; l'adresse devient /?loyer=1200 ; la liste montre dans l'ordre Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",

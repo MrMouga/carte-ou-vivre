@@ -8,8 +8,8 @@
 Pour essayer : `npm run build` puis `npx vite preview` → http://localhost:4173 (vraies données). Sur le téléphone : `npx vite preview --host`.
 
 - **Les données** (tâches 0 et 1) : chaque commune a son type d'environnement (grille de densité Insee 2025, 4 niveaux) et sa distance à la montagne (zone loi Montagne du Cerema, choisie après mesure). En Acheter, une commune sans assez de ventes d'appartements prend le prix tous biens (D12 d'immobilier) : 2 194 communes de plus ont un prix.
-- **La catégorie « Cadre de vie »** (tâche 3) remplace « Mer » et « Taille de ville » : tailles en chiffres (« 10 000 – 50 000 hab. »), mer en cinq choix (Peu importe, 10, 30, 50, 100 km). La page s'ouvre sur `/?loyer=1200`, tout le cadre sur « Peu importe ». Un ancien lien `mer=60` s'ouvre sur 100 km. La fiche dit « Ville dense · 268 000 habitants ».
-- **La montagne** (tâche 4) : mêmes cinq choix, filtre et note comme la mer ; la fiche dit « Commune de montagne », la distance ou la raison.
+- **La catégorie « Cadre de vie »** (tâche 3) remplace « Mer » et « Taille de ville » : tailles en chiffres (« 10 000 – 50 000 hab. »), mer en quatre choix collés (10, 30, 50, 100 km), aucun coché au départ, la case cochée se décoche d'un toucher (D12, ton retour à la démo). La page s'ouvre sur `/?loyer=1200`, rien de coché (résumé replié « Peu importe »). Un ancien lien `mer=60` s'ouvre sur 100 km. La fiche dit « Ville dense · 268 000 habitants ».
+- **La montagne** (tâche 4) : mêmes quatre choix, filtre et note comme la mer ; la fiche dit « Commune de montagne », la distance ou la raison.
 - **Le type d'environnement** (tâche 5) : Ville dense, Ville et périphérie, Bourg et village, Campagne isolée ; filtre sans noter ; au téléphone, une rangée qui défile.
 - **Les tranches d'avant** ont été recalées sur le nouveau départ (50 critères réécrits à la spec, tous verts).
 
@@ -43,6 +43,11 @@ Pour essayer : `npm run build` puis `npx vite preview` → http://localhost:4173
 | Moyenne des notes ramenée au milliardième avant l'arrondi (sinon 28,5 tombait à 28) | aucun, critères verts |
 | Règle Paris-Lyon-Marseille pour le prix tous biens posée, jamais appliquée (aucun arrondissement concerné) | aucun aujourd'hui |
 
+## Changements après la démo (2026-10-15, 23:15 → 23:55)
+- **Ton retour** : mer et montagne sans « Peu importe », comme les tailles → spec amendée (D12), 7 critères reformulés avec ton accord, [corrections-2.md](taches/corrections-2.md). Preuves : [C2-*](captures/) (départ sans case cochée, mer 50 km cochée puis décochée).
+- **Arrondi de la mer** corrigé comme la montagne : 182 communes affichées au bon km (Tréon, 28, passe désormais « 100 km »).
+- Suite après ces changements : 202 unitaires, 298 navigateur verts, 1 échec instable (cadre-de-vie AC-7, vert 3/3 en relance).
+
 ## Relectures
 - **Code contre spec** ([review-spec.md](review-spec.md)) : 0 Bloquant, 3 Majeurs, 6 Mineurs. Suite relancée par le relecteur : verte.
   - Majeur 1, **double arrondi de la montagne** (Clermont à 3 km au lieu de 2,47 ; 22 communes écartées à tort) → **corrigé** ([corrections-1.md](taches/corrections-1.md)) : Clermont à 2 km, 8 945 communes à « 10 km » comme en tâche 0.
@@ -59,8 +64,7 @@ Pour essayer : `npm run build` puis `npx vite preview` → http://localhost:4173
 - Le défilement des types au doigt sur un vrai téléphone.
 
 ## Au passage
-- **La distance à la mer a le même défaut résiduel** que la montagne avant correction : 181 communes affichées 1 km trop loin (arrondie au centième au lieu d'être tronquée). Hors de la demande, non corrigé ; même traitement possible (≈ 15 min).
-- **Le calcul des trajets ne marche pas ce soir, en vrai** (iPhone et PC de Vincent : « Trajets indisponibles »). Mesuré à 23:12 depuis le Mac, les 12 zones depuis Nantes demandées comme le fait le site (une toutes les 250 ms) : 9 réponses en 3 à 43 s, **une 502** (75 min) et **deux 504 après 60 s** (2 h, 3 h). Une seule zone en échec suffit à rendre le proche indisponible (R13 de proches). Cette tranche n'a touché aucun fichier de `src/proches/` : ce n'est pas une régression, c'est une fragilité de la tranche proches face à un IGN dégradé. Piste : un `/spec` de proches (réessayer une zone, garder les zones obtenues, délai), à décider par Vincent.
+- **Le calcul des trajets ne marche pas ce soir, en vrai** (iPhone et PC de Vincent : « Trajets indisponibles »). Mesuré à 23:12 depuis le Mac, les 12 zones depuis Nantes demandées comme le fait le site (une toutes les 250 ms) : 9 réponses en 3 à 43 s, **une 502** (75 min) et **deux 504 après 60 s** (2 h, 3 h). Une seule zone en échec suffit à rendre le proche indisponible (R13 de proches). Cette tranche n'a touché aucun fichier de `src/proches/` : ce n'est pas une régression, c'est une fragilité de la tranche proches face à un IGN dégradé. Pas un blocage contre nous : une seule zone de 2 h, demandée seule à 23:45, renvoie aussi 502 après 19 s, et une de 15 min met 18 s (2,6 s une demi-heure plus tôt) ; cartes.gouv.fr calcule une seule zone courte. Piste : un `/spec` de proches (réessayer une zone, garder les zones obtenues, délai), à décider par Vincent.
 - `communes.json` a pris ≈ 130 Ko compressés (gzip) depuis le début de la tranche, au-delà des 100 Ko que le plan voulait signaler.
 
 ## Coût

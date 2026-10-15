@@ -14,6 +14,8 @@ Relectures (22:30-22:55) : code-reviewer mode spec → review-spec.md (0 Bloquan
 Décisions de Vincent sur les Majeurs (22:58) : (1) double arrondi de `montagne_km` → **corriger**, deux décimales comme la mer ; (2) critère de réussite « Chamonix passe à 10 km » → reformulé **« à 1 350 € »** dans la spec (à écrire à l'acceptation) ; (3) mer 149-164 ms → **accepté pour l'instant**, risque connu à écrire dans la spec.
 Corrections 1 (double arrondi) : faite — commits 9f52914..af8678c — preuve : captures/C1-fiche-clermont-ferrand-1440.png (Clermont « 2 km », ouverte par l'orchestrateur), C1-preuve.txt — 15 min — agent : 145 k jetons — rapport : taches/corrections-1.md — vérifié 23:06 : types, jetons, build, 200 unitaires + 294 navigateur verts, 35 sautés. `montagne_km` au centième **tronqué** (décision du builder : sinon 145 communes restent 1 km trop loin) ; plancher hors zone 0,01 km. Reste signalé : la mer a le même défaut résiduel (181 communes affichées 1 km trop loin, arrondie au centième).
 Démo : demo.md écrite 23:10.
+Démo, retour de Vincent (23:15) : mer et montagne sans « Peu importe », la case cochée se décoche (D12 de cadre-de-vie) ; résumé replié « Peu importe » gardé ; arrondi de la mer ajouté au lot. Chemin court : spec amendée sur place (D12, details.md), 7 critères reformulés validés par Vincent (loyer-mer AC-2, AC-6, AC-12 ; proches AC-6 ; cadre-de-vie AC-1, AC-8 ; immobilier AC-10), commit 51839f4.
+Corrections 2 : faite — commits 7b2ed46..d3336cc — preuve : captures/C2-*.png, C2-preuve.txt (départ sans case cochée, mer 50 km cochée puis décochée, Tréon 28394 à 100 km) — 21 min — agent : 218 k jetons — rapport : taches/corrections-2.md — vérifié 23:51 : types, jetons, build, 202 unitaires ; navigateur 298 verts + 1 échec (cadre-de-vie AC-7 bureau, 3/3 verts en relance) + chrome.spec vert ; 7 critères reformulés repassent à true. `mer_km` tronqué au centième (182 communes corrigées).
 ## Décisions prises à la place de Vincent
 - T0 (décidé par Claude, à la demande de Vincent) : source de la zone de montagne = B, Cerema (loi Montagne 2019). Pourquoi : une seule zone légale, un producteur, celle de D5 ; A est une règle croisée inventée. Coût si faux : Morvan hors montagne (Yonne à 150-200 km) ; passer à A ≈ 1 h en tâche 1.
 - T0 : recalage COG avec les rétablissements (MOD 21) : la commune rétablie hérite du classement. Coût si faux : 4 communes du Cantal passent de « moins d'1 km » à « Commune de montagne ».
@@ -66,3 +68,4 @@ Démo : demo.md écrite 23:10.
 - Simplification : 1 builder, 9 min, 104 k jetons.
 - Corrections 1 : 1 builder, 15 min, 145 k jetons.
 - Relectures : code-reviewer 10 min, 209 k ; qa-tester 5 min, 85 k (chacun relancé une fois).
+- Corrections 2 : 1 builder, 21 min, 218 k jetons.
