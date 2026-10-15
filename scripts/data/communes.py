@@ -17,7 +17,8 @@ l'un d'eux l'est (H67 ; plan de cadre-de-vie, tâche 1 : aucun arrondissement en
 
 Cadre de vie (tranche cadre-de-vie, tâche 1, 2026-10-15) : `type_env`, niveau de la grille communale de densité Insee 2025
 (DENS7 regroupé en 4, D10, H71), joint par code ; `montagne_km`, distance de la mairie à la zone de montagne du Cerema
-(montagne.py, R29), en km à 0,1 près, 0 = commune de montagne (classée en tout ou partie, ou mairie dans la zone).
+(montagne.py, R29), en km à deux décimales (tronqués, pour que le km affiché soit celui de la distance mesurée), 0 = commune
+de montagne (classée en tout ou partie, ou mairie dans la zone).
 
 Prérequis : python3 scripts/data/sources.py, puis python3 scripts/data/mer.py et python3 scripts/data/montagne.py
 Usage : python3 scripts/data/communes.py  (s'arrête sur le premier contrôle qui échoue)
@@ -142,12 +143,16 @@ def km_affiche(km):
 
 
 def km_montagne(m):
-    """`montagne_km` : km à 0,1 près, 0 = commune de montagne (classée ou mairie dans la zone) ; une commune hors zone
-    garde au moins 0,1 km (Raon-lès-Leau, 54443 : mairie à 24 m de la zone, « moins d'1 km » et pas « Commune de montagne »)."""
+    """`montagne_km` : km à deux décimales, 0 = commune de montagne (classée ou mairie dans la zone).
+    Tronqués et non arrondis (corrections 1 de cadre-de-vie) : le site arrondit au km (R29), et un arrondi au centième
+    ferait passer x,495 à x,499 km à x,50, donc affichés et comparés 1 km plus loin (145 communes ; au dixième : 1 416,
+    dont Clermont-Ferrand 2,465 → 2,5 → 3 km). Tronquée, la valeur garde le km de la distance mesurée.
+    Une commune hors zone garde au moins 0,01 km (Raon-lès-Leau, 54443 : mairie à 24 m de la zone, « moins d'1 km » et
+    pas « Commune de montagne »)."""
     if m is None:
         return None
     km, classement = m
-    return 0 if classement else max(0.1, round(km, 1))
+    return 0 if classement else max(0.01, (round(km * 1000) // 10) / 100)  # mètres entiers (montagne-km.csv), puis le centième
 
 
 def loyer_commune(loy, code):
@@ -374,8 +379,13 @@ def main():
     for nom_, lo, hi, ref in TRANCHES_MONTAGNE:
         n = sum(1 for r in rows if lo <= km_affiche(r[10]) <= hi)
         check(abs(n - ref) <= max(0.05 * ref, 5), f'montagne, {nom_} : {n} communes (tâche 0 : {ref}, écart permis 5 %)')
-    for code, attendu in (('33063', 172.8), ('38185', 0.7), ('69123', 13.7), ('74056', 0), ('74010', 0)):
+    double = [r[0] for r in rows if montagne[r[0]][1] == '' and km_affiche(r[10]) != km_affiche(montagne[r[0]][0])]
+    check(not double, f'0 commune affichée à un autre km que sa distance mesurée (double arrondi, R29) : {len(double)} {double[:5]}')
+    for code, attendu in (('33063', 172.78), ('38185', 0.65), ('69123', 13.69), ('74056', 0), ('74010', 0),
+                          ('63113', 2.46), ('19117', 10.49), ('54443', 0.02)):
         check(by[code][10] == attendu, f'{by[code][1]} ({code}) : {by[code][10]} km de la montagne (tâche 0 : {attendu})')
+    for code, attendu in (('63113', 2), ('19117', 10)):
+        check(km_affiche(by[code][10]) == attendu, f'{by[code][1]} ({code}) : affichée {km_affiche(by[code][10])} km (attendu {attendu})')
     for code, attendu in (('33063', 'ville-dense'), ('33214', 'bourg-et-village'), ('74056', 'ville-et-peripherie')):
         check(by[code][9] == attendu, f'{by[code][1]} ({code}) : {by[code][9]} (attendu {attendu})')
     for code in PLM:

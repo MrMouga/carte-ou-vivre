@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
+import { montagneFiche } from './format';
 import { PRIX_DEPART } from './prix';
 import { communeDeLigne, evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type LigneCommunes, type Reglages } from './score';
 
@@ -201,10 +202,29 @@ describe('communes.json — type d’environnement et distance à la montagne lu
     expect(fichier.champs.slice(9)).toEqual(['type_env', 'montagne_km']);
   });
 
-  it('vraies données : Bordeaux ville dense à 172,8 km ; Chamonix-Mont-Blanc commune de montagne (0) ; Lacanau bourg et village', () => {
-    expect(parCode.get('33063')).toMatchObject({ nom: 'Bordeaux', loyerM2: 15.9932, typeEnv: 'ville-dense', montagneKm: 172.8 });
+  it('vraies données : Bordeaux ville dense à 172,78 km ; Chamonix-Mont-Blanc commune de montagne (0) ; Lacanau bourg et village', () => {
+    expect(parCode.get('33063')).toMatchObject({ nom: 'Bordeaux', loyerM2: 15.9932, typeEnv: 'ville-dense', montagneKm: 172.78 });
     expect(parCode.get('74056')).toMatchObject({ nom: 'Chamonix-Mont-Blanc', typeEnv: 'ville-et-peripherie', montagneKm: 0 });
     expect(parCode.get('33214')).toMatchObject({ nom: 'Lacanau', typeEnv: 'bourg-et-village' });
+  });
+
+  // Corrections 1 (2026-10-15, relecture review-spec.md) : la distance à la montagne n'est plus arrondie deux fois.
+  // Le site affiche et compare le km de la distance mesurée (R29), pas celui d'une valeur déjà arrondie au dixième.
+  it('R29 non-régression : Clermont-Ferrand (63113) « 2 km de la montagne », comparée comme 2 (montagne 10 km seule : note 80)', () => {
+    const clermont = parCode.get('63113')!;
+    expect(clermont.nom).toBe('Clermont-Ferrand');
+    expect(montagneFiche(clermont.montagneKm).replace(/ /g, ' ')).toBe("2 km de la montagne à vol d'oiseau");
+    expect(evaluer([clermont], { loyer: null, mer: null, montagne: 10, tailles: [] }).parCode.get('63113')).toMatchObject({ passe: true, score: 80 });
+  });
+
+  it('R29 non-régression : Lissac-sur-Couze (19117, 10,495 km) passe la montagne à 10 km, note 0', () => {
+    const lissac = parCode.get('19117')!;
+    expect(lissac.nom).toBe('Lissac-sur-Couze');
+    expect(evaluer([lissac], { loyer: null, mer: null, montagne: 10, tailles: [] }).parCode.get('19117')).toMatchObject({ passe: true, score: 0, raisons: [] });
+  });
+
+  it('R29 non-régression : /?loyer=1200&montagne=10 sur les vraies données → 8 945 communes passent (compte de la tâche 0, source Cerema)', () => {
+    expect(evaluer([...parCode.values()], { loyer: 1200, mer: null, montagne: 10, tailles: [] }).classement).toHaveLength(8945);
   });
 
   it('une ligne sans ces colonnes (jeu ancien) : type et distance inconnus (null)', () => {

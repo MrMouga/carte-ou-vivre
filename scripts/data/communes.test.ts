@@ -78,10 +78,19 @@ describe('public/data/communes.json', () => {
     expect(typeEnv('48166')).toBe('campagne-isolee');
   });
 
-  it('R29 : Bordeaux à 172,8 km de la montagne (Turenne, Corrèze), Grenoble à 0,7 km, Lyon à 13,7 km (mesures de la tâche 0)', () => {
-    expect(get('33063', 'montagne_km')).toBe(172.8);
-    expect(get('38185', 'montagne_km')).toBe(0.7);
-    expect(get('69123', 'montagne_km')).toBe(13.7);
+  // Corrections 1 (2026-10-15) : km à deux décimales, tronqués (172,787 → 172,78 ; 0,651 → 0,65 ; 13,699 → 13,69).
+  it('R29 : Bordeaux à 172,78 km de la montagne (Turenne, Corrèze), Grenoble à 0,65 km, Lyon à 13,69 km (mesures de la tâche 0)', () => {
+    expect(get('33063', 'montagne_km')).toBe(172.78);
+    expect(get('38185', 'montagne_km')).toBe(0.65);
+    expect(get('69123', 'montagne_km')).toBe(13.69);
+  });
+
+  // Corrections 1 : la distance n'est plus arrondie deux fois (0,1 km puis le km affiché). Mesures de montagne.py :
+  // Clermont-Ferrand 2,465 km, Lissac-sur-Couze 10,495 km, Raon-lès-Leau 0,024 km (hors zone).
+  it('R29 : Clermont-Ferrand à 2,46 km (affiché 2, pas 3) ; Lissac-sur-Couze à 10,49 km (affiché 10, pas 11) ; Raon-lès-Leau hors zone à 0,02 km, pas 0', () => {
+    expect(get('63113', 'montagne_km')).toBe(2.46);
+    expect(get('19117', 'montagne_km')).toBe(10.49);
+    expect(get('54443', 'montagne_km')).toBe(0.02);
   });
 
   it('R29 : 0 pour une commune classée, en totalité (Chamonix-Mont-Blanc) ou en partie (Annecy, Saint-Étienne)', () => {
