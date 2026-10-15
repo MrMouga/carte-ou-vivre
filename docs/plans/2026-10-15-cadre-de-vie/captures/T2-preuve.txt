@@ -1,0 +1,31 @@
+Tâche 2 — preuves sur la version construite (npm run build, vite preview --port 4180), vraies données, 1 440 × 900, 2026-10-15
+
+== Avant (build de e92c49c, HEAD avant la tâche) : /?loyer=1200&mer=50 → T2-avant-1440.png
+adresse ?loyer=1200&mer=50 · 6 934 communes passent tes critères
+lignes 1 Lessay (50) 81 · 2 Saint-Jean-de-la-Rivière (50) 80 · 3 Flocques (76) 80 · … · 10 Beauvoir (50) 79 (mêmes 10 qu'après)
+
+== Après (build du code de la tâche 2) : /?loyer=1200&mer=50 → T2-apres-1440.png
+adresse ?loyer=1200&mer=50
+compte 6 934 communes passent tes critères
+lignes 1 · Lessay (50) · 81 · 433 € · 1 km | 2 · Saint-Jean-de-la-Rivière (50) · 80 · 433 € · 2 km | 3 · Flocques (76) · 80 · 436 € · 2 km | 4 · Canville-la-Rocque (50) · 79 · 433 € · 3 km | 5 · Le Mesnil (50) · 79 · 433 € · 3 km | 6 · Sénoville (50) · 79 · 433 € · 3 km | 7 · Plouezoc'h (29) · 79 · 469 € · 1 km | 8 · Plougasnou (29) · 79 · 469 € · moins d'1 km | 9 · Saint-Jean-du-Doigt (29) · 79 · 469 € · moins d'1 km | 10 · Beauvoir (50) · 79 · 470 € · moins d'1 km
+erreurs []
+
+== Comparaison pixel à pixel avant / après (node, canvas)
+image entière : 17 236 pixels différents, tous dans le fond de carte IGN (étiquettes placées au fil du chargement des tuiles, ex. « Sassari », « Aveiro »)
+panneau des réglages (16,16 → 356,746) : 20 pixels, tous sur la colonne x = 356 (la carte au bord du panneau)
+liste des 10 premières (1104,16 → 1424,620) : 0 pixel
+légende (16,770 → 196,822) : 0 pixel
+
+== Acheter, fiche de Desvres (62268, source tous-biens) : /?achat=5000&mer=50 → T2-acheter-fiche-desvres.png
+adresse ?achat=5000&mer=50
+compte 6 801 communes passent tes critères
+commune Desvres à 712 122
+fiche ← Les 10 premières / Desvres (62) / Petite commune · 4 800 habitants / 67 / / 100 / 1448e sur 6 801 communes qui passent / 1 493 €/m² à l'achat / Estimation tous biens (trop peu de ventes d'appartements) / 18 km de la mer à vol d'oiseau
+erreurs []
+
+== Acheter, fiche de Tingry (62821, source tous-biens-secteur) : /?achat=5000&mer=50 → T2-acheter-fiche-tingry.png
+adresse ?achat=5000&mer=50
+compte 6 801 communes passent tes critères
+commune Tingry à 707 126
+fiche ← Les 10 premières / Tingry (62) / Petite commune · 300 habitants / 72 / / 100 / 731e sur 6 801 communes qui passent / 1 714 €/m² à l'achat / Estimation tous biens (trop peu de ventes d'appartements) / 11 km de la mer à vol d'oiseau
+erreurs []
