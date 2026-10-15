@@ -1,6 +1,6 @@
 import { useId, useRef } from 'react';
 import { LIBELLE_TAILLE, LIBELLE_TYPE, resumeCadre } from '@/domain/format';
-import { CHOIX_MER, type Reglages, type Taille, type TypeEnv } from '@/domain/score';
+import { CHOIX_MER, type Reglages, type TypeEnv } from '@/domain/score';
 import { ORDRE_TAILLES, ORDRE_TYPES } from '@/domain/url';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
@@ -16,6 +16,9 @@ type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: b
 /** Une case : libellé entier, centré, sur deux lignes au plus (espaces insécables dans les nombres, H3). */
 const CASE =
   'flex min-h-toucher cursor-pointer items-center justify-center p-1 text-center text-pastille text-foreground tabular-nums disabled:cursor-default disabled:opacity-50';
+
+/** Coche ou décoche `x` parmi `cochees` (taille, type) : le résultat suit l'ordre de l'adresse, `ordre`. */
+const basculer = <T,>(ordre: T[], cochees: T[], x: T) => ordre.filter((y) => (y === x ? !cochees.includes(x) : cochees.includes(y)));
 
 /** R28, R29, H69 : « Peu importe » puis les distances, les mêmes pour la mer et la montagne ; `null` = Peu importe. */
 const CHOIX: { valeur: number | null; libelle: string }[] = [
@@ -91,7 +94,6 @@ function Coche() {
  */
 function RangeeTypes({ types, onChange, disabled }: { types: TypeEnv[]; onChange: (t: TypeEnv[]) => void; disabled: boolean }) {
   const id = useId();
-  const basculer = (t: TypeEnv) => onChange(ORDRE_TYPES.filter((x) => (x === t ? !types.includes(t) : types.includes(x))));
   return (
     <div className="flex flex-col gap-1">
       <span id={id} className="text-secondaire text-muted-foreground">
@@ -110,7 +112,7 @@ function RangeeTypes({ types, onChange, disabled }: { types: TypeEnv[]; onChange
               type="button"
               aria-pressed={cochee}
               disabled={disabled}
-              onClick={() => basculer(t)}
+              onClick={() => onChange(basculer(ORDRE_TYPES, types, t))}
               // Au clavier, une pastille à moitié visible prend le focus sans que Chromium la fasse défiler : on l'amène
               // entière dans la vue (avec la marge de défilement), sans bouger « Critères » plus que nécessaire.
               onFocus={(e) => e.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}
@@ -128,8 +130,6 @@ function RangeeTypes({ types, onChange, disabled }: { types: TypeEnv[]; onChange
 
 export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
   const idTaille = useId();
-  const basculer = (t: Taille) =>
-    onChange({ ...reglages, tailles: ORDRE_TAILLES.filter((x) => (x === t ? !reglages.tailles.includes(t) : reglages.tailles.includes(x))) });
   return (
     <Categorie titre="Cadre de vie" resume={resumeCadre(reglages)}>
       <div className="flex flex-col gap-3">
@@ -145,7 +145,7 @@ export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
                 type="button"
                 aria-pressed={reglages.tailles.includes(t)}
                 disabled={disabled}
-                onClick={() => basculer(t)}
+                onClick={() => onChange({ ...reglages, tailles: basculer(ORDRE_TAILLES, reglages.tailles, t) })}
                 className={cn(CASE, 'rounded-chip border border-border bg-card aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
               >
                 {LIBELLE_TAILLE[t]}
