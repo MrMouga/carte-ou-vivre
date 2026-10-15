@@ -289,7 +289,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "l'adresse devient /?loyer=1200 ; dans « Cadre de vie », « Peu importe » est cochée pour la mer et pour la montagne, aucune taille ni aucun type n'est coché ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 65 · 416 € · 180 km », « 2 · Rhinval (67) · 52 · 572 € · 420 km », « 3 · Portmer (17) · 46 · 650 € · moins d'1 km », « 4 · Grandeville (33) · 31 · 832 € · 40 km », « 5 · Quaibleu (13) · 9 · 1 092 € · 7 km » ; Montcher (75) n'est pas colorée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -321,7 +321,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche le type « Ville dense », puis aussi « Bourg et village »",
       "then": "après le premier : l'adresse devient /?loyer=1200&env=ville-dense ; la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km » ; la fiche de Portmer (17) affiche « Environnement : ville et périphérie, hors des types choisis ». Après le second : l'adresse devient /?loyer=1200&env=ville-dense,bourg-et-village ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -345,7 +345,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village",
       "then": "la mer et la montagne sont sur « Peu importe » (`montagne=0` n'est plus un choix), la taille « Moins de 10 000 hab. » et le type « Bourg et village » sont cochés ; l'adresse devient /?loyer=1200&taille=petite-commune&env=bourg-et-village ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -361,7 +361,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=aucun&env=bourg-et-village",
       "then": "Terrebasse (23) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Terrebasse affiche « Commune de montagne », sans score ni rang ; celle de Portmer affiche « Environnement : ville et périphérie, hors des types choisis »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",

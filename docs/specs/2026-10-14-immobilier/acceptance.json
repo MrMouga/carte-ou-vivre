@@ -375,7 +375,7 @@
       "given": "Fixture « 6 communes », variante « D tous biens » : l'achat d'appartement de Terrebasse (23) vaut { m2 : 1 100, source : « tous-biens » }, tout le reste inchangé",
       "when": "l'utilisateur ouvre /?achat=5000",
       "then": "la liste montre « 4 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 78 · 1 100 €/m² · 180 km », « 2 · Portmer (17) · 24 · 3 800 €/m² · moins d'1 km », « 3 · Grandeville (33) · 12 · 4 400 €/m² · 40 km », « 4 · Quaibleu (13) · 4 · 4 800 €/m² · 7 km » ; la fiche de Terrebasse affiche « 1 100 €/m² à l'achat » et « Estimation tous biens (trop peu de ventes d'appartements) » ; Rhinval (67) a la couleur neutre de la légende",
-      "passes": false
+      "passes": true
     }
   ]
 }
