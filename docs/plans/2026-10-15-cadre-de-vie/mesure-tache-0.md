@@ -119,7 +119,10 @@ Règle appliquée : D5 complète (récent dès 30 ventes 2023-2025, sinon 5 vent
 **Option A** : garder la règle de la discovery, déjà jugée sur ses chiffres et qui inclut le Morvan. Coût : deux mentions, et des villes de vallée en montagne (Cluses, Rumilly, Firminy).
 
 ## Choix et jugement de Vincent
-<!-- rempli par l'orchestrateur : source retenue, jugement des 9 villes du risque, des villes de plus de 50 000 habitants et des 10 premières, heure -->
+2026-10-15, 14:50 (orchestrateur, d'après les réponses de Vincent) :
+- **Source retenue : B, Cerema (loi Montagne, communes 2019)** — **décidé par Claude** : Vincent a demandé « laquelle des deux sources te semble plus cohérente ». Pourquoi : une seule zone, légale, un seul producteur, celle que nomme D5 ; A est une règle croisée de notre invention ; les villes du risque ne diffèrent que de 1 à 7 km. Coût si c'est faux : le Morvan n'est pas en montagne (Yonne à 150-200 km) ; passer à A coûte ≈ 1 h en tâche 1. Contestable à la démo.
+- **Villes du risque : une seule jugée fausse, Lyon (14 km)**. Vincent : « Pour Lyon t'as pas pris en compte le Mont d'Or ? ». Vérifié dans les fichiers : les communes du Mont d'Or (Saint-Cyr, Saint-Didier, Poleymieux, Limonest, Couzon, Curis, Saint-Germain, Saint-Romain-au-Mont-d'Or) ne sont classées en montagne **ni par B ni par A** (la commune classée la plus proche de Lyon est Pollionnay, 11 km avec A) : la zone mesurée est la zone légale (D5), pas le relief. Une ville fausse < seuil d'arrêt (2) : le build continue ; Lyon et le Mont d'Or sont rejugés à la démo.
+- **Grandes villes classées (Saint-Étienne, Annecy) et 10 premières à « 10 km »** : « Oui, ça me va ».
 
 ## Sortie du script (2026-10-15, 14:22)
 ```
