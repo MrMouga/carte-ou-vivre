@@ -17,7 +17,7 @@ for (const fenetre of FENETRES) {
 
     test(`AC-1 ouverture à ${fenetre.width} × ${fenetre.height} : toute l'emprise au-dessus de la feuille ; Portmer, Quaibleu et Grandeville peintes (paliers 4, 3, 2) ; Montcher et Terrebasse non peintes`, async ({ page }, info) => {
       test.skip(info.project.name !== 'mobile', 'fenêtres de téléphone fixées par le test : une seule fois, dans le projet mobile');
-      await ouvrir(page, '/?loyer=1200&mer=60', { jeu: METROPOLE });
+      await ouvrir(page, '/?loyer=1200&mer=50', { jeu: METROPOLE });
 
       // Toute l'emprise dans la bande au-dessus de la feuille ouverte (cadrage calculé comme fitBounds de MapLibre).
       const { ecran } = vue(page, METROPOLE);

@@ -26,7 +26,7 @@ test('AC-15 fond IGN en panne : A, E, B colorées sur le fond uni, « Fond de ca
 test('fond rétabli : nouvel essai après 60 s, retour au fond IGN', async ({ page }) => {
   await page.clock.install();
   await servirFixture(page, { fondEnPanne: true });
-  await page.goto('/');
+  await page.goto('/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite (A reste en 60–80)
   await prete(page);
   await expect(message(page)).toHaveText('Fond de carte indisponible');
   await servirFixture(page); // le fond répond de nouveau (les dernières routes posées passent devant)

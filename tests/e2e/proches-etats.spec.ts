@@ -12,7 +12,11 @@ import { ADRESSES, SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, p
 const AJOUTER = { name: 'Ajouter', exact: true } as const;
 const INDISPONIBLE_44 = 'Trajets indisponibles depuis Nantesville (44).';
 
-/** Ferme la page et rouvre « / » dans le même navigateur ; rend la nouvelle page et ses demandes au faux service. */
+/**
+ * Ferme la page et rouvre « /?loyer=1200&mer=50 » dans le même navigateur (recalage de cadre-de-vie : réglage explicite) ;
+ * rend la nouvelle page et ses demandes au faux service.
+ */
+const DEPART = '/?loyer=1200&mer=50';
 async function rouvrir(page: Page, options: OptionsIgn = {}, avantOuverture?: (p: Page) => Promise<unknown>) {
   const contexte = page.context();
   await page.close();
@@ -20,15 +24,15 @@ async function rouvrir(page: Page, options: OptionsIgn = {}, avantOuverture?: (p
   await servirFixture(p);
   await avantOuverture?.(p);
   const demandes = await servirIgn(p, options);
-  await p.goto('/');
+  await p.goto(DEPART);
   await expect(p.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
   await apresRendu(p);
   return { page: p, demandes };
 }
 
-test('AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ', async ({ page }) => {
+test('AC-7 depuis /?loyer=1200&mer=50, 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ', async ({ page }) => {
   test.setTimeout(60_000);
-  await ouvrir(page);
+  await ouvrir(page, DEPART);
   await servirIgn(page);
   // Ajoutés d'affilée : ils calculent l'un après l'autre (≈ 3 s chacun).
   for (const c of ['Nantesville', 'Toulouseville', 'Lyonville', 'Brestville', 'Lilleville'] as const) await ajouter(page, c);
@@ -45,8 +49,8 @@ test('AC-7 5 proches prêts : plus de champ, « 5 proches au maximum… » ; apr
   await expect(champ(page)).toBeFocused();
 });
 
-test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / » rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 67, Grandeville 21', async ({ page }) => {
-  await ouvrir(page);
+test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loyer=1200&mer=50 rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 66, Grandeville 17', async ({ page }) => {
+  await ouvrir(page, DEPART);
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');
@@ -59,14 +63,14 @@ test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis « / �
   await expect(zone(p)).not.toContainText('Calcul des trajets');
   await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(p)).toContainText('2 communes passent tes critères');
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 21 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
   await p.waitForTimeout(500);
   expect(demandes.zones).toEqual([]);
-  expect(new URL(p.url()).pathname + new URL(p.url()).search).toBe('/?loyer=1200&mer=60');
+  expect(new URL(p.url()).pathname + new URL(p.url()).search).toBe('/?loyer=1200&mer=50');
 });
 
-test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis « / » rouvert, état vide ; 3 communes, 72, 49, 32', async ({ page }) => {
-  await ouvrir(page);
+test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis /?loyer=1200&mer=50 rouvert, état vide ; 3 communes, 72, 48, 25', async ({ page }) => {
+  await ouvrir(page, DEPART);
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await ajouter(page, 'Toulouseville');
@@ -88,8 +92,8 @@ test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proch
   expect(await lignes(p)).toEqual(SANS_PROCHE);
 });
 
-test('AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 49, 32', async ({ page }) => {
-  await ouvrir(page);
+test('AC-10 depuis /?loyer=1200&mer=50, service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 48, 25', async ({ page }) => {
+  await ouvrir(page, DEPART);
   await servirIgn(page, { trajets: 'panne' });
   await ajouter(page, 'Nantesville');
   await expect(zone(page)).toContainText(INDISPONIBLE_44);
@@ -100,8 +104,8 @@ test('AC-10 service de trajets en panne : « Trajets indisponibles depuis Nantes
   expect(await lignes(page)).toEqual(SANS_PROCHE);
 });
 
-test('AC-11 recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes', async ({ page }) => {
-  await ouvrir(page);
+test('AC-11 depuis /?loyer=1200&mer=50, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes', async ({ page }) => {
+  await ouvrir(page, DEPART);
   const demandes = await servirIgn(page, { recherche: 'panne' });
   await champ(page).fill('1 rue Test');
   await expect(zone(page)).toContainText("Recherche d'adresse indisponible. Réessaie dans un moment.");
@@ -132,7 +136,7 @@ test('deux proches ajoutés d’affilée : le second « En attente… » ; repli
 
 test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles', async ({ page }) => {
   await page.clock.install();
-  await ouvrir(page);
+  await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page, { delaiZoneMs: 60_000 }); // le service ne répond pas pendant le test
   // Horloge figée : seul `runFor` fait avancer l'heure de la page, quelle que soit la charge de la machine. La recherche
   // part 300 ms après la frappe (ATTENTE_RECHERCHE_MS de src/ui/Proches.tsx) : on avance l'horloge d'autant à chaque ajout.
@@ -165,7 +169,7 @@ test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simu
 });
 
 test('R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page, { trajets: '429' });
   await ajouter(page, 'Nantesville');
   await expect(zone(page)).toContainText(INDISPONIBLE_44);
@@ -183,7 +187,7 @@ test('R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer »
 });
 
 test('« Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   const demandes = await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await ajouter(page, 'Toulouseville');
@@ -246,7 +250,7 @@ test('R12 mémoire refusée (le stockage lève une erreur) : message sous le tit
       throw new DOMException('mémoire pleine', 'QuotaExceededError');
     };
   });
-  await ouvrir(page);
+  await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page);
   await expect(zone(page)).not.toContainText('Tes proches ne seront pas gardés');
   await ajouter(page, 'Nantesville');
@@ -257,7 +261,7 @@ test('R12 mémoire refusée (le stockage lève une erreur) : message sous le tit
 });
 
 test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');

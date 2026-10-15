@@ -1,5 +1,6 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { apresRendu, attendreCouleurs, ouvrir } from './lib/carte';
+import { voirListe } from './lib/feuille';
 
 // Tâche 2 : la carte se colore selon les réglages et réagit aux plafonds (fixture « 5 communes »).
 const curseur = (page: import('@playwright/test').Page, nom: string) => page.getByRole('slider', { name: nom });
@@ -17,10 +18,13 @@ test('AC-2 mer « Sans limite » : D 65 (60–80), A 46 (40–60), B 31 (20–40
   await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1', C: null });
 });
 
-test('AC-3 mer 40 km : B passe avec 15 (0–20), A 72 (60–80), E 46 (40–60) ; C et D non colorées', async ({ page }) => {
-  await ouvrir(page);
-  await curseur(page, 'Mer à moins de').focus();
-  for (let i = 0; i < 4; i++) await page.keyboard.press('ArrowLeft');
+test('AC-3 loyer 650 € depuis /?loyer=1200&mer=50 : A passe avec 49 (40–60, 650 € égal au plafond) ; B, C, D et E non colorées', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
+  await curseur(page, 'Loyer maximum').focus();
+  for (let i = 0; i < 11; i++) await page.keyboard.press('ArrowLeft'); // 1 200 → 650 € (crans de 50 €)
+  await expect(curseur(page, 'Loyer maximum')).toHaveAttribute('aria-valuenow', '650');
   await apresRendu(page);
-  await attendreCouleurs(page, { B: 'score-1', A: 'score-4', E: 'score-3', C: null, D: null });
+  await attendreCouleurs(page, { A: 'score-3', B: null, C: null, D: null, E: null });
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+  await expect(page.getByRole('region', { name: 'Les 10 premières' }).getByRole('button', { name: /Portmer/ })).toHaveAccessibleName(/^1 · Portmer \(17\) · 49 · 650\s€ · /); // espace insécable (H3)
 });

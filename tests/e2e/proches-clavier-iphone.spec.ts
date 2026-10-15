@@ -141,7 +141,7 @@ for (const n of [0, 4]) {
   test(`AC-8 à 390 × 664, au toucher, ${n ? '4 proches prêts, « + Ajouter un proche »' : 'sans proche, « Adresse ou ville »'} : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi`, async ({ page }) => {
     test.setTimeout(60_000);
     await releverDesLeChargement(page);
-    await ouvrir(page, '/?loyer=1200&mer=60');
+    await ouvrir(page, '/?loyer=1200&mer=50');
     await servirIgn(page);
     for (const c of PROCHES_AC8.slice(0, n)) await ajouter(page, c);
     for (const nom of NOMS_AC8.slice(0, n)) await pret(page, nom, 30_000);

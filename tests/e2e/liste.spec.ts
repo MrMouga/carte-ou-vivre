@@ -13,14 +13,14 @@ async function regler(page: Page, nom: string, touche: string, fois = 1) {
   await apresRendu(page);
 }
 
-test('AC-4 la liste : « 3 communes passent tes critères » puis Portmer, Quaibleu, Grandeville au format de R5', async ({ page }) => {
-  await ouvrir(page);
+test('AC-4 la liste depuis /?loyer=1200&mer=50 : « 3 communes passent tes critères » puis Portmer 72, Quaibleu 48, Grandeville 25 au format de R5', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
     "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 49 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 32 · 832 € · 40 km',
+    '2 · Quaibleu (13) · 48 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 25 · 832 € · 40 km',
   ]);
   // Ce qui se voit dans une ligne : rang, nom, chiffres, score.
   await expect(liste(page).getByRole('button').first()).toHaveText(/1Portmer \(17\)650.€ · moins d'1.km72/);
@@ -50,7 +50,7 @@ test('AC-6 loyer et mer « Sans limite » : couleur neutre sur les 5 communes, a
 });
 
 test('zone annoncée : le compte suit les réglages (3, 1, aucune)', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   const status = page.getByRole('status');
   await expect(status).toHaveText('3 communes passent tes critères');
   await page.getByRole('button', { name: /Petite ville/ }).click();

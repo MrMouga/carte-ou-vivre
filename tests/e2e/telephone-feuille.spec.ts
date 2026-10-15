@@ -29,7 +29,7 @@ async function toucherLoyer(page: Page, euros: number) {
 test('AC-9 à 1 440 × 900 : ni onglets, ni « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste à droite, visibles ensemble', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'la fenêtre est fixée par le test : le jouer aussi dans le projet mobile le répéterait');
   await page.setViewportSize({ width: 1440, height: 900 });
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await expect(page.getByRole('tablist')).toHaveCount(0);
   await expect(page.getByRole('tab')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Replier la feuille' })).toHaveCount(0);
@@ -53,7 +53,7 @@ test('AC-9 à 1 440 × 900 : ni onglets, ni « Replier la feuille », ni barre r
 
 test('AC-10 à 390 × 844, sur « Critères » : loyer réglé sur 1 000 €, le compte en haut de la feuille passe de 3 à 2 communes, sans changer d’onglet', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await expect(onglet(page, 'Critères')).toHaveAttribute('aria-selected', 'true');
   await expect(compte(page)).toHaveText('3 communes passent tes critères');
   await expect(compte(page)).toBeInViewport({ ratio: 1 });
@@ -72,7 +72,7 @@ test('AC-10 à 390 × 844, sur « Critères » : loyer réglé sur 1 000 €, le
 // Hors AC (R18, H47) : motif « onglets » au clavier, flèches gauche et droite.
 test('onglets : flèches droite et gauche déplacent le focus et la sélection ; un seul panneau affiché', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   const [criteres, liste] = [onglet(page, 'Critères'), onglet(page, 'Les 10 premières')];
   await expect(page.getByRole('tablist')).toHaveCount(1);
   await expect(criteres).toHaveAttribute('tabindex', '0');
@@ -135,7 +135,7 @@ test('défilement gardé : « Critères » défilé jusqu’à « Tes proches »
 // Hors AC (H42, H43, H44, « Annonce aux lecteurs d'écran » du plan) : une seule zone annoncée ; la ligne visible ne l'est pas.
 test('compte en tête : une ligne en style `valeur`, cachée aux lecteurs d’écran, « Aucun plafond fixé » sans plafond ; une seule zone annoncée ; mentions au bas des deux onglets', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await expect(compte(page)).toHaveAttribute('aria-hidden', 'true');
   await expect(compte(page)).toHaveCSS('font-size', '18px');
   await expect(compte(page)).toHaveCSS('font-weight', '700');
@@ -249,7 +249,7 @@ async function poignee(tete: Locator) {
 
 test('AC-2 à 390 × 844 : « Replier la feuille » puis « Déplier la feuille » ; barre de 64 px au plus avec le compte, le rond « 1 » ne bouge pas, puis « Critères » et « Loyer maximum »', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await attendreOuverte(page, 'Critères');
   const rond = page.getByRole('button', { name: '1re : Portmer (17)' });
   const avant = await boite(rond);
@@ -308,10 +308,10 @@ test('AC-3 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 
 test('AC-4 à 390 × 844 : repliée, la barre dit le compte de loyer-mer, « Aucun plafond fixé » sans plafond', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
   const cas: [string, string][] = [
-    ['/?loyer=1200&mer=60', '3 communes passent tes critères'],
-    ['/?loyer=1000&mer=60', '2 communes passent tes critères'],
-    ['/?loyer=650&mer=60', '1 commune passe tes critères'],
-    ['/?loyer=300&mer=60', 'Aucune commune ne passe tes critères'],
+    ['/?loyer=1200&mer=50', '3 communes passent tes critères'],
+    ['/?loyer=1000&mer=50', '2 communes passent tes critères'],
+    ['/?loyer=650&mer=50', '1 commune passe tes critères'],
+    ['/?loyer=300&mer=50', 'Aucune commune ne passe tes critères'],
     ['/?loyer=aucun&mer=aucun', 'Aucun plafond fixé'],
   ];
   for (const [chemin, texte] of cas) {
@@ -323,7 +323,7 @@ test('AC-4 à 390 × 844 : repliée, la barre dit le compte de loyer-mer, « Auc
 
 test('AC-5 à 390 × 844 : « Les 10 premières », repliée puis dépliée, c’est toujours la liste', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await onglet(page, 'Les 10 premières').tap();
   const voir = async () => {
     await attendreOuverte(page, 'Les 10 premières');
@@ -340,7 +340,7 @@ test('AC-5 à 390 × 844 : « Les 10 premières », repliée puis dépliée, c�
 
 test('AC-6 à 390 × 844, feuille repliée : le rond « 1 » ouvre la feuille sur la fiche de Portmer (17), cadrée au-dessus de la feuille ouverte ; repliée puis dépliée, la fiche revient', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await replier(page).tap();
   await attendreRepliee(page);
 
@@ -378,7 +378,7 @@ test('AC-6 à 390 × 844, feuille repliée : le rond « 1 » ouvre la feuille su
 
 test('AC-7 à 390 × 844, sur « Critères » : le carré de Grandeville (33) ouvre sa fiche à la place des onglets ; « ← Les 10 premières » mène à la liste, focus sur sa ligne', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await attendreOuverte(page, 'Critères');
   const { lecture } = vue(page); // dans le carré, loin de son rond
   await page.touchscreen.tap(lecture('B').x, lecture('B').y);
@@ -389,13 +389,13 @@ test('AC-7 à 390 × 844, sur « Critères » : le carré de Grandeville (33) ou
   await fiche(page).getByRole('button', { name: '← Les 10 premières' }).tap();
   await expect(onglet(page, 'Les 10 premières')).toHaveAttribute('aria-selected', 'true');
   await expect(onglet(page, 'Critères')).toHaveAttribute('aria-selected', 'false');
-  const ligne3 = liste(page).getByRole('button', { name: /^3 · Grandeville \(33\) · 32 · 832\s€ · 40\skm$/ });
+  const ligne3 = liste(page).getByRole('button', { name: /^3 · Grandeville \(33\) · 25 · 832\s€ · 40\skm$/ });
   await expect(ligne3).toBeFocused();
 });
 
 test('AC-11 à 390 × 844 : repliée pendant le calcul de Nantesville (44), la barre passe de 3 à 1 commune sans être dépliée', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await servirIgn(page);
   await champ(page).tap();
   await champ(page).fill('1 rue Test');
@@ -422,7 +422,7 @@ test.describe('animations réduites', () => {
     test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
     // 390 × 664 (fenêtre de Safari sur iPhone) : la liste y est assez longue pour amener une ligne sous la barre.
     await page.setViewportSize({ width: 390, height: 664 });
-    await ouvrir(page, '/?loyer=1200&mer=60');
+    await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : lit le rang de Grandeville
     await onglet(page, 'Les 10 premières').tap();
     // La ligne de Grandeville amenée au bas de l'écran, là où sera la barre repliée.
     const ligne3 = liste(page).getByRole('button', { name: /^3 · Grandeville/ });

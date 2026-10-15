@@ -32,8 +32,8 @@ async function retour(page: Page) {
   await apresRendu(page);
 }
 
-test('AC-3 Nantesville (44) prêt à 2 h, Grandeville (33) choisie sur la carte : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h », 40 km, sans score ni rang', async ({ page }) => {
-  await ouvrir(page);
+test('AC-3 depuis /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h, Grandeville (33) choisie sur la carte : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h », 40 km, sans score ni rang', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');
@@ -47,9 +47,9 @@ test('AC-3 Nantesville (44) prêt à 2 h, Grandeville (33) choisie sur la carte 
   expect(t).not.toMatch(/\/ 100|sur \d+ communes? qui pass/);
 });
 
-test('AC-5 Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de Grandeville (temps dans l’ordre, 30, 2e sur 2), puis Quaibleu (plus de 3 h, sans score)', async ({ page }) => {
+test('AC-5 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de Grandeville (temps dans l’ordre, 26, 2e sur 2), puis Quaibleu (plus de 3 h, sans score)', async ({ page }) => {
   test.setTimeout(45_000);
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');
@@ -65,7 +65,7 @@ test('AC-5 Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de
   const [a, b] = [t.indexOf('Nantesville (44) : 2 h 15 en voiture'), t.indexOf('Toulouseville (31) : 1 h 15 en voiture')];
   expect(a, t).toBeGreaterThan(-1);
   expect(b, t).toBeGreaterThan(a);
-  await expect(fiche(page).getByText('30', { exact: true })).toBeVisible();
+  await expect(fiche(page).getByText('26', { exact: true })).toBeVisible();
   expect(t).toContain('2e sur 2 communes qui passent');
 
   await retour(page);
@@ -76,10 +76,10 @@ test('AC-5 Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de
   expect(t).not.toMatch(/\/ 100|sur \d+ communes? qui pass/);
 });
 
-test('AC-14 « 1 rue Test 44000 Nantesville » nommé « Parents de Léa » : adresse dans la zone, repère au point [-2, 3], raison dans la fiche de Grandeville, nom jamais envoyé', async ({ page }) => {
+test('AC-14 depuis /?loyer=1200&mer=50, « 1 rue Test 44000 Nantesville » nommé « Parents de Léa » : adresse dans la zone, repère au point [-2, 3], raison dans la fiche de Grandeville, nom jamais envoyé', async ({ page }) => {
   const envoyees: string[] = [];
   page.on('request', (r) => envoyees.push(`${r.url()} ${r.postData() ?? ''}`));
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await servirIgn(page);
   await zone(page).getByRole('textbox', { name: 'Adresse ou ville' }).fill('1 rue Test');
   await zone(page).getByRole('button', { name: '1 rue Test, 44000 Nantesville' }).click();
@@ -106,8 +106,8 @@ test('AC-14 « 1 rue Test 44000 Nantesville » nommé « Parents de Léa » : ad
   expect(avecNom).toEqual([]);
 });
 
-test('AC-16 pastille de Nantesville (44) : « 2 h au plus », puis « 2 h 15 · au-dessus de 2 h » avec Grandeville choisie ; un clic ne change rien ; aucune à 390 px', async ({ page }, info) => {
-  await ouvrir(page);
+test('AC-16 depuis /?loyer=1200&mer=50, pastille de Nantesville (44) : « 2 h au plus », puis « 2 h 15 · au-dessus de 2 h » avec Grandeville choisie ; un clic ne change rien ; aucune à 390 px', async ({ page }, info) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');
@@ -224,7 +224,7 @@ test('deux repères au même endroit : l’étiquette du proche ajouté en secon
 });
 
 test('repère au-dessus du rond du top 10 posé au même endroit (ordre d’empilement, lu au pixel)', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : Portmer 1re selon la mer
   await servirIgn(page, { delaiZoneMs: 60_000 }); // en calcul : il ne compte pas, les ronds de loyer-mer restent
   await servirVoisins(page);
   await ajouterVoisin(page, 1, 'Mamie Jo');

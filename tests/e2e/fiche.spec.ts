@@ -33,14 +33,14 @@ test('AC-8 choisir Portmer (17) : petite ville, 1re sur 3, estimation du secteur
     expect(t).toContain(attendu);
 });
 
-test('AC-9 choisir Montcher (75) sur la carte : deux raisons, sans score ni rang', async ({ page }) => {
-  await ouvrir(page);
+test('AC-9 depuis /?loyer=1200&mer=50, choisir Montcher (75) sur la carte : deux raisons, sans score ni rang', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   const { centre } = vue(page);
   await page.mouse.click(centre('C').x, centre('C').y);
   await expect(fiche(page)).toContainText('Montcher (75)');
   const t = await texte(page);
   expect(t).toContain('Loyer 1 560 € : au-dessus de ton plafond de 1 200 €');
-  expect(t).toContain('Mer 148 km : au-dessus de ton plafond de 60 km');
+  expect(t).toContain('Mer 148 km : au-dessus de ton plafond de 50 km');
   expect(t).not.toMatch(/\/ 100|sur \d+ communes? qui pass/);
 });
 
@@ -60,7 +60,7 @@ test('AC-10 cocher « Petite ville » : seule A passe (72), « 1 commune passe t
 
 test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'à 390 px, la fiche remplace les réglages (Figma 11:667) : on ne règle pas avec une fiche ouverte');
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await ligne(page, 'Grandeville').click();
   await expect(fiche(page)).toContainText('3e sur 3 communes qui passent');
   await regler(page, 'Loyer maximum', 'ArrowLeft', 8); // 1 200 → 800 €
@@ -77,7 +77,7 @@ test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → san
 });
 
 test('ronds du top 10 : un rond par commune qui passe, son clic ouvre la fiche, le rond choisi est marqué', async ({ page }) => {
-  await ouvrir(page);
+  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   const ronds = page.locator('.maplibregl-marker');
   await expect(ronds).toHaveCount(3);
   await page.getByRole('button', { name: '2e : Quaibleu (13)' }).click();

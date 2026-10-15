@@ -17,8 +17,8 @@ export const ligne = (page: Page, nom: string) => zone(page).getByRole('listitem
 export const lignes = async (page: Page) =>
   (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
 
-/** Liste de départ, sans proche (loyer-mer) : 72, 49, 32. */
-export const SANS_PROCHE = ["1 · Portmer (17) · 72 · 650 € · moins d'1 km", '2 · Quaibleu (13) · 49 · 1 092 € · 7 km', '3 · Grandeville (33) · 32 · 832 € · 40 km'];
+/** Liste sans proche sur /?loyer=1200&mer=50 (recalage de cadre-de-vie, D4 et D7) : 72, 48, 25. */
+export const SANS_PROCHE = ["1 · Portmer (17) · 72 · 650 € · moins d'1 km", '2 · Quaibleu (13) · 48 · 1 092 € · 7 km', '3 · Grandeville (33) · 25 · 832 € · 40 km'];
 
 /** Suggestions de la fixture : texte tapé → nom accessible de la suggestion (« Ligne 1, Ligne 2 »). */
 export const ADRESSES = {
