@@ -1,0 +1,6 @@
+Preuve tâche 5 (clavier) — http://localhost:4180 — 2026-10-15T18:48:52.495Z
+
+== 390 × 664 : champ « Adresse ou ville » (interface-telephone AC-8, partie navigateur) ==
+au repos : champ à 784 px du haut de l'onglet « Critères » (contenu 1046 px, 240 px visibles)
+amené en bas de l'écran : haut 603.7, bas 647.7
+au début du focus : haut 87.2, bas 131.2 (clavier de l'iPhone à y = 342) ; ensuite : haut 87.2 ; focus : true

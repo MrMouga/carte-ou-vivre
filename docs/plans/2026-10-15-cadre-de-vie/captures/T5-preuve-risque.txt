@@ -1,0 +1,26 @@
+Preuve tâche 5 (risque) — http://localhost:4180 — 2026-10-15T18:55:58.580Z
+
+== Risque : fiches des villes du risque (1 440 × 900, /?loyer=aucun) ==
+   Chamonix-Mont-Blanc (74) : Commune de montagne
+   Grenoble (38) : fiche ouverte à la place : ← Les 10 premières | Saint-Martin-le-Vinoux (38) | Ville et périphérie · 6 100 habitants | 698 € par mois pour 52 m² (13,4 €/m²) | 191 km de la mer à vol d'oiseau | Commune de montagne
+   Annecy (74) : Commune de montagne
+   Pau (64) : 13 km de la montagne à vol d'oiseau
+   Clermont-Ferrand (63) : 3 km de la montagne à vol d'oiseau
+   Lyon (69) : 14 km de la montagne à vol d'oiseau
+   Limoges (87) : 23 km de la montagne à vol d'oiseau
+   Toulouse (31) : 47 km de la montagne à vol d'oiseau
+   Bordeaux (33) : 173 km de la montagne à vol d'oiseau
+   Saint-Étienne (42) : Commune de montagne
+
+== Risque : 10 premières à « 10 km » au prix de départ (/?loyer=1200&montagne=10) ==
+   8 936 communes passent tes critères
+   1 · Allarmont (88) · 86 · 326 € · 431 km
+   2 · Celles-sur-Plaine (88) · 86 · 326 € · 428 km
+   3 · La Petite-Raon (88) · 86 · 326 € · 434 km
+   4 · Luvigny (88) · 86 · 326 € · 434 km
+   5 · Moussey (88) · 86 · 326 € · 434 km
+   6 · Raon-sur-Plaine (88) · 86 · 326 € · 435 km
+   7 · Vexaincourt (88) · 86 · 326 € · 433 km
+   8 · Celoux (15) · 86 · 327 € · 182 km
+   9 · Champagnac-le-Vieux (43) · 86 · 327 € · 199 km
+   10 · Chaniat (43) · 86 · 327 € · 195 km

@@ -1,0 +1,67 @@
+Preuve tâche 5 (bout) — http://localhost:4180 — 2026-10-15T18:50:59.868Z
+
+== Vérification de bout en bout, 1440 × 900 ==
+1. / → adresse /?loyer=1200 ; mer : Peu importe ; montagne : Peu importe ; tailles cochées : 0 ; types cochés : 0
+   34 674 communes passent tes critères
+   1 · Allarmont (88) · 73 · 326 € · 431 km
+   2 · Bréménil (54) · 73 · 326 € · 423 km
+   3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+   4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+   5 · Luvigny (88) · 73 · 326 € · 434 km
+2. /?loyer=1350, montagne « 10 km » → adresse /?loyer=1350&montagne=10
+   8 949 communes passent tes critères
+   fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7724e sur 8 949 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+   fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+3. montagne « Peu importe », « Ville dense » → adresse /?loyer=1350&env=ville-dense ; types cochés : Ville dense
+   676 communes passent tes critères
+   1 · Roanne (42) · 63 · 496 € · 269 km
+   2 · Bethoncourt (25) · 63 · 500 € · 420 km
+   3 · Le Coteau (42) · 63 · 504 € · 268 km
+   4 · Riorges (42) · 62 · 510 € · 270 km
+   5 · Séméac (65) · 62 · 513 € · 133 km
+   6 · Saint-Étienne (42) · 62 · 514 € · 204 km
+   7 · Les Noës-près-Troyes (10) · 62 · 518 € · 270 km
+   8 · Valentigney (25) · 61 · 522 € · 412 km
+   9 · Panazol (87) · 61 · 529 € · 175 km
+   10 · Villars (42) · 61 · 529 € · 207 km
+   fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 38 | / 100 | 352e sur 676 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+   fiche de Lacanau : ← Les 10 premières | Lacanau (33) | Bourg et village · 5 700 habitants | NE PASSE PAS TES CRITÈRES | Environnement : bourg et village, hors des types choisis | 851 € par mois pour 52 m² (16,4 €/m²) | 10 km de la mer à vol d'oiseau | 181 km de la montagne à vol d'oiseau
+4. /?loyer=1200&mer=60 → adresse /?loyer=1200&mer=100 ; mer : 100 km
+   après rechargement : /?loyer=1200&mer=100 ; mer : 100 km
+5. fiche de Bordeaux (/?loyer=1200) : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 31 | / 100 | 33648e sur 34 674 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+   mentions : grille Insee citée ; Cerema cité
+   texte : Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme · Recherche d'adresse et temps de trajet : © IGN – Géoplateforme (Base Adresse Nationale, BD TOPO®) · Prix d'achat : Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)
+tous biens : /?achat=5000 → adresse /?achat=5000 ; fiche de Desvres : ← Les 10 premières | Desvres (62) | Ville et périphérie · 4 800 habitants | 70 | / 100 | 16440e sur 32 833 communes qui passent | 1 493 €/m² à l'achat | Estimation tous biens (trop peu de ventes d'appartements) | 18 km de la mer à vol d'oiseau | 436 km de la montagne à vol d'oiseau
+
+== Vérification de bout en bout, 390 × 844 ==
+1. / → adresse /?loyer=1200 ; mer : Peu importe ; montagne : Peu importe ; tailles cochées : 0 ; types cochés : 0
+   34 674 communes passent tes critères
+   1 · Allarmont (88) · 73 · 326 € · 431 km
+   2 · Bréménil (54) · 73 · 326 € · 423 km
+   3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+   4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+   5 · Luvigny (88) · 73 · 326 € · 434 km
+2. /?loyer=1350, montagne « 10 km » → adresse /?loyer=1350&montagne=10
+   8 949 communes passent tes critères
+   fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7724e sur 8 949 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+   fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+3. montagne « Peu importe », « Ville dense » → adresse /?loyer=1350&env=ville-dense ; types cochés : Ville dense
+   676 communes passent tes critères
+   1 · Roanne (42) · 63 · 496 € · 269 km
+   2 · Bethoncourt (25) · 63 · 500 € · 420 km
+   3 · Le Coteau (42) · 63 · 504 € · 268 km
+   4 · Riorges (42) · 62 · 510 € · 270 km
+   5 · Séméac (65) · 62 · 513 € · 133 km
+   6 · Saint-Étienne (42) · 62 · 514 € · 204 km
+   7 · Les Noës-près-Troyes (10) · 62 · 518 € · 270 km
+   8 · Valentigney (25) · 61 · 522 € · 412 km
+   9 · Panazol (87) · 61 · 529 € · 175 km
+   10 · Villars (42) · 61 · 529 € · 207 km
+   fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 38 | / 100 | 352e sur 676 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+   fiche de Lacanau : ← Les 10 premières | Lacanau (33) | Bourg et village · 5 700 habitants | NE PASSE PAS TES CRITÈRES | Environnement : bourg et village, hors des types choisis | 851 € par mois pour 52 m² (16,4 €/m²) | 10 km de la mer à vol d'oiseau | 181 km de la montagne à vol d'oiseau
+4. /?loyer=1200&mer=60 → adresse /?loyer=1200&mer=100 ; mer : 100 km
+   après rechargement : /?loyer=1200&mer=100 ; mer : 100 km
+5. fiche de Bordeaux (/?loyer=1200) : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 31 | / 100 | 33648e sur 34 674 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+   mentions : grille Insee citée ; Cerema cité
+   texte : Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme · Recherche d'adresse et temps de trajet : © IGN – Géoplateforme (Base Adresse Nationale, BD TOPO®) · Prix d'achat : Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)
+tous biens : /?achat=5000 → adresse /?achat=5000 ; fiche de Desvres : ← Les 10 premières | Desvres (62) | Ville et périphérie · 4 800 habitants | 70 | / 100 | 16440e sur 32 833 communes qui passent | 1 493 €/m² à l'achat | Estimation tous biens (trop peu de ventes d'appartements) | 18 km de la mer à vol d'oiseau | 436 km de la montagne à vol d'oiseau

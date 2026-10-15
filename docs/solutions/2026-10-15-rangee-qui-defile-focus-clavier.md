@@ -1,0 +1,8 @@
+# Rangée qui défile sur le côté : amener soi-même la pastille focalisée dans la vue, Chromium ne le fait pas si elle dépasse déjà de plus de 32 px
+Étiquettes : build, design, tests · Tranche : cadre-de-vie · Source : tâche 5 (taches/T5.md), `src/ui/CadreDeVie.tsx` (RangeeTypes), test « 390 px, au toucher › rangée des types » de `tests/e2e/cadre-de-vie.spec.ts`
+
+**Problème** — À 390 px, la rangée « Type d'environnement » défile sur le côté (contrat « Rangée qui défile »). Au clavier, le dernier type (« Campagne isolée ») prenait le focus en restant coupé par le bord de l'écran.
+**Symptômes** — Après trois tabulations : `scrollLeft` toujours 0, pastille de 355 à 474 px dans une fenêtre de 390. `toBeInViewport({ ratio: 1 })` bloqué à 0,94-0,99, une fois vert par hasard.
+**Ce qui n'a pas marché** — Compter sur le défilement automatique au focus. Blink ne fait défiler que si l'élément est visible sur moins de 32 px environ ; ici, 35 px dépassaient. `scroll-px-4` seul ne change rien, puisqu'aucun défilement n'a lieu.
+**Ce qui a marché** — `onFocus={(e) => e.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}` sur chaque pastille, avec `scroll-px-4` sur la rangée : la pastille arrive entière, à 16 px du bord. Le glisser au doigt se teste par `Input.dispatchTouchEvent` (CDP), après avoir amené la rangée à l'écran : sinon le doigt tombe hors de la fenêtre et rien ne défile.
+**Prévention** — Test e2e : tabulation jusqu'à la dernière pastille, puis `toBeInViewport({ ratio: 1 })`. Règle de jugement : tout conteneur qui défile sur le côté et porte des éléments focalisables reçoit ce `onFocus` et une marge de défilement.

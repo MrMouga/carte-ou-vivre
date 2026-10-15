@@ -1,0 +1,12 @@
+Grenoble par la liste — http://localhost:4180/?loyer=aucun&montagne=10&taille=ville-moyenne — 2026-10-15T18:54:06.848Z
+1 · Saint-Étienne (42) · 100 · 514 € · 204 km
+2 · Annecy (74) · 100 · 1 063 € · 259 km
+3 · Grenoble (38) · 90 · 698 € · 190 km
+4 · Chambéry (73) · 90 · 837 € · 233 km
+5 · Grasse (06) · 80 · 842 € · 12 km
+6 · Clermont-Ferrand (63) · 70 · 649 € · 253 km
+7 · Valence (26) · 60 · 621 € · 153 km
+8 · Ajaccio (2A) · 60 · 791 € · moins d'1 km
+9 · Cagnes-sur-Mer (06) · 30 · 1 017 € · 1 km
+10 · Colmar (68) · 20 · 658 € · 475 km
+fiche : ← Les 10 premières | Grenoble (38) | Ville dense · 156 000 habitants | 90 | / 100 | 3e sur 10 communes qui passent | 698 € par mois pour 52 m² (13,4 €/m²) | 190 km de la mer à vol d'oiseau | moins d'1 km de la montagne

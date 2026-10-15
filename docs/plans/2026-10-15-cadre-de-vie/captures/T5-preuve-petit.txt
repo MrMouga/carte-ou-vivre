@@ -1,0 +1,4 @@
+Preuve tâche 5 (petit) — http://localhost:4180 — 2026-10-15T18:48:40.916Z
+
+== 375 × 548 à l’ouverture ==
+adresse /?loyer=1200 ; curseur « Loyer mensuel » : haut 518.5, bas 536.5 dans une fenêtre de 548
