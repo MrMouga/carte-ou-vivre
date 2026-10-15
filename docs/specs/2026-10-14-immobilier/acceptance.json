@@ -1,7 +1,7 @@
 {
   "slice": "immobilier",
   "fixture": {
-    "description": "Fixture inventée « 6 communes » : les 5 communes de la fixture « 5 communes » de loyer-mer (mêmes codes, noms, départements, populations, formes, loyer_m2 des appartements, estimation_propre et mer_km), plus F, une commune d'Alsace inventée, sans loyer de maison ni prix d'achat. Chaque commune gagne : loyer_m2_maison et estimation_propre_maison (loyer des maisons, ANIL) ; achat_appartement et achat_maison, chacun { m2 : médiane au m², source : « commune » (≥ 5 ventes), « secteur » (prix de l'intercommunalité) ou « inconnu-secteur » / « inconnu-alsace-moselle » (pas de prix) }. Les tests de loyer-mer, proches et interface-telephone gardent la fixture « 5 communes » (A à E, nouveaux champs compris), sans F. Valeurs affichées à 52 m² (appartement) : loyers A 650, B 832, C 1 560, D 416, E 1 092, F 572 ; mer A « moins d'1 km » (comparée comme 1), B 40, C 148, D 180, E 7, F 420. Révision cadre-de-vie (2026-10-14) : chaque commune gagne type_env, montagne_classee et montagne_km, valeurs de la fixture « 6 communes · cadre de vie » de la tranche cadre-de-vie.",
+    "description": "Fixture inventée « 6 communes » : les 5 communes de la fixture « 5 communes » de loyer-mer (mêmes codes, noms, départements, populations, formes, loyer_m2 des appartements, estimation_propre et mer_km), plus F, une commune d'Alsace inventée, sans loyer de maison ni prix d'achat. Chaque commune gagne : loyer_m2_maison et estimation_propre_maison (loyer des maisons, ANIL) ; achat_appartement et achat_maison, chacun { m2 : médiane au m², source : « commune » (≥ 5 ventes), « secteur » (prix de l'intercommunalité) ou « inconnu-secteur » / « inconnu-alsace-moselle » (pas de prix) }. Les tests de loyer-mer, proches et interface-telephone gardent la fixture « 5 communes » (A à E, nouveaux champs compris), sans F. Valeurs affichées à 52 m² (appartement) : loyers A 650, B 832, C 1 560, D 416, E 1 092, F 572 ; mer A « moins d'1 km » (comparée comme 1), B 40, C 148, D 180, E 7, F 420. Révision cadre-de-vie (2026-10-14) : chaque commune gagne type_env, montagne_classee et montagne_km, valeurs de la fixture « 6 communes · cadre de vie » de la tranche cadre-de-vie. Révision D12 (2026-10-15) : D n'a pas non plus de prix tous biens en appartement (trop peu de ventes de tous biens dans la commune et le secteur) ; AC-14 utilise une variante nommée de la fixture.",
     "items": [
       {
         "id": "A",
@@ -367,6 +367,14 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1100&mer=aucun&bien=maison",
       "then": "le réglage du prix est sur Maison, Louer, Total, surface 92 m², plafond 1 100 € ; l'adresse devient /?loyer=1100&bien=maison ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 46 · 598 € · 180 km » et « 2 · Portmer (17) · 12 · 966 € · moins d'1 km » ; F a la couleur neutre de la légende ; la fiche de Rhinval (67) affiche « Loyer inconnu », sans score ni rang ; celle de Grandeville affiche « Loyer 1 196 € : au-dessus de ton plafond de 1 100 € »",
+      "passes": false
+    },
+    {
+      "id": "AC-14",
+      "rule": "R24",
+      "given": "Fixture « 6 communes », variante « D tous biens » : l'achat d'appartement de Terrebasse (23) vaut { m2 : 1 100, source : « tous-biens » }, tout le reste inchangé",
+      "when": "l'utilisateur ouvre /?achat=5000",
+      "then": "la liste montre « 4 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 78 · 1 100 €/m² · 180 km », « 2 · Portmer (17) · 24 · 3 800 €/m² · moins d'1 km », « 3 · Grandeville (33) · 12 · 4 400 €/m² · 40 km », « 4 · Quaibleu (13) · 4 · 4 800 €/m² · 7 km » ; la fiche de Terrebasse affiche « 1 100 €/m² à l'achat » et « Estimation tous biens (trop peu de ventes d'appartements) » ; Rhinval (67) a la couleur neutre de la légende",
       "passes": false
     }
   ]

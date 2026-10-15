@@ -75,6 +75,7 @@ Cette table fait foi pour les révisions D22 de loyer-mer, D17 de proches, D13 d
 | immobilier | D1, réglage du prix au départ | Inchangée | — |
 | immobilier | R25, une commune sans prix notée par les autres critères | Étendue | la montagne en est un ; AC-8 est recalé sur la montagne, car `mer=200` devient Peu importe (recalage.md) |
 | immobilier | R26, ordre des paramètres | Étendue | R31 |
+| immobilier | D12 (2026-10-15) : prix tous biens quand le prix du bien manque, nouveau critère AC-14 | Étendue | construit avec cette tranche (même script de données) ; AC-14 suppose le départ de R32 (mer sur Peu importe) |
 | loyer-mer, proches, interface-telephone, immobilier | Critères partant de « mer 60 km », de `mer=60`, des réglages de départ ou du curseur de mer | Contredite | réécrits selon recalage.md (D4, D7), avec l'accord de Vincent |
 | loyer-mer, proches, interface-telephone, immobilier | Fixtures « 5 communes » et « 6 communes », jeu « métropole » (`tests/fixtures/metropole.json`) et tuiles des tests | Étendue | type et distance à la montagne (fixture « 6 communes » de cette tranche) ; pour le jeu « métropole », seulement si la page en a besoin pour s'ouvrir |
 
