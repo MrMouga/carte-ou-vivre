@@ -1,0 +1,22 @@
+[1440] 1. / → /?loyer=1200 ; mer : aucune ; montagne : aucune ; tailles : aucune ; types : aucune ; 34 674 communes passent tes critères
+[1440] 2. /?loyer=1350&montagne=10 → /?loyer=1350&montagne=10 ; 8 958 communes passent tes critères
+[1440]    fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7735e sur 8 958 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+[1440]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[1440] 3. /?loyer=1350&env=ville-dense → /?loyer=1350&env=ville-dense ; types : Ville dense ; 676 communes passent tes critères
+[1440]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 38 | / 100 | 352e sur 676 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[1440]    fiche de Lacanau : ← Les 10 premières | Lacanau (33) | Bourg et village · 5 700 habitants | NE PASSE PAS TES CRITÈRES | Environnement : bourg et village, hors des types choisis | 851 € par mois pour 52 m² (16,4 €/m²) | 10 km de la mer à vol d'oiseau | 181 km de la montagne à vol d'oiseau
+[1440] 4. /?loyer=1200&mer=60 → /?loyer=1200&mer=100
+[1440]    après rechargement → /?loyer=1200&mer=100
+[1440]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 31 | / 100 | 33648e sur 34 674 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[1440] 5. mentions : Insee grille oui ; Cerema oui
+[390] 1. / → /?loyer=1200 ; mer : aucune ; montagne : aucune ; tailles : aucune ; types : aucune ; 34 674 communes passent tes critères
+[390] 2. /?loyer=1350&montagne=10 → /?loyer=1350&montagne=10 ; 8 958 communes passent tes critères
+[390]    fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7735e sur 8 958 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+[390]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[390] 3. /?loyer=1350&env=ville-dense → /?loyer=1350&env=ville-dense ; types : Ville dense ; 676 communes passent tes critères
+[390]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 38 | / 100 | 352e sur 676 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[390]    fiche de Lacanau : ← Les 10 premières | Lacanau (33) | Bourg et village · 5 700 habitants | NE PASSE PAS TES CRITÈRES | Environnement : bourg et village, hors des types choisis | 851 € par mois pour 52 m² (16,4 €/m²) | 10 km de la mer à vol d'oiseau | 181 km de la montagne à vol d'oiseau
+[390] 4. /?loyer=1200&mer=60 → /?loyer=1200&mer=100
+[390]    après rechargement → /?loyer=1200&mer=100
+[390]    fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | 31 | / 100 | 33648e sur 34 674 communes qui passent | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+[390] 5. mentions : Insee grille oui ; Cerema oui

@@ -19,3 +19,24 @@ Tranches servies après ce push : loyer-mer, proches, interface-telephone, immob
 - Couvre : les cinq tranches construites, sur l'adresse du Worker.
 - Ne couvre pas : un nom de domaine, une mesure d'audience, un canal de retours (voir [docs/distribution/plan.md](../../distribution/plan.md)) ; **le calcul des trajets peut échouer quand l'IGN est dégradé** (502/504 vus le 2026-10-15 au soir, voir la démo) — fragilité connue de la tranche proches.
 - À corriger dans les documents : `CLAUDE.md` et les notes précédentes parlent de Cloudflare **Pages** ; c'est un **Worker**.
+
+## Preuve
+2026-10-16, 00:00-00:04 · **https://ou-vivre-en-france.narnia-assistant.workers.dev/** · push `aac426c..56ac3d6` à 23:59 (accord de Vincent) · `/version.txt` = **`56ac3d6dfe339e810d1afda7fb4d8960de752902`** à 00:00:55 · `/data/achat.json` : `x-robots-tag: noindex` (vérifié avant et après le push).
+
+Vérification de bout en bout ([details.md](../../specs/2026-10-14-cadre-de-vie/details.md#vérification-de-bout-en-bout), étapes 1 à 5), sur le vrai site, vraies données, Chromium (Playwright, rendu WebGL logiciel), à **1 440 × 900 et 390 × 844** — sortie complète : [captures/preuve-en-ligne.txt](captures/preuve-en-ligne.txt) :
+1. `/` → `/?loyer=1200` ; mer, montagne, tailles, types : rien de coché ; 34 674 communes ([e1-depart-1440](captures/e1-depart-1440.png), [e1-depart-390](captures/e1-depart-390.png)).
+2. `/?loyer=1350&montagne=10` : 8 958 communes ; fiche de Chamonix-Mont-Blanc : 51, « Commune de montagne » ([e2-chamonix-1440](captures/e2-chamonix-1440.png)) ; fiche de Bordeaux : « Montagne 173 km : au-dessus de ton plafond de 10 km ».
+3. `/?loyer=1350&env=ville-dense` : « Ville dense » coché, 676 communes ; Bordeaux passe (38, 352e) ; Lacanau ne passe pas : « Environnement : bourg et village, hors des types choisis » ([e3-lacanau-1440](captures/e3-lacanau-1440.png)).
+4. `/?loyer=1200&mer=60` → `/?loyer=1200&mer=100`, identique après rechargement.
+5. Fiche de Bordeaux : « Ville dense · 268 000 habitants », 39 km de la mer, 173 km de la montagne ; pied de page : grille de densité Insee et « Zone de montagne : Cerema » ([e5-bordeaux-1440](captures/e5-bordeaux-1440.png), [e5-bordeaux-390](captures/e5-bordeaux-390.png)).
+
+Écart avec la démo, expliqué : à l'étape 2, 8 958 communes en ligne contre 8 949 en tâche 5 : la distance à la mer et à la montagne n'est plus arrondie deux fois depuis les corrections 1 et 2.
+
+Non vérifié en ligne : le calcul des trajets des proches (l'IGN renvoyait des 502/504 le 2026-10-15 au soir, voir la démo) ; le toucher sur un vrai téléphone.
+
+## Revenir en arrière
+- Le plus rapide : dans le tableau de bord Cloudflare, le Worker `ou-vivre-en-france` › **Deployments** › reprendre le déploiement précédent (`aac426c`).
+- Par git : `git revert <commits>` puis `git push` (le Worker se reconstruit tout seul).
+
+## Ce que le lancement demande encore
+Voir [docs/distribution/plan.md](../../distribution/plan.md) : canal de retours, et la robustesse du calcul des trajets (pistes dans la démo de cadre-de-vie) avant d'inviter des inconnus à entrer l'adresse de leurs proches.
