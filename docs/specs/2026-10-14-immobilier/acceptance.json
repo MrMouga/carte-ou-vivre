@@ -327,7 +327,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=5000&montagne=100",
       "then": "la liste montre « 4 communes passent tes critères » puis « 1 · Grandeville (33) · 31 · 4 400 €/m² · 40 km », « 2 · Quaibleu (13) · 21 · 4 800 €/m² · 7 km », « 3 · Terrebasse (23) · 100 · prix inconnu · 180 km », « 4 · Rhinval (67) · 99 · prix inconnu · 420 km » ; la fiche de Terrebasse affiche « Prix d'achat inconnu : trop peu de ventes dans le secteur », le score 100 et « 3e sur 4 communes qui passent » ; Portmer (17) et Montcher (75) ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",

@@ -305,7 +305,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la montagne « 10 km »",
       "then": "l'adresse devient /?loyer=1200&montagne=10 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 180 km » et « 2 · Rhinval (67) · 71 · 572 € · 420 km » (Terrebasse, commune de montagne, a la note 100 en montagne) ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 10 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -313,7 +313,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la montagne « 50 km »",
       "then": "l'adresse devient /?loyer=1200&montagne=50 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 180 km », « 2 · Rhinval (67) · 75 · 572 € · 420 km » et « 3 · Grandeville (33) · 15 · 832 € · 40 km » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne) ; la fiche de Portmer (17) affiche « Montagne 140 km : au-dessus de ton plafond de 50 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -337,7 +337,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer=50",
       "when": "l'utilisateur choisit Grandeville (33), puis Terrebasse (23), puis Rhinval (67)",
       "then": "la fiche de Grandeville affiche « Ville dense · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 40 km de la mer à vol d'oiseau » et « 50 km de la montagne à vol d'oiseau » ; celle de Terrebasse « Bourg et village · 4 200 habitants », « Commune de montagne » et « Mer 180 km : au-dessus de ton plafond de 50 km » ; celle de Rhinval « Ville et périphérie · 30 000 habitants » et « moins d'1 km de la montagne »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -369,7 +369,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1200&mer=100&montagne=50",
       "then": "la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 30 · 832 € · 40 km » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne ; loyer 31, mer 60) ; la fiche de Grandeville affiche « 50 km de la montagne à vol d'oiseau » ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 50 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -377,7 +377,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "le pied de page contient « grille communale de densité » et « Insee », et « Zone de montagne » (suivi de la source retenue en tâche 0, D9), à côté des mentions des tranches précédentes",
-      "passes": false
+      "passes": true
     }
   ]
 }
