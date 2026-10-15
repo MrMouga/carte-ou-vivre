@@ -28,7 +28,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50 à 390 × 844, feuille ouverte sur « Critères »",
       "when": "l'utilisateur fait glisser au doigt, chaque geste en 300 ms, puis lâche, dans l'ordre : la poignée de 30 px vers le bas ; la poignée de 200 px vers le bas ; la barre repliée de 200 px vers le haut ; un point du réglage « Taille de la commune » de 200 px vers le haut ; puis il replie la feuille avec le bouton et touche le texte de la barre",
       "then": "30 px : la feuille revient ouverte ; 200 px vers le bas : repliée, la barre dit « 3 communes passent tes critères » ; 200 px vers le haut : ouverte sur « Critères » ; le glisser dans « Taille de la commune » fait défiler les réglages et la feuille reste ouverte ; le toucher sur le texte de la barre rouvre la feuille sur « Critères »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",

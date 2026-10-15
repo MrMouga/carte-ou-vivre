@@ -297,7 +297,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la mer « 50 km »",
       "then": "l'adresse devient /?loyer=1200&mer=50 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 48 · 1 092 € · 7 km », « 3 · Grandeville (33) · 25 · 832 € · 40 km » ; la fiche de Rhinval (67) affiche « Mer 420 km : au-dessus de ton plafond de 50 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -329,7 +329,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche la taille « 10 000 – 50 000 hab. »",
       "then": "les pastilles de taille affichent, dans l'ordre, « Moins de 10 000 hab. », « 10 000 – 50 000 hab. », « 50 000 – 200 000 hab. », « Plus de 200 000 hab. » ; l'adresse devient /?loyer=1200&taille=petite-ville ; la liste montre « 2 communes passent tes critères » puis Rhinval (67) 52 et Portmer (17) 46 ; la fiche de Grandeville (33) affiche « Taille : 260 000 habitants, hors des tailles choisies »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -353,7 +353,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1200&mer=60, puis /?loyer=1200&mer=25",
       "then": "avec mer=60 : la mer est sur « 100 km », l'adresse devient /?loyer=1200&mer=100, la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 72, Quaibleu (13) 51, Grandeville (33) 45. Avec mer=25 : la mer est sur « 30 km », l'adresse devient /?loyer=1200&mer=30, la liste montre « 2 communes passent tes critères » puis Portmer (17) 71 et Quaibleu (13) 43",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",

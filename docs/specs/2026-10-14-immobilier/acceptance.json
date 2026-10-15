@@ -271,7 +271,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "le réglage du prix est sur Appartement, Louer, Total, surface 52 m², plafond 1 200 € ; l'adresse devient /?loyer=1200 ; D a le score 65, F 52, A 46, B 31, E 9 ; C n'est pas colorée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -343,7 +343,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100",
       "then": "le réglage du prix est sur Maison, Acheter, Total, surface 100 m², plafond 300 000 € ; la mer sur « Peu importe » ; l'adresse devient /?achat=300000&bien=maison&unite=total&surface=100 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 57 · 130 000 € · 180 km » ; F a la couleur neutre ; la fiche de Portmer affiche « Achat 350 000 € : au-dessus de ton plafond de 300 000 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -351,7 +351,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=abc&unite=litre&bien=villa&surface=0",
       "then": "le réglage du prix est sur Appartement, Acheter, au m², plafond 5 000 €/m² ; l'adresse devient /?achat=5000 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 24, Grandeville (33) 12, Quaibleu (13) 4",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -367,7 +367,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1100&mer=aucun&bien=maison",
       "then": "le réglage du prix est sur Maison, Louer, Total, surface 92 m², plafond 1 100 € ; l'adresse devient /?loyer=1100&bien=maison ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 46 · 598 € · 180 km » et « 2 · Portmer (17) · 12 · 966 € · moins d'1 km » ; F a la couleur neutre de la légende ; la fiche de Rhinval (67) affiche « Loyer inconnu », sans score ni rang ; celle de Grandeville affiche « Loyer 1 196 € : au-dessus de ton plafond de 1 100 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",

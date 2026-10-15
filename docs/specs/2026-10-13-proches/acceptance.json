@@ -355,7 +355,7 @@
       "given": "Fixture, loyer sur « Sans limite », mer sur « Peu importe », Nantesville (44) prêt à 2 h 15",
       "when": "la carte est affichée",
       "then": "la liste montre « 2 communes passent tes critères » puis Portmer (17) avec le score 56 et Grandeville (33) avec le score 0 ; Portmer a la couleur de la tranche 40–60 et Grandeville celle de la tranche 0–20 ; Montcher (75), Terrebasse (23) et Quaibleu (13) ne sont pas colorées ; le message « Fixe un loyer ou une distance à la mer pour classer les communes. » n'est pas affiché",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
