@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import { compte, estimationTexte, ligneListe, plafondPrix, prixFiche, raisonTexte, rangTexte, resumePrix } from './format';
@@ -12,6 +13,7 @@ import {
   PRIX_DEPART,
   valeurAffichee,
   type Achat,
+  type AchatJson,
   type ReglagePrix,
 } from './prix';
 import { evaluer, type Commune, type Reglages } from './score';
@@ -345,5 +347,44 @@ describe('H68 — prix d’achat joints par code INSEE', () => {
     expect(jointes[1].achatAppartement).toEqual({ m2: 4400, source: 'commune' });
     expect(jointes[2].achatAppartement).toEqual({ m2: null, source: 'inconnu-secteur' });
     expect(jointes.map((c) => c.code)).toEqual(communes.map((c) => c.code));
+  });
+});
+
+// D12 d'immobilier, H84 (construit avec cadre-de-vie, tâche 2) : un prix tous biens, de la commune (`tous-biens`) ou de
+// l'intercommunalité (`tous-biens-secteur`), se dit par une seule ligne, selon le bien choisi. Le critère (immobilier AC-14)
+// attend le nouveau départ : tâche 5.
+describe('D12, H84 — estimation tous biens', () => {
+  const acheter = (bien: 'appartement' | 'maison'): ReglagePrix => ({ mode: 'acheter', bien, unite: 'm2', surface: 52 });
+  const avec = (achat: Achat): Commune => ({ ...communes[3], achatAppartement: achat, achatMaison: achat }); // Terrebasse
+
+  it('« Estimation tous biens (trop peu de ventes d’appartements) » pour `tous-biens` et `tous-biens-secteur`, en Appartement', () => {
+    for (const source of ['tous-biens', 'tous-biens-secteur'] as const) {
+      const c = avec({ m2: 1100, source });
+      expect(estimationTexte(c, acheter('appartement'))).toBe("Estimation tous biens (trop peu de ventes d'appartements)");
+      expect(s(prixFiche(c, acheter('appartement')))).toBe("1 100 €/m² à l'achat");
+    }
+  });
+
+  it('« Estimation tous biens (trop peu de ventes de maisons) » en Maison ; en Total aussi', () => {
+    const c = avec({ m2: 1100, source: 'tous-biens-secteur' });
+    expect(estimationTexte(c, acheter('maison'))).toBe('Estimation tous biens (trop peu de ventes de maisons)');
+    expect(estimationTexte(c, { ...acheter('maison'), unite: 'total' })).toBe('Estimation tous biens (trop peu de ventes de maisons)');
+  });
+
+  it('en Louer, la source d’achat ne compte pas : la ligne du loyer seule', () => {
+    const c = avec({ m2: 1100, source: 'tous-biens' });
+    expect(estimationTexte(c, PRIX_DEPART)).toBe('Estimation du secteur (communes voisines)'); // loyer de Terrebasse estimé
+    expect(estimationTexte({ ...c, estimationPropre: true }, PRIX_DEPART)).toBeNull();
+  });
+
+  it('vraies données (achat.json) : Desvres (62268) `tous-biens` 1 493 €/m², Tingry (62821) `tous-biens-secteur` 1 714 €/m² en Appartement ; leurs maisons gardent leur ligne', () => {
+    const achat = JSON.parse(readFileSync(new URL('../../public/data/achat.json', import.meta.url), 'utf8')) as AchatJson;
+    const [desvres, tingry] = joindreAchats([{ ...communes[0], code: '62268' }, { ...communes[0], code: '62821' }], achat);
+    expect(desvres.achatAppartement).toEqual({ m2: 1493, source: 'tous-biens' });
+    expect(tingry.achatAppartement).toEqual({ m2: 1714, source: 'tous-biens-secteur' });
+    for (const c of [desvres, tingry]) expect(estimationTexte(c, acheter('appartement'))).toBe("Estimation tous biens (trop peu de ventes d'appartements)");
+    expect(s(prixFiche(desvres, acheter('appartement')))).toBe("1 493 €/m² à l'achat");
+    expect(estimationTexte(desvres, acheter('maison'))).toBeNull(); // maison : prix de la commune
+    expect(estimationTexte(tingry, acheter('maison'))).toBe('Estimation du secteur (moins de 5 ventes dans la commune)');
   });
 });

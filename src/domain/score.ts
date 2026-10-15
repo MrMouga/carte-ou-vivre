@@ -20,7 +20,27 @@ export type Commune = {
   estimationPropreMaison?: boolean | null;
   achatAppartement?: Achat;
   achatMaison?: Achat;
+  // Spec cadre-de-vie (D10, R29) : type d'environnement et distance à la montagne en km (0 = commune de montagne).
+  // Lus avec la commune (tâche 2), pas encore utilisés par l'évaluation ; absent ou null = inconnu.
+  typeEnv?: TypeEnv | null;
+  montagneKm?: number | null;
 };
+
+/** H71 : les quatre types d'environnement (niveaux de D10). */
+export type TypeEnv = 'ville-dense' | 'ville-et-peripherie' | 'bourg-et-village' | 'campagne-isolee';
+
+/**
+ * Une ligne de `public/data/communes.json`, colonnes dans l'ordre de `champs` : celles de loyer-mer, puis celles
+ * d'immobilier (loyer des maisons), puis celles de cadre-de-vie (`type_env`, `montagne_km`), absentes d'un jeu plus ancien.
+ */
+export type LigneCommunes = [
+  string, string, string, number | null, number | null, boolean, number | null, number | null, boolean | null,
+  (TypeEnv | null)?, (number | null)?,
+];
+
+export function communeDeLigne([code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison, typeEnv, montagneKm]: LigneCommunes): Commune {
+  return { code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison, typeEnv: typeEnv ?? null, montagneKm: montagneKm ?? null };
+}
 
 export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'grande-ville';
 

@@ -1,5 +1,5 @@
 import { SURFACE_M2, loyerPour, tailleDe, type Raison, type Taille } from './score';
-import { achatDe, estimationSecteur, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
+import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
 const NBSP = ' ';
@@ -97,8 +97,9 @@ export function prixFiche(c: PrixCommune, p: ReglagePrix): string {
   return p.unite === 'total' ? `${euros(v)} pour ${p.surface}${NBSP}m² (${eurosM2Entier(m2)})` : `${eurosM2Entier(v)} à l'achat`;
 }
 
-/** Mention sous la ligne du prix quand il est pris au secteur (R24, D12 de loyer-mer), sinon null. */
+/** Mention sous la ligne du prix quand il est pris au secteur (R24, D12 de loyer-mer) ou sur tous les biens (D12, H84), sinon null. */
 export function estimationTexte(c: PrixCommune, p: ReglagePrix): string | null {
+  if (estimationTousBiens(c, p)) return `Estimation tous biens (trop peu de ventes ${p.bien === 'appartement' ? "d'appartements" : 'de maisons'})`;
   if (!estimationSecteur(c, p)) return null;
   return p.mode === 'louer' ? 'Estimation du secteur (communes voisines)' : 'Estimation du secteur (moins de 5 ventes dans la commune)';
 }

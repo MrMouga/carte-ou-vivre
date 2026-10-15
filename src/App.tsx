@@ -4,7 +4,7 @@ import { PALIERS } from './map/style';
 import { paddingCarte, type Repere } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
-import { evaluer, type Commune, type Reglages } from './domain/score';
+import { communeDeLigne, evaluer, type Commune, type LigneCommunes, type Reglages } from './domain/score';
 import { ecrireAdresse, lireAdresse, lirePrix } from './domain/url';
 import { joindreAchats, type AchatJson, type Changement } from './domain/prix';
 import { Settings } from './ui/Settings';
@@ -25,7 +25,6 @@ import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 
 type Donnees = { communes: Commune[]; reperes: Repere[] };
 const REPRISE_ADRESSE_MS = 1000;
-type Ligne = [string, string, string, number | null, number | null, boolean, number | null, number | null, boolean | null];
 
 /** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
 const REQUETE_BUREAU = `(min-width: ${layout['largeur-bureau']}px)`;
@@ -49,21 +48,11 @@ async function lire<T>(url: string): Promise<T> {
 // H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE.
 async function charger(): Promise<Donnees> {
   const [c, r, a] = await Promise.all([
-    lire<{ communes: Ligne[] }>('/data/communes.json'),
+    lire<{ communes: LigneCommunes[] }>('/data/communes.json'),
     lire<{ reperes: Repere[] }>('/data/reperes.json'),
     lire<AchatJson>('/data/achat.json'),
   ]);
-  const communes = c.communes.map(([code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison]) => ({
-    code,
-    nom,
-    dep,
-    population,
-    loyerM2,
-    estimationPropre,
-    merKm,
-    loyerM2Maison,
-    estimationPropreMaison,
-  }));
+  const communes = c.communes.map(communeDeLigne);
   return { communes: joindreAchats(communes, a), reperes: r.reperes };
 }
 

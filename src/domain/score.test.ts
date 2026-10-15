@@ -1,6 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
-import { evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type Reglages } from './score';
+import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
+import { PRIX_DEPART } from './prix';
+import { communeDeLigne, evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type LigneCommunes, type Reglages } from './score';
 
 // Fixture « 5 communes » d'acceptance.json, au format du domaine.
 const fixture: Commune[] = acceptance.fixture.items.map((it) => ({
@@ -156,5 +159,54 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
     ];
     const res = evaluer(communes, { loyer: null, mer: 60, tailles: [] });
     expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Moulin', 88], ['Zénith', 88], ['Aval', 88], ['Bourg', 88]]);
+  });
+});
+
+// Tranche cadre-de-vie, H74 : la moyenne exacte des notes, arrondie moitié vers le haut, sans perte en virgule flottante.
+// Les quatre moitiés de recalage.md (critères recalés à mer 50 km).
+describe('H74 — moitié exacte arrondie vers le haut (recalage.md)', () => {
+  const mer50 = (loyer: number): Reglages => ({ loyer, mer: 50, tailles: [] });
+  const portmer: Commune = { ...fixture[0], loyerM2Maison: immobilier.fixture.items[0].loyer_m2_maison }; // 10,5 €/m² en maison
+
+  it('Quaibleu à 1 200 € et 50 km : (9 + 86) / 2 = 47,5 → 48', () => {
+    expect(scores(mer50(1200)).by('E').score).toBe(48);
+  });
+
+  it('Portmer en 72 m² : 900 €, (25 + 98) / 2 = 61,5 → 62', () => {
+    const e = evaluer([portmer], mer50(1200), [], { ...PRIX_DEPART, surface: 72 }).parCode.get(portmer.code)!;
+    expect([e.valeurPrix, e.score]).toEqual([900, 62]);
+  });
+
+  it('Portmer en maison 72 m² : 756 €, (37 + 98) / 2 = 67,5 → 68', () => {
+    const e = evaluer([portmer], mer50(1200), [], { ...PRIX_DEPART, bien: 'maison', surface: 72 }).parCode.get(portmer.code)!;
+    expect([e.valeurPrix, e.score]).toEqual([756, 68]);
+  });
+
+  it('Portmer à 1 000 € : (35 + 98) / 2 = 66,5 → 67', () => {
+    expect(scores(mer50(1000)).by('A').score).toBe(67);
+  });
+});
+
+// Tranche cadre-de-vie, tâche 2 : chaque commune porte son type d'environnement et sa distance à la montagne (D10, R29).
+describe('communes.json — type d’environnement et distance à la montagne lus avec chaque commune', () => {
+  const fichier = JSON.parse(readFileSync(new URL('../../public/data/communes.json', import.meta.url), 'utf8')) as {
+    champs: string[];
+    communes: LigneCommunes[];
+  };
+  const parCode = new Map(fichier.communes.map((l) => [l[0], communeDeLigne(l)]));
+
+  it('les deux colonnes lues sont `type_env` et `montagne_km`, à la suite des 9 de loyer-mer et d’immobilier', () => {
+    expect(fichier.champs.slice(9)).toEqual(['type_env', 'montagne_km']);
+  });
+
+  it('vraies données : Bordeaux ville dense à 172,8 km ; Chamonix-Mont-Blanc commune de montagne (0) ; Lacanau bourg et village', () => {
+    expect(parCode.get('33063')).toMatchObject({ nom: 'Bordeaux', loyerM2: 15.9932, typeEnv: 'ville-dense', montagneKm: 172.8 });
+    expect(parCode.get('74056')).toMatchObject({ nom: 'Chamonix-Mont-Blanc', typeEnv: 'ville-et-peripherie', montagneKm: 0 });
+    expect(parCode.get('33214')).toMatchObject({ nom: 'Lacanau', typeEnv: 'bourg-et-village' });
+  });
+
+  it('une ligne sans ces colonnes (jeu ancien) : type et distance inconnus (null)', () => {
+    const c = communeDeLigne(['99001', 'Portmer', '17', 23000, 12.5, false, 0.9, null, null]);
+    expect(c).toMatchObject({ code: '99001', merKm: 0.9, typeEnv: null, montagneKm: null });
   });
 });

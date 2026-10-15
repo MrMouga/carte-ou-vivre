@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import immobilier from '../../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
+import cadreDeVie from '../../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
@@ -22,13 +23,21 @@ export const METROPOLE: Jeu = { items: metropole.items, tuiles: new URL('../../f
 
 // Loyer des maisons et prix d'achat (spec immobilier) : un champ absent du jeu (5 communes de loyer-mer, métropole) est
 // servi inconnu, `null` et source « inconnu-secteur ».
-const communesJson = ({ items }: Jeu) => ({
-  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km', 'loyer_maison_m2', 'estimation_propre_maison'],
-  communes: items.map((it) => [
-    it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km,
-    'loyer_m2_maison' in it ? it.loyer_m2_maison : null,
-    'estimation_propre_maison' in it ? it.estimation_propre_maison : null,
-  ]),
+// Type d'environnement et distance à la montagne (cadre-de-vie) : pris dans la fixture « 6 communes · cadre de vie », par
+// code INSEE (A à E ont les mêmes codes dans tous les jeux) ; le jeu « métropole » les sert inconnus (plan, « Fixtures »).
+const cadreParCode = new Map(cadreDeVie.fixture.items.map((it) => [it.code_insee, it]));
+const communesJson = (jeu: Jeu) => ({
+  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km', 'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km'],
+  communes: jeu.items.map((it) => {
+    const cadre = jeu.items === METROPOLE.items ? undefined : cadreParCode.get(it.code_insee);
+    return [
+      it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km,
+      'loyer_m2_maison' in it ? it.loyer_m2_maison : null,
+      'estimation_propre_maison' in it ? it.estimation_propre_maison : null,
+      cadre?.type_env ?? null,
+      cadre?.montagne_km ?? null,
+    ];
+  }),
 });
 const INCONNU = { m2: null, source: 'inconnu-secteur' };
 const achatJson = ({ items }: Jeu) => ({

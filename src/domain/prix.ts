@@ -5,8 +5,11 @@ import type { Commune } from './score';
 export type Mode = 'louer' | 'acheter';
 export type Bien = 'appartement' | 'maison';
 export type Unite = 'total' | 'm2';
-/** Source d'un prix d'achat (`public/data/achat.json`, tâche 0) : « secteur » = prix de l'intercommunalité. */
-export type SourceAchat = 'commune' | 'secteur' | 'inconnu-secteur' | 'inconnu-alsace-moselle';
+/**
+ * Source d'un prix d'achat (`public/data/achat.json`, tâche 0) : « secteur » = prix de l'intercommunalité ; D12, H84 :
+ * « tous-biens » = prix tous biens de la commune, « tous-biens-secteur » = celui de l'intercommunalité.
+ */
+export type SourceAchat = 'commune' | 'secteur' | 'tous-biens' | 'tous-biens-secteur' | 'inconnu-secteur' | 'inconnu-alsace-moselle';
 export type Achat = { m2: number | null; source: SourceAchat };
 /** Prix d'achat inconnu : champ absent (jeu sans prix d'achat) ou commune absente de `achat.json`. */
 const ACHAT_INCONNU: Achat = { m2: null, source: 'inconnu-secteur' };
@@ -98,6 +101,13 @@ export function estimationSecteur(c: PrixCommune, p: ReglagePrix): boolean {
   if (prixM2(c, p) == null) return false;
   if (p.mode === 'acheter') return achatDe(c, p.bien).source === 'secteur';
   return !(p.bien === 'appartement' ? c.estimationPropre : c.estimationPropreMaison);
+}
+
+/** D12, H84 : prix d'achat connu, pris sur les ventes de tous les biens (commune ou intercommunalité). */
+export function estimationTousBiens(c: PrixCommune, p: ReglagePrix): boolean {
+  if (p.mode !== 'acheter' || prixM2(c, p) == null) return false;
+  const { source } = achatDe(c, p.bien);
+  return source === 'tous-biens' || source === 'tous-biens-secteur';
 }
 
 /** `public/data/achat.json` : une ligne par commune, [code, prix appartement, source, prix maison, source]. */
