@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
+import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import { compte, estimationTexte, ligneListe, plafondPrix, prixFiche, raisonTexte, rangTexte, resumePrix } from './format';
 import {
   auCran,
@@ -35,6 +36,8 @@ const communes: Commune[] = immobilier.fixture.items.map((it) => ({
   estimationPropreMaison: it.estimation_propre_maison,
   achatAppartement: it.achat_appartement as Achat,
   achatMaison: it.achat_maison as Achat,
+  // Cadre-de-vie (AC-8 recalé) : la distance à la montagne, prise dans la fixture de cette tranche par code INSEE.
+  montagneKm: cadreDeVie.fixture.items.find((x) => x.code_insee === it.code_insee)!.montagne_km,
 }));
 type Id = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 const code = Object.fromEntries(immobilier.fixture.items.map((it) => [it.id, it.code_insee])) as Record<Id, string>;
@@ -159,22 +162,22 @@ describe('AC-1 à AC-13 — la même page, calculée par l’évaluation seule',
     expect(v.raisons('B')).toContain('Achat 5 100 €/m² : au-dessus de ton plafond de 5 000 €/m²');
   });
 
-  // Réécrit en tâche 4 sur montagne=100, cadre-de-vie : `mer=200` vaut désormais Peu importe (R31) et AC-8 est recalé sur
-  // la montagne (recalage.md), qui n'existe pas encore dans l'évaluation.
-  it.skip('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e avec 10 et « prix inconnu » ; C et F non colorées', () => {
-    const { r, p } = ouvrir('?achat=5000&mer=200');
+  // Recalé par cadre-de-vie (recalage.md, D11 d'immobilier) : `mer=200` vaut désormais Peu importe (R31), les communes sans
+  // prix sont notées par la montagne à 100 km (R25 étendue).
+  it('AC-8 /?achat=5000&montagne=100 : 4 communes, Grandeville 31, Quaibleu 21, puis Terrebasse 100 et Rhinval 99 sans prix ; Terrebasse 3e sur 4 ; Portmer et Montcher non colorées', () => {
+    const { r, p } = ouvrir('?achat=5000&montagne=100');
     const v = page(r, p);
     expect(v.compte).toBe('4 communes passent tes critères');
     expect(v.liste).toEqual([
-      "1 · Portmer (17) · 62 · 3 800 €/m² · moins d'1 km",
-      '2 · Quaibleu (13) · 50 · 4 800 €/m² · 7 km',
-      '3 · Grandeville (33) · 46 · 4 400 €/m² · 40 km',
-      '4 · Terrebasse (23) · 10 · prix inconnu · 180 km',
+      '1 · Grandeville (33) · 31 · 4 400 €/m² · 40 km',
+      '2 · Quaibleu (13) · 21 · 4 800 €/m² · 7 km',
+      '3 · Terrebasse (23) · 100 · prix inconnu · 180 km',
+      '4 · Rhinval (67) · 99 · prix inconnu · 420 km',
     ]);
     expect(v.prix('D')).toBe("Prix d'achat inconnu : trop peu de ventes dans le secteur");
-    expect(v.ev('D').score).toBe(10);
-    expect(rangTexte(v.ev('D').rang!, v.res.classement.length)).toBe('4e sur 4 communes qui passent');
-    for (const id of ['C', 'F'] as Id[]) expect([v.ev(id).palier, v.ev(id).sansNote]).toEqual([null, false]);
+    expect(v.ev('D').score).toBe(100);
+    expect(rangTexte(v.ev('D').rang!, v.res.classement.length)).toBe('3e sur 4 communes qui passent');
+    for (const id of ['A', 'C'] as Id[]) expect([v.ev(id).palier, v.ev(id).sansNote]).toEqual([null, false]);
   });
 
   it('AC-9 /?achat=5000&mer=aucun : Portmer 24, Grandeville 12, Quaibleu 4 ; D et F sans note (neutres) ; C ne passe pas ; Rhinval : Alsace-Moselle', () => {

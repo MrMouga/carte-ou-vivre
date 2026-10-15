@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, ligneListe, loyerTexte, merFiche, merTexte, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
+import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, ligneListe, loyerTexte, merFiche, merTexte, montagneFiche, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -105,5 +105,29 @@ describe('R27, H75 — taille en chiffres, résumé du cadre de vie', () => {
     expect(s(resumeCadre({ loyer: 1200, mer: 50, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km');
     expect(s(resumeCadre({ loyer: null, mer: null, tailles: ['grande-ville'] }))).toBe('1 taille');
     expect(s(resumeCadre({ loyer: 1200, mer: 100, tailles: [] }))).toBe('Mer 100 km');
+  });
+});
+
+// Spec cadre-de-vie, tâche 4 : la ligne de la montagne dans la fiche (R30), sa raison (R29) et le résumé replié (H75).
+describe('R29, R30, H75 — la montagne', () => {
+  it('R30 : « Commune de montagne », « 140 km de la montagne à vol d’oiseau », « moins d’1 km de la montagne », inconnue', () => {
+    expect(montagneFiche(0)).toBe('Commune de montagne');
+    expect(s(montagneFiche(140))).toBe("140 km de la montagne à vol d'oiseau");
+    expect(s(montagneFiche(49.6))).toBe("50 km de la montagne à vol d'oiseau");
+    expect(s(montagneFiche(0.6))).toBe("moins d'1 km de la montagne");
+    expect(s(montagneFiche(0.1))).toBe("moins d'1 km de la montagne");
+    expect(montagneFiche(null)).toBe('Distance à la montagne inconnue');
+  });
+
+  it('R29 : raisons « Montagne 140 km : au-dessus de ton plafond de 50 km » et distance inconnue', () => {
+    expect(s(raisonTexte({ critere: 'montagne', valeur: 140, plafond: 50 }))).toBe('Montagne 140 km : au-dessus de ton plafond de 50 km');
+    expect(s(raisonTexte({ critere: 'montagne', valeur: 62, plafond: 10 }))).toBe('Montagne 62 km : au-dessus de ton plafond de 10 km');
+    expect(raisonTexte({ critere: 'montagne-inconnue' })).toBe('Distance à la montagne inconnue');
+  });
+
+  it('H75 : « Montagne 30 km » après la mer', () => {
+    expect(s(resumeCadre({ loyer: 1200, mer: null, montagne: 30, tailles: [] }))).toBe('Montagne 30 km');
+    expect(s(resumeCadre({ loyer: 1200, mer: 50, montagne: 30, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km · Montagne 30 km');
+    expect(resumeCadre({ loyer: 1200, mer: null, montagne: null, tailles: [] })).toBe('Peu importe');
   });
 });

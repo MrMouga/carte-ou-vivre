@@ -1,8 +1,8 @@
 // R7, H7 : les réglages vivent dans l'adresse de la page (D7 : pas la commune choisie).
 // Spec immobilier, R26 : le plafond du prix s'écrit `loyer` (Louer) ou `achat` (Acheter) ; `bien`, `unite` et `surface`
 // n'apparaissent que s'ils diffèrent de leur valeur de départ.
-// Spec cadre-de-vie, R31 : `mer` en cinq choix, écrite seulement si elle diffère de Peu importe.
-import { CHOIX_MER, type Reglages, type Taille } from './score';
+// Spec cadre-de-vie, R31 : `mer` et `montagne` en cinq choix, écrites seulement si elles diffèrent de Peu importe.
+import { CHOIX_MER, CHOIX_MONTAGNE, type Reglages, type Taille } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
@@ -23,6 +23,11 @@ function lireMer(v: string | null): number | null {
   const { min, max, pas } = ANCIENNE_MER;
   if (n < min || n > max || (n - min) % pas !== 0) return null;
   return CHOIX_MER.find((c) => c >= n) ?? null;
+}
+
+/** R31 : `montagne` vaut 10, 30, 50 ou 100 ; toute autre valeur (dont `0`) = Peu importe, rendue absente (`undefined`). */
+function lireMontagne(v: string | null): number | undefined {
+  return CHOIX_MONTAGNE.find((c) => String(c) === v);
 }
 
 /** R26 : nom du plafond du prix dans l'adresse, selon le mode. */
@@ -58,14 +63,16 @@ export function lireAdresse(search: string): Reglages {
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: lireMer(q.get('mer')),
+    montagne: lireMontagne(q.get('montagne')),
     tailles: ORDRE_TAILLES.filter((t) => demandees.includes(t)),
   };
 }
 
-/** Ordre de R31 : plafond du prix, `mer`, `taille`, `bien`, `unite`, `surface` ; `mer` absente si Peu importe. */
+/** Ordre de R31 : plafond du prix, `mer`, `montagne`, `taille`, `bien`, `unite`, `surface` ; `mer` et `montagne` absentes si Peu importe. */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
   const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`];
   if (r.mer != null) parts.push(`mer=${r.mer}`);
+  if (r.montagne != null) parts.push(`montagne=${r.montagne}`);
   const tailles = ORDRE_TAILLES.filter((t) => r.tailles.includes(t));
   if (tailles.length) parts.push(`taille=${tailles.join(',')}`);
   if (prix.bien !== PRIX_DEPART.bien) parts.push(`bien=${prix.bien}`);

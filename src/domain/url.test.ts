@@ -137,3 +137,30 @@ describe('Spec immobilier, tâche 3 — surface de départ selon le bien (D2, R2
     expect(lirePrix('?bien=maison&surface=0').surface).toBe(92); // invalide → départ du bien (H58)
   });
 });
+
+// Spec cadre-de-vie, R31 : `montagne` vaut 10, 30, 50 ou 100 ; toute autre valeur (dont 0) = Peu importe, non écrite ;
+// ordre : plafond du prix, `mer`, `montagne`, `taille`, `bien`, `unite`, `surface`.
+describe('R31 — la montagne dans l’adresse (spec cadre-de-vie)', () => {
+  const montagne = (v: string) => lireAdresse(`?loyer=1200&montagne=${v}`).montagne ?? null;
+
+  it('AC-3 (adresse) : montagne 10 km depuis / → /?loyer=1200&montagne=10', () => {
+    expect(ecrireAdresse({ ...lireAdresse(''), montagne: 10 })).toBe('/?loyer=1200&montagne=10');
+  });
+
+  it('les quatre distances se lisent telles quelles : 10, 30, 50, 100', () => {
+    expect(['10', '30', '50', '100'].map(montagne)).toEqual([10, 30, 50, 100]);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=100&montagne=50'))).toBe('/?loyer=1200&mer=100&montagne=50');
+  });
+
+  it('montagne=0, montagne=abc et toute autre valeur = Peu importe, et l’adresse ne l’écrit pas', () => {
+    for (const v of ['0', 'abc', '5', '25', '60', '200', 'aucun', '-10', '50.0', '']) expect(montagne(v)).toBeNull();
+    expect(lireAdresse('?loyer=1200').montagne ?? null).toBeNull();
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&montagne=0'))).toBe('/?loyer=1200');
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&montagne=abc'))).toBe('/?loyer=1200');
+  });
+
+  it('ordre : prix, mer, montagne, taille, bien, unite, surface', () => {
+    const q = '?achat=300000&surface=100&unite=total&bien=maison&taille=petite-ville&montagne=30&mer=50';
+    expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe('/?achat=300000&mer=50&montagne=30&taille=petite-ville&bien=maison&unite=total&surface=100');
+  });
+});

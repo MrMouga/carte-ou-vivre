@@ -1,10 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
-import { ouvrir, vue, type Jeu } from './lib/carte';
+import { attendreCouleurs, ouvrir, vue, type Jeu } from './lib/carte';
 import { mobile, voirCriteres, voirListe } from './lib/feuille';
 
 // Tranche cadre-de-vie, tâche 3 : la catégorie « Cadre de vie » (taille en chiffres, mer en cinq choix), le départ sur
-// Peu importe (R32) et l'adresse de la mer (R31), sur la fixture « 6 communes » de la tranche (A à F, mêmes tuiles que
+// Peu importe (R32) et l'adresse de la mer (R31) ; tâche 4 : la montagne (R29, R30, R31), sur la fixture « 6 communes » de la tranche (A à F, mêmes tuiles que
 // celle d'immobilier : python3 scripts/data/tuiles.py --fixture).
 const SIX: Jeu = { items: cadreDeVie.fixture.items, tuiles: new URL('../fixtures/tuiles-immobilier/', import.meta.url) };
 type Six = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
@@ -19,6 +19,8 @@ const taille = (page: Page) => page.getByRole('group', { name: 'Taille de la com
 const nature = (page: Page) => page.getByRole('group', { name: 'Proximité avec la nature' });
 const mer = (page: Page) => page.getByRole('radiogroup', { name: 'Mer à moins de' });
 const choixMer = (page: Page, nom: string) => mer(page).getByRole('radio', { name: nom, exact: true });
+const montagne = (page: Page) => page.getByRole('radiogroup', { name: 'Montagne à moins de' });
+const choixMontagne = (page: Page, nom: string) => montagne(page).getByRole('radio', { name: nom, exact: true });
 const titreCadre = (page: Page) => page.getByRole('heading', { level: 2, name: /^Cadre de vie/ }).getByRole('button');
 
 async function ouvrirSix(page: Page, chemin = '/') {
@@ -40,6 +42,11 @@ async function ficheDeListe(page: Page, nom: string) {
 async function merCochee(page: Page, nom: string) {
   await expect(choixMer(page, nom)).toHaveAttribute('aria-checked', 'true');
   await expect(mer(page).getByRole('radio', { checked: true })).toHaveCount(1);
+}
+/** La pastille de montagne cochée, et elle seule. */
+async function montagneCochee(page: Page, nom: string) {
+  await expect(choixMontagne(page, nom)).toHaveAttribute('aria-checked', 'true');
+  await expect(montagne(page).getByRole('radio', { checked: true })).toHaveCount(1);
 }
 
 test('AC-2 depuis /, mer « 50 km » : /?loyer=1200&mer=50 ; 3 communes, Portmer 72, Quaibleu 48, Grandeville 25 ; fiche de Rhinval « Mer 420 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
@@ -216,4 +223,145 @@ test('pied de page : « Type d’environnement : Insee, grille communale de dens
   if (mobile(page)) await voirCriteres(page);
   const mentions = page.getByRole('contentinfo').filter({ visible: true }).first();
   await expect(mentions).toContainText("Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025)");
+});
+
+// ---------- Tâche 4 : la montagne (R29, R30, R31 pour `montagne`, H83) ----------
+
+const sansNum = (l: string) => l.split(' · ').slice(1, 3).join(' · ');
+
+test('AC-3 depuis /, montagne « 10 km » : /?loyer=1200&montagne=10 ; 2 communes, Terrebasse 83, Rhinval 71 ; fiche de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 10 km »', async ({ page }) => {
+  await ouvrirSix(page);
+  await choixMontagne(page, '10 km').click();
+  await montagneCochee(page, '10 km');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=10');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 83 · 416 € · 180 km', '2 · Rhinval (67) · 71 · 572 € · 420 km']);
+  await ficheDeCarte(page, 'E', 'Quaibleu (13)');
+  expect(await texteFiche(page)).toContain('Montagne 62 km : au-dessus de ton plafond de 10 km');
+});
+
+test('AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
+  await ouvrirSix(page);
+  await choixMontagne(page, '50 km').click();
+  await montagneCochee(page, '50 km');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=50');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    '1 · Terrebasse (23) · 83 · 416 € · 180 km',
+    '2 · Rhinval (67) · 75 · 572 € · 420 km',
+    '3 · Grandeville (33) · 15 · 832 € · 40 km',
+  ]);
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  expect(await texteFiche(page)).toContain('Montagne 140 km : au-dessus de ton plafond de 50 km');
+});
+
+test('AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30)', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=50');
+  await ficheDeListe(page, 'Grandeville');
+  let t = await texteFiche(page);
+  expect(t).toContain('Ville dense · 260 000 habitants');
+  expect(t).toMatch(/\b25\s*\/ 100/);
+  expect(t).toContain('3e sur 3 communes qui passent');
+  expect(t).toContain("40 km de la mer à vol d'oiseau");
+  expect(t).toContain("50 km de la montagne à vol d'oiseau");
+
+  await ficheDeCarte(page, 'D', 'Terrebasse (23)');
+  t = await texteFiche(page);
+  expect(t).toContain('Bourg et village · 4 200 habitants');
+  expect(t).toContain('Commune de montagne');
+  expect(t).toContain('Mer 180 km : au-dessus de ton plafond de 50 km');
+
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  t = await texteFiche(page);
+  expect(t).toContain('Ville et périphérie · 30 000 habitants');
+  expect(t).toContain("moins d'1 km de la montagne");
+});
+
+test('AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=100&montagne=50');
+  await merCochee(page, '100 km');
+  await montagneCochee(page, '50 km');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('1 commune passe tes critères');
+  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 30 · 832 € · 40 km']);
+  await ficheDeListe(page, 'Grandeville');
+  expect(await texteFiche(page)).toContain("50 km de la montagne à vol d'oiseau");
+  await ficheDeCarte(page, 'E', 'Quaibleu (13)');
+  expect(await texteFiche(page)).toContain('Montagne 62 km : au-dessus de ton plafond de 50 km');
+});
+
+test('AC-12 ouverture de / : le pied de page cite la grille communale de densité (Insee) et « Zone de montagne : » avec le Cerema, à côté des mentions précédentes', async ({ page }) => {
+  await ouvrirSix(page);
+  if (mobile(page)) await voirCriteres(page);
+  const mentions = page.getByRole('contentinfo').filter({ visible: true }).first();
+  await expect(mentions).toContainText('grille communale de densité');
+  await expect(mentions).toContainText('Insee');
+  await expect(mentions).toContainText('Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)');
+  await expect(mentions).toContainText('Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin');
+  await expect(mentions).toContainText("Prix d'achat : Demandes de valeurs foncières (DGFiP)");
+});
+
+// Hors AC (R31) : `montagne` hors des quatre distances = Peu importe, et l'adresse ne l'écrit pas.
+test('R31 : montagne=0 et montagne=abc → Peu importe, /?loyer=1200 ; montagne=30 gardée', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&montagne=30');
+  await montagneCochee(page, '30 km');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=30');
+  // Comme pour la mer : l'adresse et la case cochée ne dépendent pas de la carte, on recharge sans l'attendre.
+  for (const v of ['0', 'abc']) {
+    await page.goto(`/?loyer=1200&montagne=${v}`);
+    await montagneCochee(page, 'Peu importe');
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  }
+});
+
+// Hors AC (details.md, « sans plafond » étendu) : seule la montagne note ; elle repasse à Peu importe → page sans plafond.
+test('sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne sur « Peu importe » → /?loyer=aucun, couleur neutre partout, message de liste', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=aucun&montagne=50');
+  await voirListe(page);
+  expect((await lignes(page)).map(sansNum)).toEqual(['Terrebasse (23) · 100', 'Rhinval (67) · 98', 'Grandeville (33) · 0']);
+  await voirCriteres(page);
+  await choixMontagne(page, 'Peu importe').click();
+  await montagneCochee(page, 'Peu importe');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=aucun');
+  const neutre = 'area-unranked' as const;
+  await attendreCouleurs<Six>(page, { A: neutre, B: neutre, C: neutre, D: neutre, E: neutre, F: neutre }, { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('Fixe un loyer ou une distance à la mer pour classer les communes.');
+  await expect(liste(page).getByRole('button')).toHaveCount(0);
+});
+
+// Hors AC (H75) : « Montagne 30 km » dans le résumé replié, après la mer.
+test('H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 50 km · Montagne 30 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=50&montagne=30&taille=petite-ville,ville-moyenne');
+  await titreCadre(page).click();
+  await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 50 km · Montagne 30 km');
+});
+
+// Hors AC (H76, design F) : « Montagne à moins de » sous la mer, dans « Proximité avec la nature », cinq boutons radio.
+test('H76 : « Montagne à moins de » (5 boutons radio, « Peu importe » cochée) sous « Mer à moins de », dans « Proximité avec la nature » ; flèches du clavier', async ({ page }) => {
+  await ouvrirSix(page);
+  await expect(nature(page).getByRole('radiogroup', { name: 'Montagne à moins de' })).toBeVisible();
+  expect((await montagne(page).getByRole('radio').allInnerTexts()).map(nbsp)).toEqual(['Peu importe', '10 km', '30 km', '50 km', '100 km']);
+  await montagneCochee(page, 'Peu importe');
+  expect((await montagne(page).boundingBox())!.y).toBeGreaterThan((await mer(page).boundingBox())!.y);
+  await choixMontagne(page, 'Peu importe').focus();
+  await page.keyboard.press('ArrowRight');
+  await montagneCochee(page, '10 km');
+  await expect(choixMontagne(page, '10 km')).toBeFocused();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=10');
+  await merCochee(page, 'Peu importe'); // la mer ne bouge pas
+});
+
+// Hors AC (contrat « Règles » : 44 px au toucher) — 390 px.
+test('390 px : cases de la montagne de 44 px au moins', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile', 'cibles au toucher : 390 px');
+  await ouvrirSix(page);
+  await voirCriteres(page);
+  for (const c of await montagne(page).getByRole('radio').all()) {
+    await c.scrollIntoViewIfNeeded();
+    expect((await c.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  }
 });

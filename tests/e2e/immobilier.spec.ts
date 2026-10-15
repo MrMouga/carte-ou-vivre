@@ -336,25 +336,25 @@ function sansScoreNiRang(t: string) {
   expect(t).not.toMatch(/sur \d+ communes? qui passen?t/);
 }
 
-// Réécrit en tâche 4 sur montagne=100, cadre-de-vie : `mer=200` vaut désormais Peu importe (R31) et AC-8 est recalé sur
-// la montagne (recalage.md), qui n'existe pas encore dans l'interface.
-test.skip('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e · 10 · prix inconnu ; sa fiche « trop peu de ventes dans le secteur », 10, 4e sur 4 ; C et F non colorées', async ({ page }) => {
-  await ouvrirSix(page, '/?achat=5000&mer=200');
-  expect(adresse(page)).toBe('/?achat=5000&mer=200');
-  await attendreCouleurs<Six>(page, { A: 'score-4', E: 'score-3', B: 'score-3', D: 'score-1', C: null, F: null }, { jeu: SIX });
+// Recalé par cadre-de-vie (recalage.md, D11 d'immobilier) : `mer=200` vaut désormais Peu importe (R31) ; les communes sans
+// prix sont notées par la montagne à 100 km (R25 étendue).
+test('AC-8 /?achat=5000&montagne=100 : 4 communes, Grandeville 31, Quaibleu 21, Terrebasse 100 et Rhinval 99 · prix inconnu ; fiche de Terrebasse « trop peu de ventes dans le secteur », 100, 3e sur 4 ; Portmer et Montcher non colorées', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=5000&montagne=100');
+  expect(adresse(page)).toBe('/?achat=5000&montagne=100');
+  await attendreCouleurs<Six>(page, { B: 'score-2', E: 'score-2', D: 'score-5', F: 'score-5', A: null, C: null }, { jeu: SIX });
   await voirListe(page);
   await expect(liste(page)).toContainText('4 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 62 · 3 800 €/m² · moins d'1 km",
-    '2 · Quaibleu (13) · 50 · 4 800 €/m² · 7 km',
-    '3 · Grandeville (33) · 46 · 4 400 €/m² · 40 km',
-    '4 · Terrebasse (23) · 10 · prix inconnu · 180 km',
+    '1 · Grandeville (33) · 31 · 4 400 €/m² · 40 km',
+    '2 · Quaibleu (13) · 21 · 4 800 €/m² · 7 km',
+    '3 · Terrebasse (23) · 100 · prix inconnu · 180 km',
+    '4 · Rhinval (67) · 99 · prix inconnu · 420 km',
   ]);
   await ficheDeListe(page, 'Terrebasse');
   const t = await texteFiche(page);
   expect(t).toContain("Prix d'achat inconnu : trop peu de ventes dans le secteur");
-  expect(t).toMatch(/\b10\s*\/ 100/);
-  expect(t).toContain('4e sur 4 communes qui passent');
+  expect(t).toMatch(/\b100\s*\/ 100/);
+  expect(t).toContain('3e sur 4 communes qui passent');
 });
 
 test('AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quaibleu 4 ; D et F neutres, C non colorée ; fiche de Rhinval « Alsace-Moselle », sans score ni rang', async ({ page }) => {

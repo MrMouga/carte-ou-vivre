@@ -7,8 +7,8 @@ import { Categorie } from './Categorie';
 
 // Catégorie « Cadre de vie » (spec cadre-de-vie, design F : docs/design/cadre-de-vie/README.md). Elle remplace les
 // catégories « Mer » et « Taille de ville ». Groupes, dans l'ordre : « Taille de la commune » (Cases séparées, choix
-// multiple, aria-pressed), puis « Proximité avec la nature », qui porte « Mer à moins de » (Cases collées, boutons radio).
-// Le type d'environnement et la montagne viennent aux tâches 4 et 5. Noms pour les lecteurs d'écran : H76.
+// multiple, aria-pressed), puis « Proximité avec la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins
+// de » (Cases collées, boutons radio). Le type d'environnement vient à la tâche 5. Noms pour les lecteurs d'écran : H76.
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -16,7 +16,7 @@ type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: b
 const CASE =
   'flex min-h-toucher cursor-pointer items-center justify-center p-1 text-center text-pastille text-foreground tabular-nums disabled:cursor-default disabled:opacity-50';
 
-/** R28, H69 : « Peu importe » puis les distances ; `null` = Peu importe. */
+/** R28, R29, H69 : « Peu importe » puis les distances, les mêmes pour la mer et la montagne ; `null` = Peu importe. */
 const CHOIX: { valeur: number | null; libelle: string }[] = [
   { valeur: null, libelle: 'Peu importe' },
   ...CHOIX_MER.map((d) => ({ valeur: d, libelle: `${d} km` })),
@@ -102,6 +102,12 @@ export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
         </div>
         <div role="group" aria-label="Proximité avec la nature" className="flex flex-col gap-3">
           <CasesCollees titre="Mer à moins de" valeur={reglages.mer} onChange={(mer) => onChange({ ...reglages, mer })} disabled={disabled} />
+          <CasesCollees
+            titre="Montagne à moins de"
+            valeur={reglages.montagne ?? null}
+            onChange={(montagne) => onChange({ ...reglages, montagne })}
+            disabled={disabled}
+          />
         </div>
       </div>
     </Categorie>

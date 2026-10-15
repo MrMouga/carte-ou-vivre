@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { duree, estimationTexte, merFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, typeTexte } from '@/domain/format';
+import { duree, estimationTexte, merFiche, montagneFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, typeTexte } from '@/domain/format';
 import type { ReglagePrix } from '@/domain/prix';
 import type { Evaluation } from '@/domain/score';
 import { cn } from '@/lib/cn';
@@ -73,6 +73,8 @@ export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: 
         {estimation && <p className="text-secondaire text-muted-foreground">{estimation}</p>}
       </div>
       <p className="text-texte tabular-nums">{merFiche(c.merKm)}</p>
+      {/* Cadre-de-vie, R30 : la montagne sous la mer. */}
+      <p className="text-texte tabular-nums">{montagneFiche(c.montagneKm)}</p>
       {proches.length > 0 && (
         <div className="flex flex-col gap-1 pt-2">
           <h3 className="text-categorie uppercase text-muted-foreground">Tes proches</h3>

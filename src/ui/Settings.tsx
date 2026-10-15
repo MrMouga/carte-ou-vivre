@@ -18,7 +18,7 @@ type Props = {
 };
 
 // Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, réglage du prix (design F d'immobilier), cadre de vie
-// (design F de cadre-de-vie : taille et mer), en catégories repliables. Sous 1 024 px, le titre n'est pas affiché,
+// (design F de cadre-de-vie : taille, mer et montagne), en catégories repliables. Sous 1 024 px, le titre n'est pas affiché,
 // seulement lu (D11 d'interface-telephone : la place gagnée garde le curseur du prix visible à 375 × 548).
 export function Settings({ reglages, onChange, prix, onPrix, inactif = false, children }: Props) {
   return (

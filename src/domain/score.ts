@@ -2,7 +2,9 @@
 // Spec proches : chaque proche prêt est un critère de plus (R10, R11).
 // Spec immobilier : le critère du prix suit le réglage du prix, passé en paramètre (R21, R22) ; un prix inconnu passe le
 // filtre sans donner de note (R25, D21 de loyer-mer).
-// Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer au km (sous 1 km : comparée comme 1 km).
+// Spec cadre-de-vie : la montagne filtre et note comme la mer (R29) ; raisons dans l'ordre de H83.
+// Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer et montagne au km (sous 1 km : comparée
+// comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
 
 export const SURFACE_M2 = 52;
@@ -21,7 +23,7 @@ export type Commune = {
   achatAppartement?: Achat;
   achatMaison?: Achat;
   // Spec cadre-de-vie (D10, R29) : type d'environnement et distance à la montagne en km (0 = commune de montagne).
-  // Lus avec la commune (tâche 2), pas encore utilisés par l'évaluation ; absent ou null = inconnu.
+  // Absent ou null = inconnu. La montagne est évaluée (R29) ; le type, pas encore (tâche 5).
   typeEnv?: TypeEnv | null;
   montagneKm?: number | null;
 };
@@ -47,12 +49,15 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
 /**
  * Plafonds. `loyer` : plafond du prix, dans le mode et l'unité du réglage du prix (en € ou en €/m², loyer ou achat : nom
  * gardé de loyer-mer), `null` = « Sans limite ». `mer` : un des choix de `CHOIX_MER` en km, `null` = « Peu importe »
- * (R28 de cadre-de-vie). `tailles` vide = « Peu importe ».
+ * (R28 de cadre-de-vie). `montagne` : un des choix de `CHOIX_MONTAGNE` en km, absente ou `null` = « Peu importe » (R29 ;
+ * facultative, pour que les réglages écrits avant la montagne restent valables). `tailles` vide = « Peu importe ».
  */
-export type Reglages = { loyer: number | null; mer: number | null; tailles: Taille[] };
+export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[] };
 
 /** R28, H69 de cadre-de-vie : les distances de la mer, après « Peu importe ». */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
+/** R29, H69 : les mêmes distances pour la montagne. */
+export const CHOIX_MONTAGNE = CHOIX_MER;
 
 /** R32 de cadre-de-vie : le prix de départ d'immobilier (D1), tout le cadre de vie sur Peu importe. */
 export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: null, tailles: [] };
@@ -70,12 +75,14 @@ export type Raison =
   /** Prix au-dessus du plafond, selon le mode et l'unité (R24). */
   | { critere: 'loyer' | 'loyer-m2' | 'achat' | 'achat-m2'; valeur: number; plafond: number }
   | { critere: 'mer'; valeur: number; plafond: number }
+  | { critere: 'montagne'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
   /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h. */
   | { critere: 'proche'; nom: string; valeur: number; plafond: number }
   /** Plus produite depuis R25 (un prix inconnu passe) ; gardée pour son texte. */
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
+  | { critere: 'montagne-inconnue' }
   | { critere: 'taille-inconnue' };
 
 export type Evaluation = {
@@ -104,6 +111,16 @@ export type Resultat = {
 export const loyerPour = (m2: number) => Math.round(m2 * SURFACE_M2);
 /** Distance utilisée pour comparer et noter : « moins d'1 km » vaut 1 km. */
 const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.round(c.merKm)));
+/** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
+const montagneComparee = (c: Commune) =>
+  c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : Math.max(1, Math.round(c.montagneKm));
+
+/**
+ * H74 : moyenne exacte des notes, moitié vers le haut. Une note en virgule flottante peut tomber juste sous la moitié
+ * (100 × (1 − 744 / 800) = 6,999999999999995) : la moyenne est d'abord ramenée au milliardième, bien au-dessus de cette
+ * erreur et bien en dessous de l'écart entre deux moyennes réelles.
+ */
+const moyenne = (notes: number[]) => Math.round(Math.round((notes.reduce((a, b) => a + b, 0) / notes.length) * 1e9) / 1e9);
 
 /** D11 : population exactement sur un seuil → la taille du dessus (10 000 = petite ville). */
 export function tailleDe(population: number | null): Taille | null {
@@ -121,7 +138,8 @@ export function palier(score: number): 1 | 2 | 3 | 4 | 5 {
 const CRITERE_PRIX = { louer: { total: 'loyer', m2: 'loyer-m2' }, acheter: { total: 'achat', m2: 'achat-m2' } } as const;
 
 export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = [], prix: ReglagePrix = PRIX_DEPART): Resultat {
-  const actif = r.loyer != null || r.mer != null || proches.length > 0;
+  // Critères qui notent : prix, mer, montagne, proches prêts (état « sans plafond » si aucun, details.md de cadre-de-vie).
+  const actif = r.loyer != null || r.mer != null || r.montagne != null || proches.length > 0;
   const parCode = new Map<string, Evaluation>();
   const passent: Evaluation[] = [];
   communes.forEach((c, i) => {
@@ -138,6 +156,12 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       else if (v > r.mer) raisons.push({ critere: 'mer', valeur: v, plafond: r.mer });
       else notes.push(100 * (1 - v / r.mer));
     }
+    if (r.montagne != null) {
+      const v = montagneComparee(c);
+      if (v == null) raisons.push({ critere: 'montagne-inconnue' });
+      else if (v > r.montagne) raisons.push({ critere: 'montagne', valeur: v, plafond: r.montagne });
+      else notes.push(100 * (1 - v / r.montagne));
+    }
     if (r.tailles.length) {
       const t = tailleDe(c.population);
       if (t == null) raisons.push({ critere: 'taille-inconnue' });
@@ -150,7 +174,7 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
     }
     const passe = raisons.length === 0;
     const sansNote = passe && actif && notes.length === 0;
-    const score = passe && notes.length > 0 ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : null;
+    const score = passe && notes.length > 0 ? moyenne(notes) : null;
     const e: Evaluation = { commune: c, passe, score, sansNote, valeurPrix, palier: score == null ? null : palier(score), rang: null, raisons };
     parCode.set(c.code, e);
     if (score != null) passent.push(e);

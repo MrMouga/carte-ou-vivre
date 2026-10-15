@@ -91,12 +91,13 @@ export const typeTexte = (type: TypeEnv | null | undefined, pop: number | null) 
 
 /**
  * Résumé de la catégorie « Cadre de vie » repliée (H75) : « Peu importe », ou les choix dans l'ordre des groupes,
- * « 2 tailles · Mer 50 km ».
+ * « 2 tailles · Mer 50 km · Montagne 30 km ».
  */
 export function resumeCadre(r: Reglages): string {
   const parts: string[] = [];
   if (r.tailles.length) parts.push(`${r.tailles.length}${NBSP}taille${r.tailles.length > 1 ? 's' : ''}`);
   if (r.mer != null) parts.push(`Mer ${km(r.mer)}`);
+  if (r.montagne != null) parts.push(`Montagne ${km(r.montagne)}`);
   return parts.length ? parts.join(' · ') : 'Peu importe';
 }
 
@@ -136,6 +137,16 @@ export const resumePrix = (p: ReglagePrix, plafond: number | null) =>
 export const merFiche = (k: number | null) =>
   k == null ? 'Distance à la mer inconnue' : k < 1 ? `moins d'1${NBSP}km de la mer` : `${km(k)} de la mer à vol d'oiseau`;
 
+/** Fiche, sous la mer (R30 de cadre-de-vie) : 0 = classée (R29), « moins d'1 km » sous 1 km comme pour la mer. */
+export const montagneFiche = (k: number | null | undefined) =>
+  k == null
+    ? 'Distance à la montagne inconnue'
+    : k === 0
+      ? 'Commune de montagne'
+      : k < 1
+        ? `moins d'1${NBSP}km de la montagne`
+        : `${km(k)} de la montagne à vol d'oiseau`;
+
 /** « 1re », « 2e »… */
 export const ordinal = (n: number) => `${n}${n === 1 ? 're' : 'e'}`;
 
@@ -154,12 +165,16 @@ export function raisonTexte(r: Raison): string {
       return `Achat ${eurosM2Entier(r.valeur)} : au-dessus de ton plafond de ${eurosM2Entier(r.plafond)}`;
     case 'mer':
       return `Mer ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
+    case 'montagne':
+      return `Montagne ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
     case 'taille':
       return `Taille : ${population(r.population)}${NBSP}habitants, hors des tailles choisies`;
     case 'loyer-inconnu':
       return 'Loyer inconnu';
     case 'mer-inconnue':
       return 'Distance à la mer inconnue';
+    case 'montagne-inconnue':
+      return 'Distance à la montagne inconnue';
     case 'taille-inconnue':
       return 'Taille inconnue';
     case 'proche':

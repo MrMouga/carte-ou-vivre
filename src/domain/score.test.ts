@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
+import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import { PRIX_DEPART } from './prix';
 import { communeDeLigne, evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type LigneCommunes, type Reglages } from './score';
 
@@ -209,5 +210,81 @@ describe('communes.json — type d’environnement et distance à la montagne lu
   it('une ligne sans ces colonnes (jeu ancien) : type et distance inconnus (null)', () => {
     const c = communeDeLigne(['99001', 'Portmer', '17', 23000, 12.5, false, 0.9, null, null]);
     expect(c).toMatchObject({ code: '99001', merKm: 0.9, typeEnv: null, montagneKm: null });
+  });
+});
+
+// Tranche cadre-de-vie, tâche 4 : la montagne filtre et note comme la mer (R29), sur la fixture « 6 communes » de la
+// tranche (montagne A 140, B 49,6, C 280, D 0 = commune de montagne, E 62, F 0,6 ; loyers au départ A 650, B 832, C 1 560,
+// D 416, E 1 092, F 572).
+describe('R29 — la montagne (spec cadre-de-vie)', () => {
+  const six: Commune[] = cadreDeVie.fixture.items.map((it) => ({
+    code: it.code_insee,
+    nom: it.nom,
+    dep: it.dep,
+    population: it.population,
+    loyerM2: it.loyer_m2,
+    estimationPropre: it.estimation_propre,
+    merKm: it.mer_km,
+    typeEnv: it.type_env as Commune['typeEnv'],
+    montagneKm: it.montagne_km,
+  }));
+  type Id6 = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  const code6 = Object.fromEntries(cadreDeVie.fixture.items.map((it) => [it.id, it.code_insee])) as Record<Id6, string>;
+  const ev = (r: Reglages) => {
+    const res = evaluer(six, r);
+    return { res, by: (id: Id6) => res.parCode.get(code6[id])!, classement: res.classement.map((e) => [e.commune.nom, e.score]) };
+  };
+
+  it('AC-3 (calcul) montagne 10 km : Terrebasse 83 (commune de montagne : note 100), Rhinval 71 (0,6 km comparée comme 1) ; Quaibleu : montagne 62 au-dessus de 10', () => {
+    const v = ev({ loyer: 1200, mer: null, montagne: 10, tailles: [] });
+    expect(v.classement).toEqual([['Terrebasse', 83], ['Rhinval', 71]]);
+    expect(v.by('E').raisons).toEqual([{ critere: 'montagne', valeur: 62, plafond: 10 }]);
+  });
+
+  it('AC-4 (calcul) montagne 50 km : Terrebasse 83, Rhinval 75, Grandeville 15 (49,6 affiché 50, égal au plafond : note 0) ; Portmer : 140 au-dessus de 50', () => {
+    const v = ev({ loyer: 1200, mer: null, montagne: 50, tailles: [] });
+    expect(v.classement).toEqual([['Terrebasse', 83], ['Rhinval', 75], ['Grandeville', 15]]);
+    expect(v.by('A').raisons).toEqual([{ critere: 'montagne', valeur: 140, plafond: 50 }]);
+  });
+
+  it('AC-11 (calcul) loyer 1 200 €, mer 100, montagne 50 : seule Grandeville passe, (31 + 60 + 0) / 3 → 30', () => {
+    const v = ev({ loyer: 1200, mer: 100, montagne: 50, tailles: [] });
+    expect(v.classement).toEqual([['Grandeville', 30]]);
+    expect(v.by('E').raisons).toEqual([{ critere: 'montagne', valeur: 62, plafond: 50 }]);
+  });
+
+  it('montagne sur Peu importe (absente ou null) : ni filtre ni note, comme au départ', () => {
+    expect(ev({ loyer: 1200, mer: null, tailles: [] }).classement).toEqual(ev({ loyer: 1200, mer: null, montagne: null, tailles: [] }).classement);
+    expect(ev({ loyer: 1200, mer: null, montagne: null, tailles: [] }).classement.map(([n]) => n)).toEqual(['Terrebasse', 'Rhinval', 'Portmer', 'Grandeville', 'Quaibleu']);
+  });
+
+  it('distance inconnue avec la montagne active : ne passe pas, raison « montagne-inconnue »', () => {
+    const inconnue = { ...six[0], code: '99901', montagneKm: null };
+    expect(evaluer([inconnue], { loyer: null, mer: null, montagne: 30, tailles: [] }).parCode.get('99901')).toMatchObject({
+      passe: false,
+      raisons: [{ critere: 'montagne-inconnue' }],
+    });
+  });
+
+  it('H83 : raisons dans l’ordre prix, mer, montagne, taille', () => {
+    const v = ev({ loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'] });
+    expect(v.by('C').raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille']);
+  });
+
+  it('sans plafond : prix sur Sans limite, mer et montagne sur Peu importe ; la montagne seule suffit à noter', () => {
+    expect(ev({ loyer: null, mer: null, montagne: 50, tailles: [] }).res.actif).toBe(true);
+    expect(ev({ loyer: null, mer: null, montagne: 50, tailles: [] }).classement).toEqual([['Terrebasse', 100], ['Rhinval', 98], ['Grandeville', 0]]);
+    // Seule la montagne repasse à Peu importe : page « sans plafond », aucun score.
+    const sans = ev({ loyer: null, mer: null, montagne: null, tailles: [] });
+    expect(sans.res.actif).toBe(false);
+    expect(sans.classement).toEqual([]);
+    expect([...sans.res.parCode.values()].every((e) => e.passe && e.score == null && !e.sansNote)).toBe(true);
+  });
+
+  it('H74 : la moitié exacte avec la montagne n’est pas perdue en virgule flottante — 744 € à 800 € et 5 km à 10 km : (7 + 50) / 2 = 28,5 → 29', () => {
+    // 100 × (1 − 744 / 800) vaut 6,999999999999995 en virgule flottante, et la moyenne naïve 28,499999999999996.
+    const c: Commune = { ...six[0], code: '99902', loyerM2: 14.3, merKm: null, montagneKm: 5 }; // 14,3 × 52 = 743,6 → 744 €
+    const e = evaluer([c], { loyer: 800, mer: null, montagne: 10, tailles: [] }).parCode.get('99902')!;
+    expect([e.valeurPrix, e.score]).toEqual([744, 29]);
   });
 });
