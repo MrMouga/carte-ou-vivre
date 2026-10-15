@@ -1,0 +1,47 @@
+Preuve tâche 3 — http://localhost:4180 — 2026-10-15T14:46:45.002Z
+
+== 1440 × 900 ==
+départ : adresse /?loyer=1200
+mer cochée : Peu importe
+tailles cochées : 0
+départ : compte 34 674 communes passent tes critères
+   1 · Allarmont (88) · 73 · 326 € · 431 km
+   2 · Bréménil (54) · 73 · 326 € · 423 km
+   3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+   4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+   5 · Luvigny (88) · 73 · 326 € · 434 km
+choix (mer 50 km, 2 tailles) : adresse /?loyer=1200&mer=50&taille=petite-ville,ville-moyenne
+choix : compte 268 communes passent tes critères
+   1 · La Hague (50) · 75 · 532 € · 3 km
+   2 · Avranches (50) · 75 · 576 € · 1 km
+   3 · Outreau (62) · 74 · 585 € · 2 km
+   4 · Concarneau (29) · 74 · 589 € · moins d'1 km
+   5 · Boulogne-sur-Mer (62) · 74 · 596 € · moins d'1 km
+repliée : Cadre de vie2 tailles · Mer 50 km
+fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) |  | Ville dense · 268 000 habitants
+ancien lien /?loyer=1200&mer=60 → adresse /?loyer=1200&mer=100
+après rechargement : adresse /?loyer=1200&mer=100 ; mer cochée : 100 km
+
+== 390 × 844 ==
+départ : adresse /?loyer=1200
+mer cochée : Peu importe
+tailles cochées : 0
+départ : compte 34 674 communes passent tes critères
+   1 · Allarmont (88) · 73 · 326 € · 431 km
+   2 · Bréménil (54) · 73 · 326 € · 423 km
+   3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+   4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+   5 · Luvigny (88) · 73 · 326 € · 434 km
+choix (mer 50 km, 2 tailles) : adresse /?loyer=1200&mer=50&taille=petite-ville,ville-moyenne
+choix : compte 268 communes passent tes critères
+   1 · La Hague (50) · 75 · 532 € · 3 km
+   2 · Avranches (50) · 75 · 576 € · 1 km
+   3 · Outreau (62) · 74 · 585 € · 2 km
+   4 · Concarneau (29) · 74 · 589 € · moins d'1 km
+   5 · Boulogne-sur-Mer (62) · 74 · 596 € · moins d'1 km
+repliée : Cadre de vie2 tailles · Mer 50 km
+fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) |  | Ville dense · 268 000 habitants
+ancien lien /?loyer=1200&mer=60 → adresse /?loyer=1200&mer=100
+après rechargement : adresse /?loyer=1200&mer=100 ; mer cochée : 100 km
+
+== 375 × 548 == adresse /?loyer=1200 ; curseur du prix : haut 519, bas 537 (fenêtre 548)
