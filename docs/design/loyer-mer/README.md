@@ -1,5 +1,5 @@
 2026-10-12 · validé
-À revoir (2026-10-14) : les catégories « Mer » (curseur) et « Taille de ville » deviennent la section « Cadre de vie » en pastilles (spec cadre-de-vie, D22 de loyer-mer) ; à dessiner par /ui de cadre-de-vie.
+Revu le 2026-10-15 : les catégories « Mer » (curseur) et « Taille de ville » deviennent la section « Cadre de vie » en pastilles (spec cadre-de-vie, D22 de loyer-mer) ; dessinée par /ui de cadre-de-vie ([design cadre-de-vie](../cadre-de-vie/README.md), prototype F), qui fait foi pour ces réglages.
 Revu (2026-10-14, /ui immobilier, voir ../immobilier/README.md) : le réglage du loyer devient le réglage du prix (tranche immobilier, D21 de loyer-mer) ; à redessiner par /ui d'immobilier.
 # Design — loyer-mer
 
