@@ -78,7 +78,7 @@ Cette table fait foi pour l'amendement D21 de loyer-mer.
 | interface-telephone | AC-2, AC-5, AC-9 : texte affiché « Loyer maximum » | Contredite | D12 d'interface-telephone : « Loyer mensuel » (D10) |
 
 ## Ne change pas
-Loyer-mer : AC-1 à AC-15, sur la fixture « 5 communes », réglage du prix au départ. Proches : AC-1 à AC-11, AC-14, AC-16. Interface-telephone : AC-1 à AC-11 (AC-2, AC-5, AC-9 révisés par D12 : « Loyer mensuel »), et le test hors AC de H48 (375 × 548).
+Loyer-mer : AC-1 à AC-15, sur la fixture « 5 communes », réglage du prix au départ. Proches : AC-1 à AC-9, AC-11, AC-14, AC-16 (AC-10 remplacé par AC-4 de proches-fiables, D18 de proches). Interface-telephone : AC-1 à AC-11 (AC-2, AC-5, AC-9 révisés par D12 : « Loyer mensuel »), et le test hors AC de H48 (375 × 548).
 
 ## Hypothèses
 - **H56** — Libellés : « Appartement » / « Maison », « Louer » / « Acheter », « Total » / « Au m² » ; curseur « Loyer mensuel » ou « Prix d'achat » (D10) ; champ surface sans libellé visible, suivi de « m² » ; pas de sous-texte sous le curseur du prix. Les critères les citent : les changer est une révision de la spec, pas un choix de /ui.

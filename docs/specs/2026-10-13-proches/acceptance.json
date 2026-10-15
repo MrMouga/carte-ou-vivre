@@ -382,14 +382,6 @@
       "passes": true
     },
     {
-      "id": "AC-10",
-      "rule": "R13",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de trajets en panne",
-      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville »",
-      "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
-      "passes": true
-    },
-    {
       "id": "AC-11",
       "rule": "R13",
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de recherche d'adresse en panne",
@@ -414,6 +406,20 @@
       "passes": true
     }
   ],
+  "remplaces": {
+    "pourquoi": "D18 (spec proches, 2026-10-16) : l'état « Trajets indisponibles » disparaît ; AC-10 est remplacé par AC-4 de proches-fiables (docs/specs/2026-10-16-proches-fiables/acceptance.json). Gardé ici tel quel, pour la trace.",
+    "criteria": [
+      {
+        "id": "AC-10",
+        "rule": "R13",
+        "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de trajets en panne",
+        "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville »",
+        "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
+        "passes": true,
+        "remplace_par": "AC-4 de proches-fiables"
+      }
+    ]
+  },
   "reportes": {
     "pourquoi": "D14 (spec proches, 2026-10-13) : mer en minutes reportée à une tranche suivante ; critères gardés tels quels pour elle.",
     "criteria": [

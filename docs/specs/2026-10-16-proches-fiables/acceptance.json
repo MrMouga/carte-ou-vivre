@@ -1,0 +1,148 @@
+{
+  "slice": "proches-fiables",
+  "fixture": {
+    "description": "Fixture inventée « 5 communes » de la tranche proches, telle que recalée par cadre-de-vie (mêmes codes 99xxx, noms, loyers, mer, mairies, services de recherche et de trajets ; voir docs/specs/2026-10-13-proches/acceptance.json), plus une adresse « 6 rue Test 17000 Rochelleville » au point [0.5, 0.5]. Les trajets sont simulés zone par zone : la zone de d minutes contient les communes dont la fin de tranche est ≤ d (tranches ci-dessous). Les blocs « pannes par zone » disent quelles zones échouent ; sans mention, chaque zone répond 1 s après sa demande. Distances à vol d'oiseau depuis [0.5, 0.5] (sphère de 6 371 km, au km) : Portmer 39, Grandeville 88, Montcher 197, Terrebasse 88, Quaibleu 118. Le navigateur de test part sans proche gardé, sauf quand le critère en donne un. « Gardé par la version précédente » = le format de mémoire de la version en ligne au 2026-10-16 (commit 56ac3d6). Toutes les pages s'ouvrent sur /?loyer=1200&mer=50 (le reste du cadre de vie sur Peu importe).",
+    "items": "ceux de la fixture « 5 communes » de proches : A Portmer (17) 99001, B Grandeville (33) 99002, C Montcher (75) 99003, D Terrebasse (23) 99004, E Quaibleu (13) 99005",
+    "services": {
+      "recherche d'adresse (IGN) — ajout à la fixture de proches": {
+        "6 rue Test": {
+          "suggestions": [
+            {
+              "libelle": "6 rue Test 17000 Rochelleville",
+              "commune": "Rochelleville",
+              "dep": "17",
+              "point": [
+                0.5,
+                0.5
+              ]
+            }
+          ]
+        }
+      },
+      "calcul de trajets (IGN) — fin de tranche en minutes par code de commune (null = hors de la zone de 3 h)": {
+        "1 rue Test 44000 Nantesville": {
+          "99001": 60,
+          "99002": 135,
+          "99003": 150,
+          "99004": 150,
+          "99005": null
+        },
+        "6 rue Test 17000 Rochelleville": {
+          "99001": 45,
+          "99002": 75,
+          "99003": 165,
+          "99004": 90,
+          "99005": 105
+        }
+      },
+      "pannes par zone": {
+        "zone-135-une-fois": "la zone de 135 min échoue (erreur 502) à sa première demande, puis répond",
+        "zone-135-toujours": "la zone de 135 min échoue (erreur 502) à chaque demande",
+        "zone-135-muette": "la zone de 135 min ne répond jamais (horloge simulée)",
+        "zone-180-toujours": "la zone de 180 min échoue (erreur 504) à chaque demande",
+        "zones-120-a-180-toujours": "les zones de 120 à 180 min échouent à chaque demande",
+        "zones-135-a-180-toujours": "les zones de 135 à 180 min échouent à chaque demande",
+        "panne-totale": "erreur réseau sur toute demande de zone (comme la panne « calcul de trajets » de proches)",
+        "zone-180-toujours-rochelleville": "pour « 6 rue Test 17000 Rochelleville », la zone de 180 min échoue (erreur 504) à chaque demande"
+      }
+    }
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R33",
+      "given": "Fixture, panne « zone-135-une-fois », aucun proche gardé",
+      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville » en gardant le nom proposé, attend la fin du calcul, puis choisit Grandeville (33) sur la carte",
+      "then": "le proche « Nantesville (44) » est prêt avec le plafond 2 h, sans « Temps approximatifs » ni « Recalculer avec l'IGN » ; la fiche de Grandeville affiche « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » ; la zone de 135 min a été demandée deux fois, chacune des 11 autres une fois",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R34",
+      "given": "Fixture, aucun proche gardé ; deux cas : (a) panne « zone-135-toujours », (b) panne « zone-135-muette »",
+      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville », attend la fin du calcul, règle son plafond sur 2 h 30, choisit Grandeville (33) puis Portmer (17), puis règle le plafond sur 2 h 15",
+      "then": "(a) le calcul finit avant 45 s ; (b) il ne finit pas avant 45 s après son début, et au plus 1 s après (horloge simulée). Dans les deux cas : la ligne du proche affiche « Temps approximatifs : l'IGN n'a pas tout donné. » et « Recalculer avec l'IGN » ; à 2 h 30, la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 68 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km » ; la fiche de Grandeville affiche « Nantesville (44) : jusqu'à 2 h 30 en voiture » et celle de Portmer « Nantesville (44) : 1 h en voiture » ; à 2 h 15, la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km », et la fiche de Grandeville affiche « Nantesville (44) jusqu'à 2 h 30 : au-dessus de ton plafond de 2 h 15 »",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R34",
+      "given": "Fixture, panne « zone-180-toujours », aucun proche gardé",
+      "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville », attend la fin du calcul, essaie de régler le plafond au plus haut, puis le remet sur 2 h et choisit Quaibleu (13)",
+      "then": "la ligne du proche affiche « Au-delà de 2 h 45 : l'IGN n'a pas répondu. » et « Recalculer avec l'IGN », sans « Temps approximatifs » ; le plafond le plus haut possible est 2 h 45 ; à 2 h, la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 2 h 45 : au-dessus de ton plafond de 2 h »",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R35",
+      "given": "Fixture, panne « panne-totale », aucun proche gardé",
+      "when": "l'utilisateur ajoute « 6 rue Test 17000 Rochelleville » en gardant le nom proposé, attend la fin du calcul, puis choisit Grandeville (33)",
+      "then": "le proche « Rochelleville (17) » affiche « À vol d'oiseau : l'IGN ne répond pas. », le plafond « 120 km au plus » et « Recalculer avec l'IGN » ; « Trajets indisponibles » n'est affiché nulle part ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 70 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 32 · 1 092 € · 7 km » et « 3 · Grandeville (33) · 26 · 832 € · 40 km » ; la fiche de Grandeville affiche « Rochelleville (17) : 88 km à vol d'oiseau »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R35",
+      "given": "Fixture, largeur bureau (1 440 px), panne « panne-totale », proche « Rochelleville (17) » à vol d'oiseau avec le plafond 120 km (état final d'AC-4), aucune commune choisie",
+      "when": "l'utilisateur règle le plafond du proche sur 90 km, regarde le haut de la carte, puis choisit Quaibleu (13)",
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 67 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 18 · 832 € · 40 km » ; avant le choix, la pastille affiche « Rochelleville (17) » et « 90 km au plus » ; après, elle affiche « 118 km · au-dessus de 90 km » et la fiche de Quaibleu affiche « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km » ; aucune zone n'a été demandée depuis la fin du calcul",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R33",
+      "given": "Fixture, aucun proche gardé sauf au cas (c) ; trois cas : (a) panne « zones-120-a-180-toujours » (couverture 1 h 45) et ajout de « 6 rue Test 17000 Rochelleville » (plafond 2 h) ; (b) panne « zones-135-a-180-toujours » (couverture 2 h) et même ajout ; (c) proche « Rochelleville (17) » gardé à vol d'oiseau avec le plafond 45 km (obtenu en jouant AC-4 puis en réglant 45 km) et un dernier essai datant de plus de 15 min, panne « zones-120-a-180-toujours »",
+      "when": "(a), (b) : l'utilisateur ajoute le proche et attend la fin du calcul ; (c) : l'utilisateur rouvre la page et attend la fin du recalcul",
+      "then": "(a) le proche est à vol d'oiseau : « À vol d'oiseau : l'IGN ne répond pas. », « 120 km au plus », et la liste montre Portmer (17) 70, Quaibleu (13) 32, Grandeville (33) 26 ; (b) le proche est en heures avec le plafond 2 h, la ligne affiche « Au-delà de 2 h : l'IGN n'a pas répondu. », le plafond le plus haut possible est 2 h, la liste montre « 3 communes passent tes critères » puis Portmer (17) 69, Quaibleu (13) 36, Grandeville (33) 29, et la fiche de Montcher (75) affiche « Rochelleville (17) plus de 2 h : au-dessus de ton plafond de 2 h » ; (c) le proche passe en heures avec le plafond 45 min, la ligne affiche « Au-delà de 1 h 45 : l'IGN n'a pas répondu. » sans « À vol d'oiseau », le plafond le plus haut possible est 1 h 45, et la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 48 · 650 € · moins d'1 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R36",
+      "given": "Fixture, proche « Nantesville (44) » gardé dans ce navigateur, obtenu en jouant AC-2 cas (a) puis en remettant le plafond sur 2 h 30 (Grandeville à « jusqu'à 2 h 30 »), dernier essai datant de plus de 15 min ; le service de trajets est rétabli avant la réouverture et répond normalement",
+      "when": "l'utilisateur rouvre la page, attend la fin du recalcul, puis choisit Grandeville (33)",
+      "then": "dès l'ouverture, le proche compte (la liste montre Portmer (17) 68 et Grandeville (33) 17) et sa ligne affiche « Recalcul avec l'IGN… » ; après le recalcul, le proche est prêt avec le plafond 2 h 30, sans « Temps approximatifs » ni « Recalculer avec l'IGN » ; la liste montre « 1 · Portmer (17) · 68 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 20 · 832 € · 40 km » ; la fiche de Grandeville affiche « Nantesville (44) : 2 h 15 en voiture »",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R36",
+      "given": "Fixture, un proche gardé dans ce navigateur selon le cas : « Rochelleville (17) » à vol d'oiseau avec le plafond 90 km (obtenu en jouant AC-4 puis en réglant 90 km), ou « Nantesville (44) » partiel avec le plafond 2 h 30 (obtenu comme dans AC-7) ; cinq cas : (a) Rochelleville, dernier essai il y a plus de 15 min, l'IGN répond normalement ; (b) Rochelleville, dernier essai il y a plus de 15 min, panne « panne-totale » ; (c) Nantesville, dernier essai il y a plus de 15 min, panne « panne-totale » ; (d) Rochelleville, dernier essai il y a 5 min, l'IGN répond normalement ; (e) Rochelleville, dernier essai il y a plus de 15 min, panne « panne-totale », puis seconde réouverture 5 min après la première",
+      "when": "l'utilisateur rouvre la page et attend la fin du recalcul s'il y en a un ; au cas (d), il appuie ensuite sur « Recalculer avec l'IGN »",
+      "then": "(a) le proche est en heures avec le plafond 1 h 30, sans « À vol d'oiseau », et la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 22 · 832 € · 40 km » ; (b) une fois « Recalcul avec l'IGN… » disparu, la ligne affiche « À vol d'oiseau : l'IGN ne répond pas. », « 90 km au plus » et « Recalculer avec l'IGN », sans « Temps approximatifs », ni « Trajets indisponibles », ni message d'erreur, et la liste montre Portmer (17) 67 et Grandeville (33) 18 ; (c) une fois « Recalcul avec l'IGN… » disparu, le proche reste en heures avec le plafond 2 h 30 et « Temps approximatifs : l'IGN n'a pas tout donné. », sans « À vol d'oiseau », et la liste montre Portmer (17) 68 et Grandeville (33) 17 ; (d) à l'ouverture, aucune zone n'est demandée et le proche reste à vol d'oiseau avec le plafond 90 km ; après « Recalculer avec l'IGN », il passe en heures avec le plafond 1 h 30 et la liste montre Portmer (17) 65 et Grandeville (33) 22 ; (e) à la première ouverture, le recalcul échoue et le proche reste à vol d'oiseau avec le plafond 90 km ; à la seconde, aucune zone n'est demandée",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R36",
+      "given": "Fixture, proche « Rochelleville (17) » à vol d'oiseau avec le plafond 120 km, obtenu en jouant AC-4 ; le service de trajets est ensuite rétabli et répond normalement",
+      "when": "l'utilisateur appuie sur « Recalculer avec l'IGN » et attend la fin du recalcul",
+      "then": "pendant le recalcul, la ligne affiche « Recalcul avec l'IGN… » et la liste reste Portmer (17) 70, Quaibleu (13) 32, Grandeville (33) 26 ; ensuite le proche est prêt avec le plafond 2 h et la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 36 · 1 092 € · 7 km » et « 3 · Grandeville (33) · 29 · 832 € · 40 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R37",
+      "given": "Fixture, l'IGN répond normalement ; proche « Nantesville (44) » gardé par la version précédente avec le plafond 2 h 15, dans trois cas : (a) gardé indisponible, (b) gardé prêt mais dont l'empreinte des codes INSEE ne correspond plus à la carte, (c) gardé pendant son calcul (page fermée avant la fin)",
+      "when": "l'utilisateur ouvre la page et attend la fin du calcul",
+      "then": "dans les trois cas, la ligne affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche est prêt avec le plafond 2 h 15 ; « Trajets indisponibles » n'est affiché à aucun moment ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km »",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R36",
+      "given": "Fixture, deux proches gardés dans ce navigateur et approximatifs, chacun avec un dernier essai datant de plus de 15 min : « Nantesville (44) » partiel (comme dans AC-7) puis « Rochelleville (17) » à vol d'oiseau (comme dans AC-9) ; le service de trajets est rétabli et répond normalement",
+      "when": "l'utilisateur rouvre la page et, pendant le recalcul de Nantesville (44), ajoute « 2 place Test 31000 Toulouseville »",
+      "then": "Toulouseville (31) affiche « En attente… » tant que Nantesville (44) se recalcule, puis « Calcul des trajets depuis Toulouseville (31)… » ; aucune zone n'est demandée pour Rochelleville (17) avant que Toulouseville (31) soit prêt ; à la fin, les trois proches sont prêts, Rochelleville (17) avec le plafond 2 h",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R33",
+      "given": "Fixture, panne « zone-180-toujours-rochelleville » ; proche « Rochelleville (17) » gardé à vol d'oiseau (obtenu en jouant AC-4 puis en réglant le plafond), dernier essai il y a plus de 15 min ; deux cas : (a) plafond 180 km ; (b) plafond 165 km",
+      "when": "l'utilisateur rouvre la page et attend la fin du recalcul",
+      "then": "(a) le proche reste à vol d'oiseau avec le plafond 180 km, « À vol d'oiseau : l'IGN ne répond pas. » et « Recalculer avec l'IGN » ; aucun plafond de 2 h 45 n'est affiché ; (b) le proche passe en heures avec le plafond 2 h 45, la ligne affiche « Au-delà de 2 h 45 : l'IGN n'a pas répondu. », et le plafond le plus haut possible est 2 h 45",
+      "passes": false
+    }
+  ]
+}

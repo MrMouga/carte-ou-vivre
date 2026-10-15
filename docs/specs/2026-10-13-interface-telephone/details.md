@@ -53,7 +53,7 @@ Interactions : bouton ou toucher sur la barre → la feuille change de position 
 | tous | Bureau (≥ 1 024 px) | Inchangée | AC-9. |
 
 ## Ne change pas
-Loyer-mer : AC-1 à AC-15. Proches : AC-1 à AC-11, AC-14, AC-16. Aux deux largeurs de test ; à 390 px, un test qui lisait la liste sous les réglages passe désormais par l'onglet « Les 10 premières » (la façon d'y aller change, pas le `given / when / then`).
+Loyer-mer : AC-1 à AC-15. Proches : AC-1 à AC-9, AC-11, AC-14, AC-16 (AC-10 remplacé par AC-4 de proches-fiables, D18 de proches). Aux deux largeurs de test ; à 390 px, un test qui lisait la liste sous les réglages passe désormais par l'onglet « Les 10 premières » (la façon d'y aller change, pas le `given / when / then`).
 
 ## Hypothèses
 - **H41** — Les AC de cette tranche à 390 px se jouent au toucher, à 390 × 844 (largeur de test du projet), et à 390 × 664 et 375 × 548 (fenêtres de Safari sur iPhone) pour R16 et R20. *Pourquoi* : le défaut de R16 n'apparaît pas à 844 px de haut ; un glisser à la souris ne fait pas défiler.
