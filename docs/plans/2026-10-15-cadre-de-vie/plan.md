@@ -1,5 +1,5 @@
 # Plan — cadre-de-vie
-2026-10-15 · brouillon · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-10-14-cadre-de-vie/spec.md) (D1–D11) · Critères : [acceptance.json](../../specs/2026-10-14-cadre-de-vie/acceptance.json) (AC-1 à AC-12) · Recalage : [recalage.md](../../specs/2026-10-14-cadre-de-vie/recalage.md) · Design : [README](../../design/cadre-de-vie/README.md) (prototype F, pas de Figma) · Système : [contrat](../../design/system/README.md) · Construit aussi : D12 d'immobilier ([spec](../../specs/2026-10-14-immobilier/spec.md), AC-14)
+2026-10-15 · validé · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-10-14-cadre-de-vie/spec.md) (D1–D11) · Critères : [acceptance.json](../../specs/2026-10-14-cadre-de-vie/acceptance.json) (AC-1 à AC-12) · Recalage : [recalage.md](../../specs/2026-10-14-cadre-de-vie/recalage.md) · Design : [README](../../design/cadre-de-vie/README.md) (prototype F, pas de Figma) · Système : [contrat](../../design/system/README.md) · Construit aussi : D12 d'immobilier ([spec](../../specs/2026-10-14-immobilier/spec.md), AC-14)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici. Le site existe : loyer-mer, proches, interface-telephone et immobilier sont construites.)
 
 ## Ce que /build fera seul, et ce qu'il demandera
