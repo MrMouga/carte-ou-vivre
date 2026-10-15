@@ -60,7 +60,7 @@ Pour essayer : `npm run build` puis `npx vite preview` → http://localhost:4173
 
 ## Au passage
 - **La distance à la mer a le même défaut résiduel** que la montagne avant correction : 181 communes affichées 1 km trop loin (arrondie au centième au lieu d'être tronquée). Hors de la demande, non corrigé ; même traitement possible (≈ 15 min).
-- « Trajets indisponibles depuis Nantes (44) » sur ton iPhone : l'IGN était lent ce soir (23 s pour la seule zone de 3 h), et le site abandonne à 45 s pour les 12 zones (H21 de proches). Hors de cette tranche ; à garder en tête.
+- **Le calcul des trajets ne marche pas ce soir, en vrai** (iPhone et PC de Vincent : « Trajets indisponibles »). Mesuré à 23:12 depuis le Mac, les 12 zones depuis Nantes demandées comme le fait le site (une toutes les 250 ms) : 9 réponses en 3 à 43 s, **une 502** (75 min) et **deux 504 après 60 s** (2 h, 3 h). Une seule zone en échec suffit à rendre le proche indisponible (R13 de proches). Cette tranche n'a touché aucun fichier de `src/proches/` : ce n'est pas une régression, c'est une fragilité de la tranche proches face à un IGN dégradé. Piste : un `/spec` de proches (réessayer une zone, garder les zones obtenues, délai), à décider par Vincent.
 - `communes.json` a pris ≈ 130 Ko compressés (gzip) depuis le début de la tranche, au-delà des 100 Ko que le plan voulait signaler.
 
 ## Coût
