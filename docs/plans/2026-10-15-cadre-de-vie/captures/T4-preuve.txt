@@ -1,0 +1,41 @@
+Preuve tâche 4 — http://localhost:4180 — 2026-10-15T18:02:01.368Z
+
+== 1440 × 900 ==
+départ : adresse /?loyer=1200 ; montagne cochée : Peu importe
+montagne « 10 km » : adresse /?loyer=1200&montagne=10 ; cochée : 10 km
+compte : 8 936 communes passent tes critères
+   1 · Allarmont (88) · 86 · 326 € · 431 km
+   2 · Celles-sur-Plaine (88) · 86 · 326 € · 428 km
+   3 · La Petite-Raon (88) · 86 · 326 € · 434 km
+   4 · Luvigny (88) · 86 · 326 € · 434 km
+   5 · Moussey (88) · 86 · 326 € · 434 km
+   6 · Raon-sur-Plaine (88) · 86 · 326 € · 435 km
+   7 · Vexaincourt (88) · 86 · 326 € · 433 km
+   8 · Celoux (15) · 86 · 327 € · 182 km
+   9 · Champagnac-le-Vieux (43) · 86 · 327 € · 199 km
+   10 · Chaniat (43) · 86 · 327 € · 195 km
+fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | NE PASSE PAS TES CRITÈRES | Loyer 1 334 € : au-dessus de ton plafond de 1 200 € | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+plafond 1 350 €, montagne 10 km : adresse /?loyer=1350&montagne=10
+fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7724e sur 8 949 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+après rechargement : adresse /?loyer=1200&montagne=10 ; montagne cochée : 10 km
+
+== 390 × 844 ==
+départ : adresse /?loyer=1200 ; montagne cochée : Peu importe
+montagne « 10 km » : adresse /?loyer=1200&montagne=10 ; cochée : 10 km
+compte : 8 936 communes passent tes critères
+   1 · Allarmont (88) · 86 · 326 € · 431 km
+   2 · Celles-sur-Plaine (88) · 86 · 326 € · 428 km
+   3 · La Petite-Raon (88) · 86 · 326 € · 434 km
+   4 · Luvigny (88) · 86 · 326 € · 434 km
+   5 · Moussey (88) · 86 · 326 € · 434 km
+   6 · Raon-sur-Plaine (88) · 86 · 326 € · 435 km
+   7 · Vexaincourt (88) · 86 · 326 € · 433 km
+   8 · Celoux (15) · 86 · 327 € · 182 km
+   9 · Champagnac-le-Vieux (43) · 86 · 327 € · 199 km
+   10 · Chaniat (43) · 86 · 327 € · 195 km
+fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | NE PASSE PAS TES CRITÈRES | Loyer 1 334 € : au-dessus de ton plafond de 1 200 € | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+fiche de Bordeaux : ← Les 10 premières | Bordeaux (33) | Ville dense · 268 000 habitants | NE PASSE PAS TES CRITÈRES | Montagne 173 km : au-dessus de ton plafond de 10 km | 832 € par mois pour 52 m² (16,0 €/m²) | 39 km de la mer à vol d'oiseau | 173 km de la montagne à vol d'oiseau
+plafond 1 350 €, montagne 10 km : adresse /?loyer=1350&montagne=10
+fiche de Chamonix-Mont-Blanc : ← Les 10 premières | Chamonix-Mont-Blanc (74) | Ville et périphérie · 8 700 habitants | 51 | / 100 | 7724e sur 8 949 communes qui passent | 1 334 € par mois pour 52 m² (25,7 €/m²) | 243 km de la mer à vol d'oiseau | Commune de montagne
+après rechargement : adresse /?loyer=1200&montagne=10 ; montagne cochée : 10 km

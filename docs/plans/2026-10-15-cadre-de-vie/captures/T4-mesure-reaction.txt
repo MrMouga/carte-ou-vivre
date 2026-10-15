@@ -1,0 +1,26 @@
+Réaction réglage → carte redessinée ; version construite (vite preview), vraies données, 1 440 × 900, fond uni, CPU ×4, rendu logiciel (Chromium de Playwright sans écran) ; médiane de 15 essais, au clavier (flèche droite puis gauche, en alternance).
+Mesure : du keydown (capture) à la deuxième image qui suit le changement de l'adresse (l'image où MapLibre redessine, puis la suivante). Les durées tombent par paliers d'une image (≈ 16,5 ms : 98, 115, 131, 148, 164).
+Le script d'immobilier n'est pas dans le dépôt : même conditions, script réécrit (scratchpad, mesure-reaction.mjs). Pour comparer sans biais, il a été passé sur la version d'avant la tâche (756af9c, tâche 3) et sur celle d'après (d8784dd), servies côte à côte (ports 4181 et 4180), en alternance. 2026-10-15, 20:02-20:06, charge de la machine 3,7 à 6.
+
+Curseur « Loyer maximum », un cran (1 200 € ↔ 1 250 €), depuis /?loyer=1200&mer=50 — le geste le plus proche du « curseur de la mer, un cran » d'immobilier :
+  avant (756af9c) : médiane 115 ms ; min 98 max 136 ; essais 136 102 113 114 115 116 114 98 114 116 115 115 132 115 116
+  avant (756af9c) : médiane 114 ms ; min 98 max 136 ; essais 136 114 131 114 115 113 115 114 131 98 114 114 115 114 116
+  après (d8784dd) : médiane 116 ms ; min 99 max 132 ; essais 131 132 116 132 115 116 117 116 115 114 116 113 116 99 130
+  après (d8784dd) : médiane 115 ms ; min 98 max 152 ; essais 152 131 131 132 115 116 114 116 115 99 115 115 115 98 99
+  après, montagne active (/?loyer=1200&mer=50&montagne=50) : médiane 114 ms ; min 98 max 165 ; essais 162 131 116 98 114 114 115 98 165 114 115 98 98 115 113
+
+Cases « Montagne à moins de » (50 km ↔ 100 km), depuis /?loyer=1200&mer=50&montagne=50 :
+  après (d8784dd) : médiane 115 ms ; min 99 max 131 ; essais 116 131 130 99 113 99 114 116 115 114 116 116 114 116 115
+
+Cases « Mer à moins de » (50 km ↔ 100 km), depuis /?loyer=1200&mer=50 — des milliers de communes changent de couleur à chaque geste :
+  avant (756af9c) : médiane 149 ms ; min 133 max 195 ; essais 195 146 165 148 165 149 146 133 166 149 165 149 164 148 165
+  avant (756af9c) : médiane 158 ms ; min 129 max 189 ; essais 189 147 166 137 158 149 165 130 166 148 164 129 166 149 165
+  avant (756af9c) : médiane 164 ms ; min 132 max 179 ; essais 179 148 166 148 165 132 164 132 165 149 165 148 165 149 165
+  après (d8784dd) : médiane 163 ms ; min 131 max 203 ; essais 203 131 167 133 163 147 165 165 164 147 164 148 165 148 148
+  après (d8784dd) : médiane 164 ms ; min 131 max 199 ; essais 199 131 165 146 164 148 166 148 165 147 165 132 164 131 164
+  après (d8784dd) : médiane 163 ms ; min 148 max 198 ; essais 171 148 164 198 164 148 148 149 163 149 181 149 164 148 165
+
+Lecture :
+- La montagne n'ajoute rien de mesurable : avant et après, mêmes médianes à une image près, pour le même geste.
+- Curseur du prix et cases de la montagne : 114 à 116 ms, sous 120 ms (100 ms + 20 ms de marge). Avec cette méthode, qui compte une image de plus que celle où la carte est redessinée.
+- Cases de la mer, 50 ↔ 100 km : 149 à 164 ms, AU-DELÀ de 120 ms. Déjà le cas avant la tâche (tâche 3, 149 à 164 ms). Ce geste recolore beaucoup plus de communes qu'un cran de curseur (toute la bande de 50 à 100 km de la côte). Il est né avec la bascule de la tâche 3, pas avec la montagne.
