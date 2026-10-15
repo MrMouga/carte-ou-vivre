@@ -68,7 +68,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50 dans une fenêtre de 390 × 664, feuille ouverte sur « Critères », d'abord sans proche, puis avec 4 proches prêts (Nantesville, Toulouseville, Lyonville, Brestville) ; puis l'iPhone de Vincent (Safari), sur une version construite servie par le Wi-Fi",
       "when": "l'utilisateur touche « Adresse ou ville » (sans proche) ou « + Ajouter un proche » (avec 4 proches), tape « 1 rue Test » (sur l'iPhone : « 12 rue de la Paix Nantes »), puis choisit la première suggestion",
       "then": "dans le navigateur de test, dans les deux cas : au moment où le champ d'adresse reçoit le focus, il est déjà sous la poignée et au-dessus de y = 342, et ne bouge plus pendant la saisie ; la suggestion « 1 rue Test 44000 Nantesville » est entièrement au-dessus de y = 342 ; après le choix, « Nom » a le focus, déjà à sa place, et « Nom » et « Ajouter » sont au-dessus de y = 342. Sur l'iPhone, captures à l'appui : le champ d'adresse et ses suggestions, puis « Nom » et « Ajouter », sont visibles au-dessus du clavier ouvert. Ce critère ne passe qu'avec les captures de l'iPhone",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
