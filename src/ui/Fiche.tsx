@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { duree, estimationTexte, merFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, tailleTexte } from '@/domain/format';
+import { duree, estimationTexte, merFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, typeTexte } from '@/domain/format';
 import type { ReglagePrix } from '@/domain/prix';
 import type { Evaluation } from '@/domain/score';
 import { cn } from '@/lib/cn';
@@ -44,7 +44,7 @@ export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: 
         <h2 id="titre-fiche" ref={titre} tabIndex={-1} className="font-serif text-titre-fiche">
           {nomAffiche(c)}
         </h2>
-        <p className="text-texte text-muted-foreground tabular-nums">{tailleTexte(c.population)}</p>
+        <p className="text-texte text-muted-foreground tabular-nums">{typeTexte(c.typeEnv, c.population)}</p>
       </div>
       {e.score != null && (
         <div className="flex flex-col">

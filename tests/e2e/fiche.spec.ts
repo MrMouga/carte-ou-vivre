@@ -13,23 +13,23 @@ async function regler(page: Page, nom: string, touche: string, fois = 1) {
   await apresRendu(page);
 }
 
-test('AC-7 choisir Grandeville (33) dans la liste : sa fiche, sans « Estimation du secteur »', async ({ page }) => {
-  await ouvrir(page);
+test('AC-7 depuis /?loyer=1200&mer=50, choisir Grandeville (33) dans la liste : « Ville dense · 260 000 habitants », 25, sans « Estimation du secteur »', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await ligne(page, 'Grandeville').click();
   const t = await texte(page);
-  for (const attendu of ['Grandeville (33)', 'Grande ville · 260 000 habitants', '32', '3e sur 3 communes qui passent', '832 € par mois pour 52 m² (16,0 €/m²)', "40 km de la mer à vol d'oiseau"])
+  for (const attendu of ['Grandeville (33)', 'Ville dense · 260 000 habitants', '25', '3e sur 3 communes qui passent', '832 € par mois pour 52 m² (16,0 €/m²)', "40 km de la mer à vol d'oiseau"])
     expect(t).toContain(attendu);
   expect(t).not.toContain('Estimation du secteur');
-  await expect(fiche(page).getByText('32', { exact: true })).toBeVisible();
+  await expect(fiche(page).getByText('25', { exact: true })).toBeVisible();
 });
 
-test('AC-8 choisir Portmer (17) : petite ville, 1re sur 3, estimation du secteur, moins d’1 km', async ({ page }) => {
-  await ouvrir(page);
+test('AC-8 depuis /?loyer=1200&mer=50, choisir Portmer (17) : ville et périphérie, 1re sur 3, estimation du secteur, moins d’1 km', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await ligne(page, 'Portmer').click();
   const t = await texte(page);
-  for (const attendu of ['Portmer (17)', 'Petite ville · 23 000 habitants', '1re sur 3 communes qui passent', '650 € par mois pour 52 m² (12,5 €/m²)', 'Estimation du secteur (communes voisines)', "moins d'1 km de la mer"])
+  for (const attendu of ['Portmer (17)', 'Ville et périphérie · 23 000 habitants', '1re sur 3 communes qui passent', '650 € par mois pour 52 m² (12,5 €/m²)', 'Estimation du secteur (communes voisines)', "moins d'1 km de la mer"])
     expect(t).toContain(attendu);
 });
 
@@ -44,9 +44,9 @@ test('AC-9 depuis /?loyer=1200&mer=50, choisir Montcher (75) sur la carte : deux
   expect(t).not.toMatch(/\/ 100|sur \d+ communes? qui pass/);
 });
 
-test('AC-10 cocher « Petite ville » : seule A passe (72), « 1 commune passe tes critères », Grandeville : raison de taille', async ({ page }) => {
-  await ouvrir(page);
-  await page.getByRole('button', { name: /^Petite ville/ }).click();
+test('AC-10 depuis /?loyer=1200&mer=50, cocher « 10 000 – 50 000 hab. » : seule A passe (72), « 1 commune passe tes critères », Grandeville : raison de taille', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
+  await page.getByRole('button', { name: /^10\s000 – 50\s000\shab\.$/ }).click();
   await apresRendu(page);
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(page.getByRole('region', { name: 'Les 10 premières' })).toContainText('1 commune passe tes critères');
@@ -55,7 +55,7 @@ test('AC-10 cocher « Petite ville » : seule A passe (72), « 1 commune passe t
   const { centre } = vue(page);
   await page.mouse.click(centre('B').x, centre('B').y);
   await expect(fiche(page)).toContainText('Grandeville (33)');
-  expect(await texte(page)).toContain('Taille : grande ville (260 000 habitants)');
+  expect(await texte(page)).toContain('Taille : 260 000 habitants, hors des tailles choisies');
 });
 
 test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste', async ({ page }, info) => {
@@ -68,7 +68,9 @@ test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → san
   expect(t).toContain('Ne passe pas tes critères'.toUpperCase());
   expect(t).toContain('Loyer 832 € : au-dessus de ton plafond de 800 €');
   await regler(page, 'Loyer maximum', 'End');
-  await regler(page, 'Mer à moins de', 'End');
+  // Cadre-de-vie, règle (2) : la mer se règle par les cases « Mer à moins de ».
+  await page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' }).click();
+  await apresRendu(page);
   t = await texte(page);
   expect(t).not.toMatch(/\/ 100|qui pass|NE PASSE PAS/);
   expect(t).toContain('832 € par mois pour 52 m² (16,0 €/m²)');

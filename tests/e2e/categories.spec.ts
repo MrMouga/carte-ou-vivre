@@ -30,25 +30,23 @@ test('replier Logement affiche « Louer · Appartement · 52 m² · 1 200 € »
   await expect(curseur).toBeHidden();
 });
 
-test('toutes ouvertes au départ ; résumés « 60 km », « Peu importe », puis « Sans limite » et les tailles cochées', async ({ page }) => {
+// Cadre-de-vie, règle (3) : « Mer » et « Taille de ville » deviennent la catégorie « Cadre de vie », résumé de H75.
+test('toutes ouvertes au départ ; résumés « 2 tailles » (mer sur Peu importe et les tailles cochées), puis « Peu importe »', async ({ page }) => {
   await ouvrir(page, '/?loyer=1200&mer=aucun&taille=petite-ville,ville-moyenne');
-  for (const nom of ['Logement', 'Mer', 'Taille de ville']) await expect(titre(page, nom)).toHaveAttribute('aria-expanded', 'true');
-  for (const nom of ['Logement', 'Mer', 'Taille de ville']) await titre(page, nom).click();
-  expect(nbsp(await titre(page, 'Mer').textContent())).toBe('MerSans limite');
-  expect(nbsp(await titre(page, 'Taille de ville').textContent())).toBe('Taille de villePetite ville, Ville moyenne');
-  await expect(page.getByRole('button', { name: /^Petite ville/ })).toBeHidden();
+  for (const nom of ['Logement', 'Cadre de vie']) await expect(titre(page, nom)).toHaveAttribute('aria-expanded', 'true');
+  for (const nom of ['Logement', 'Cadre de vie']) await titre(page, nom).click();
+  expect(nbsp(await titre(page, 'Cadre de vie').textContent())).toBe('Cadre de vie2 tailles');
+  await expect(page.getByRole('button', { name: /^10\s000 – 50\s000/ })).toBeHidden();
 
   await ouvrir(page, '/');
-  await titre(page, 'Mer').click();
-  await titre(page, 'Taille de ville').click();
-  expect(nbsp(await titre(page, 'Mer').textContent())).toBe('Mer60 km');
-  expect(nbsp(await titre(page, 'Taille de ville').textContent())).toBe('Taille de villePeu importe');
+  await titre(page, 'Cadre de vie').click();
+  expect(nbsp(await titre(page, 'Cadre de vie').textContent())).toBe('Cadre de viePeu importe');
 });
 
 test('cible du titre : 24 px de haut en bureau, 44 px à 390 px', async ({ page }) => {
   await ouvrir(page);
   const attendu = page.viewportSize()!.width >= 1024 ? 24 : 44;
-  for (const nom of ['Logement', 'Mer', 'Taille de ville']) {
+  for (const nom of ['Logement', 'Cadre de vie']) {
     const boite = await titre(page, nom).boundingBox();
     expect(boite!.height).toBeGreaterThanOrEqual(attendu);
   }

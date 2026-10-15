@@ -10,7 +10,6 @@ import { joindreAchats, type AchatJson, type Changement } from './domain/prix';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
-import { SizeChips } from './ui/SizeChips';
 import { compte, nomAffiche } from './domain/format';
 import { color, layout, space } from './theme/tokens';
 import { avecDelai, DELAI_DONNEES_MS, indicateur } from './domain/chargement';
@@ -199,7 +198,6 @@ export function App() {
   const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
   const reglagesUI = (pied?: React.ReactNode) => (
     <Settings reglages={reglages} onChange={setReglages} prix={prix} onPrix={changerPrix} inactif={!prete}>
-      <SizeChips tailles={reglages.tailles} onChange={(tailles) => setReglages({ ...reglages, tailles })} disabled={!prete} />
       <Proches
         proches={proches.proches}
         onAjouter={proches.ajouter}

@@ -10,14 +10,15 @@ test.use({
   },
 });
 
-test('limite de Chrome sur l’adresse : après 260 crans, l’adresse finit par suivre les réglages', async ({ page }) => {
+test('limite de Chrome sur l’adresse : après 270 crans, l’adresse finit par suivre les réglages', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, '/');
-  const mer = page.getByRole('slider', { name: 'Mer à moins de' });
-  await mer.focus();
-  // Six allers-retours de 20 crans et 20 crans de plus (60 → 160 km), puis 155 km.
-  for (let i = 0; i < 260; i++) await page.keyboard.press(i % 40 < 20 ? 'ArrowRight' : 'ArrowLeft');
+  // Cadre-de-vie, règle (2) : le curseur de la mer n'existe plus ; la limite s'éprouve avec le curseur du prix.
+  const prix = page.getByRole('slider', { name: 'Loyer maximum' });
+  await prix.focus();
+  // Treize allers-retours de 10 crans (1 200 → 1 700 → 1 200 €, crans de 50 €) et 10 crans de plus (1 700 €), puis 1 650 €.
+  for (let i = 0; i < 270; i++) await page.keyboard.press(i % 20 < 10 ? 'ArrowRight' : 'ArrowLeft');
   await page.keyboard.press('ArrowLeft');
-  await expect(mer).toHaveAttribute('aria-valuenow', '155');
-  await expect.poll(() => new URL(page.url()).search, { timeout: 20_000 }).toBe('?loyer=1200&mer=155');
+  await expect(prix).toHaveAttribute('aria-valuenow', '1650');
+  await expect.poll(() => new URL(page.url()).search, { timeout: 20_000 }).toBe('?loyer=1650');
 });

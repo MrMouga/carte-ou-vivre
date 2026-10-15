@@ -1,4 +1,4 @@
-import { SURFACE_M2, loyerPour, tailleDe, type Raison, type Taille } from './score';
+import { SURFACE_M2, loyerPour, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
@@ -19,7 +19,6 @@ export const merTexte = (n: number) => (n < 1 ? `moins d'1${NBSP}km` : km(n));
 export const population = (n: number) => entier(n >= 10000 ? Math.round(n / 1000) * 1000 : Math.round(n / 100) * 100);
 
 export const plafondLoyer = (v: number | null) => (v == null ? 'Sans limite' : euros(v));
-export const plafondMer = (v: number | null) => (v == null ? 'Sans limite' : km(v));
 /** Plafond du prix dans l'unité du réglage : « 1 200 € », « 23 €/m² », « 5 000 €/m² », « Sans limite » (H57). */
 export const plafondPrix = (v: number | null, p: ReglagePrix) => (v == null ? 'Sans limite' : p.unite === 'total' ? euros(v) : eurosM2Entier(v));
 
@@ -69,16 +68,37 @@ export const chiffresListe = (c: PourListe, p: ReglagePrix = PRIX_DEPART) =>
 export const ligneListe = (rang: number, c: PourListe, score: number, p: ReglagePrix = PRIX_DEPART) =>
   `${rang} · ${nomAffiche(c)} · ${score} · ${chiffresListe(c, p)}`;
 
-// Fiche (R4, R6, R1) et pastilles de taille.
+// Pastilles de taille (R27 de cadre-de-vie, D2) : en chiffres, seuils de D11 de loyer-mer, espaces insécables dans les
+// nombres pour qu'un libellé sur deux lignes ne coupe jamais un nombre (H3).
 export const LIBELLE_TAILLE: Record<Taille, string> = {
-  'petite-commune': 'Petite commune',
-  'petite-ville': 'Petite ville',
-  'ville-moyenne': 'Ville moyenne',
-  'grande-ville': 'Grande ville',
+  'petite-commune': `Moins de 10${NBSP}000${NBSP}hab.`,
+  'petite-ville': `10${NBSP}000 – 50${NBSP}000${NBSP}hab.`,
+  'ville-moyenne': `50${NBSP}000 – 200${NBSP}000${NBSP}hab.`,
+  'grande-ville': `Plus de 200${NBSP}000${NBSP}hab.`,
 };
 
-export const tailleTexte = (pop: number | null) =>
-  pop == null ? 'Taille inconnue' : `${LIBELLE_TAILLE[tailleDe(pop)!]} · ${population(pop)}${NBSP}habitants`;
+/** Niveaux du type d'environnement (D10 de cadre-de-vie), noms de H71. */
+export const LIBELLE_TYPE: Record<TypeEnv, string> = {
+  'ville-dense': 'Ville dense',
+  'ville-et-peripherie': 'Ville et périphérie',
+  'bourg-et-village': 'Bourg et village',
+  'campagne-isolee': 'Campagne isolée',
+};
+
+/** Fiche (R30 de cadre-de-vie, à la place de la ligne de taille) : « Ville dense · 260 000 habitants ». */
+export const typeTexte = (type: TypeEnv | null | undefined, pop: number | null) =>
+  `${type ? LIBELLE_TYPE[type] : "Type d'environnement inconnu"} · ${pop == null ? 'population inconnue' : `${population(pop)}${NBSP}habitants`}`;
+
+/**
+ * Résumé de la catégorie « Cadre de vie » repliée (H75) : « Peu importe », ou les choix dans l'ordre des groupes,
+ * « 2 tailles · Mer 50 km ».
+ */
+export function resumeCadre(r: Reglages): string {
+  const parts: string[] = [];
+  if (r.tailles.length) parts.push(`${r.tailles.length}${NBSP}taille${r.tailles.length > 1 ? 's' : ''}`);
+  if (r.mer != null) parts.push(`Mer ${km(r.mer)}`);
+  return parts.length ? parts.join(' · ') : 'Peu importe';
+}
 
 export const loyerTexte = (m2: number | null) =>
   m2 == null ? 'Loyer inconnu' : `${euros(loyerPour(m2))} par mois pour ${SURFACE_M2}${NBSP}m² (${eurosM2(m2)})`;
@@ -135,7 +155,7 @@ export function raisonTexte(r: Raison): string {
     case 'mer':
       return `Mer ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
     case 'taille':
-      return `Taille : ${LIBELLE_TAILLE[r.taille].toLowerCase()} (${population(r.population)}${NBSP}habitants)`;
+      return `Taille : ${population(r.population)}${NBSP}habitants, hors des tailles choisies`;
     case 'loyer-inconnu':
       return 'Loyer inconnu';
     case 'mer-inconnue':

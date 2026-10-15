@@ -265,9 +265,9 @@ test('AC-2 à 390 × 844 : « Replier la feuille » puis « Déplier la feuille 
   expect(await boite(rond)).toEqual(avant);
 });
 
-test('AC-3 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 px vers le bas, barre 200 px vers le haut, glisser dans « Taille de ville », puis toucher le texte de la barre', async ({ page }) => {
+test('AC-3 depuis /?loyer=1200&mer=50 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 px vers le bas, barre 200 px vers le haut, glisser dans « Taille de la commune », puis toucher le texte de la barre', async ({ page }) => {
   test.skip(!mobile(page), 'feuille mobile seulement (sous 1 024 px)');
-  await ouvrir(page, '/?loyer=1200&mer=60');
+  await ouvrir(page, '/?loyer=1200&mer=50');
   await attendreOuverte(page, 'Critères');
 
   // 30 px vers le bas : sous le seuil de 80 px, la feuille revient ouverte.
@@ -285,10 +285,10 @@ test('AC-3 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 
   await glisser(page, p.x, p.y, -200);
   await attendreOuverte(page, 'Critères');
 
-  // Dans le réglage « Taille de ville », 200 px vers le haut : les réglages défilent, la feuille reste ouverte. À 390 × 844,
-  // le réglage est sous le bas de l'écran à l'ouverture (y ≈ 978) : on l'amène d'abord à l'écran, comme l'utilisateur
+  // Dans le réglage « Taille de la commune », 200 px vers le haut : les réglages défilent, la feuille reste ouverte. À
+  // 390 × 844, le réglage est sous le bas de l'écran à l'ouverture : on l'amène d'abord à l'écran, comme l'utilisateur
   // qui a fait défiler les réglages pour le toucher.
-  const taille = page.getByRole('group', { name: 'Taille de ville' });
+  const taille = page.getByRole('group', { name: 'Taille de la commune' });
   await taille.evaluate((el) => el.scrollIntoView({ block: 'center' }));
   const t = await boite(taille);
   expect(t.y + t.height).toBeLessThanOrEqual(H(page));

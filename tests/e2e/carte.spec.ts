@@ -5,15 +5,14 @@ import { voirListe } from './lib/feuille';
 // Tâche 2 : la carte se colore selon les réglages et réagit aux plafonds (fixture « 5 communes »).
 const curseur = (page: import('@playwright/test').Page, nom: string) => page.getByRole('slider', { name: nom });
 
-test('AC-1 réglages de départ : A palier 60–80, E palier 40–60, B palier 20–40 ; C et D non colorées', async ({ page }) => {
+test('AC-1 réglages de départ : D palier 60–80, A palier 40–60, B palier 20–40, E palier 0–20 ; C non colorée', async ({ page }) => {
   await ouvrir(page);
-  await attendreCouleurs(page, { A: 'score-4', E: 'score-3', B: 'score-2', C: null, D: null });
+  await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1', C: null });
 });
 
-test('AC-2 mer « Sans limite » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée', async ({ page }) => {
-  await ouvrir(page);
-  await curseur(page, 'Mer à moins de').focus();
-  await page.keyboard.press('End');
+test('AC-2 depuis /?loyer=1200&mer=50, mer « Peu importe » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer=50');
+  await page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' }).click();
   await apresRendu(page);
   await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1', C: null });
 });

@@ -7,19 +7,19 @@ import { color } from '../../src/theme/tokens';
 const message = (page: import('@playwright/test').Page) => page.getByTestId('message-carte');
 const prete = (page: import('@playwright/test').Page) => expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
 
-test('AC-15 fond IGN en panne : A, E, B colorées sur le fond uni, « Fond de carte indisponible », 3 communes passent', async ({ page }) => {
+test('AC-15 fond IGN en panne : D, A, B, E colorées sur le fond uni, « Fond de carte indisponible », 4 communes passent', async ({ page }) => {
   await servirFixture(page, { fondEnPanne: true });
   await page.goto('/');
   await prete(page);
   await expect(page.getByTestId('carte')).toHaveAttribute('data-fond', 'secours');
-  await attendreCouleurs(page, { A: 'score-4', E: 'score-3', B: 'score-2' });
+  await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1' });
   await expect(message(page)).toHaveText('Fond de carte indisponible');
-  await expect(page.getByRole('status')).toHaveText('3 communes passent tes critères');
-  // R8 : les communes qui ne passent pas sont peintes en gris, et la légende le dit.
+  await expect(page.getByRole('status')).toHaveText('4 communes passent tes critères');
+  // R8 : les communes qui ne passent pas sont peintes en gris, et la légende le dit (au départ, C seule ne passe pas).
   const { lecture } = vue(page);
-  const [c, d] = await readPixels(page, [lecture('C'), lecture('D')]);
+  const [c] = await readPixels(page, [lecture('C')]);
   const gris = [1, 3, 5].map((i) => parseInt(color['area-excluded'].slice(i, i + 2), 16));
-  for (const px of [c, d]) expect(Math.max(...px.map((v, i) => Math.abs(v - gris[i])))).toBeLessThanOrEqual(3);
+  for (const px of [c]) expect(Math.max(...px.map((v, i) => Math.abs(v - gris[i])))).toBeLessThanOrEqual(3);
   await expect(page.getByText('Ne passe pas', { exact: true })).toBeVisible();
 });
 

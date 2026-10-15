@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import loyerMer from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import proches from '../../docs/specs/2026-10-13-proches/acceptance.json';
 import { duree, raisonTexte } from './format';
-import { evaluer, PROCHE, REGLAGES_DEPART, type Commune, type ProchePret, type Reglages } from './score';
+import { evaluer, PROCHE, type Commune, type ProchePret, type Reglages } from './score';
+
+// Cadre-de-vie, règle (1) du recalage : le départ n'a plus de mer ; ces calculs partent du réglage explicite, mer 50 km
+// (valeurs de proches AC-1, AC-2, AC-4 et AC-9 recalées).
+const MER50: Reglages = { loyer: 1200, mer: 50, tailles: [] };
 
 // Proches (R10, R11, H22) avec la fixture révisée de la spec proches : mêmes 5 communes que loyer-mer,
 // et les fins de tranche du faux service de trajets (null = plus de 3 h, rangé 0).
@@ -37,20 +41,20 @@ describe('R11 — plafond, note et score des proches', () => {
   });
 
   it('Nantesville à 2 h : Portmer seule passe, score 65 ; Grandeville (2 h 15) et Quaibleu (plus de 3 h) ne passent pas', () => {
-    const { res, by } = scores(REGLAGES_DEPART, [nantes(120)]);
+    const { res, by } = scores(MER50, [nantes(120)]);
     expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 65]]);
     expect(by('B').passe).toBe(false);
     expect(by('E').passe).toBe(false);
   });
 
-  it('Nantesville à 2 h 15 : Portmer 67, Grandeville 21 (fin de tranche égale au plafond : passe, note 0)', () => {
-    const { res } = scores(REGLAGES_DEPART, [nantes(135)]);
-    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 67], ['Grandeville', 21]]);
+  it('Nantesville à 2 h 15 : Portmer 66, Grandeville 17 (fin de tranche égale au plafond : passe, note 0)', () => {
+    const { res } = scores(MER50, [nantes(135)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 66], ['Grandeville', 17]]);
   });
 
-  it('Nantesville à 2 h 15 et Toulouseville à 2 h 45 : Portmer 50, Grandeville 30 ; Quaibleu ne passe pas', () => {
-    const { res, by } = scores(REGLAGES_DEPART, [nantes(135), toulouse(165)]);
-    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 50], ['Grandeville', 30]]);
+  it('Nantesville à 2 h 15 et Toulouseville à 2 h 45 : Portmer 50, Grandeville 26 ; Quaibleu ne passe pas', () => {
+    const { res, by } = scores(MER50, [nantes(135), toulouse(165)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 50], ['Grandeville', 26]]);
     expect(by('E').passe).toBe(false);
   });
 
@@ -61,10 +65,10 @@ describe('R11 — plafond, note et score des proches', () => {
     expect([by('C').passe, by('D').passe, by('E').passe]).toEqual([false, false, false]);
   });
 
-  it('sans proche prêt, rien ne change (loyer-mer : 72, 49, 32)', () => {
-    const { res } = scores(REGLAGES_DEPART, []);
-    expect(res.classement.map((e) => e.score)).toEqual([72, 49, 32]);
-    expect(evaluer(communes, REGLAGES_DEPART).classement.map((e) => e.score)).toEqual([72, 49, 32]);
+  it('sans proche prêt, rien ne change (loyer-mer à mer 50 km : 72, 48, 25)', () => {
+    const { res } = scores(MER50, []);
+    expect(res.classement.map((e) => e.score)).toEqual([72, 48, 25]);
+    expect(evaluer(communes, MER50).classement.map((e) => e.score)).toEqual([72, 48, 25]);
   });
 
   it('raisons : après loyer, mer et taille, une par proche non tenu, dans l’ordre d’ajout ; « plus de 3 h » vaut 0', () => {

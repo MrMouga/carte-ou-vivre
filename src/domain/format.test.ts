@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chiffresListe, compte, euros, eurosM2, km, ligneListe, loyerTexte, merFiche, merTexte, nomAffiche, population, plafondLoyer, plafondMer, raisonTexte, rangTexte, tailleTexte } from './format';
+import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, ligneListe, loyerTexte, merFiche, merTexte, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -35,8 +35,6 @@ describe('H3 — formats', () => {
   it('valeurs des curseurs : « Sans limite » au dernier cran', () => {
     expect(s(plafondLoyer(1200))).toBe('1 200 €');
     expect(plafondLoyer(null)).toBe('Sans limite');
-    expect(s(plafondMer(60))).toBe('60 km');
-    expect(plafondMer(null)).toBe('Sans limite');
   });
 
   it('nom affiché : nom (département)', () => {
@@ -60,17 +58,21 @@ describe('R5 — compte et lignes de la liste', () => {
 });
 
 describe('R4, R6, R1 — textes de la fiche', () => {
-  it('taille, loyer, mer (AC-7, AC-8)', () => {
-    expect(s(tailleTexte(260000))).toBe('Grande ville · 260 000 habitants');
-    expect(s(tailleTexte(23000))).toBe('Petite ville · 23 000 habitants');
+  it('type et population (R30 de cadre-de-vie), loyer, mer (AC-7, AC-8)', () => {
+    expect(s(typeTexte('ville-dense', 260000))).toBe('Ville dense · 260 000 habitants');
+    expect(s(typeTexte('ville-et-peripherie', 23000))).toBe('Ville et périphérie · 23 000 habitants');
+    expect(s(typeTexte('bourg-et-village', 4200))).toBe('Bourg et village · 4 200 habitants');
+    expect(s(typeTexte('campagne-isolee', 310))).toBe('Campagne isolée · 300 habitants');
     expect(s(loyerTexte(16.0))).toBe('832 € par mois pour 52 m² (16,0 €/m²)');
     expect(s(loyerTexte(12.5))).toBe('650 € par mois pour 52 m² (12,5 €/m²)');
     expect(s(merFiche(39.9))).toBe("40 km de la mer à vol d'oiseau");
     expect(s(merFiche(0.9))).toBe("moins d'1 km de la mer");
   });
 
-  it('valeurs inconnues', () => {
-    expect(tailleTexte(null)).toBe('Taille inconnue');
+  it('valeurs inconnues (R30 : type ou population inconnus)', () => {
+    expect(s(typeTexte(null, 4200))).toBe("Type d'environnement inconnu · 4 200 habitants");
+    expect(typeTexte('ville-dense', null)).toBe('Ville dense · population inconnue');
+    expect(typeTexte(undefined, null)).toBe("Type d'environnement inconnu · population inconnue");
     expect(loyerTexte(null)).toBe('Loyer inconnu');
     expect(merFiche(null)).toBe('Distance à la mer inconnue');
   });
@@ -83,10 +85,25 @@ describe('R4, R6, R1 — textes de la fiche', () => {
 
   it('raisons (R1, AC-9, AC-10)', () => {
     expect(s(raisonTexte({ critere: 'loyer', valeur: 1560, plafond: 1200 }))).toBe('Loyer 1 560 € : au-dessus de ton plafond de 1 200 €');
-    expect(s(raisonTexte({ critere: 'mer', valeur: 148, plafond: 60 }))).toBe('Mer 148 km : au-dessus de ton plafond de 60 km');
-    expect(s(raisonTexte({ critere: 'taille', taille: 'grande-ville', population: 260000 }))).toBe('Taille : grande ville (260 000 habitants)');
+    expect(s(raisonTexte({ critere: 'mer', valeur: 148, plafond: 50 }))).toBe('Mer 148 km : au-dessus de ton plafond de 50 km');
+    expect(s(raisonTexte({ critere: 'taille', taille: 'grande-ville', population: 260000 }))).toBe('Taille : 260 000 habitants, hors des tailles choisies');
     expect(raisonTexte({ critere: 'loyer-inconnu' })).toBe('Loyer inconnu');
     expect(raisonTexte({ critere: 'mer-inconnue' })).toBe('Distance à la mer inconnue');
     expect(raisonTexte({ critere: 'taille-inconnue' })).toBe('Taille inconnue');
+  });
+});
+
+// Spec cadre-de-vie : pastilles de taille en chiffres (R27, D2) et résumé de la catégorie « Cadre de vie » repliée (H75).
+describe('R27, H75 — taille en chiffres, résumé du cadre de vie', () => {
+  it('R27 : les quatre pastilles de taille, dans l’ordre, avec des espaces insécables dans les nombres (H3)', () => {
+    expect(Object.values(LIBELLE_TAILLE).map(s)).toEqual(['Moins de 10 000 hab.', '10 000 – 50 000 hab.', '50 000 – 200 000 hab.', 'Plus de 200 000 hab.']);
+    expect(LIBELLE_TAILLE['ville-moyenne']).toBe('50 000 – 200 000 hab.');
+  });
+
+  it('H75 : « Peu importe » si rien n’est choisi ; sinon les choix, dans l’ordre des groupes, séparés par « · »', () => {
+    expect(resumeCadre({ loyer: 1200, mer: null, tailles: [] })).toBe('Peu importe');
+    expect(s(resumeCadre({ loyer: 1200, mer: 50, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km');
+    expect(s(resumeCadre({ loyer: null, mer: null, tailles: ['grande-ville'] }))).toBe('1 taille');
+    expect(s(resumeCadre({ loyer: 1200, mer: 100, tailles: [] }))).toBe('Mer 100 km');
   });
 });

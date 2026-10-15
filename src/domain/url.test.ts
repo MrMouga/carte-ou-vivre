@@ -2,76 +2,108 @@ import { describe, expect, it } from 'vitest';
 import { lireAdresse, lirePrix, ecrireAdresse } from './url';
 
 describe('R7, H7 — réglages dans l’adresse', () => {
-  it('AC-11 /?loyer=800&mer=60 → 800 €, 60 km, peu importe', () => {
-    expect(lireAdresse('?loyer=800&mer=60')).toEqual({ loyer: 800, mer: 60, tailles: [] });
+  it('AC-11 /?loyer=800&mer=50 → 800 €, 50 km, peu importe', () => {
+    expect(lireAdresse('?loyer=800&mer=50')).toEqual({ loyer: 800, mer: 50, tailles: [] });
   });
 
-  it('AC-12 valeurs invalides → valeurs de départ de ces réglages seulement ; adresse réécrite /?loyer=1200&mer=aucun', () => {
+  it('AC-12 valeurs invalides → valeurs de départ de ces réglages seulement ; adresse réécrite /?loyer=1200', () => {
     const r = lireAdresse('?loyer=abc&mer=aucun&taille=village');
     expect(r).toEqual({ loyer: 1200, mer: null, tailles: [] });
-    expect(ecrireAdresse(r)).toBe('/?loyer=1200&mer=aucun');
+    expect(ecrireAdresse(r)).toBe('/?loyer=1200');
   });
 
-  it('AC-14 /?taille=petite-ville,ville-moyenne → deux tailles ; adresse /?loyer=1200&mer=60&taille=petite-ville,ville-moyenne', () => {
+  it('AC-14 /?taille=petite-ville,ville-moyenne → deux tailles ; adresse /?loyer=1200&taille=petite-ville,ville-moyenne', () => {
     const r = lireAdresse('?taille=petite-ville,ville-moyenne');
-    expect(r).toEqual({ loyer: 1200, mer: 60, tailles: ['petite-ville', 'ville-moyenne'] });
-    expect(ecrireAdresse(r)).toBe('/?loyer=1200&mer=60&taille=petite-ville,ville-moyenne');
+    expect(r).toEqual({ loyer: 1200, mer: null, tailles: ['petite-ville', 'ville-moyenne'] });
+    expect(ecrireAdresse(r)).toBe('/?loyer=1200&taille=petite-ville,ville-moyenne');
   });
 
-  it('H7 : hors plage ou hors pas = invalide (loyer=1234, loyer=250, mer=7, mer=205, 1200.0)', () => {
+  it('H7 : loyer hors plage ou hors pas = invalide (loyer=1234, loyer=250, 1200.0)', () => {
     for (const q of ['loyer=1234', 'loyer=250', 'loyer=2050', 'loyer=1200.0', 'loyer=']) expect(lireAdresse(`?${q}`).loyer).toBe(1200);
-    for (const q of ['mer=7', 'mer=205', 'mer=0', 'mer=-5']) expect(lireAdresse(`?${q}`).mer).toBe(60);
-    expect(lireAdresse('?loyer=300&mer=200')).toMatchObject({ loyer: 300, mer: 200 });
     expect(lireAdresse('?loyer=aucun').loyer).toBeNull();
   });
 
   it('tailles : noms inconnus ignorés, ordre de D11, doublons retirés', () => {
     expect(lireAdresse('?taille=grande-ville,village,petite-commune,grande-ville').tailles).toEqual(['petite-commune', 'grande-ville']);
-    expect(ecrireAdresse({ loyer: null, mer: null, tailles: ['grande-ville', 'petite-commune'] })).toBe('/?loyer=aucun&mer=aucun&taille=petite-commune,grande-ville');
+    expect(ecrireAdresse({ loyer: null, mer: null, tailles: ['grande-ville', 'petite-commune'] })).toBe('/?loyer=aucun&taille=petite-commune,grande-ville');
   });
 
-  it('adresse vide → réglages de départ', () => {
-    expect(lireAdresse('')).toEqual({ loyer: 1200, mer: 60, tailles: [] });
-    expect(ecrireAdresse(lireAdresse(''))).toBe('/?loyer=1200&mer=60');
+  it('R32 : adresse vide → prix de départ, cadre de vie sur Peu importe ; /?loyer=1200', () => {
+    expect(lireAdresse('')).toEqual({ loyer: 1200, mer: null, tailles: [] });
+    expect(ecrireAdresse(lireAdresse(''))).toBe('/?loyer=1200');
+  });
+});
+
+// Spec cadre-de-vie, R31 : la mer en cinq choix ; une valeur de l'ancienne plage (multiple de 5, de 5 à 200) prend le choix
+// juste au-dessus, au-delà de 100 Peu importe ; toute autre valeur = Peu importe ; `mer` absente quand Peu importe.
+describe('R31 — la mer dans l’adresse (spec cadre-de-vie)', () => {
+  const mer = (v: string) => lireAdresse(`?loyer=1200&mer=${v}`).mer;
+
+  it('AC-9 (adresse) : /?loyer=1200&mer=60 → 100 km, /?loyer=1200&mer=100 ; /?loyer=1200&mer=25 → 30 km, /?loyer=1200&mer=30', () => {
+    expect(mer('60')).toBe(100);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=60'))).toBe('/?loyer=1200&mer=100');
+    expect(mer('25')).toBe(30);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=25'))).toBe('/?loyer=1200&mer=30');
+  });
+
+  it('les cinq choix se lisent tels quels : 10, 30, 50, 100 ; aucun = Peu importe', () => {
+    expect(['10', '30', '50', '100'].map(mer)).toEqual([10, 30, 50, 100]);
+    expect(mer('aucun')).toBeNull();
+    expect(lireAdresse('?loyer=1200').mer).toBeNull();
+  });
+
+  it('ancienne plage : mer=5 → 10 km, mer=15 → 30, mer=35 → 50, mer=55 → 100, mer=95 → 100 ; mer=105 et mer=200 → Peu importe', () => {
+    expect(['5', '15', '35', '55', '95'].map(mer)).toEqual([10, 30, 50, 100, 100]);
+    expect(['105', '200'].map(mer)).toEqual([null, null]);
+  });
+
+  it('toute autre valeur = Peu importe : mer=23, mer=0, mer=abc, mer=205, mer=-5, mer=50.0', () => {
+    for (const v of ['23', '0', 'abc', '205', '-5', '50.0', '']) expect(mer(v)).toBeNull();
+  });
+
+  it('Peu importe n’est pas écrite ; une distance l’est, après le plafond du prix', () => {
+    expect(ecrireAdresse({ loyer: 1200, mer: null, tailles: [] })).toBe('/?loyer=1200');
+    expect(ecrireAdresse({ loyer: 1200, mer: 50, tailles: ['petite-ville'] })).toBe('/?loyer=1200&mer=50&taille=petite-ville');
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=200'))).toBe('/?loyer=1200');
   });
 });
 
 describe('R26, H66 — le réglage du prix dans l’adresse (spec immobilier)', () => {
   const allerRetour = (search: string) => ecrireAdresse(lireAdresse(search), lirePrix(search));
 
-  it('AC-10 (adresse) : /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 relue puis réécrite à l’identique', () => {
+  it('AC-10 (adresse) : /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 → /?achat=300000&bien=maison&unite=total&surface=100', () => {
     const search = '?achat=300000&mer=aucun&bien=maison&unite=total&surface=100';
     expect(lirePrix(search)).toEqual({ mode: 'acheter', bien: 'maison', unite: 'total', surface: 100 });
     expect(lireAdresse(search)).toEqual({ loyer: 300000, mer: null, tailles: [] });
-    expect(allerRetour(search)).toBe(`/${search}`);
+    expect(allerRetour(search)).toBe('/?achat=300000&bien=maison&unite=total&surface=100');
   });
 
-  it('AC-11 (adresse) : /?achat=abc&unite=litre&bien=villa&surface=0 → Appartement, Acheter, Au m², 5 000 €/m² ; /?achat=5000&mer=60', () => {
+  it('AC-11 (adresse) : /?achat=abc&unite=litre&bien=villa&surface=0 → Appartement, Acheter, Au m², 5 000 €/m² ; /?achat=5000', () => {
     const search = '?achat=abc&unite=litre&bien=villa&surface=0';
     expect(lirePrix(search)).toEqual({ mode: 'acheter', bien: 'appartement', unite: 'm2', surface: 52 });
     expect(lireAdresse(search).loyer).toBe(5000);
-    expect(allerRetour(search)).toBe('/?achat=5000&mer=60');
+    expect(allerRetour(search)).toBe('/?achat=5000');
   });
 
   it('H66 : `loyer` et `achat` ensemble → Louer, `achat` retiré, même si `loyer` est invalide (1 200 €)', () => {
-    expect(allerRetour('?achat=5000&loyer=900')).toBe('/?loyer=900&mer=60');
+    expect(allerRetour('?achat=5000&loyer=900')).toBe('/?loyer=900');
     expect(lirePrix('?achat=5000&loyer=abc').mode).toBe('louer');
-    expect(allerRetour('?achat=5000&loyer=abc')).toBe('/?loyer=1200&mer=60');
+    expect(allerRetour('?achat=5000&loyer=abc')).toBe('/?loyer=1200');
   });
 
   it('surface selon le bien : 52 m² au départ, 92 m² en Maison ; écrite seulement si elle en diffère, dans toutes les unités', () => {
     expect(lirePrix('?bien=maison').surface).toBe(92);
-    expect(allerRetour('?loyer=1200&bien=maison')).toBe('/?loyer=1200&mer=60&bien=maison');
-    expect(allerRetour('?loyer=1200&bien=maison&surface=52')).toBe('/?loyer=1200&mer=60&bien=maison&surface=52');
-    expect(allerRetour('?loyer=1200&surface=92')).toBe('/?loyer=1200&mer=60&surface=92');
-    expect(allerRetour('?achat=5000&surface=70')).toBe('/?achat=5000&mer=60&surface=70');
+    expect(allerRetour('?loyer=1200&bien=maison')).toBe('/?loyer=1200&bien=maison');
+    expect(allerRetour('?loyer=1200&bien=maison&surface=52')).toBe('/?loyer=1200&bien=maison&surface=52');
+    expect(allerRetour('?loyer=1200&surface=92')).toBe('/?loyer=1200&surface=92');
+    expect(allerRetour('?achat=5000&surface=70')).toBe('/?achat=5000&surface=70');
     for (const v of ['9', '301', '72.5', '', 'abc']) expect(lirePrix(`?surface=${v}`).surface).toBe(52);
   });
 
   it('unité : Total au départ en Louer, Au m² en Acheter ; écrite seulement si elle en diffère', () => {
-    expect(allerRetour('?loyer=1200&unite=total')).toBe('/?loyer=1200&mer=60');
-    expect(allerRetour('?achat=5000&unite=m2')).toBe('/?achat=5000&mer=60');
-    expect(allerRetour('?loyer=23&unite=m2')).toBe('/?loyer=23&mer=60&unite=m2');
+    expect(allerRetour('?loyer=1200&unite=total')).toBe('/?loyer=1200');
+    expect(allerRetour('?achat=5000&unite=m2')).toBe('/?achat=5000');
+    expect(allerRetour('?loyer=23&unite=m2')).toBe('/?loyer=23&unite=m2');
   });
 
   it('ordre : plafond du prix, mer, taille, bien, unite, surface', () => {
@@ -88,12 +120,12 @@ describe('R26, H66 — le réglage du prix dans l’adresse (spec immobilier)', 
     expect(lireAdresse('?loyer=41&unite=m2').loyer).toBe(23);
     expect(lireAdresse('?achat=500').loyer).toBe(500);
     expect(lireAdresse('?achat=aucun').loyer).toBeNull();
-    expect(allerRetour('?achat=aucun')).toBe('/?achat=aucun&mer=60');
+    expect(allerRetour('?achat=aucun')).toBe('/?achat=aucun');
   });
 
   it('une adresse de la tranche 1 s’ouvre à l’identique (D1)', () => {
-    expect(lirePrix('?loyer=800&mer=60')).toEqual({ mode: 'louer', bien: 'appartement', unite: 'total', surface: 52 });
-    expect(allerRetour('?loyer=800&mer=60&taille=petite-ville')).toBe('/?loyer=800&mer=60&taille=petite-ville');
+    expect(lirePrix('?loyer=800&mer=50')).toEqual({ mode: 'louer', bien: 'appartement', unite: 'total', surface: 52 });
+    expect(allerRetour('?loyer=800&mer=50&taille=petite-ville')).toBe('/?loyer=800&mer=50&taille=petite-ville');
   });
 });
 

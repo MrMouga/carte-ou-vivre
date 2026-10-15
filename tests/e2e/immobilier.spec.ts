@@ -52,20 +52,22 @@ async function fermerFiche(page: Page) {
   await voirCriteres(page);
 }
 
-test('AC-1 ouverture de / : Appartement, Louer, Total, 52 m², 1 200 € ; adresse /?loyer=1200&mer=60 ; A 72, E 49, B 32 ; C, D, F non colorées', async ({ page }) => {
+test('AC-1 ouverture de / : Appartement, Louer, Total, 52 m², 1 200 € ; adresse /?loyer=1200 ; D 65, F 52, A 46, B 31, E 9 ; C non colorée', async ({ page }) => {
   await ouvrirSix(page);
   await expect(choix(page, 'Type de logement', 'Appartement')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Louer ou acheter', 'Louer')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
   await expect(surface(page)).toHaveValue('52');
   await expect(plafond(page, '1 200 €')).toBeVisible();
-  expect(adresse(page)).toBe('/?loyer=1200&mer=60');
-  await attendreCouleurs<Six>(page, { A: 'score-4', E: 'score-3', B: 'score-2', C: null, D: null, F: null }, { jeu: SIX });
+  expect(adresse(page)).toBe('/?loyer=1200');
+  await attendreCouleurs<Six>(page, { D: 'score-4', F: 'score-3', A: 'score-3', B: 'score-2', E: 'score-1', C: null }, { jeu: SIX });
   await voirListe(page);
-  expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 49 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 32 · 832 € · 40 km',
+  expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '))).toEqual([
+    'Terrebasse (23) · 65',
+    'Rhinval (67) · 52',
+    'Portmer (17) · 46',
+    'Grandeville (33) · 31',
+    'Quaibleu (13) · 9',
   ]);
 });
 
@@ -151,17 +153,17 @@ test('AC-6 Total depuis /?achat=5000&mer=50 : 260 000 €, 52 m², unite=total ;
   expect(await texteFiche(page)).toContain('229 000 € pour 52 m² (4 400 €/m²)');
 });
 
-test('AC-11 /?achat=abc&unite=litre&bien=villa&surface=0 : Appartement, Acheter, Au m², 5 000 €/m² ; adresse /?achat=5000&mer=60 ; Portmer 61, Quaibleu 46, Grandeville 23', async ({ page }) => {
+test('AC-11 /?achat=abc&unite=litre&bien=villa&surface=0 : Appartement, Acheter, Au m², 5 000 €/m² ; adresse /?achat=5000 ; Portmer 24, Grandeville 12, Quaibleu 4', async ({ page }) => {
   await ouvrirSix(page, '/?achat=abc&unite=litre&bien=villa&surface=0');
   await expect(choix(page, 'Type de logement', 'Appartement')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Louer ou acheter', 'Acheter')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Unité du prix', 'Au m²')).toHaveAttribute('aria-pressed', 'true');
   await expect(plafond(page, '5 000 €/m²')).toBeVisible();
-  expect(adresse(page)).toBe('/?achat=5000&mer=60');
+  expect(adresse(page)).toBe('/?achat=5000');
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   const l = await lignes(page);
-  expect(l.map((t) => t.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 61', 'Quaibleu (13) · 46', 'Grandeville (33) · 23']);
+  expect(l.map((t) => t.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 24', 'Grandeville (33) · 12', 'Quaibleu (13) · 4']);
 });
 
 test('AC-12 pied de page : « Prix d’achat : Demandes de valeurs foncières (DGFiP) » à côté des mentions de loyer-mer, avant et après Acheter', async ({ page }) => {
@@ -334,7 +336,9 @@ function sansScoreNiRang(t: string) {
   expect(t).not.toMatch(/sur \d+ communes? qui passen?t/);
 }
 
-test('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e · 10 · prix inconnu ; sa fiche « trop peu de ventes dans le secteur », 10, 4e sur 4 ; C et F non colorées', async ({ page }) => {
+// Réécrit en tâche 4 sur montagne=100, cadre-de-vie : `mer=200` vaut désormais Peu importe (R31) et AC-8 est recalé sur
+// la montagne (recalage.md), qui n'existe pas encore dans l'interface.
+test.skip('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e · 10 · prix inconnu ; sa fiche « trop peu de ventes dans le secteur », 10, 4e sur 4 ; C et F non colorées', async ({ page }) => {
   await ouvrirSix(page, '/?achat=5000&mer=200');
   expect(adresse(page)).toBe('/?achat=5000&mer=200');
   await attendreCouleurs<Six>(page, { A: 'score-4', E: 'score-3', B: 'score-3', D: 'score-1', C: null, F: null }, { jeu: SIX });
@@ -355,7 +359,7 @@ test('AC-8 /?achat=5000&mer=200 : 4 communes, Terrebasse 4e · 10 · prix inconn
 
 test('AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quaibleu 4 ; D et F neutres, C non colorée ; fiche de Rhinval « Alsace-Moselle », sans score ni rang', async ({ page }) => {
   await ouvrirSix(page, '/?achat=5000&mer=aucun');
-  expect(adresse(page)).toBe('/?achat=5000&mer=aucun');
+  expect(adresse(page)).toBe('/?achat=5000'); // cadre-de-vie, R31 : `mer` n'est plus écrite quand elle est sur Peu importe
   await attendreCouleurs<Six>(page, { A: 'score-2', B: 'score-1', E: 'score-1', D: 'area-unranked', F: 'area-unranked', C: null }, { jeu: SIX });
   await ficheDeCarte(page, 'F', 'Rhinval (67)');
   const t = await texteFiche(page);
@@ -369,15 +373,15 @@ test('AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quai
   expect(l.map((x) => x.split(' · ').slice(0, 3).join(' · '))).toEqual(['1 · Portmer (17) · 24', '2 · Grandeville (33) · 12', '3 · Quaibleu (13) · 4']);
 });
 
-test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 € ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € »', async ({ page }) => {
-  const chemin = '/?achat=300000&mer=aucun&bien=maison&unite=total&surface=100';
-  await ouvrirSix(page, chemin);
+test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 €, mer sur Peu importe ; adresse /?achat=300000&bien=maison&unite=total&surface=100 ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € »', async ({ page }) => {
+  await ouvrirSix(page, '/?achat=300000&mer=aucun&bien=maison&unite=total&surface=100');
+  const chemin = '/?achat=300000&bien=maison&unite=total&surface=100';
   await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Louer ou acheter', 'Acheter')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
   await expect(surface(page)).toHaveValue('100');
   await expect(plafond(page, '300 000 €')).toBeVisible();
-  await expect(plafond(page, 'Sans limite')).toBeVisible(); // la mer
+  await expect(page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' })).toHaveAttribute('aria-checked', 'true');
   expect(adresse(page)).toBe(chemin);
   await attendreCouleurs<Six>(page, { D: 'score-3', F: 'area-unranked', A: null, B: null, C: null, E: null }, { jeu: SIX });
   await ficheDeCarte(page, 'A', 'Portmer (17)');
@@ -389,9 +393,9 @@ test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maiso
   expect(adresse(page)).toBe(chemin);
 });
 
-test('AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1 100 € ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; F neutre ; fiches de Rhinval « Loyer inconnu » et de Grandeville', async ({ page }) => {
-  const chemin = '/?loyer=1100&mer=aucun&bien=maison';
-  await ouvrirSix(page, chemin);
+test('AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1 100 € ; adresse /?loyer=1100&bien=maison ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; F neutre ; fiches de Rhinval « Loyer inconnu » et de Grandeville', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1100&mer=aucun&bien=maison');
+  const chemin = '/?loyer=1100&bien=maison';
   await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Louer ou acheter', 'Louer')).toHaveAttribute('aria-pressed', 'true');
   await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
@@ -450,7 +454,7 @@ test('design F : panneau de réglages de 340 px à 1 440 × 900', async ({ page 
   expect((await reglages(page).boundingBox())!.width).toBe(340);
 });
 
-test('design F : valeur des curseurs du prix, de la mer et des proches en 16 px gras ; « à vol d’oiseau » plus sous le curseur de la mer, gardé dans la fiche', async ({ page }) => {
+test('design F : valeur des curseurs du prix et des proches en 16 px gras ; « à vol d’oiseau » plus dans les réglages, gardé dans la fiche', async ({ page }) => {
   await ouvrir(page, '/?loyer=1200&mer=50'); // fixture « 5 communes » de loyer-mer : Grandeville à 40 km de la mer (cadre-de-vie, règle (1) : mer=50)
   await expect(reglages(page).getByText(/vol d.oiseau/)).toHaveCount(0);
   await ficheDeListe(page, 'Grandeville');
@@ -464,7 +468,7 @@ test('design F : valeur des curseurs du prix, de la mer et des proches en 16 px 
   const style = (l: ReturnType<typeof plafond>) => l.evaluate((e) => ({ taille: getComputedStyle(e).fontSize, graisse: getComputedStyle(e).fontWeight }));
   const attendu = { taille: '16px', graisse: '700' };
   expect(await style(plafond(page, '1 200 €')), 'prix').toEqual(attendu);
-  expect(await style(plafond(page, '50 km')), 'mer').toEqual(attendu);
+  // Cadre-de-vie, règle (4) : le curseur de la mer n'existe plus (cases « Mer à moins de ») ; sa vérification est retirée.
   expect(await style(page.getByRole('region', { name: 'Tes proches' }).getByText(ins('2 h'), { exact: true })), 'proche').toEqual(attendu);
   await expect(reglages(page).getByText(/vol d.oiseau/)).toHaveCount(0);
 });

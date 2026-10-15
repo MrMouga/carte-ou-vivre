@@ -24,28 +24,26 @@ function scores(r: Reglages) {
 }
 
 describe('R1, R2, R3 — passage, score et palier', () => {
-  it('AC-1 réglages de départ : A 72 (palier 60–80), E 49 (40–60), B 32 (20–40) ; C et D ne passent pas', () => {
+  it('AC-1 réglages de départ (R32 de cadre-de-vie : mer sur Peu importe) : D 65 (palier 60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; C ne passe pas', () => {
     const { by } = scores(REGLAGES_DEPART);
-    expect(REGLAGES_DEPART).toEqual({ loyer: 1200, mer: 60, tailles: [] });
-    expect([by('A').score, by('E').score, by('B').score]).toEqual([72, 49, 32]);
-    expect([by('A').palier, by('E').palier, by('B').palier]).toEqual([4, 3, 2]);
+    expect(REGLAGES_DEPART).toEqual({ loyer: 1200, mer: null, tailles: [] });
+    expect([by('D').score, by('A').score, by('B').score, by('E').score]).toEqual([65, 46, 31, 9]);
+    expect([by('D').palier, by('A').palier, by('B').palier, by('E').palier]).toEqual([4, 3, 2, 1]);
     expect(by('C').passe).toBe(false);
-    expect(by('D').passe).toBe(false);
     expect(by('C').score).toBeNull();
   });
 
-  it('AC-2 mer « Sans limite » : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
+  it('AC-2 mer « Peu importe » : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
     const { by } = scores({ loyer: 1200, mer: null, tailles: [] });
     expect([by('D').score, by('A').score, by('B').score, by('E').score]).toEqual([65, 46, 31, 9]);
     expect(['A', 'B', 'C', 'D', 'E'].filter((id) => !by(id as keyof typeof code).passe)).toEqual(['C']);
   });
 
-  it('AC-3 mer 40 km : B passe avec 15 (39,9 km affiché 40 km, égal au plafond) ; A 72, E 46 ; C et D ne passent pas', () => {
-    const { by } = scores({ loyer: 1200, mer: 40, tailles: [] });
-    expect(by('B').passe).toBe(true);
-    expect([by('B').score, by('A').score, by('E').score]).toEqual([15, 72, 46]);
-    expect(by('C').passe).toBe(false);
-    expect(by('D').passe).toBe(false);
+  it('AC-3 loyer 650 €, mer 50 km : A passe avec 49 (650 € affiché, égal au plafond) ; B, C, D et E ne passent pas', () => {
+    const { by } = scores({ loyer: 650, mer: 50, tailles: [] });
+    expect(by('A').passe).toBe(true);
+    expect(by('A').score).toBe(49);
+    expect((['B', 'C', 'D', 'E'] as const).map((id) => by(id).passe)).toEqual([false, false, false, false]);
   });
 
   it('palier : [0, 20) → 1 … [80, 100] → 5', () => {
@@ -58,16 +56,19 @@ describe('R1, R2, R3 — passage, score et palier', () => {
     expect(by('A').score).toBe(80); // 100 × (1 − 1 / 5)
   });
 
+  // Cadre-de-vie, règle (1) du recalage : réglage explicite, mer 50 km (le départ n'a plus de mer).
+  const mer50: Reglages = { loyer: 1200, mer: 50, tailles: [] };
+
   it('raisons par critère non tenu : Montcher au-dessus des deux plafonds', () => {
-    const { by } = scores(REGLAGES_DEPART);
+    const { by } = scores(mer50);
     expect(by('C').raisons).toEqual([
       { critere: 'loyer', valeur: 1560, plafond: 1200 },
-      { critere: 'mer', valeur: 148, plafond: 60 },
+      { critere: 'mer', valeur: 148, plafond: 50 },
     ]);
   });
 
   it('classement : communes qui passent, score affiché décroissant, puis loyer croissant, puis nom', () => {
-    const { res } = scores(REGLAGES_DEPART);
+    const { res } = scores(mer50);
     expect(res.classement.map((c) => c.commune.nom)).toEqual(['Portmer', 'Quaibleu', 'Grandeville']);
     expect(res.classement.map((c) => c.rang)).toEqual([1, 2, 3]);
     expect(res.actif).toBe(true);
@@ -89,15 +90,15 @@ describe('D11 — taille de ville', () => {
     expect(tailleDe(null)).toBeNull();
   });
 
-  it('AC-10 (règle) : « Petite ville » cochée, seule A passe (72) ; Grandeville a la raison de taille', () => {
-    const { res, by } = scores({ loyer: 1200, mer: 60, tailles: ['petite-ville'] });
+  it('AC-10 (règle) : mer 50 km, « 10 000 – 50 000 hab. » cochée, seule A passe (72) ; Grandeville a la raison de taille', () => {
+    const { res, by } = scores({ loyer: 1200, mer: 50, tailles: ['petite-ville'] });
     expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 72]]);
     expect(by('B').raisons).toEqual([{ critere: 'taille', taille: 'grande-ville', population: 260000 }]);
   });
 
-  it('AC-14 (règle) : Petite ville + Ville moyenne → Portmer 72, Quaibleu 49', () => {
-    const { res } = scores({ loyer: 1200, mer: 60, tailles: ['petite-ville', 'ville-moyenne'] });
-    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 72], ['Quaibleu', 49]]);
+  it('AC-14 (règle) : départ, 10 000 – 50 000 et 50 000 – 200 000 hab. → Portmer 46, Quaibleu 9', () => {
+    const { res } = scores({ ...REGLAGES_DEPART, tailles: ['petite-ville', 'ville-moyenne'] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 46], ['Quaibleu', 9]]);
   });
 
   it('sans plafond : les communes de la bonne taille passent, sans score', () => {

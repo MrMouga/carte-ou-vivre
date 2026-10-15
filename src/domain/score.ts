@@ -45,12 +45,17 @@ export function communeDeLigne([code, nom, dep, population, loyerM2, estimationP
 export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'grande-ville';
 
 /**
- * Plafonds ; `null` = « Sans limite ». `loyer` : plafond du prix, dans le mode et l'unité du réglage du prix (en € ou en
- * €/m², loyer ou achat : nom gardé de loyer-mer). `mer` en km. `tailles` vide = « Peu importe ».
+ * Plafonds. `loyer` : plafond du prix, dans le mode et l'unité du réglage du prix (en € ou en €/m², loyer ou achat : nom
+ * gardé de loyer-mer), `null` = « Sans limite ». `mer` : un des choix de `CHOIX_MER` en km, `null` = « Peu importe »
+ * (R28 de cadre-de-vie). `tailles` vide = « Peu importe ».
  */
 export type Reglages = { loyer: number | null; mer: number | null; tailles: Taille[] };
 
-export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: 60, tailles: [] }; // H1
+/** R28, H69 de cadre-de-vie : les distances de la mer, après « Peu importe ». */
+export const CHOIX_MER = [10, 30, 50, 100] as const;
+
+/** R32 de cadre-de-vie : le prix de départ d'immobilier (D1), tout le cadre de vie sur Peu importe. */
+export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: null, tailles: [] };
 
 /** Plafond d'un proche, en minutes : de 15 min à 3 h par pas de 15 min (R11, D15), 2 h à l'ajout (H19). */
 export const PROCHE = { pas: 15, max: 180, ajout: 120 } as const;

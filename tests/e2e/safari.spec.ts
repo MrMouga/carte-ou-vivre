@@ -16,13 +16,14 @@ test('limite de Safari sur l’adresse : la page survit à 120 crans, puis l’a
     };
   });
   await ouvrir(page, '/');
-  const mer = page.getByRole('slider', { name: 'Mer à moins de' });
-  await mer.focus();
-  // Trois allers-retours de 20 crans (60 → 160 → 60 km), puis 55 km.
-  for (let i = 0; i < 120; i++) await page.keyboard.press(i % 40 < 20 ? 'ArrowRight' : 'ArrowLeft');
+  // Cadre-de-vie, règle (2) : le curseur de la mer n'existe plus ; la limite s'éprouve avec le curseur du prix.
+  const prix = page.getByRole('slider', { name: 'Loyer maximum' });
+  await prix.focus();
+  // Six allers-retours de 10 crans (1 200 → 1 700 → 1 200 €, crans de 50 €), puis 1 150 €.
+  for (let i = 0; i < 120; i++) await page.keyboard.press(i % 20 < 10 ? 'ArrowRight' : 'ArrowLeft');
   await page.keyboard.press('ArrowLeft');
   await expect(page.getByRole('region', { name: 'Réglages' })).toBeVisible();
-  await expect(mer).toHaveAttribute('aria-valuenow', '55');
+  await expect(prix).toHaveAttribute('aria-valuenow', '1150');
   await page.evaluate(() => ((window as unknown as { limite: boolean }).limite = false));
-  await expect.poll(() => new URL(page.url()).search, { timeout: 3000 }).toBe('?loyer=1200&mer=55');
+  await expect.poll(() => new URL(page.url()).search, { timeout: 3000 }).toBe('?loyer=1150');
 });

@@ -17,7 +17,7 @@ test('page des composants : polices locales chargées, aucune requête vers Goog
 
 test('pastille : un clic la coche (aria-pressed) ; curseur : la flèche droite le déplace', async ({ page }) => {
   await page.goto('/demo.html');
-  const chip = page.getByRole('button', { name: /Petite ville/ }).first();
+  const chip = page.getByRole('button', { name: /10\s000 – 50\s000\shab\./ }).first(); // cadre-de-vie, règle (3) : taille en chiffres
   await expect(chip).toHaveAttribute('aria-pressed', 'false');
   await chip.click();
   await expect(chip).toHaveAttribute('aria-pressed', 'true');

@@ -18,12 +18,12 @@ function Curseur({ libelle, valeur, sousTexte, value }: { libelle: string; valeu
   );
 }
 
-function Pastille({ libelle, habitants, cochee }: { libelle: string; habitants: string; cochee?: boolean }) {
+// Pastille : libellé en chiffres, comme les tailles de la catégorie « Cadre de vie » (R27 de cadre-de-vie).
+function Pastille({ libelle, cochee }: { libelle: string; cochee?: boolean }) {
   const [on, setOn] = useState(!!cochee);
   return (
     <Toggle pressed={on} onPressedChange={setOn}>
-      <span>{libelle}</span>
-      <span className="text-mentions">{habitants}</span>
+      {libelle}
     </Toggle>
   );
 }
@@ -48,8 +48,8 @@ export function Demo() {
       </section>
       <section className="flex flex-col items-start gap-3 rounded-panel border border-border bg-card p-4">
         <h2 className="text-categorie uppercase">Pastille</h2>
-        <Pastille libelle="Petite ville" habitants="10 000 – 50 000 hab." />
-        <Pastille libelle="Petite ville" habitants="10 000 – 50 000 hab." cochee />
+        <Pastille libelle="10 000 – 50 000 hab." />
+        <Pastille libelle="10 000 – 50 000 hab." cochee />
       </section>
       <section className="flex w-liste flex-col gap-1 rounded-panel border border-border bg-card p-4 shadow-panneau">
         <p className="font-serif text-marque">Où vivre en France</p>
