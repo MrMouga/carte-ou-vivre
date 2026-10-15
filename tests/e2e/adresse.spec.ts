@@ -9,8 +9,8 @@ const lignes = async (page: Page) => (await liste(page).getByRole('button').eval
 const adresse = (page: Page) => new URL(page.url()).pathname + new URL(page.url()).search;
 const valeur = async (page: Page, nom: string) => nbsp(await page.getByRole('slider', { name: nom }).getAttribute('aria-valuetext'));
 
-/** Cadre-de-vie (R28, H69) : la case de mer cochée, lue par son nom. */
-const merCochee = (page: Page) => page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { checked: true });
+/** Cadre-de-vie (R28, H69 ; D12 : boutons à bascule exclusifs) : la case de mer cochée, lue par son nom. */
+const merCochee = (page: Page) => page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { pressed: true });
 /** Cadre-de-vie (R27) : une pastille de taille, par son libellé en chiffres (espaces insécables dans les nombres). */
 const pastille = (page: Page, libelle: string) =>
   page.getByRole('group', { name: 'Taille de la commune' }).getByRole('button', { name: new RegExp(`^${libelle.replace(/ /g, '\\s')}$`) });
@@ -24,10 +24,11 @@ test('AC-11 /?loyer=800&mer=50 : réglages 800 € et 50 km ; « 1 commune passe
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 58 · 650 € · moins d'1 km"]);
 });
 
-test('AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, mer sur Peu importe, aucune taille cochée ; adresse /?loyer=1200 ; liste D 65, A 46, B 31, E 9', async ({ page }) => {
+test('AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, aucune distance à la mer cochée, aucune taille cochée ; adresse /?loyer=1200 ; liste D 65, A 46, B 31, E 9', async ({ page }) => {
   await ouvrir(page, '/?loyer=abc&mer=aucun&taille=village');
   expect(await valeur(page, 'Loyer maximum')).toMatch(/^1 200 €/);
-  expect(nbsp(await merCochee(page).textContent())).toBe('Peu importe');
+  await expect(page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button')).toHaveCount(4);
+  await expect(merCochee(page)).toHaveCount(0);
   for (const t of ['Moins de 10 000 hab.', '10 000 – 50 000 hab.', '50 000 – 200 000 hab.', 'Plus de 200 000 hab.'])
     await expect(pastille(page, t)).toHaveAttribute('aria-pressed', 'false');
   expect(adresse(page)).toBe('/?loyer=1200');

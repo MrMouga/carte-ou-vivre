@@ -93,11 +93,12 @@ test('AC-4 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15, puis Toulouse
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 50 · 650 € · moins d'1 km", '2 · Grandeville (33) · 26 · 832 € · 40 km']);
 });
 
-test('AC-6 loyer « Sans limite », mer sur « Peu importe », Nantesville (44) à 2 h 15 : Portmer 56 (40–60), Grandeville 0 (0–20) ; pas de message « Fixe un loyer… »', async ({ page }) => {
+test('AC-6 loyer « Sans limite », aucune distance à la mer cochée, Nantesville (44) à 2 h 15 : Portmer 56 (40–60), Grandeville 0 (0–20) ; pas de message « Fixe un loyer… »', async ({ page }) => {
   await ouvrir(page);
   await servirIgn(page);
   await regler(page, 'Loyer maximum', 'End');
-  await expect(page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' })).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button')).toHaveCount(4);
+  await expect(page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { pressed: true })).toHaveCount(0);
   await nantesville(page);
   await regler(page, 'Plafond de Nantesville (44)', 'ArrowRight');
 

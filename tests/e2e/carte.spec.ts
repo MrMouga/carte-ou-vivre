@@ -10,9 +10,12 @@ test('AC-1 réglages de départ : D palier 60–80, A palier 40–60, B palier 2
   await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1', C: null });
 });
 
-test('AC-2 depuis /?loyer=1200&mer=50, mer « Peu importe » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée', async ({ page }) => {
+test('AC-2 depuis /?loyer=1200&mer=50, l’utilisateur décoche la mer « 50 km » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée', async ({ page }) => {
   await ouvrir(page, '/?loyer=1200&mer=50');
-  await page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' }).click();
+  const cinquante = page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '50 km', exact: true });
+  await expect(cinquante).toHaveAttribute('aria-pressed', 'true');
+  await cinquante.click(); // D12 : la pastille cochée se décoche
+  await expect(cinquante).toHaveAttribute('aria-pressed', 'false');
   await apresRendu(page);
   await attendreCouleurs(page, { D: 'score-4', A: 'score-3', B: 'score-2', E: 'score-1', C: null });
 });

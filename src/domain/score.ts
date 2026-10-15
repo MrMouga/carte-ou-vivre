@@ -56,7 +56,7 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
  */
 export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[]; types?: TypeEnv[] };
 
-/** R28, H69 de cadre-de-vie : les distances de la mer, après « Peu importe ». */
+/** R28, H69 de cadre-de-vie : les distances de la mer ; aucune cochée = « Peu importe » (D12). */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
 /** R29, H69 : les mêmes distances pour la montagne. */
 export const CHOIX_MONTAGNE = CHOIX_MER;

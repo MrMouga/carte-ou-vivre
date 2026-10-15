@@ -1,4 +1,4 @@
-import { useId, useRef } from 'react';
+import { useId } from 'react';
 import { LIBELLE_TAILLE, LIBELLE_TYPE, resumeCadre } from '@/domain/format';
 import { CHOIX_MER, type Reglages, type TypeEnv } from '@/domain/score';
 import { ORDRE_TAILLES, ORDRE_TYPES } from '@/domain/url';
@@ -8,8 +8,8 @@ import { Categorie } from './Categorie';
 // Catégorie « Cadre de vie » (spec cadre-de-vie, design F : docs/design/cadre-de-vie/README.md). Elle remplace les
 // catégories « Mer » et « Taille de ville ». Groupes, dans l'ordre : « Taille de la commune » (Cases séparées, choix
 // multiple, aria-pressed), « Type d'environnement » (Rangée qui défile, choix multiple, aria-pressed), puis « Proximité avec
-// la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins de » (Cases collées, boutons radio). Noms pour
-// les lecteurs d'écran : H76.
+// la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins de » (Cases collées, boutons à bascule
+// exclusifs, D12). Noms pour les lecteurs d'écran : H76.
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -20,53 +20,35 @@ const CASE =
 /** Coche ou décoche `x` parmi `cochees` (taille, type) : le résultat suit l'ordre de l'adresse, `ordre`. */
 const basculer = <T,>(ordre: T[], cochees: T[], x: T) => ordre.filter((y) => (y === x ? !cochees.includes(x) : cochees.includes(y)));
 
-/** R28, R29, H69 : « Peu importe » puis les distances, les mêmes pour la mer et la montagne ; `null` = Peu importe. */
-const CHOIX: { valeur: number | null; libelle: string }[] = [
-  { valeur: null, libelle: 'Peu importe' },
+/** R28, R29, H69 (révisée par D12) : les distances, les mêmes pour la mer et la montagne ; aucune cochée = Peu importe. */
+const CHOIX: { valeur: number; libelle: string }[] = [
   ...CHOIX_MER.map((d) => ({ valeur: d, libelle: `${d} km` })),
 ];
 
 /**
- * Cases collées (contrat du système) : un `radiogroup` de `role=radio`, cochée = `aria-checked`. Clavier du motif « groupe
- * de boutons radio » : seule la case cochée entre dans l'ordre de tabulation, les flèches passent à la voisine et la cochent.
+ * Cases collées (contrat du système), révisées par D12 de cadre-de-vie : sans case « Peu importe ». Boutons à bascule
+ * exclusifs (H76) : cocher une case décoche l'autre, toucher la case cochée la décoche (`null` = Peu importe). Au clavier,
+ * Tab de case en case, comme les tailles.
  */
 function CasesCollees({ titre, valeur, onChange, disabled }: { titre: string; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
   const id = useId();
-  const cases = useRef<(HTMLButtonElement | null)[]>([]);
-  const choisir = (i: number) => {
-    const n = (i + CHOIX.length) % CHOIX.length;
-    onChange(CHOIX[n].valeur);
-    cases.current[n]?.focus();
-  };
-  const fleche = (e: React.KeyboardEvent, i: number) => {
-    const pas = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-    if (pas == null) return;
-    e.preventDefault();
-    choisir(i + pas);
-  };
   return (
     <div className="flex flex-col gap-1">
       <span id={id} className="text-secondaire text-muted-foreground">
         {titre}
       </span>
       {/* Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus. */}
-      <div role="radiogroup" aria-labelledby={id} className="grid grid-cols-5 gap-px rounded-chip border border-border bg-border">
-        {CHOIX.map((c, i) => {
+      <div role="group" aria-labelledby={id} className="grid grid-cols-4 gap-px rounded-chip border border-border bg-border">
+        {CHOIX.map((c) => {
           const cochee = valeur === c.valeur;
           return (
             <button
               key={c.libelle}
-              ref={(el) => {
-                cases.current[i] = el;
-              }}
               type="button"
-              role="radio"
-              aria-checked={cochee}
-              tabIndex={cochee ? 0 : -1}
+              aria-pressed={cochee}
               disabled={disabled}
-              onClick={() => onChange(c.valeur)}
-              onKeyDown={(e) => fleche(e, i)}
-              className={cn(CASE, 'bg-card first:rounded-l-chip last:rounded-r-chip aria-checked:bg-primary aria-checked:text-primary-foreground')}
+              onClick={() => onChange(cochee ? null : c.valeur)}
+              className={cn(CASE, 'bg-card first:rounded-l-chip last:rounded-r-chip aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
             >
               {c.libelle}
             </button>

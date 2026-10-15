@@ -373,7 +373,7 @@ test('AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quai
   expect(l.map((x) => x.split(' · ').slice(0, 3).join(' · '))).toEqual(['1 · Portmer (17) · 24', '2 · Grandeville (33) · 12', '3 · Quaibleu (13) · 4']);
 });
 
-test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 €, mer sur Peu importe ; adresse /?achat=300000&bien=maison&unite=total&surface=100 ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € »', async ({ page }) => {
+test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 €, aucune distance à la mer cochée ; adresse /?achat=300000&bien=maison&unite=total&surface=100 ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € »', async ({ page }) => {
   await ouvrirSix(page, '/?achat=300000&mer=aucun&bien=maison&unite=total&surface=100');
   const chemin = '/?achat=300000&bien=maison&unite=total&surface=100';
   await expect(choix(page, 'Type de logement', 'Maison')).toHaveAttribute('aria-pressed', 'true');
@@ -381,7 +381,8 @@ test('AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maiso
   await expect(choix(page, 'Unité du prix', 'Total')).toHaveAttribute('aria-pressed', 'true');
   await expect(surface(page)).toHaveValue('100');
   await expect(plafond(page, '300 000 €')).toBeVisible();
-  await expect(page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' })).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button')).toHaveCount(4);
+  await expect(page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { pressed: true })).toHaveCount(0);
   expect(adresse(page)).toBe(chemin);
   await attendreCouleurs<Six>(page, { D: 'score-3', F: 'area-unranked', A: null, B: null, C: null, E: null }, { jeu: SIX });
   await ficheDeCarte(page, 'A', 'Portmer (17)');

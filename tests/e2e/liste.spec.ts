@@ -7,8 +7,9 @@ const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
 const liste = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
 const lignes = async (page: Page) => (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
 
-/** Cadre-de-vie (R28, H69) : la mer se choisit par les cases « Mer à moins de », plus au curseur. */
-const choixMer = (page: Page, nom: string) => page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: nom, exact: true });
+/** Cadre-de-vie (R28, H69 ; D12 : boutons à bascule exclusifs) : la mer se choisit par les cases « Mer à moins de », plus au curseur. */
+const groupe = (page: Page, nom: string) => page.getByRole('group', { name: nom });
+const choixMer = (page: Page, nom: string) => groupe(page, 'Mer à moins de').getByRole('button', { name: nom, exact: true });
 
 async function regler(page: Page, nom: string, touche: string, fois = 1) {
   await page.getByRole('slider', { name: nom }).focus();
@@ -35,16 +36,19 @@ test('AC-5 loyer 300 € et mer 10 km : aucune commune colorée, message de list
   await choixMer(page, '10 km').click();
   await apresRendu(page);
   await expect(page.getByRole('slider', { name: 'Loyer maximum' })).toHaveAttribute('aria-valuenow', '300');
-  await expect(choixMer(page, '10 km')).toHaveAttribute('aria-checked', 'true');
+  await expect(choixMer(page, '10 km')).toHaveAttribute('aria-pressed', 'true');
   await attendreCouleurs(page, { A: null, B: null, C: null, D: null, E: null });
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.');
 });
 
-test('AC-6 loyer « Sans limite », la mer restant sur « Peu importe » : couleur neutre sur les 5 communes, aucun score, message de liste', async ({ page }) => {
+test('AC-6 loyer « Sans limite », aucune distance à la mer ni à la montagne n’étant cochée : couleur neutre sur les 5 communes, aucun score, message de liste', async ({ page }) => {
   await ouvrir(page);
   await regler(page, 'Loyer maximum', 'End');
-  await expect(choixMer(page, 'Peu importe')).toHaveAttribute('aria-checked', 'true');
+  for (const nom of ['Mer à moins de', 'Montagne à moins de']) {
+    await expect(groupe(page, nom).getByRole('button')).toHaveCount(4);
+    await expect(groupe(page, nom).getByRole('button', { pressed: true })).toHaveCount(0);
+  }
   await attendreCouleurs(page, { A: 'area-unranked', B: 'area-unranked', C: 'area-unranked', D: 'area-unranked', E: 'area-unranked' });
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Fixe un loyer ou une distance à la mer pour classer les communes.');

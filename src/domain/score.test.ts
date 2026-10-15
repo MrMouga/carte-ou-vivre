@@ -35,7 +35,7 @@ describe('R1, R2, R3 — passage, score et palier', () => {
     expect(by('C').score).toBeNull();
   });
 
-  it('AC-2 mer « Peu importe » : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
+  it('AC-2 la mer « 50 km » décochée (aucune distance, `mer: null`) : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
     const { by } = scores({ loyer: 1200, mer: null, tailles: [] });
     expect([by('D').score, by('A').score, by('B').score, by('E').score]).toEqual([65, 46, 31, 9]);
     expect(['A', 'B', 'C', 'D', 'E'].filter((id) => !by(id as keyof typeof code).passe)).toEqual(['C']);

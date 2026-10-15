@@ -68,8 +68,9 @@ test('parcours : fiche de Grandeville → loyer 800 € → ne passe pas → san
   expect(t).toContain('Ne passe pas tes critères'.toUpperCase());
   expect(t).toContain('Loyer 832 € : au-dessus de ton plafond de 800 €');
   await regler(page, 'Loyer maximum', 'End');
-  // Cadre-de-vie, règle (2) : la mer se règle par les cases « Mer à moins de ».
-  await page.getByRole('radiogroup', { name: 'Mer à moins de' }).getByRole('radio', { name: 'Peu importe' }).click();
+  // Cadre-de-vie, règle (2) : la mer se règle par les cases « Mer à moins de » ; D12, règle (3) : « Peu importe » n'existe
+  // plus, on décoche la pastille cochée (50 km).
+  await page.getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '50 km', exact: true }).click();
   await apresRendu(page);
   t = await texte(page);
   expect(t).not.toMatch(/\/ 100|qui pass|NE PASSE PAS/);

@@ -17,10 +17,11 @@ const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
 const texteFiche = async (page: Page) => nbsp(await fiche(page).innerText());
 const taille = (page: Page) => page.getByRole('group', { name: 'Taille de la commune' });
 const nature = (page: Page) => page.getByRole('group', { name: 'Proximité avec la nature' });
-const mer = (page: Page) => page.getByRole('radiogroup', { name: 'Mer à moins de' });
-const choixMer = (page: Page, nom: string) => mer(page).getByRole('radio', { name: nom, exact: true });
-const montagne = (page: Page) => page.getByRole('radiogroup', { name: 'Montagne à moins de' });
-const choixMontagne = (page: Page, nom: string) => montagne(page).getByRole('radio', { name: nom, exact: true });
+// D12 (2026-10-15) : mer et montagne en boutons à bascule exclusifs (H76 révisée), sans « Peu importe » ; aucun coché = Peu importe.
+const mer = (page: Page) => page.getByRole('group', { name: 'Mer à moins de' });
+const choixMer = (page: Page, nom: string) => mer(page).getByRole('button', { name: nom, exact: true });
+const montagne = (page: Page) => page.getByRole('group', { name: 'Montagne à moins de' });
+const choixMontagne = (page: Page, nom: string) => montagne(page).getByRole('button', { name: nom, exact: true });
 const titreCadre = (page: Page) => page.getByRole('heading', { level: 2, name: /^Cadre de vie/ }).getByRole('button');
 
 async function ouvrirSix(page: Page, chemin = '/') {
@@ -40,13 +41,23 @@ async function ficheDeListe(page: Page, nom: string) {
 }
 /** La pastille de mer cochée, et elle seule. */
 async function merCochee(page: Page, nom: string) {
-  await expect(choixMer(page, nom)).toHaveAttribute('aria-checked', 'true');
-  await expect(mer(page).getByRole('radio', { checked: true })).toHaveCount(1);
+  await expect(choixMer(page, nom)).toHaveAttribute('aria-pressed', 'true');
+  await expect(mer(page).getByRole('button', { pressed: true })).toHaveCount(1);
 }
 /** La pastille de montagne cochée, et elle seule. */
 async function montagneCochee(page: Page, nom: string) {
-  await expect(choixMontagne(page, nom)).toHaveAttribute('aria-checked', 'true');
-  await expect(montagne(page).getByRole('radio', { checked: true })).toHaveCount(1);
+  await expect(choixMontagne(page, nom)).toHaveAttribute('aria-pressed', 'true');
+  await expect(montagne(page).getByRole('button', { pressed: true })).toHaveCount(1);
+}
+/** Aucune distance à la mer cochée (Peu importe, D12). */
+async function merAucune(page: Page) {
+  await expect(mer(page).getByRole('button')).toHaveCount(4);
+  await expect(mer(page).getByRole('button', { pressed: true })).toHaveCount(0);
+}
+/** Aucune distance à la montagne cochée (Peu importe, D12). */
+async function montagneAucune(page: Page) {
+  await expect(montagne(page).getByRole('button')).toHaveCount(4);
+  await expect(montagne(page).getByRole('button', { pressed: true })).toHaveCount(0);
 }
 
 test('AC-2 depuis /, mer « 50 km » : /?loyer=1200&mer=50 ; 3 communes, Portmer 72, Quaibleu 48, Grandeville 25 ; fiche de Rhinval « Mer 420 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
@@ -109,16 +120,16 @@ test('R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse 
   // prête (quatre cartes dans un seul test dépassaient les 5 s sous la charge de la suite entière).
   for (const v of ['200', '23', '0']) {
     await page.goto(`/?loyer=1200&mer=${v}`);
-    await merCochee(page, 'Peu importe');
+    await merAucune(page); // D12 : Peu importe = aucune distance cochée
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   }
 });
 
 // Hors AC (R32, R31) : l'adresse est réécrite à l'ouverture avec les réglages effectifs ; tout le cadre de vie sur Peu importe.
-test('R32 : / devient /?loyer=1200 ; mer sur « Peu importe », aucune taille cochée ; la liste classe par le prix seul', async ({ page }) => {
+test('R32 : / devient /?loyer=1200 ; aucune distance à la mer cochée, aucune taille cochée ; la liste classe par le prix seul', async ({ page }) => {
   await ouvrirSix(page);
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
-  await merCochee(page, 'Peu importe');
+  await merAucune(page);
   await expect(taille(page).getByRole('button', { pressed: true })).toHaveCount(0);
   await voirListe(page);
   // Prix seul (fixture « 6 communes ») : Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 (AC-1 d'immobilier).
@@ -145,24 +156,13 @@ test('H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles
 });
 
 // Hors AC (H76, contrat « Cases séparées » et « Cases collées ») : groupes, noms et états lus par les lecteurs d'écran ; clavier.
-test('H76 : « Taille de la commune » (4 boutons à bascule), « Proximité avec la nature » qui porte « Mer à moins de » (5 boutons radio) ; flèches du clavier', async ({ page }) => {
+// D12 : le motif radio (une case dans l'ordre de tabulation, flèches) n'existe plus ; sa vérification est retirée (règle (4)).
+test('H76 : « Taille de la commune » (4 boutons à bascule), « Proximité avec la nature » qui porte « Mer à moins de » (4 boutons à bascule exclusifs, D12)', async ({ page }) => {
   await ouvrirSix(page);
   await expect(taille(page).getByRole('button')).toHaveCount(4);
   for (const b of await taille(page).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
-  await expect(nature(page).getByRole('radiogroup', { name: 'Mer à moins de' })).toBeVisible();
-  expect((await mer(page).getByRole('radio').allInnerTexts()).map(nbsp)).toEqual(['Peu importe', '10 km', '30 km', '50 km', '100 km']);
-
-  // Une seule case du groupe dans l'ordre de tabulation (la cochée) ; flèche droite : la suivante, cochée.
-  await choixMer(page, 'Peu importe').focus();
-  await page.keyboard.press('ArrowRight');
-  await merCochee(page, '10 km');
-  await expect(choixMer(page, '10 km')).toBeFocused();
-  await page.keyboard.press('ArrowLeft');
-  await page.keyboard.press('ArrowLeft');
-  await merCochee(page, '100 km');
-  await expect(choixMer(page, '100 km')).toBeFocused();
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer=100');
-  await expect(mer(page).locator('[tabindex="0"]')).toHaveCount(1);
+  await expect(nature(page).getByRole('group', { name: 'Mer à moins de' })).toBeVisible();
+  expect((await mer(page).getByRole('button').allInnerTexts()).map(nbsp)).toEqual(['10 km', '30 km', '50 km', '100 km']);
 
   // Espace sur une taille : cochée, puis décochée.
   const petite = taille(page).getByRole('button', { name: /^Moins de 10\s000/ });
@@ -178,7 +178,7 @@ test('390 px : cases de taille et de mer de 44 px au moins ; libellés de taille
   test.skip(info.project.name !== 'mobile', 'cibles au toucher : 390 px');
   await ouvrirSix(page);
   await voirCriteres(page);
-  const cases = [...(await taille(page).getByRole('button').all()), ...(await mer(page).getByRole('radio').all())];
+  const cases = [...(await taille(page).getByRole('button').all()), ...(await mer(page).getByRole('button').all())];
   for (const c of cases) {
     await c.scrollIntoViewIfNeeded();
     expect((await c.boundingBox())!.height).toBeGreaterThanOrEqual(44);
@@ -311,19 +311,19 @@ test('R31 : montagne=0 et montagne=abc → Peu importe, /?loyer=1200 ; montagne=
   // Comme pour la mer : l'adresse et la case cochée ne dépendent pas de la carte, on recharge sans l'attendre.
   for (const v of ['0', 'abc']) {
     await page.goto(`/?loyer=1200&montagne=${v}`);
-    await montagneCochee(page, 'Peu importe');
+    await montagneAucune(page); // D12 : Peu importe = aucune distance cochée
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   }
 });
 
 // Hors AC (details.md, « sans plafond » étendu) : seule la montagne note ; elle repasse à Peu importe → page sans plafond.
-test('sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne sur « Peu importe » → /?loyer=aucun, couleur neutre partout, message de liste', async ({ page }) => {
+test('sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne « 50 km » décochée → /?loyer=aucun, couleur neutre partout, message de liste', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=aucun&montagne=50');
   await voirListe(page);
   expect((await lignes(page)).map(sansNum)).toEqual(['Terrebasse (23) · 100', 'Rhinval (67) · 98', 'Grandeville (33) · 0']);
   await voirCriteres(page);
-  await choixMontagne(page, 'Peu importe').click();
-  await montagneCochee(page, 'Peu importe');
+  await choixMontagne(page, '50 km').click(); // D12 : décocher la pastille cochée = Peu importe
+  await montagneAucune(page);
   await expect.poll(() => adresse(page)).toBe('/?loyer=aucun');
   const neutre = 'area-unranked' as const;
   await attendreCouleurs<Six>(page, { A: neutre, B: neutre, C: neutre, D: neutre, E: neutre, F: neutre }, { jeu: SIX });
@@ -340,19 +340,70 @@ test('H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 50 km · Montagn
   expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 50 km · Montagne 30 km');
 });
 
-// Hors AC (H76, design F) : « Montagne à moins de » sous la mer, dans « Proximité avec la nature », cinq boutons radio.
-test('H76 : « Montagne à moins de » (5 boutons radio, « Peu importe » cochée) sous « Mer à moins de », dans « Proximité avec la nature » ; flèches du clavier', async ({ page }) => {
+// Hors AC (H76 révisée par D12, design F) : « Montagne à moins de » sous la mer, dans « Proximité avec la nature », quatre
+// boutons à bascule exclusifs. Le motif radio (flèches) n'existe plus : la flèche devient un clic (règle (3)).
+test('H76 : « Montagne à moins de » (4 boutons à bascule exclusifs, aucun coché) sous « Mer à moins de », dans « Proximité avec la nature »', async ({ page }) => {
   await ouvrirSix(page);
-  await expect(nature(page).getByRole('radiogroup', { name: 'Montagne à moins de' })).toBeVisible();
-  expect((await montagne(page).getByRole('radio').allInnerTexts()).map(nbsp)).toEqual(['Peu importe', '10 km', '30 km', '50 km', '100 km']);
-  await montagneCochee(page, 'Peu importe');
+  await expect(nature(page).getByRole('group', { name: 'Montagne à moins de' })).toBeVisible();
+  expect((await montagne(page).getByRole('button').allInnerTexts()).map(nbsp)).toEqual(['10 km', '30 km', '50 km', '100 km']);
+  await montagneAucune(page);
   expect((await montagne(page).boundingBox())!.y).toBeGreaterThan((await mer(page).boundingBox())!.y);
-  await choixMontagne(page, 'Peu importe').focus();
-  await page.keyboard.press('ArrowRight');
+  await choixMontagne(page, '10 km').click();
   await montagneCochee(page, '10 km');
-  await expect(choixMontagne(page, '10 km')).toBeFocused();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=10');
-  await merCochee(page, 'Peu importe'); // la mer ne bouge pas
+  await merAucune(page); // la mer ne bouge pas
+});
+
+// Hors AC (D12) : la pastille cochée se décoche d'un toucher ; cocher une autre décoche la première.
+test('D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&montagne=10');
+  await montagneCochee(page, '10 km');
+  await choixMontagne(page, '10 km').click();
+  await montagneAucune(page);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await choixMontagne(page, '30 km').click();
+  await montagneCochee(page, '30 km');
+  await choixMontagne(page, '100 km').click();
+  await montagneCochee(page, '100 km');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=100');
+});
+
+// Hors AC (H76 révisée par D12) : au clavier, Tab de pastille en pastille, comme les tailles ; Espace coche puis décoche.
+test('D12, H76 : Tab passe de « 10 km » à « 30 km », « 50 km », « 100 km » de la mer puis à « 10 km » de la montagne ; Espace coche puis décoche', async ({ page }) => {
+  await ouvrirSix(page);
+  await voirCriteres(page);
+  await choixMer(page, '10 km').focus();
+  for (const nom of ['30 km', '50 km', '100 km']) {
+    await page.keyboard.press('Tab');
+    await expect(choixMer(page, nom)).toBeFocused();
+  }
+  await page.keyboard.press('Tab');
+  await expect(choixMontagne(page, '10 km')).toBeFocused();
+  await page.keyboard.press('Space');
+  await montagneCochee(page, '10 km');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=10');
+  await page.keyboard.press('Space');
+  await montagneAucune(page);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+});
+
+// Hors AC (H75, D12) : rien de coché au départ, le résumé replié dit « Peu importe » ; une distance cochée puis décochée y revient.
+test('D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repliée dit « Peu importe » ; mer « 50 km » cochée puis décochée : « Peu importe »', async ({ page }) => {
+  await ouvrirSix(page);
+  await merAucune(page);
+  await montagneAucune(page);
+  await titreCadre(page).click();
+  await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de viePeu importe');
+  await titreCadre(page).click();
+  await choixMer(page, '50 km').click();
+  await titreCadre(page).click();
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vieMer 50 km');
+  await titreCadre(page).click();
+  await choixMer(page, '50 km').click();
+  await merAucune(page);
+  await titreCadre(page).click();
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de viePeu importe');
 });
 
 // Hors AC (contrat « Règles » : 44 px au toucher) — 390 px.
@@ -360,7 +411,7 @@ test('390 px : cases de la montagne de 44 px au moins', async ({ page }, info) =
   test.skip(info.project.name !== 'mobile', 'cibles au toucher : 390 px');
   await ouvrirSix(page);
   await voirCriteres(page);
-  for (const c of await montagne(page).getByRole('radio').all()) {
+  for (const c of await montagne(page).getByRole('button').all()) {
     await c.scrollIntoViewIfNeeded();
     expect((await c.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
@@ -374,11 +425,11 @@ const choixType = (page: Page, nom: string) => types(page).getByRole('button', {
 const typesCoches = async (page: Page) => (await types(page).getByRole('button', { pressed: true }).allInnerTexts()).map((t) => nbsp(t).trim());
 const tailleCochees = async (page: Page) => (await taille(page).getByRole('button', { pressed: true }).allInnerTexts()).map((t) => nbsp(t).replace(/\s+/g, ' ').trim());
 
-test('AC-1 ouverture de / : /?loyer=1200 ; mer et montagne sur « Peu importe », aucune taille ni aucun type coché ; 5 communes, Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 ; Montcher non colorée', async ({ page }) => {
+test('AC-1 ouverture de / : /?loyer=1200 ; aucune distance à la mer ni à la montagne cochée, aucune taille ni aucun type coché ; 5 communes, Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 ; Montcher non colorée', async ({ page }) => {
   await ouvrirSix(page);
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
-  await merCochee(page, 'Peu importe');
-  await montagneCochee(page, 'Peu importe');
+  await merAucune(page);
+  await montagneAucune(page);
   await expect(taille(page).getByRole('button', { pressed: true })).toHaveCount(0);
   await expect(types(page).getByRole('button')).toHaveCount(4);
   await expect(types(page).getByRole('button', { pressed: true })).toHaveCount(0);
@@ -415,10 +466,10 @@ test('AC-5 depuis /, type « Ville dense » : /?loyer=1200&env=ville-dense ; 1 c
   expect((await lignes(page)).map(sansNum)).toEqual(['Terrebasse (23) · 65', 'Grandeville (33) · 31']);
 });
 
-test('AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village : mer et montagne sur « Peu importe », « Moins de 10 000 hab. » et « Bourg et village » cochés ; /?loyer=1200&taille=petite-commune&env=bourg-et-village ; 1 commune, Terrebasse 65', async ({ page }) => {
+test('AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village : aucune distance à la mer ni à la montagne cochée, « Moins de 10 000 hab. » et « Bourg et village » cochés ; /?loyer=1200&taille=petite-commune&env=bourg-et-village ; 1 commune, Terrebasse 65', async ({ page }) => {
   await ouvrirSix(page, '/?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village');
-  await merCochee(page, 'Peu importe');
-  await montagneCochee(page, 'Peu importe');
+  await merAucune(page);
+  await montagneAucune(page);
   expect(await tailleCochees(page)).toEqual(['Moins de 10 000 hab.']);
   expect(await typesCoches(page)).toEqual(['Bourg et village']);
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&taille=petite-commune&env=bourg-et-village');
