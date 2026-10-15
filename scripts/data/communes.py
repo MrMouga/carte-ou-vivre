@@ -15,6 +15,9 @@ bloc) : il n'est pas retenu, on passe au niveau suivant. Moselle, Bas-Rhin et Ha
 arrondissement, puis moyenne simple de ceux qui ont un prix, « tous-biens » si l'un d'eux l'est, sinon « secteur » si
 l'un d'eux l'est (H67 ; plan de cadre-de-vie, tâche 1 : aucun arrondissement en tous biens au 2026-10-15).
 
+`mer_km` : distance de la mairie à la mer (mer.py), en km à deux décimales, tronqués comme `montagne_km` (corrections 2
+de cadre-de-vie, 2026-10-15).
+
 Cadre de vie (tranche cadre-de-vie, tâche 1, 2026-10-15) : `type_env`, niveau de la grille communale de densité Insee 2025
 (DENS7 regroupé en 4, D10, H71), joint par code ; `montagne_km`, distance de la mairie à la zone de montagne du Cerema
 (montagne.py, R29), en km à deux décimales (tronqués, pour que le km affiché soit celui de la distance mesurée), 0 = commune
@@ -142,6 +145,25 @@ def km_affiche(km):
     return 0 if km == 0 else max(1, math.floor(km + 0.5))
 
 
+def centieme_tronque(km):
+    """Km à deux décimales, tronqués : mètres entiers (mer-km.csv, montagne-km.csv), puis division entière (sans erreur de
+    virgule flottante). Une valeur tronquée ne franchit jamais le demi-km : le km affiché par le site est celui de la mesure."""
+    return (round(km * 1000) // 10) / 100
+
+
+def km_mer(km):
+    """`mer_km` : km à deux décimales, tronqués (corrections 2 de cadre-de-vie, même règle que `montagne_km`). Arrondie au
+    centième, la distance de x,495 à x,499 km devenait x,50 : 181 communes affichées et comparées 1 km trop loin (Tréon,
+    28394 : 100,495 → 100,5 → 101 km, écartée à « 100 km »), et Merville-Franceville-Plage (14409, 0,997 km) affichée
+    « 1 km » au lieu de « moins d'1 km ». Une commune à 0 km reste à 0 (« moins d'1 km », comparée comme 1 km)."""
+    return centieme_tronque(km)
+
+
+def mer_affichee(km):
+    """Distance à la mer lue par le site (R4, R28) : « moins d'1 km » sous 1 km, sinon le km arrondi (comparée pareil)."""
+    return 'moins d\'1' if km < 1 else math.floor(km + 0.5)
+
+
 def km_montagne(m):
     """`montagne_km` : km à deux décimales, 0 = commune de montagne (classée ou mairie dans la zone).
     Tronqués et non arrondis (corrections 1 de cadre-de-vie) : le site arrondit au km (R29), et un arrondi au centième
@@ -152,7 +174,7 @@ def km_montagne(m):
     if m is None:
         return None
     km, classement = m
-    return 0 if classement else max(0.01, (round(km * 1000) // 10) / 100)  # mètres entiers (montagne-km.csv), puis le centième
+    return 0 if classement else max(0.01, centieme_tronque(km))
 
 
 def loyer_commune(loy, code):
@@ -327,7 +349,7 @@ def main():
         pop = geo.get(code, {}).get('population')
         rows.append([code, com[code]['LIBELLE'], com[code]['DEP'], pop,
                      None if m2 is None else round(m2, 4), propre,
-                     None if code not in mer else round(mer[code], 2),
+                     None if code not in mer else km_mer(mer[code]),
                      None if m2_mai is None else round(m2_mai, 4), propre_mai,
                      NIVEAU.get(dens7.get(code)),
                      km_montagne(montagne.get(code))])
@@ -355,6 +377,11 @@ def main():
     check(lr[6] < 1, f'La Rochelle (17300) : {lr[6]} km (attendu « moins d\'1 km », D18)')
     for code, nom in (('40231', 'Port-de-Lanne'), ('40256', "Saint-Étienne-d'Orthe"), ('64502', 'Sames')):
         check(by[code][6] > 2, f'{nom} ({code}) : {by[code][6]} km (attendu au-delà de 2 km, Adour corrigé)')
+    double = [r[0] for r in rows if mer_affichee(r[6]) != mer_affichee(mer[r[0]])]
+    check(not double, f'0 commune affichée à un autre km de la mer que sa distance mesurée (double arrondi, R28) : {len(double)} {double[:5]}')
+    for code, attendu, affiche in (('28394', 100.49, 100), ('93008', 147.49, 147), ('14409', 0.99, "moins d'1"), ('33063', 39.07, 39)):
+        check(by[code][6] == attendu and mer_affichee(by[code][6]) == affiche,
+              f'{by[code][1]} ({code}) : {by[code][6]} km de la mer, affichée {mer_affichee(by[code][6])} (attendu {attendu}, {affiche})')
     print(f"  info Paris : {by['75056'][4] * 52:.0f} € pour 52 m², estimation propre {by['75056'][5]},"
           f" {by['75056'][3]} habitants ; estimations propres : {sum(1 for r in rows if r[5])} communes")
     print(f"  info loyer des maisons : {sum(1 for r in rows if r[7] is None)} commune sans loyer,"

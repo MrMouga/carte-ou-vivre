@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
-import { montagneFiche } from './format';
+import { merFiche, montagneFiche } from './format';
 import { PRIX_DEPART } from './prix';
 import { communeDeLigne, evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type LigneCommunes, type Reglages } from './score';
 
@@ -221,6 +221,14 @@ describe('communes.json — type d’environnement et distance à la montagne lu
     const lissac = parCode.get('19117')!;
     expect(lissac.nom).toBe('Lissac-sur-Couze');
     expect(evaluer([lissac], { loyer: null, mer: null, montagne: 10, tailles: [] }).parCode.get('19117')).toMatchObject({ passe: true, score: 0, raisons: [] });
+  });
+
+  // Corrections 2 (2026-10-15) : la distance à la mer avait le même double arrondi (100,495 → 100,5 → 101 km).
+  it('R28 non-régression : Tréon (28394, 100,495 km) « 100 km de la mer », passe la mer à 100 km, note 0', () => {
+    const treon = parCode.get('28394')!;
+    expect(treon.nom).toBe('Tréon');
+    expect(merFiche(treon.merKm).replace(/ /g, ' ')).toBe("100 km de la mer à vol d'oiseau");
+    expect(evaluer([treon], { loyer: null, mer: 100, tailles: [] }).parCode.get('28394')).toMatchObject({ passe: true, score: 0, raisons: [] });
   });
 
   it('R29 non-régression : /?loyer=1200&montagne=10 sur les vraies données → 8 945 communes passent (compte de la tâche 0, source Cerema)', () => {

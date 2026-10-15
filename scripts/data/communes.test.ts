@@ -35,6 +35,15 @@ describe('public/data/communes.json', () => {
     for (const code of ['40231', '40256', '64502']) expect(get(code, 'mer_km')).toBeGreaterThan(2);
   });
 
+  // Corrections 2 de cadre-de-vie (2026-10-15) : la distance à la mer n'est plus arrondie deux fois (au centième, puis au
+  // km affiché) ; tronquée au centième comme la montagne. Mesures de mer.py (data-raw/mer-km.csv) : Tréon 100,495 km,
+  // Bobigny 147,498 km, Merville-Franceville-Plage 0,997 km.
+  it("R28 : Tréon (28394) à 100,49 km de la mer (affiché 100, pas 101) ; Bobigny (93008) à 147,49 (147, pas 148) ; Merville-Franceville-Plage (14409) à 0,99 (« moins d'1 km », pas « 1 km »)", () => {
+    expect(get('28394', 'mer_km')).toBe(100.49);
+    expect(get('93008', 'mer_km')).toBe(147.49);
+    expect(get('14409', 'mer_km')).toBe(0.99);
+  });
+
   it('repères : une ligne par commune ; le rond de Bordeaux est sur sa mairie, dans son cadre (D18)', () => {
     expect(reperes).toHaveLength(communes.length);
     const [lon, lat, ouest, sud, est, nord] = reperes[communes.findIndex((r) => r[0] === '33063')];
