@@ -95,6 +95,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-15 | Tranche construite : cadre-de-vie | « Cadre de vie » (taille en chiffres, type d'environnement Insee, mer et montagne en 4 cases décochables, D12 de la démo), montagne = zone loi Montagne du Cerema (H85, Lyon à 14 km jugée fausse par Vincent : Mont d'Or hors zone légale), prix tous biens en Acheter (D12 d'immobilier) ; 65 critères verts dont 56 recalés des tranches d'avant ; double arrondi de la mer et de la montagne corrigé ; risque accepté : 150-165 ms pour la mer (H90). À suivre : calcul des trajets fragile quand l'IGN est dégradé (502/504 vus le 2026-10-15). |
 | 2026-10-16 | Mise en ligne : cadre-de-vie (et immobilier, jamais prouvé en ligne avant) | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `56ac3d6` ; vérification de bout en bout passée en ligne aux deux largeurs ; noindex d'achat.json vérifié. L'hébergeur est un Worker Cloudflare (et non Pages : `ou-vivre-en-france.pages.dev` n'a jamais existé, les mises en ligne du 13 et du 14 n'avaient pas de preuve). |
 | 2026-10-16 | Rétro | 5 leçons de la tranche gardées, 3 contrôles ajoutés (commandes autorisées, port de test 4173, `scripts/check-live.sh`) ; réessai automatique des tests écarté ; 6 retours envoyés au workflow (chemin court, build autonome, scripts à la volée, relecteurs, /ship). [docs/retro/2026-10-16.md](docs/retro/2026-10-16.md) |
+| 2026-10-16 | Spec validée : proches-fiables (par délégation de Vincent) | Un proche compte toujours quand l'IGN rame : nouvel essai par zone, état partiel (« jusqu'à 2 h 30 »), repli en km quand l'IGN ne couvre pas le plafond choisi, recalcul à la réouverture (15 min au moins entre deux essais) ; « Trajets indisponibles » disparaît (D18 de proches, AC-10 remplacé). Km dès l'ajout reporté à la tranche « proches-km-d-abord » (choix de Vincent). Second avis d'un autre LLM apporté par Vincent : D3 et D4 réécrites. |
 
 ## Hypothèses à vérifier
 
@@ -147,6 +148,7 @@ Autres questions :
 
 ## Documents
 
+- [Spec « Proches fiables » — 2026-10-16](docs/specs/2026-10-16-proches-fiables/spec.md) · [relecture](docs/specs/2026-10-16-proches-fiables/relecture.md) · [relecture 2](docs/specs/2026-10-16-proches-fiables/relecture-2.md)
 - [Rétro — 2026-10-16](docs/retro/2026-10-16.md)
 - [Mise en ligne « Cadre de vie » — 2026-10-16](docs/ship/2026-10-15-cadre-de-vie/ship.md)
 - [Plan « Cadre de vie » — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/plan.md) · [relecture](docs/plans/2026-10-15-cadre-de-vie/review-plan.md) · [dossier du build](docs/plans/2026-10-15-cadre-de-vie/) : [progression](docs/plans/2026-10-15-cadre-de-vie/progress.md), [mesure de la montagne](docs/plans/2026-10-15-cadre-de-vie/mesure-tache-0.md), [risque](docs/plans/2026-10-15-cadre-de-vie/risque-demo.md), [démo acceptée — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/demo.md)
