@@ -229,7 +229,7 @@
       "rule": "R4",
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Grandeville (33) dans la liste",
-      "then": "la fiche affiche « Grandeville (33) », « Grand centre urbain · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » sans la ligne « Estimation du secteur », et « 40 km de la mer à vol d'oiseau »",
+      "then": "la fiche affiche « Grandeville (33) », « Ville dense · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 832 € par mois pour 52 m² (16,0 €/m²) » sans la ligne « Estimation du secteur », et « 40 km de la mer à vol d'oiseau »",
       "passes": false
     },
     {
@@ -237,7 +237,7 @@
       "rule": "R4",
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Portmer (17)",
-      "then": "la fiche affiche « Portmer (17) », « Centre urbain intermédiaire · 23 000 habitants », « 1re sur 3 communes qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) », « Estimation du secteur (communes voisines) » et « moins d'1 km de la mer »",
+      "then": "la fiche affiche « Portmer (17) », « Ville et périphérie · 23 000 habitants », « 1re sur 3 communes qui passent », « 650 € par mois pour 52 m² (12,5 €/m²) », « Estimation du secteur (communes voisines) » et « moins d'1 km de la mer »",
       "passes": false
     },
     {

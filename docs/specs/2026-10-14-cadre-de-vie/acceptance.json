@@ -1,7 +1,7 @@
 {
   "slice": "cadre-de-vie",
   "fixture": {
-    "description": "Fixture inventée « 6 communes » d'immobilier, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix d'achat et mer_km ; chaque commune gagne type_env (type d'environnement, nom de H71), montagne_classee (vrai = classée en zone de montagne, en tout ou partie) et montagne_km (distance à vol d'oiseau de la mairie à la zone, non arrondie ; 0 si classée). Les fixtures « 5 communes » (A à E) de loyer-mer, proches et interface-telephone gagnent les mêmes champs. Valeurs affichées : types A « Centre urbain intermédiaire », B et C « Grand centre urbain », D « Bourg rural », E « Ceinture urbaine », F « Petite ville » ; montagne A 140 km, B 50 km (49,6, égal au plafond de 50), C 280 km, D « Commune de montagne », E 62 km, F « moins d'1 km » (comparée comme 1 km, non classée). Au départ (prix 1 200 € pour 52 m², tout le cadre de vie sur Peu importe) : loyers A 650, B 832, C 1 560, D 416, E 1 092, F 572 ; mer A « moins d'1 km », B 40, C 148, D 180, E 7, F 420.",
+    "description": "Fixture inventée « 6 communes » d'immobilier, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix d'achat et mer_km ; chaque commune gagne type_env (type d'environnement, nom de H71), montagne_classee (vrai = classée en zone de montagne, en tout ou partie) et montagne_km (distance à vol d'oiseau de la mairie à la zone, non arrondie ; 0 si classée). Les fixtures « 5 communes » (A à E) de loyer-mer, proches et interface-telephone gagnent les mêmes champs. Valeurs affichées : types (niveaux de D10) A, E et F « Ville et périphérie », B et C « Ville dense », D « Bourg et village » ; montagne A 140 km, B 50 km (49,6, égal au plafond de 50), C 280 km, D « Commune de montagne », E 62 km, F « moins d'1 km » (comparée comme 1 km, non classée). Au départ (prix 1 200 € pour 52 m², tout le cadre de vie sur Peu importe) : loyers A 650, B 832, C 1 560, D 416, E 1 092, F 572 ; mer A « moins d'1 km », B 40, C 148, D 180, E 7, F 420.",
     "items": [
       {
         "id": "A",
@@ -44,7 +44,7 @@
             0
           ]
         ],
-        "type_env": "centre-urbain-intermediaire",
+        "type_env": "ville-et-peripherie",
         "montagne_classee": false,
         "montagne_km": 140
       },
@@ -89,7 +89,7 @@
             0
           ]
         ],
-        "type_env": "grand-centre-urbain",
+        "type_env": "ville-dense",
         "montagne_classee": false,
         "montagne_km": 49.6
       },
@@ -134,7 +134,7 @@
             0
           ]
         ],
-        "type_env": "grand-centre-urbain",
+        "type_env": "ville-dense",
         "montagne_classee": false,
         "montagne_km": 280
       },
@@ -179,7 +179,7 @@
             1
           ]
         ],
-        "type_env": "bourg-rural",
+        "type_env": "bourg-et-village",
         "montagne_classee": true,
         "montagne_km": 0
       },
@@ -224,7 +224,7 @@
             1
           ]
         ],
-        "type_env": "ceinture-urbaine",
+        "type_env": "ville-et-peripherie",
         "montagne_classee": false,
         "montagne_km": 62
       },
@@ -269,7 +269,7 @@
             1
           ]
         ],
-        "type_env": "petite-ville",
+        "type_env": "ville-et-peripherie",
         "montagne_classee": false,
         "montagne_km": 0.6
       }
@@ -311,16 +311,16 @@
       "id": "AC-4",
       "rule": "R29",
       "given": "Fixture « 6 communes », page ouverte sur /",
-      "when": "l'utilisateur choisit la montagne « En montagne »",
-      "then": "l'adresse devient /?loyer=1200&montagne=0 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km » (la montagne ne note pas) ; la fiche de Rhinval (67) affiche « Montagne : pas une commune de montagne (moins d'1 km) » et celle de Grandeville (33) « Montagne : pas une commune de montagne (50 km) »",
+      "when": "l'utilisateur choisit la montagne « 50 km »",
+      "then": "l'adresse devient /?loyer=1200&montagne=50 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 180 km », « 2 · Rhinval (67) · 75 · 572 € · 420 km » et « 3 · Grandeville (33) · 15 · 832 € · 40 km » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne) ; la fiche de Portmer (17) affiche « Montagne 140 km : au-dessus de ton plafond de 50 km »",
       "passes": false
     },
     {
       "id": "AC-5",
       "rule": "R27",
       "given": "Fixture « 6 communes », page ouverte sur /",
-      "when": "l'utilisateur coche le type « Grand centre urbain », puis aussi « Bourg rural »",
-      "then": "après le premier : l'adresse devient /?loyer=1200&env=grand-centre-urbain ; la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km » ; la fiche de Portmer (17) affiche « Environnement : centre urbain intermédiaire, hors des types choisis ». Après le second : l'adresse devient /?loyer=1200&env=grand-centre-urbain,bourg-rural ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31",
+      "when": "l'utilisateur coche le type « Ville dense », puis aussi « Bourg et village »",
+      "then": "après le premier : l'adresse devient /?loyer=1200&env=ville-dense ; la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km » ; la fiche de Portmer (17) affiche « Environnement : ville et périphérie, hors des types choisis ». Après le second : l'adresse devient /?loyer=1200&env=ville-dense,bourg-et-village ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31",
       "passes": false
     },
     {
@@ -336,15 +336,15 @@
       "rule": "R30",
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer=50",
       "when": "l'utilisateur choisit Grandeville (33), puis Terrebasse (23), puis Rhinval (67)",
-      "then": "la fiche de Grandeville affiche « Grand centre urbain · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 40 km de la mer à vol d'oiseau » et « 50 km de la montagne à vol d'oiseau » ; celle de Terrebasse « Bourg rural · 4 200 habitants », « Commune de montagne » et « Mer 180 km : au-dessus de ton plafond de 50 km » ; celle de Rhinval « Petite ville · 30 000 habitants » et « moins d'1 km de la montagne »",
+      "then": "la fiche de Grandeville affiche « Ville dense · 260 000 habitants », le score 25, « 3e sur 3 communes qui passent », « 40 km de la mer à vol d'oiseau » et « 50 km de la montagne à vol d'oiseau » ; celle de Terrebasse « Bourg et village · 4 200 habitants », « Commune de montagne » et « Mer 180 km : au-dessus de ton plafond de 50 km » ; celle de Rhinval « Ville et périphérie · 30 000 habitants » et « moins d'1 km de la montagne »",
       "passes": false
     },
     {
       "id": "AC-8",
       "rule": "R31",
       "given": "Fixture « 6 communes »",
-      "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-rural,village",
-      "then": "la mer est sur « Peu importe », la montagne sur « En montagne », la taille « Moins de 10 000 hab. » et le type « Bourg rural » sont cochés ; l'adresse devient /?loyer=1200&montagne=0&taille=petite-commune&env=bourg-rural ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
+      "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village",
+      "then": "la mer et la montagne sont sur « Peu importe » (`montagne=0` n'est plus un choix), la taille « Moins de 10 000 hab. » et le type « Bourg et village » sont cochés ; l'adresse devient /?loyer=1200&taille=petite-commune&env=bourg-et-village ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
       "passes": false
     },
     {
@@ -357,10 +357,10 @@
     },
     {
       "id": "AC-10",
-      "rule": "R29",
+      "rule": "R27",
       "given": "Fixture « 6 communes »",
-      "when": "l'utilisateur ouvre /?loyer=aucun&montagne=0",
-      "then": "Terrebasse (23) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Terrebasse affiche « Commune de montagne », sans score ni rang",
+      "when": "l'utilisateur ouvre /?loyer=aucun&env=bourg-et-village",
+      "then": "Terrebasse (23) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Terrebasse affiche « Commune de montagne », sans score ni rang ; celle de Portmer affiche « Environnement : ville et périphérie, hors des types choisis »",
       "passes": false
     },
     {
