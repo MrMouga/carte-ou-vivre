@@ -288,8 +288,8 @@
       "rule": "R32",
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
-      "then": "l'adresse devient /?loyer=1200 ; dans « Cadre de vie », « Peu importe » est cochée pour la mer et pour la montagne, aucune taille ni aucun type n'est coché ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 65 · 416 € · 180 km », « 2 · Rhinval (67) · 52 · 572 € · 420 km », « 3 · Portmer (17) · 46 · 650 € · moins d'1 km », « 4 · Grandeville (33) · 31 · 832 € · 40 km », « 5 · Quaibleu (13) · 9 · 1 092 € · 7 km » ; Montcher (75) n'est pas colorée",
-      "passes": true
+      "then": "l'adresse devient /?loyer=1200 ; dans « Cadre de vie », aucune distance à la mer ni à la montagne n'est cochée, aucune taille ni aucun type n'est coché ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 65 · 416 € · 180 km », « 2 · Rhinval (67) · 52 · 572 € · 420 km », « 3 · Portmer (17) · 46 · 650 € · moins d'1 km », « 4 · Grandeville (33) · 31 · 832 € · 40 km », « 5 · Quaibleu (13) · 9 · 1 092 € · 7 km » ; Montcher (75) n'est pas colorée",
+      "passes": false
     },
     {
       "id": "AC-2",
@@ -344,8 +344,8 @@
       "rule": "R31",
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village",
-      "then": "la mer et la montagne sont sur « Peu importe » (`montagne=0` n'est plus un choix), la taille « Moins de 10 000 hab. » et le type « Bourg et village » sont cochés ; l'adresse devient /?loyer=1200&taille=petite-commune&env=bourg-et-village ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
-      "passes": true
+      "then": "aucune distance à la mer ni à la montagne n'est cochée (`mer=200` et `montagne=0` ne sont pas des choix), la taille « Moins de 10 000 hab. » et le type « Bourg et village » sont cochés ; l'adresse devient /?loyer=1200&taille=petite-commune&env=bourg-et-village ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 180 km »",
+      "passes": false
     },
     {
       "id": "AC-9",

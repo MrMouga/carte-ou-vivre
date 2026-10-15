@@ -2,7 +2,7 @@
 Lire d'abord [spec.md](spec.md) (décisions D-n). Les états, règles et textes des tranches précédentes valent sauf ce qui suit ; le [tableau d'impact](#impact-sur-les-tranches-existantes) fait foi pour leurs révisions, et [recalage.md](recalage.md) pour leurs critères.
 
 ## Parcours
-1. L'utilisateur ouvre la page : réglage du prix comme avant ; tout le cadre de vie sur « Peu importe » (D7). Seul le prix classe.
+1. L'utilisateur ouvre la page : réglage du prix comme avant ; rien de coché dans le cadre de vie (D7, D12). Seul le prix classe.
 2. Dans « Cadre de vie », il coche des tailles et des types d'environnement, choisit une distance à la mer et à la montagne : carte, liste, fiche et adresse se mettent à jour.
 3. Il choisit une commune : la fiche dit son type d'environnement, sa population, la mer et la montagne, et la raison de chaque critère non tenu.
 4. Il copie l'adresse : la même carte s'ouvre ailleurs. Un lien d'avant cette tranche s'ouvre avec la mer convertie (R31).
@@ -16,16 +16,16 @@ Zones touchées : **réglages** — les catégories « Mer » et « Taille de vi
 - **ouverte** → les quatre groupes, chaque pastille avec son état coché ou non ; sort vers **repliée**.
 - **repliée** → le titre et le résumé (H75) ; sort vers **ouverte**.
 
-États d'un groupe à choix unique (Mer, Montagne ; initial : **Peu importe**) :
-- **Peu importe** → la pastille « Peu importe » cochée, aucune autre ; le critère ne filtre ni ne note.
-- **distance choisie** (10, 30, 50 ou 100 km) → cette pastille seule cochée ; le critère filtre et note (R28, R29).
-Choisir une pastille décoche l'autre ; « Peu importe » est une pastille comme les autres.
+États d'un groupe à choix unique (Mer, Montagne ; initial : **aucune cochée**) — *révisé par D12 (2026-10-15)* :
+- **aucune cochée** → le critère ne filtre ni ne note (« Peu importe »).
+- **distance cochée** (10, 30, 50 ou 100 km) → cette pastille seule cochée ; le critère filtre et note (R28, R29).
+Cocher une pastille décoche l'autre ; toucher la pastille cochée la décoche (retour à **aucune cochée**). Il n'y a plus de pastille « Peu importe ».
 
 États d'un groupe à cases cumulables (Taille de la commune, Type d'environnement ; initial : **aucune cochée**) :
 - **aucune cochée** → pas de filtre (« Peu importe ») ; **une ou plusieurs cochées** → filtre (R27).
 
 États de la page : ceux de loyer-mer, proches et immobilier, avec deux extensions :
-- **sans plafond** : désormais quand aucun critère ne note — prix sur « Sans limite », mer et montagne sur « Peu importe », aucun proche prêt. Les filtres (taille, type) laissent non colorées les communes qu'ils écartent ; les autres prennent la couleur neutre. Textes : D8.
+- **sans plafond** : désormais quand aucun critère ne note — prix sur « Sans limite », aucune distance à la mer ni à la montagne cochée, aucun proche prêt. Les filtres (taille, type) laissent non colorées les communes qu'ils écartent ; les autres prennent la couleur neutre. Textes : D8.
 - **aucune commune** : peut venir aussi du type, de la mer ou de la montagne. Textes : D8.
 
 États de la fiche : ceux des tranches précédentes ; les lignes de R30 s'ajoutent. Les raisons s'écrivent dans l'ordre de H83. Dans la page **sans plafond**, la fiche d'une commune écartée par un filtre (taille, type) donne la raison de chaque filtre non tenu, comme loyer-mer le faisait pour la taille.
@@ -34,8 +34,8 @@ Interactions : cocher une pastille → carte, liste, fiche et adresse à jour en
 
 ## Règles
 - **R27** — Taille et type filtrent sans noter. Une commune passe le filtre de taille si sa taille est cochée (aucune cochée : toutes), et celui du type si son type est coché (aucun coché : tous). Pastilles de taille, dans l'ordre : « Moins de 10 000 hab. », « 10 000 – 50 000 hab. », « 50 000 – 200 000 hab. », « Plus de 200 000 hab. » (seuils de D11 de loyer-mer). Types (niveaux de D10), dans l'ordre : « Ville dense », « Ville et périphérie », « Bourg et village », « Campagne isolée ». Raisons : « Taille : 260 000 habitants, hors des tailles choisies » ; « Environnement : ville et périphérie, hors des types choisis ». *Pourquoi* : D2, D3, D10.
-- **R28** — Mer : choix Peu importe / 10 / 30 / 50 / 100 km. Une distance choisie filtre et note comme le plafond de mer de loyer-mer (R1, R2, D4 de loyer-mer : valeur affichée au km, « moins d'1 km » comparée comme 1 km). Raison inchangée : « Mer 148 km : au-dessus de ton plafond de 50 km ». *Pourquoi* : D4.
-- **R29** — Montagne : la distance d'une commune est 0 si elle est classée en zone de montagne, en tout ou partie (ou si sa mairie est dans la zone, H81) ; sinon la distance à vol d'oiseau de sa mairie (D18 de loyer-mer) au point le plus proche de la zone, affichée au km (H3 de loyer-mer), « moins d'1 km » comparée comme 1 km ; une commune classée s'écrit « Commune de montagne ». Choix Peu importe / 10 / 30 / 50 / 100 km (D11). Une distance choisie : la commune passe si sa distance affichée est ≤ au plafond, avec la note 100 × (1 − distance / plafond) (une commune de montagne : 100). Raison : « Montagne 140 km : au-dessus de ton plafond de 50 km ». *Pourquoi* : D5, D6, D11.
+- **R28** — Mer : choix 10 / 30 / 50 / 100 km, aucun coché = Peu importe (D12). Une distance choisie filtre et note comme le plafond de mer de loyer-mer (R1, R2, D4 de loyer-mer : valeur affichée au km, « moins d'1 km » comparée comme 1 km). Raison inchangée : « Mer 148 km : au-dessus de ton plafond de 50 km ». *Pourquoi* : D4.
+- **R29** — Montagne : la distance d'une commune est 0 si elle est classée en zone de montagne, en tout ou partie (ou si sa mairie est dans la zone, H81) ; sinon la distance à vol d'oiseau de sa mairie (D18 de loyer-mer) au point le plus proche de la zone, affichée au km (H3 de loyer-mer), « moins d'1 km » comparée comme 1 km ; une commune classée s'écrit « Commune de montagne ». Choix 10 / 30 / 50 / 100 km, aucun coché = Peu importe (D11, D12). Une distance choisie : la commune passe si sa distance affichée est ≤ au plafond, avec la note 100 × (1 − distance / plafond) (une commune de montagne : 100). Raison : « Montagne 140 km : au-dessus de ton plafond de 50 km ». *Pourquoi* : D5, D6, D11.
 - **R30** — Fiche, à la place de la ligne de taille de R4 de loyer-mer : « <niveau> · <population> habitants » (« Ville dense · 260 000 habitants », population au format de H3 de loyer-mer). Sans type : « Type d'environnement inconnu · 4 200 habitants » ; sans population : « Ville dense · population inconnue ». Sous la ligne de la mer, la montagne : « Commune de montagne », « 140 km de la montagne à vol d'oiseau », « moins d'1 km de la montagne » ou « Distance à la montagne inconnue ». Le pied de page cite les deux sources (H80) : il contient « grille communale de densité » et « Insee », et « Zone de montagne » avec la source retenue (D9). *Pourquoi* : D2, D5 ; mentions de Licence Ouverte.
 - **R31** — Adresse (étend R7 de loyer-mer et R26 d'immobilier). `mer` vaut `10`, `30`, `50` ou `100` ; absente ou `aucun` = Peu importe ; une valeur de l'ancienne plage (multiple de 5 de 5 à 200, H2, H7 et H17 de loyer-mer) prend le choix juste au-dessus (`mer=60` → 100 km, `mer=25` → 30 km, `mer=5` → 10 km), au-delà de 100 Peu importe ; toute autre valeur (`mer=23`, `mer=0`, `mer=abc`) = Peu importe. `montagne` vaut `10`, `30`, `50` ou `100` ; toute autre valeur (dont `0`) = Peu importe. `env` liste les types cochés, séparés par des virgules (noms de H71) ; comme `taille` (H17 de loyer-mer), un nom inconnu est ignoré et la liste est réécrite dans l'ordre de R27, sans doublon. `mer`, `montagne`, `taille` et `env` ne sont écrits que s'ils diffèrent de Peu importe. Ordre : plafond du prix, `mer`, `montagne`, `taille`, `env`, `bien`, `unite`, `surface`. L'adresse est réécrite à l'ouverture avec les réglages effectifs. *Pourquoi* : D4, D7 ; un lien ancien ne cache aucune commune que l'expéditeur voyait.
 - **R32** — Départ : `/` s'ouvre sur le prix de départ d'immobilier (D1) et tout le cadre de vie sur Peu importe ; l'adresse devient `/?loyer=1200`. *Pourquoi* : D7.
@@ -51,7 +51,7 @@ Interactions : cocher une pastille → carte, liste, fiche et adresse à jour en
 - Commune nouvelle née de communes dont une seule était classée → classée en partie, donc « Commune de montagne » (R29).
 
 ## Impact sur les tranches existantes
-Cette table fait foi pour les révisions D22 de loyer-mer, D17 de proches, D13 d'interface-telephone et D11 d'immobilier, dont le texte est dans [recalage.md](recalage.md#amendements-des-tranches-validées). Les critères touchés sont réécrits selon recalage.md.
+Cette table fait foi pour les révisions D22 de loyer-mer, D17 de proches, D12 d'interface-telephone et D11 d'immobilier, dont le texte est dans [recalage.md](recalage.md#amendements-des-tranches-validées). Les critères touchés sont réécrits selon recalage.md.
 
 | Tranche | Élément | Inchangée / Étendue / Contredite | Action |
 |---|---|---|---|
@@ -97,14 +97,14 @@ Tests hors critères touchés (protégés : leur changement passe par Vincent en
 Immobilier : AC-9 et AC-12, tels quels (le test d'AC-9 change de ligne d'adresse, voir ci-dessus). Tous les autres critères des quatre tranches sont recalés (50, [recalage.md](recalage.md)) : ils partent de la mer à 60 km ou du départ. Leurs règles restent vraies — prix (immobilier R21 à R26), proches (R9 à R15), feuille (interface-telephone R16 à R20), carte, liste et fiche (loyer-mer R1 à R8), sauf ce que le tableau marque « Contredite » ; seuls leurs exemples changent de chiffres ou d'adresse, à deux exceptions près (loyer-mer AC-3, immobilier AC-8, dans le tableau).
 
 ## Hypothèses
-- **H69** — Pastilles de distance, pour la mer comme pour la montagne : « Peu importe », « 10 km », « 30 km », « 50 km », « 100 km ».
+- **H69** — *Révisée par D12.* Pastilles de distance, pour la mer comme pour la montagne : « 10 km », « 30 km », « 50 km », « 100 km ».
 - **H70** — Sous-titres : « Mer à moins de » et « Montagne à moins de » au-dessus de leurs pastilles.
 - **H71** — *Révisée par D10.* Noms dans l'adresse : `ville-dense`, `ville-et-peripherie`, `bourg-et-village`, `campagne-isolee`.
 - **H72** — Grille de densité : la grille communale de l'Insee, millésime 2025, regroupée en 4 niveaux (D10) ; source et lien fixés en tâche 0.
 - **H73** — *Révisée par D9.* Zone de montagne : la source se tranche en tâche 0 entre la règle testée par la discovery (zone de montagne 2017 du ministère de l'Agriculture × massifs 2021 de l'ANCT, 5 882 communes, déjà recalée sur 2025 : [test du 2026-10-11](/Users/mouga/git-repository/ideas/carte-ou-vivre/discovery/2026-10-11-donnees-criteres/tests-avant-code/prix-mer-montagne-2026-10-11.md), section 3) et le zonage loi Montagne du Cerema (communes 2019) ; la zone est l'union des contours des communes classées, ou les contours propres de la source s'il y en a. Pour chacune : nombre de communes classées, distances de Chamonix, Grenoble, Annecy, Pau, Clermont-Ferrand, Lyon, Limoges, Toulouse, Bordeaux, et les villes de plus de 50 000 habitants classées ; Vincent choisit sur ces chiffres.
 - **H74** — Score : la moyenne exacte des notes, arrondie moitié vers le haut (H3 de loyer-mer). Plusieurs critères recalés tombent sur une moitié exacte (Quaibleu 47,5 → 48 à 50 km ; Portmer 61,5 → 62 en 72 m²) : le calcul ne doit pas la perdre en virgule flottante.
 - **H75** — Résumé de « Cadre de vie » repliée : « Peu importe » si rien n'est choisi ; sinon les choix séparés par « · », dans l'ordre des groupes : « 2 tailles », « 1 type », « Mer 50 km », « Montagne 30 km » (« 1 taille » au singulier). Forme finale : /ui.
-- **H76** — Noms pour les lecteurs d'écran : groupes « Taille de la commune », « Type d'environnement », « Proximité avec la nature », « Mer à moins de », « Montagne à moins de » ; chaque pastille porte son libellé visible. Taille et type : boutons à bascule (« cochée » = enfoncée), comme les tailles aujourd'hui ; Mer et Montagne : un groupe de boutons radio (« cochée » = sélectionnée).
+- **H76** — Noms pour les lecteurs d'écran : groupes « Taille de la commune », « Type d'environnement », « Proximité avec la nature », « Mer à moins de », « Montagne à moins de » ; chaque pastille porte son libellé visible. Taille et type : boutons à bascule (« cochée » = enfoncée), comme les tailles aujourd'hui ; Mer et Montagne : *révisé par D12* — boutons à bascule exclusifs (« cochée » = enfoncée, une seule à la fois, la cochée se décoche d'un toucher), dans un groupe nommé ; au clavier, Tab de pastille en pastille comme les tailles.
 - **H77** — La ligne de la liste ne change pas : la dernière colonne reste la distance à la mer, même quand la mer est sur Peu importe.
 - **H78** — *Remplacée par D8.*
 - **H79** — À égalité de score, l'ordre d'immobilier (prix connu d'abord, prix croissant, nom) ne change pas.
@@ -118,9 +118,9 @@ Aucune.
 
 ## Vérification de bout en bout
 Sur la version en ligne, en largeur bureau et à 390 px :
-1. Ouvrir `/` : l'adresse devient `/?loyer=1200` ; « Cadre de vie » montre tout sur « Peu importe » ; la liste classe par le prix seul.
-2. Montagne « 10 km » : Chamonix-Mont-Blanc passe, sa fiche dit « Commune de montagne » ; la fiche de Bordeaux dit « Montagne … km : au-dessus de ton plafond de 10 km » ; l'adresse contient `montagne=10`.
-3. Revenir à Peu importe, cocher « Ville dense » : Bordeaux passe, Lacanau ne passe pas, avec « Environnement : … hors des types choisis » ; l'adresse contient `env=ville-dense`.
+1. Ouvrir `/` : l'adresse devient `/?loyer=1200` ; « Cadre de vie » n'a rien de coché (résumé replié « Peu importe ») ; la liste classe par le prix seul.
+2. Loyer à 1 350 €, montagne « 10 km » (Chamonix : 1 334 € pour 52 m², décision de Vincent du 2026-10-15) : Chamonix-Mont-Blanc passe, sa fiche dit « Commune de montagne » ; la fiche de Bordeaux dit « Montagne … km : au-dessus de ton plafond de 10 km » ; l'adresse contient `montagne=10`.
+3. Décocher « 10 km » de la montagne, cocher « Ville dense » : Bordeaux passe, Lacanau ne passe pas, avec « Environnement : … hors des types choisis » ; l'adresse contient `env=ville-dense`.
 4. Ouvrir `/?loyer=1200&mer=60` : la mer est sur 100 km, l'adresse devient `/?loyer=1200&mer=100`.
 5. La fiche de Bordeaux affiche « Ville dense · » et sa population, et sa distance à la montagne ; les deux nouvelles mentions sont au pied de page.
 Preuves : captures des étapes 1 à 5 aux deux largeurs, et la liste de la tâche 0 (H73) avec le jugement de Vincent.

@@ -342,8 +342,8 @@
       "rule": "R26",
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100",
-      "then": "le réglage du prix est sur Maison, Acheter, Total, surface 100 m², plafond 300 000 € ; la mer sur « Peu importe » ; l'adresse devient /?achat=300000&bien=maison&unite=total&surface=100 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 57 · 130 000 € · 180 km » ; F a la couleur neutre ; la fiche de Portmer affiche « Achat 350 000 € : au-dessus de ton plafond de 300 000 € »",
-      "passes": true
+      "then": "le réglage du prix est sur Maison, Acheter, Total, surface 100 m², plafond 300 000 € ; aucune distance à la mer cochée ; l'adresse devient /?achat=300000&bien=maison&unite=total&surface=100 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 57 · 130 000 € · 180 km » ; F a la couleur neutre ; la fiche de Portmer affiche « Achat 350 000 € : au-dessus de ton plafond de 300 000 € »",
+      "passes": false
     },
     {
       "id": "AC-11",
