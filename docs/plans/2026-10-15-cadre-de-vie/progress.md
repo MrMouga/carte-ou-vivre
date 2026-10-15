@@ -69,3 +69,5 @@ Corrections 2 : faite — commits 7b2ed46..d3336cc — preuve : captures/C2-*.pn
 - Corrections 1 : 1 builder, 15 min, 145 k jetons.
 - Relectures : code-reviewer 10 min, 209 k ; qa-tester 5 min, 85 k (chacun relancé une fois).
 - Corrections 2 : 1 builder, 21 min, 218 k jetons.
+
+Terminé 2026-10-15 (démo acceptée par Vincent à 00:00 ; décisions gardées écrites dans la spec : D12, H85-H91 de cadre-de-vie, D12 d'immobilier corrigée)

@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : breakdown (tranche cadre-de-vie) — plan validé le 2026-10-15 (docs/plans/2026-10-15-cadre-de-vie/plan.md, 6 tâches) ; prochaine étape /build. Immobilier poussé sur main le 2026-10-14 et mis en ligne par le déploiement automatique, d'après Vincent (version en ligne non vérifiée par /ship).
+- Étape : build (tranche cadre-de-vie) — démo acceptée le 2026-10-15 (docs/plans/2026-10-15-cadre-de-vie/demo.md) ; prochaine étape /ship (avec la vérification de bout en bout en ligne, la non-indexation d'`achat.json` d'immobilier, et la version d'immobilier jamais vérifiée en ligne). Rien de cadre-de-vie n'est poussé.
 - Statut : active
 
 ## Décisions
@@ -92,6 +92,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-15 | Design validé : cadre-de-vie | Prototype F (fusion de Vincent) : type d'environnement en rangée de pastilles qui défile (4 niveaux Insee, D10), taille en cases séparées, mer et montagne en cases collées à 5 choix (D11, « En montagne » retiré) ; pas de Figma. Relecture : la taille en cases ressemble aux cases de la mer (contesté, gardé, à juger à la démo). |
 | 2026-10-15 | Spec immobilier révisée (D12) : prix tous biens quand le prix d'appartement ou de maison manque | Choix de Vincent après comparaison avec l'explorateur DVF de data.gouv.fr (qui mélange appartements et maisons) : 2 195 communes sans prix d'appartement → 1 (mesure approchée) ; seuil de 5 ventes gardé (l'explorateur affiche des prix d'une seule vente). Construit avec la tranche cadre-de-vie. |
 | 2026-10-15 | Plan validé : cadre-de-vie | 6 tâches (0 mesure des deux sources de la montagne et jugement de Vincent, 1 données type, montagne et prix tous biens, 2 lecture des données et tests recalés sur le code actuel, 3 bascule « Cadre de vie » taille et mer et départ, 4 montagne, 5 type, AC-14 d'immobilier et vérification de bout en bout avec l'iPhone) ; aucun paquet ; règle de recalage des tests hors critères (la même que pour les critères) ; Pourquoi de D10 corrigé (le fichier Insee 2025 n'a pas de grille à 4 niveaux : la coupe du rural est la nôtre, gardée par Vincent). |
+| 2026-10-15 | Tranche construite : cadre-de-vie | « Cadre de vie » (taille en chiffres, type d'environnement Insee, mer et montagne en 4 cases décochables, D12 de la démo), montagne = zone loi Montagne du Cerema (H85, Lyon à 14 km jugée fausse par Vincent : Mont d'Or hors zone légale), prix tous biens en Acheter (D12 d'immobilier) ; 65 critères verts dont 56 recalés des tranches d'avant ; double arrondi de la mer et de la montagne corrigé ; risque accepté : 150-165 ms pour la mer (H90). À suivre : calcul des trajets fragile quand l'IGN est dégradé (502/504 vus le 2026-10-15). |
 
 ## Hypothèses à vérifier
 
@@ -144,7 +145,7 @@ Autres questions :
 
 ## Documents
 
-- [Plan « Cadre de vie » — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/plan.md) · [relecture](docs/plans/2026-10-15-cadre-de-vie/review-plan.md)
+- [Plan « Cadre de vie » — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/plan.md) · [relecture](docs/plans/2026-10-15-cadre-de-vie/review-plan.md) · [dossier du build](docs/plans/2026-10-15-cadre-de-vie/) : [progression](docs/plans/2026-10-15-cadre-de-vie/progress.md), [mesure de la montagne](docs/plans/2026-10-15-cadre-de-vie/mesure-tache-0.md), [risque](docs/plans/2026-10-15-cadre-de-vie/risque-demo.md), [démo acceptée — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/demo.md)
 - [Design « Cadre de vie » — 2026-10-15](docs/design/cadre-de-vie/README.md)
 - [Spec « Cadre de vie » — 2026-10-14](docs/specs/2026-10-14-cadre-de-vie/spec.md) · [recalage des tranches précédentes](docs/specs/2026-10-14-cadre-de-vie/recalage.md) · [relecture](docs/specs/2026-10-14-cadre-de-vie/relecture.md)
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)

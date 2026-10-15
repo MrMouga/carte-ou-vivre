@@ -112,6 +112,13 @@ Immobilier : AC-9 et AC-12, tels quels (le test d'AC-9 change de ligne d'adresse
 - **H81** — Une commune dont la mairie est dans la zone sans que la commune soit classée (contours de 2019 contre communes de 2025) compte comme classée ; leur nombre est compté en tâche 0 avec H73.
 - **H82** — *Sans objet depuis D10* (plus de sous-groupes).
 - **H83** — Ordre des raisons dans la fiche : prix, mer, montagne, taille, type, proches (l'ordre de loyer-mer, avec la montagne après la mer et le type après la taille).
+- **H85** — *Construit, gardé par Vincent à la démo du 2026-10-15.* Source de la zone de montagne (D9 tranchée) : **Cerema, zonage loi Montagne, communes au 1er janvier 2019** (Licence Ouverte 2.0) ; contours propres (communes « totalité » + zones infra-communales) ; une commune « en partie » sans zone infra-communale (143, 9 départements) compte en entier. Décidé par Claude à la demande de Vincent (tâche 0). Coût connu : le Morvan n'est pas en montagne (Yonne à 150-200 km) ; Lyon à 14 km (le Mont d'Or n'est pas en zone légale).
+- **H86** — Recalage sur le COG 2025 avec les rétablissements : une commune rétablie hérite du classement de celle dont elle sort (4 communes du Cantal).
+- **H87** — `mer_km` et `montagne_km` de `communes.json` sont **tronqués** au centième de km, pour que le km affiché (R28, R29) soit toujours celui de la distance mesurée ; une commune hors de la zone de montagne vaut au moins 0,01 km (sinon une mairie à 24 m de la zone se lirait « Commune de montagne »).
+- **H88** — Mer et montagne au clavier : Tab de pastille en pastille (D12) ; le groupe « Proximité avec la nature » n'a pas de titre visible, seulement un nom pour les lecteurs d'écran (prototype F).
+- **H89** — Les messages de la liste restent ceux de D8 (« Fixe un loyer ou une distance à la mer… ») même quand la montagne ou le type pourraient classer ou filtrer.
+- **H90** — Risque connu, accepté par Vincent le 2026-10-15 : cocher ou décocher une distance à la mer redessine la carte en 149 à 164 ms (au-delà des 100 ms de H9 de loyer-mer), car des milliers de communes changent de couleur d'un coup ; le prix et la montagne restent à ≈ 115 ms. À revoir si cela se sent à l'usage.
+- **H91** — Critère de réussite « Chamonix passe » : avec le loyer à 1 350 € (son loyer pour 52 m² est de 1 334 €) ; décision de Vincent du 2026-10-15 (vérification de bout en bout, étape 2).
 
 ## Exceptions
 Aucune.

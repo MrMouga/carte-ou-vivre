@@ -1,5 +1,5 @@
 # Démo — cadre-de-vie
-2026-10-15 · Plan : [plan.md](plan.md) · Progression : [progress.md](progress.md) · Spec : [spec.md](../../specs/2026-10-14-cadre-de-vie/spec.md)
+2026-10-15 · **acceptée par Vincent** · Plan : [plan.md](plan.md) · Progression : [progress.md](progress.md) · Spec : [spec.md](../../specs/2026-10-14-cadre-de-vie/spec.md)
 
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf.
 > Une preuve = capture ou sortie de commande, datée (dossier [captures/](captures/)).
