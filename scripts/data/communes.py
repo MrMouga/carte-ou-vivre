@@ -9,18 +9,29 @@ Prix d'achat (tranche immobilier, D5 révisée par Vincent le 2026-10-14, D8, H6
 Pour la commune et le bien : (1) au moins 30 ventes de 2023-01 à 2025-12 → médiane approchée sur ces trois ans
 (stats_dvf.csv, mensuel : médiane pondérée des médianes mensuelles) ; (2) sinon au moins 5 ventes de 2021 à 2025 →
 médiane exacte (stats_whole_period.csv) ; (3) sinon la même chose pour son intercommunalité (code_parent), « secteur » ;
-sinon inconnu. Un prix sous PRIX_ACHAT_MIN_M2 (300 €/m², seuil de Vincent du 2026-10-14) n'est pas crédible (ventes en
+sinon (D12 d'immobilier, Vincent le 2026-10-15) la même règle sur le prix tous biens (`apt_maison`) de la commune,
+« tous-biens », puis de son intercommunalité, « tous-biens-secteur » ; sinon inconnu. Un prix sous PRIX_ACHAT_MIN_M2 (300 €/m², seuil de Vincent du 2026-10-14) n'est pas crédible (ventes en
 bloc) : il n'est pas retenu, on passe au niveau suivant. Moselle, Bas-Rhin et Haut-Rhin : inconnu (ventes non publiées). Paris, Lyon et Marseille : la règle par
-arrondissement, puis moyenne simple de ceux qui ont un prix, « secteur » si l'un d'eux l'est (H67).
+arrondissement, puis moyenne simple de ceux qui ont un prix, « tous-biens » si l'un d'eux l'est, sinon « secteur » si
+l'un d'eux l'est (H67 ; plan de cadre-de-vie, tâche 1 : aucun arrondissement en tous biens au 2026-10-15).
 
-Prérequis : python3 scripts/data/sources.py puis python3 scripts/data/mer.py
+Cadre de vie (tranche cadre-de-vie, tâche 1, 2026-10-15) : `type_env`, niveau de la grille communale de densité Insee 2025
+(DENS7 regroupé en 4, D10, H71), joint par code ; `montagne_km`, distance de la mairie à la zone de montagne du Cerema
+(montagne.py, R29), en km à 0,1 près, 0 = commune de montagne (classée en tout ou partie, ou mairie dans la zone).
+
+Prérequis : python3 scripts/data/sources.py, puis python3 scripts/data/mer.py et python3 scripts/data/montagne.py
 Usage : python3 scripts/data/communes.py  (s'arrête sur le premier contrôle qui échoue)
 """
+import collections
 import csv
 import gzip
 import hashlib
 import json
+import math
 import os
+import re
+import xml.etree.ElementTree as ET
+import zipfile
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 RAW = os.path.join(ROOT, 'data-raw')
@@ -28,11 +39,12 @@ OUT = os.path.join(ROOT, 'public', 'data')
 
 PLM = {'75056': '751', '69123': '6938', '13055': '132'}  # commune → préfixe des codes d'arrondissement
 DECIMALES = 4  # décimales gardées dans les formes (≈ 10 m)
-# Colonnes ajoutées à la fin (immobilier) : le site lit les lignes par position.
+# Colonnes ajoutées à la fin (immobilier, puis cadre-de-vie) : le site lit les lignes par position.
 CHAMPS = ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km',
-          'loyer_maison_m2', 'estimation_propre_maison']
+          'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km']
 CHAMPS_ACHAT = ['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'maison_source']
 BIENS = ('appartement', 'maison')
+TOUS_BIENS = 'apt_maison'  # colonnes « appartements et maisons » des fichiers DVF (D12 d'immobilier)
 ALSACE_MOSELLE = ('57', '67', '68')
 MIN_VENTES = 5
 # Règle de Vincent (2026-10-14) : au moins 30 ventes du bien sur la fenêtre fixe 2023-01 à 2025-12 → prix récent.
@@ -45,8 +57,23 @@ PRIX_ACHAT_MIN_M2 = 300
 # Un écart de plus de 5 % arrête le script (condition d'arrêt de la tâche 0) ; au moins 5 communes d'écart permises.
 # Remesurés avec le seuil de 300 €/m² (2026-10-14, 18:20) ; avant le seuil : appartement 6 272 / 24 793 / 2 073,
 # maison 30 912 / 2 225 / 1 (le seuil fait passer 122 communes à « inconnu-secteur » en appartement, +5,9 %).
-MESURES = {'appartement': {'commune': 6265, 'secteur': 24678, 'inconnu-secteur': 2195},
-           'maison': {'commune': 30878, 'secteur': 2259, 'inconnu-secteur': 1}}
+# D12 (tâche 0 de cadre-de-vie, 2026-10-15, mêmes fichiers) : 2 194 communes sans prix d'appartement passent en tous
+# biens (avant : inconnu-secteur 2 195) ; Île-de-Sein (29083), sans aucune vente ni intercommunalité, reste sans prix.
+MESURES = {'appartement': {'commune': 6265, 'secteur': 24678, 'tous-biens': 1983, 'tous-biens-secteur': 211, 'inconnu-secteur': 1},
+           'maison': {'commune': 30878, 'secteur': 2259, 'tous-biens': 0, 'tous-biens-secteur': 0, 'inconnu-secteur': 1}}
+
+# Grille communale de densité Insee 2025 (D10) : DENS7 → niveau de H71 (regroupement de la tâche 0 de cadre-de-vie).
+DENSITE = os.path.join('densite', 'fichier_diffusion_2025.xlsx')
+DENSITE_MISE_EN_LIGNE = 'Mise en ligne le 21/07/2025'
+NIVEAU = {'1': 'ville-dense', '2': 'ville-et-peripherie', '3': 'ville-et-peripherie', '4': 'ville-et-peripherie',
+          '5': 'bourg-et-village', '6': 'bourg-et-village', '7': 'campagne-isolee'}
+# Comptes de la tâche 0 de cadre-de-vie (2026-10-15) sur les 34 746 communes ; écart de plus de 5 % = arrêt.
+MESURES_ENV = {'ville-dense': 692, 'ville-et-peripherie': 3514, 'bourg-et-village': 23305, 'campagne-isolee': 7235}
+# Zone de montagne (Cerema, source B de la tâche 0) : communes classées, dont en partie, et répartition par choix
+# (distance affichée, au km, « moins d'1 km » comptée 1 km).
+MESURES_MONTAGNE = {'classées': 5514, 'en partie': 182}
+TRANCHES_MONTAGNE = (('0', 0, 0, 5514), ('1 à 10 km', 1, 10, 3454), ('11 à 30 km', 11, 30, 3640),
+                     ('31 à 50 km', 31, 50, 2118), ('51 à 100 km', 51, 100, 3574), ('au-delà de 100 km', 101, 10 ** 6, 16446))
 
 
 def check(cond, msg):
@@ -71,6 +98,56 @@ def loyers(fichier):
     with open(os.path.join(RAW, fichier), encoding='latin-1') as f:
         rows = list(csv.DictReader(f, delimiter=';'))
     return {r['INSEE_C']: (float(r['loypredm2'].replace(',', '.')), r['TYPPRED'] == 'commune') for r in rows}
+
+
+def feuille_xlsx(path, nom):
+    """Lignes d'une feuille d'un classeur xlsx (bibliothèque standard) : liste de {colonne: valeur texte}."""
+    z = zipfile.ZipFile(path)
+    ns = {'m': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+    rel = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+    wb = ET.fromstring(z.read('xl/workbook.xml'))
+    rid = next(s.get('{%s}id' % rel) for s in wb.find('m:sheets', ns) if s.get('name') == nom)
+    cible = next(r.get('Target') for r in ET.fromstring(z.read('xl/_rels/workbook.xml.rels')) if r.get('Id') == rid)
+    partages = [''.join(t.text or '' for t in si.iter('{%s}t' % ns['m'])) for si in ET.fromstring(z.read('xl/sharedStrings.xml'))]
+    lignes = []
+    for _, el in ET.iterparse(z.open('xl/' + cible.lstrip('/').replace('xl/', ''))):
+        if el.tag == '{%s}row' % ns['m']:
+            ligne = {}
+            for cell in el:
+                v = cell.find('m:v', ns)
+                if v is None:
+                    is_ = cell.find('m:is', ns)
+                    val = ''.join(t.text or '' for t in is_.iter('{%s}t' % ns['m'])) if is_ is not None else ''
+                else:
+                    val = partages[int(v.text)] if cell.get('t') == 's' else v.text
+                ligne[re.match(r'[A-Z]+', cell.get('r')).group()] = val
+            lignes.append(ligne)
+            el.clear()
+    return lignes
+
+
+def densite():
+    """Grille communale de densité Insee 2025, feuille « Maille communale » : code INSEE → DENS7 (1 à 7)."""
+    lignes = feuille_xlsx(os.path.join(RAW, DENSITE), 'Maille communale')
+    tete_i = next(i for i, r in enumerate(lignes) if 'DENS7' in r.values())
+    check(any(DENSITE_MISE_EN_LIGNE in v for r in lignes[:tete_i] for v in r.values()),
+          f'grille de densité : « {DENSITE_MISE_EN_LIGNE} » dans l\'en-tête (millésime 2025, géographie au 01/01/2025)')
+    col = {v: k for k, v in lignes[tete_i].items()}
+    return {r[col['CODGEO']]: r.get(col['DENS7']) for r in lignes[tete_i + 1:] if r.get(col['CODGEO'])}
+
+
+def km_affiche(km):
+    """Distance comparée par le site (R28, R29) : au km, « moins d'1 km » comptée 1 km ; 0 = commune de montagne."""
+    return 0 if km == 0 else max(1, math.floor(km + 0.5))
+
+
+def km_montagne(m):
+    """`montagne_km` : km à 0,1 près, 0 = commune de montagne (classée ou mairie dans la zone) ; une commune hors zone
+    garde au moins 0,1 km (Raon-lès-Leau, 54443 : mairie à 24 m de la zone, « moins d'1 km » et pas « Commune de montagne »)."""
+    if m is None:
+        return None
+    km, classement = m
+    return 0 if classement else max(0.1, round(km, 1))
 
 
 def loyer_commune(loy, code):
@@ -116,7 +193,7 @@ def dvf_mois():
         lecteur = csv.reader(f)
         tete = next(lecteur)
         i_code, i_mois, i_ech = tete.index('code_geo'), tete.index('annee_mois'), tete.index('echelle_geo')
-        cols = {b: (tete.index(f'nb_ventes_{b}'), tete.index(f'med_prix_m2_{b}')) for b in BIENS}
+        cols = {b: (tete.index(f'nb_ventes_{b}'), tete.index(f'med_prix_m2_{b}')) for b in BIENS + (TOUS_BIENS,)}
         for r in lecteur:
             if r[i_ech] not in ('commune', 'epci') or not RECENT[0] <= r[i_mois] <= RECENT[1]:
                 continue
@@ -130,7 +207,7 @@ def dvf_mois():
                     check(False, f'fichier mensuel : deux lignes différentes pour {cle}')
                 continue
             lignes[cle] = valeurs
-            par_bien = mois.setdefault((r[i_ech], r[i_code]), {b: [] for b in BIENS})
+            par_bien = mois.setdefault((r[i_ech], r[i_code]), {b: [] for b in cols})
             for b, (i_nb, i_med) in cols.items():
                 if r[i_nb] and int(r[i_nb]) > 0:
                     par_bien[b].append((nombre(r[i_med]), int(r[i_nb])))
@@ -172,7 +249,7 @@ def prix_ligne(ligne, mois, bien):
 def achat_commune(d, code, bien):
     """R24 révisée par Vincent (2026-10-14) : (€/m², source, règle) d'une commune pour un bien, hors Alsace-Moselle
     et hors Paris, Lyon, Marseille. Règle 1 : prix récent ; 2 : toute la période ; 3-1, 3-2 : la même chose pour
-    l'intercommunalité ; inconnu."""
+    l'intercommunalité ; tb-1, tb-2, tb-3-1, tb-3-2 : la même chose sur le prix tous biens (D12) ; inconnu."""
     com, epci, mois = d
     r = com.get(code)
     p = prix_ligne(r, mois.get(('commune', code)), bien)
@@ -182,6 +259,12 @@ def achat_commune(d, code, bien):
     p = prix_ligne(epci.get(parent), mois.get(('epci', parent)), bien) if parent in epci else None
     if p:
         return p[0], 'secteur', '3-' + p[1]
+    p = prix_ligne(r, mois.get(('commune', code)), TOUS_BIENS)
+    if p:
+        return p[0], 'tous-biens', 'tb-' + p[1]
+    p = prix_ligne(epci.get(parent), mois.get(('epci', parent)), TOUS_BIENS) if parent in epci else None
+    if p:
+        return p[0], 'tous-biens-secteur', 'tb-3-' + p[1]
     return None, 'inconnu-secteur', 'inconnu'
 
 
@@ -193,8 +276,9 @@ def achat(d, code, dep, bien):
         connus = [a for a in arr if a[0] is not None]
         if not connus:
             return None, 'inconnu-secteur', 'inconnu'
-        return (round(sum(a[0] for a in connus) / len(connus), 2),
-                'secteur' if any(a[1] == 'secteur' for a in connus) else 'commune', 'H67')
+        sources = {a[1] for a in connus}
+        source = 'tous-biens' if sources & {'tous-biens', 'tous-biens-secteur'} else 'secteur' if 'secteur' in sources else 'commune'
+        return round(sum(a[0] for a in connus) / len(connus), 2), source, 'H67'
     return achat_commune(d, code, bien)
 
 
@@ -225,6 +309,9 @@ def main():
     geo = {c['code']: c for c in json.load(open(os.path.join(RAW, 'communes-centre.json')))}
     with open(os.path.join(RAW, 'mer-km.csv')) as f:
         mer = {r['code']: float(r['km']) for r in csv.DictReader(f)}
+    dens7 = densite()
+    with open(os.path.join(RAW, 'montagne-km.csv')) as f:
+        montagne = {r['code']: (float(r['km']), r['classement']) for r in csv.DictReader(f)}
 
     codes = sorted(com)
     rows = []
@@ -236,7 +323,9 @@ def main():
         rows.append([code, com[code]['LIBELLE'], com[code]['DEP'], pop,
                      None if m2 is None else round(m2, 4), propre,
                      None if code not in mer else round(mer[code], 2),
-                     None if m2_mai is None else round(m2_mai, 4), propre_mai])
+                     None if m2_mai is None else round(m2_mai, 4), propre_mai,
+                     NIVEAU.get(dens7.get(code)),
+                     km_montagne(montagne.get(code))])
         ligne = [code]
         for bien in BIENS:
             prix_, source, regle = achat(donnees_achat, code, com[code]['DEP'], bien)
@@ -266,6 +355,32 @@ def main():
     print(f"  info loyer des maisons : {sum(1 for r in rows if r[7] is None)} commune sans loyer,"
           f" {sum(1 for r in rows if r[8])} estimations propres ; Bordeaux {bx[7]} €/m², Paris {by['75056'][7]} €/m²")
 
+    print('Contrôles du cadre de vie (type d\'environnement, distance à la montagne)')
+    for i, champ in ((9, "type d'environnement"), (10, 'distance à la montagne')):
+        manque = [r[0] for r in rows if r[i] is None]
+        check(not manque, f'0 commune sans {champ} (manquent : {len(manque)} {manque[:5]})')
+    for niveau, ref in MESURES_ENV.items():
+        n = sum(1 for r in rows if r[9] == niveau)
+        check(abs(n - ref) <= max(0.05 * ref, 5), f'{niveau} : {n} communes (tâche 0 : {ref}, écart permis 5 %)')
+    print(f"  info DENS7 sur les communes du site : {dict(sorted(collections.Counter(dens7.get(c) for c in codes).items()))}")
+    classes = {c for c, (_, cl) in montagne.items() if cl in ('totalite', 'partie')}
+    n_cl = {'classées': len(classes), 'en partie': sum(1 for _, cl in montagne.values() if cl == 'partie')}
+    for nom_, ref in MESURES_MONTAGNE.items():
+        check(abs(n_cl[nom_] - ref) <= max(0.05 * ref, 5), f'montagne, communes {nom_} : {n_cl[nom_]} (tâche 0 : {ref}, écart permis 5 %)')
+    h81 = [c for c, (_, cl) in montagne.items() if cl == 'mairie-dans-la-zone']
+    print(f'  info mairies dans la zone sans commune classée (H81, comptées à 0) : {len(h81)} {h81[:5]}')
+    faux_zero = [r[0] for r in rows if r[10] == 0 and montagne[r[0]][1] == '']
+    check(not faux_zero, f'0 commune hors zone à 0 km après arrondi (0 = commune de montagne) : {faux_zero[:5]}')
+    for nom_, lo, hi, ref in TRANCHES_MONTAGNE:
+        n = sum(1 for r in rows if lo <= km_affiche(r[10]) <= hi)
+        check(abs(n - ref) <= max(0.05 * ref, 5), f'montagne, {nom_} : {n} communes (tâche 0 : {ref}, écart permis 5 %)')
+    for code, attendu in (('33063', 172.8), ('38185', 0.7), ('69123', 13.7), ('74056', 0), ('74010', 0)):
+        check(by[code][10] == attendu, f'{by[code][1]} ({code}) : {by[code][10]} km de la montagne (tâche 0 : {attendu})')
+    for code, attendu in (('33063', 'ville-dense'), ('33214', 'bourg-et-village'), ('74056', 'ville-et-peripherie')):
+        check(by[code][9] == attendu, f'{by[code][1]} ({code}) : {by[code][9]} (attendu {attendu})')
+    for code in PLM:
+        print(f'  info {by[code][1]} ({code}) : {by[code][9]}, {by[code][10]} km de la montagne')
+
     print("Contrôles des prix d'achat")
     ach = {a[0]: a for a in achats}
     check(len(achats) == len(rows) and [a[0] for a in achats] == codes, f'{len(achats)} lignes, dans l\'ordre des codes de communes.json')
@@ -283,8 +398,9 @@ def main():
     check(len(am) == 1605 and all(a[2] == a[4] == 'inconnu-alsace-moselle' for a in am),
           f'Alsace-Moselle : {len(am)} communes inconnu-alsace-moselle pour les deux biens (attendu 1 605)')
     for j, bien in enumerate(BIENS):
-        n = {r: sum(1 for a in hors if regles[bien][a[0]] == r) for r in ('1', '2', '3-1', '3-2', 'inconnu')}
-        print(f'  info {bien}, par règle (1 récent, 2 toute la période, 3 intercommunalité) : {n}')
+        n = {r: sum(1 for a in hors if regles[bien][a[0]] == r) for r in ('1', '2', '3-1', '3-2', 'tb-1', 'tb-2', 'tb-3-1', 'tb-3-2', 'inconnu')}
+        print(f'  info {bien}, par règle (1 récent, 2 toute la période, 3 intercommunalité, tb tous biens) : {n}')
+        print(f'  info {bien}, par source (toutes les communes) : {dict(collections.Counter(a[2 + 2 * j] for a in achats))}')
     check(ach['33063'][1:] == [4233, 'commune', 5067, 'commune'] and regles['appartement']['33063'] == regles['maison']['33063'] == '1',
           f"Bordeaux (33063) : {ach['33063'][1:]}, règle 1 (attendu 4 233 et 5 067 €/m², prix récent 2023-2025)")
     check(ach['33487'][1:5] == [3700, 'secteur', 2487, 'commune'] and regles['maison']['33487'] == '2',
@@ -292,6 +408,14 @@ def main():
           f" maison 2 487 €/m², 24 ventes récentes : règle 2)")
     for code in PLM:
         check(ach[code][1] is not None and ach[code][3] is not None, f'{by[code][1]} ({code}) : {ach[code][1:]}')
+        for bien in BIENS:
+            arr = [k for k in sorted(ventes) if len(k) == 5 and k.startswith(PLM[code])]
+            tb = [k for k in arr if achat_commune(donnees_achat, k, bien)[1].startswith('tous-biens')]
+            print(f'  info {by[code][1]}, {bien} : {len(tb)} arrondissement(s) sur {len(arr)} au prix tous biens')
+    for code, attendu in (('02004', [733, 'tous-biens']), ('62268', [1493, 'tous-biens']), ('62821', [1714, 'tous-biens-secteur'])):
+        check(ach[code][1:3] == attendu, f'D12 {by[code][1]} ({code}), appartement : {ach[code][1:3]} (tâche 0 : {attendu})')
+    sans = sorted({a[0] for a in achats for j in range(2) if a[2 + 2 * j] == 'inconnu-secteur'})
+    check(sans == ['29083'], f'D12 : sans prix hors Alsace-Moselle : {sans[:5]} (tâche 0 : Île-de-Sein, 29083, seule)')
 
     os.makedirs(OUT, exist_ok=True)
     index = {code: i for i, code in enumerate(codes)}

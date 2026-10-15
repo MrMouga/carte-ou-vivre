@@ -59,6 +59,41 @@ describe('public/data/communes.json', () => {
     expect(get('75056', 'loyer_maison_m2')).toBeGreaterThan(20);
     expect(byCode.get('75056')![col('estimation_propre_maison')]).toBe(false);
   });
+
+  // Tranche cadre-de-vie, tâche 1 : type d'environnement (grille communale de densité Insee 2025, D10, H71, H72) et
+  // distance à la montagne (zonage loi Montagne du Cerema, communes 2019, R29, H81), colonnes ajoutées à la fin.
+  const typeEnv = (code: string) => byCode.get(code)![col('type_env')];
+  it("D10 : les deux colonnes sont à la fin ; chaque commune a un type d'environnement parmi les 4 de H71 et une distance à la montagne", () => {
+    expect(champs.slice(-2)).toEqual(['type_env', 'montagne_km']);
+    expect(communes).toHaveLength(34746);
+    const niveaux = new Set(['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee']);
+    expect(communes.filter((r) => !niveaux.has(r[col('type_env')] as string))).toEqual([]);
+    expect(communes.filter((r) => typeof r[col('montagne_km')] !== 'number' || (r[col('montagne_km')] as number) < 0)).toEqual([]);
+  });
+
+  it('D10 : Bordeaux ville-dense (DENS7 1), Lacanau bourg-et-village (5), Chamonix ville-et-peripherie (3), Cans et Cévennes campagne-isolee (7)', () => {
+    expect(typeEnv('33063')).toBe('ville-dense');
+    expect(typeEnv('33214')).toBe('bourg-et-village');
+    expect(typeEnv('74056')).toBe('ville-et-peripherie');
+    expect(typeEnv('48166')).toBe('campagne-isolee');
+  });
+
+  it('R29 : Bordeaux à 172,8 km de la montagne (Turenne, Corrèze), Grenoble à 0,7 km, Lyon à 13,7 km (mesures de la tâche 0)', () => {
+    expect(get('33063', 'montagne_km')).toBe(172.8);
+    expect(get('38185', 'montagne_km')).toBe(0.7);
+    expect(get('69123', 'montagne_km')).toBe(13.7);
+  });
+
+  it('R29 : 0 pour une commune classée, en totalité (Chamonix-Mont-Blanc) ou en partie (Annecy, Saint-Étienne)', () => {
+    for (const code of ['74056', '74010', '42218']) expect(get(code, 'montagne_km')).toBe(0);
+  });
+
+  it("Paris, Lyon et Marseille : ville-dense et une distance à la montagne (d'un seul tenant)", () => {
+    for (const code of ['75056', '69123', '13055']) {
+      expect(typeEnv(code)).toBe('ville-dense');
+      expect(get(code, 'montagne_km')).toBeGreaterThan(0);
+    }
+  });
 });
 
 // Prix d'achat (tranche immobilier, tâche 0 ; D5 révisée par Vincent le 2026-10-14, D8, H67, R24) : statistiques DVF
@@ -79,7 +114,7 @@ describe('public/data/achat.json', () => {
     expect(c).toEqual(['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'maison_source']);
     expect(l).toHaveLength(34746);
     expect(new Set(l.map((r) => r[0]))).toEqual(new Set(byCode.keys()));
-    const sources = new Set(['commune', 'secteur', 'inconnu-secteur', 'inconnu-alsace-moselle']);
+    const sources = new Set(['commune', 'secteur', 'tous-biens', 'tous-biens-secteur', 'inconnu-secteur', 'inconnu-alsace-moselle']);
     for (const r of l) {
       expect(sources.has(r[2] as string) && sources.has(r[4] as string)).toBe(true);
       expect(r[1] == null).toBe((r[2] as string).startsWith('inconnu'));
@@ -109,9 +144,22 @@ describe('public/data/achat.json', () => {
     expect(am.every((p) => p.appartement_source === 'inconnu-alsace-moselle' && p.maison_source === 'inconnu-alsace-moselle')).toBe(true);
   });
 
-  it("R24 sans prix hors Alsace-Moselle : Agnicourt-et-Séchelles (02004) en appartement, Île-de-Sein (29083) en maison", () => {
-    expect(prix('02004')).toMatchObject({ appartement_m2: null, appartement_source: 'inconnu-secteur' });
+  it("R24 et D12 : Agnicourt-et-Séchelles (02004) prend en appartement le prix tous biens (733 €/m²) ; Île-de-Sein (29083), sans aucune vente, reste sans prix", () => {
+    expect(prix('02004')).toMatchObject({ appartement_m2: 733, appartement_source: 'tous-biens' });
     expect(prix('29083')).toMatchObject({ maison_m2: null, maison_source: 'inconnu-secteur' });
+  });
+
+  // D12 d'immobilier (Vincent, 2026-10-15) : sans prix du bien, la même règle sur le prix tous biens (apt_maison) de la
+  // commune (`tous-biens`), puis de son intercommunalité (`tous-biens-secteur`). Mesures de la tâche 0 de cadre-de-vie.
+  it('D12 : Desvres (62268) 1 493 €/m² tous-biens et Tingry (62821) 1 714 €/m² tous-biens-secteur, en appartement', () => {
+    expect(prix('62268')).toMatchObject({ appartement_m2: 1493, appartement_source: 'tous-biens' });
+    expect(prix('62821')).toMatchObject({ appartement_m2: 1714, appartement_source: 'tous-biens-secteur' });
+  });
+
+  it('D12 : hors Alsace-Moselle, Île-de-Sein (29083) est la seule commune sans prix, en appartement comme en maison', () => {
+    const { communes: l } = achat();
+    expect(l.filter((r) => r[2] === 'inconnu-secteur').map((r) => r[0])).toEqual(['29083']);
+    expect(l.filter((r) => r[4] === 'inconnu-secteur').map((r) => r[0])).toEqual(['29083']);
   });
 
   // Seuil de Vincent (2026-10-14, reprise de la tâche 1) : un prix d'achat sous 300 €/m² n'est pas crédible (ventes en

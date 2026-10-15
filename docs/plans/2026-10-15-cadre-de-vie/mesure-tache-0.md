@@ -457,3 +457,139 @@ Communes nommées par le plan :
   première commune au prix tous biens : rang 33, Outremécourt (52372, 52, 75 hab.) — 323 €/m² — tous-biens
   parmi les 100 premières : 14 au prix tous biens
 ```
+
+## Tâche 1 — les données du site (2026-10-15, 15:00 → 15:30)
+Scripts de production : `python3 scripts/data/sources.py` (télécharge en plus le fichier des mouvements du COG 2025, la grille Insee, la couche des communes du Cerema et ses 34 archives infra-communales, puis les ouvre avec `bsdtar` ; adresses identiques à celles de la tâche 0, empreinte SHA-1 de la couche des communes identique à celle de data.gouv.fr, `4478ee77…f45`), puis `python3 scripts/data/mer.py`, `python3 scripts/data/montagne.py` (≈ 1 min 10) et `python3 scripts/data/communes.py` (≈ 10 s).
+
+**Résultat** : tous les comptes de la tâche 0 sont retrouvés ; aucun ne s'écarte de plus de 5 %.
+- Types : 692 / 3 514 / 23 305 / 7 235, 0 commune sans type (identiques).
+- Montagne : 5 514 communes classées (182 en partie), H81 : 0 (identiques). Distances non arrondies identiques à la tâche 0 : Bordeaux 172,787 → `montagne_km` 172.8 ; Grenoble 0,651 → 0.7 (même valeur qu'en tâche 0, 0,65) ; Lyon 13,699 → 13.7 ; Marseille 53.8 ; Paris 291.4.
+- Répartition par choix, sur la valeur servie (0,1 km puis arrondi au km) : 5 514 / 3 445 / 3 646 / 2 113 / 3 580 / 16 448 au lieu de 5 514 / 3 454 / 3 640 / 2 118 / 3 574 / 16 446. Écart de 2 à 9 communes par tranche : double arrondi (10,46 km → 10,5 → affiché 11 au lieu de 10), au plus 0,05 km, moins que l'erreur de la méthode (< 50 m).
+- Une commune hors zone tombait à 0 après l'arrondi à 0,1 km : **Raon-lès-Leau (54443)**, mairie à 24 m de la zone, non classée par le Cerema. Elle garde 0.1 km (« moins d'1 km de la montagne », comparée comme 1 km), pas « Commune de montagne ». Le contrôle « 0 commune hors zone à 0 km » le vérifie.
+- Prix d'achat : appartement 6 268 commune, 24 678 secteur, **1 983 tous-biens, 211 tous-biens-secteur**, 1 inconnu-secteur (Île-de-Sein), 1 605 Alsace-Moselle ; maison 30 878 / 2 262 / 0 / 0 / 1 / 1 605 (identiques). 2 194 lignes d'`achat.json` changent, toutes d'`inconnu-secteur` à `tous-biens` ou `tous-biens-secteur` en appartement ; rien d'autre ne bouge. 0 arrondissement de Paris, Lyon, Marseille au prix tous biens. Agnicourt-et-Séchelles (02004) 733 €/m² `tous-biens`, Desvres (62268) 1 493 `tous-biens`, Tingry (62821) 1 714 `tous-biens-secteur`. Aucun prix sous 300 €/m².
+- `communes.json` : les 9 premières colonnes des 34 746 lignes sont identiques à avant ; `type_env` et `montagne_km` ajoutées à la fin.
+
+**Poids** (octets ; gzip -9 ; brotli -q 11, la compression de Cloudflare)
+
+| Fichier | Brut avant → après | gzip avant → après | brotli avant → après |
+|---|---|---|---|
+| `communes.json` | 2 328 662 → 3 159 045 (+830 383) | 677 631 → 786 777 (**+109 146**) | 537 896 → 618 685 (+80 789) |
+| `achat.json` | 1 445 335 → 1 435 241 (−10 094) | 228 213 → 232 395 (+4 182) | 165 938 → 169 379 (+3 441) |
+
+`communes.json` grossit de 109 Ko compressé en gzip (plus que les 100 Ko du plan, à dire à Vincent, pas d'arrêt) ; 81 Ko avec brotli.
+
+**Mentions fixées pour `Mentions.tsx`** (tâches 3 et 4) et reprises dans `CLAUDE.md` « Données » :
+- « Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) » — Licence Ouverte 2.0.
+- « Zone de montagne : Cerema, communes soumises à la loi Montagne (2019) » — Licence Ouverte 2.0.
+
+### Sortie de `montagne.py` (2026-10-15, 15:11)
+```
+Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)
+  rétablie après la source : Celles (15031) hérite de 15141
+  rétablie après la source : Chalinargues (15035) hérite de 15141
+  rétablie après la source : Chavagnac (15047) hérite de 15141
+  rétablie après la source : Sainte-Anastasie (15171) hérite de 15141
+  communes 2019 listées : 5525 (totalité 5343, partie 182) ; sans correspondance en 2025 : []
+  zones infra-communales : 35 polygones, 34 départements ; communes « partie » sans zone infra-communale (contour entier en repli) : 143
+  bord de la zone : 1136106 points (un tous les 100 m au plus, bords intérieurs retirés)
+montagne-km.csv : 34746 communes ; classées 5514 (dont en partie 182) ; mairie dans la zone sans commune classée (H81) : 0
+```
+
+### Sortie de `communes.py` (2026-10-15, 15:14)
+```
+COG 2025, métropole et Corse : 34746 communes (COM, dont Paris, Lyon et Marseille d'un seul tenant) ; exclus : 45 arrondissements (ARM), 2152 communes déléguées, 476 communes associées
+DVF : stats_whole_period.csv, Last-Modified Fri, 17 Jul 2026 15:22:41 GMT, téléchargé le 2026-10-14T16:11:03+02:00, 30738960 octets, sha256 c691b87045b9bafc30f242e474f919c65ae1180ab6843b8a9feb7161a3abbe68
+  ok   DVF : stats_whole_period.csv est bien celui téléchargé (empreinte identique)
+DVF : stats_dvf.csv, Last-Modified Fri, 17 Jul 2026 15:22:40 GMT, téléchargé le 2026-10-14T16:48:13+02:00, 276619703 octets, sha256 09316f4ce13d694a43fc86c704120d0aadc9ba739a02b365ccd116d5320b9468
+  ok   DVF : stats_dvf.csv est bien celui téléchargé (empreinte identique)
+  info fichier mensuel : 3455 lignes en double ignorées (intercommunalités sur plusieurs départements)
+  ok   fichier mensuel : 36 mois dans la fenêtre 2023-01 à 2025-12 (attendu 36)
+  ok   grille de densité : « Mise en ligne le 21/07/2025 » dans l'en-tête (millésime 2025, géographie au 01/01/2025)
+Contrôles
+  ok   34746 communes de métropole (attendu 34 746 = COM du COG 2025 hors 97x)
+  ok   0 commune sans population (manquent : 0 [])
+  ok   0 commune sans loyer (manquent : 0 [])
+  ok   0 commune sans distance à la mer (manquent : 0 [])
+  ok   0 commune sans loyer de maison (manquent : 0 [])
+  ok   arrondissements moyennés : {'75056': 20, '69123': 9, '13055': 16}
+  ok   Bordeaux (33063) : 832 € pour 52 m² (attendu 832)
+  ok   Bordeaux : 16.0 €/m² (attendu 16,0)
+  ok   Bordeaux : 39.07 km, affiché 39 km (attendu 39, depuis la mairie : D18)
+  ok   La Rochelle (17300) : 0.2 km (attendu « moins d'1 km », D18)
+  ok   Port-de-Lanne (40231) : 22.52 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Saint-Étienne-d'Orthe (40256) : 21.56 km (attendu au-delà de 2 km, Adour corrigé)
+  ok   Sames (64502) : 26.32 km (attendu au-delà de 2 km, Adour corrigé)
+  info Paris : 1721 € pour 52 m², estimation propre True, 2103778 habitants ; estimations propres : 4765 communes
+  info loyer des maisons : 0 commune sans loyer, 3543 estimations propres ; Bordeaux 15.5092 €/m², Paris 24.0594 €/m²
+Contrôles du cadre de vie (type d'environnement, distance à la montagne)
+  ok   0 commune sans type d'environnement (manquent : 0 [])
+  ok   0 commune sans distance à la montagne (manquent : 0 [])
+  ok   ville-dense : 692 communes (tâche 0 : 692, écart permis 5 %)
+  ok   ville-et-peripherie : 3514 communes (tâche 0 : 3514, écart permis 5 %)
+  ok   bourg-et-village : 23305 communes (tâche 0 : 23305, écart permis 5 %)
+  ok   campagne-isolee : 7235 communes (tâche 0 : 7235, écart permis 5 %)
+  info DENS7 sur les communes du site : {'1': 692, '2': 617, '3': 932, '4': 1965, '5': 5038, '6': 18267, '7': 7235}
+  ok   montagne, communes classées : 5514 (tâche 0 : 5514, écart permis 5 %)
+  ok   montagne, communes en partie : 182 (tâche 0 : 182, écart permis 5 %)
+  info mairies dans la zone sans commune classée (H81, comptées à 0) : 0 []
+  ok   0 commune hors zone à 0 km après arrondi (0 = commune de montagne) : []
+  ok   montagne, 0 : 5514 communes (tâche 0 : 5514, écart permis 5 %)
+  ok   montagne, 1 à 10 km : 3445 communes (tâche 0 : 3454, écart permis 5 %)
+  ok   montagne, 11 à 30 km : 3646 communes (tâche 0 : 3640, écart permis 5 %)
+  ok   montagne, 31 à 50 km : 2113 communes (tâche 0 : 2118, écart permis 5 %)
+  ok   montagne, 51 à 100 km : 3580 communes (tâche 0 : 3574, écart permis 5 %)
+  ok   montagne, au-delà de 100 km : 16448 communes (tâche 0 : 16446, écart permis 5 %)
+  ok   Bordeaux (33063) : 172.8 km de la montagne (tâche 0 : 172.8)
+  ok   Grenoble (38185) : 0.7 km de la montagne (tâche 0 : 0.7)
+  ok   Lyon (69123) : 13.7 km de la montagne (tâche 0 : 13.7)
+  ok   Chamonix-Mont-Blanc (74056) : 0 km de la montagne (tâche 0 : 0)
+  ok   Annecy (74010) : 0 km de la montagne (tâche 0 : 0)
+  ok   Bordeaux (33063) : ville-dense (attendu ville-dense)
+  ok   Lacanau (33214) : bourg-et-village (attendu bourg-et-village)
+  ok   Chamonix-Mont-Blanc (74056) : ville-et-peripherie (attendu ville-et-peripherie)
+  info Paris (75056) : ville-dense, 291.4 km de la montagne
+  info Lyon (69123) : ville-dense, 13.7 km de la montagne
+  info Marseille (13055) : ville-dense, 53.8 km de la montagne
+Contrôles des prix d'achat
+  ok   34746 lignes, dans l'ordre des codes de communes.json
+  ok   aucun prix d'achat retenu sous 300 €/m² (trouvés : 0 [])
+  ok   arrondissements dans le fichier DVF : {'75056': 20, '69123': 9, '13055': 16} (45, H67)
+  ok   appartement : chaque commune a une source (33138 hors Alsace-Moselle et Paris, Lyon, Marseille)
+  ok   appartement, commune : 6265 communes (mesuré : 6265, écart permis 5 %)
+  ok   appartement, secteur : 24678 communes (mesuré : 24678, écart permis 5 %)
+  ok   appartement, tous-biens : 1983 communes (mesuré : 1983, écart permis 5 %)
+  ok   appartement, tous-biens-secteur : 211 communes (mesuré : 211, écart permis 5 %)
+  ok   appartement, inconnu-secteur : 1 communes (mesuré : 1, écart permis 5 %)
+  ok   maison : chaque commune a une source (33138 hors Alsace-Moselle et Paris, Lyon, Marseille)
+  ok   maison, commune : 30878 communes (mesuré : 30878, écart permis 5 %)
+  ok   maison, secteur : 2259 communes (mesuré : 2259, écart permis 5 %)
+  ok   maison, tous-biens : 0 communes (mesuré : 0, écart permis 5 %)
+  ok   maison, tous-biens-secteur : 0 communes (mesuré : 0, écart permis 5 %)
+  ok   maison, inconnu-secteur : 1 communes (mesuré : 1, écart permis 5 %)
+  ok   Alsace-Moselle : 1605 communes inconnu-alsace-moselle pour les deux biens (attendu 1 605)
+  info appartement, par règle (1 récent, 2 toute la période, 3 intercommunalité, tb tous biens) : {'1': 2429, '2': 3836, '3-1': 15733, '3-2': 8945, 'tb-1': 301, 'tb-2': 1682, 'tb-3-1': 211, 'tb-3-2': 0, 'inconnu': 1}
+  info appartement, par source (toutes les communes) : {'secteur': 24678, 'commune': 6268, 'tous-biens': 1983, 'tous-biens-secteur': 211, 'inconnu-secteur': 1, 'inconnu-alsace-moselle': 1605}
+  info maison, par règle (1 récent, 2 toute la période, 3 intercommunalité, tb tous biens) : {'1': 9925, '2': 20953, '3-1': 2259, '3-2': 0, 'tb-1': 0, 'tb-2': 0, 'tb-3-1': 0, 'tb-3-2': 0, 'inconnu': 1}
+  info maison, par source (toutes les communes) : {'commune': 30878, 'secteur': 2262, 'inconnu-secteur': 1, 'inconnu-alsace-moselle': 1605}
+  ok   Bordeaux (33063) : [4233, 'commune', 5067, 'commune'], règle 1 (attendu 4 233 et 5 067 €/m², prix récent 2023-2025)
+  ok   Saint-Vincent-de-Paul (33487) : [3700, 'secteur', 2487, 'commune'] (attendu appartement 3 700 €/m², Bordeaux Métropole récent ; maison 2 487 €/m², 24 ventes récentes : règle 2)
+  ok   Paris (75056) : [10640.35, 'commune', 12403.7, 'secteur']
+  info Paris, appartement : 0 arrondissement(s) sur 20 au prix tous biens
+  info Paris, maison : 0 arrondissement(s) sur 20 au prix tous biens
+  ok   Lyon (69123) : [4652.22, 'commune', 6101.0, 'secteur']
+  info Lyon, appartement : 0 arrondissement(s) sur 9 au prix tous biens
+  info Lyon, maison : 0 arrondissement(s) sur 9 au prix tous biens
+  ok   Marseille (13055) : [2945.12, 'commune', 4853.38, 'secteur']
+  info Marseille, appartement : 0 arrondissement(s) sur 16 au prix tous biens
+  info Marseille, maison : 0 arrondissement(s) sur 16 au prix tous biens
+  ok   D12 Agnicourt-et-Séchelles (02004), appartement : [733, 'tous-biens'] (tâche 0 : [733, 'tous-biens'])
+  ok   D12 Desvres (62268), appartement : [1493, 'tous-biens'] (tâche 0 : [1493, 'tous-biens'])
+  ok   D12 Tingry (62821), appartement : [1714, 'tous-biens-secteur'] (tâche 0 : [1714, 'tous-biens-secteur'])
+  ok   D12 : sans prix hors Alsace-Moselle : ['29083'] (tâche 0 : Île-de-Sein, 29083, seule)
+  ok   formes 100m : 0 code orphelin (en trop : 0, sans forme : 0)
+Fichiers
+  achat.json : 1.44 Mo brut, 0.23 Mo compressé (gzip)
+  communes.json : 3.16 Mo brut, 0.79 Mo compressé (gzip)
+  reperes.json : 1.63 Mo brut, 0.59 Mo compressé (gzip)
+  voisins.json : 0.26 Mo brut, 0.08 Mo compressé (gzip)
+```

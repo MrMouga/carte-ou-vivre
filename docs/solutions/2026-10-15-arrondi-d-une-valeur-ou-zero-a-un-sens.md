@@ -1,0 +1,8 @@
+# Arrondir une valeur dont le 0 a un sens : compter les valeurs qui tombent à 0 sans le mériter, et leur garder le plus petit pas
+Étiquettes : data, spec · Tranche : cadre-de-vie · Source : tâche 1 de /build cadre-de-vie, `docs/plans/2026-10-15-cadre-de-vie/mesure-tache-0.md` (section « Tâche 1 »)
+
+**Problème** — Le plan servait `montagne_km` « à 0,1 km près, 0 = commune de montagne ». Une distance non nulle de moins de 0,05 km devient 0 à l'arrondi, et la commune se lit comme classée.
+**Symptômes** — Raon-lès-Leau (54443), non classée par le Cerema, a sa mairie à 24 m de la zone : 0.024 → 0.0, donc « Commune de montagne » à la place de « moins d'1 km ». La tâche 0 ne l'avait pas vu, parce qu'elle gardait les km non arrondis. Le contrôle ajouté à `communes.py` l'a arrêté dès le premier passage.
+**Ce qui n'a pas marché** — Se fier au format annoncé par le plan sans compter ce qu'il fait aux bords (un `awk` sur le CSV ne trouvait rien : le dernier champ finissait par `\r`, à cause de `csv.writer`).
+**Ce qui a marché** — Le statut vient de la source (`classement` dans `montagne-km.csv`), pas de la valeur arrondie. Une commune hors zone garde au moins 0,1 km. Le contrôle « 0 commune hors zone à 0 km » reste dans `communes.py`.
+**Prévention** — Règle de jugement : quand une valeur arrondie porte un sens à 0 (ou à un seuil), le plan ou la spec dit le plus petit pas des autres, et un contrôle compte les valeurs qui basculent. Le double arrondi (0,1 km, puis le km affiché) déplace aussi 2 à 9 communes par tranche de distance : comparer les comptes sur la valeur servie, pas sur la valeur exacte.
