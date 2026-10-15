@@ -27,6 +27,8 @@ export default defineConfig({
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env.CI,
+    // Rétro du 2026-10-16 : jamais réutiliser un serveur déjà ouvert sur ce port. Un `vite preview` oublié y servait la
+    // version construite et faisait échouer 12 tests sans défaut ; mieux vaut une erreur claire « port déjà utilisé ».
+    reuseExistingServer: false,
   },
 });

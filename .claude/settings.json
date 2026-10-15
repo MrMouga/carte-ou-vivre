@@ -14,12 +14,13 @@
       "Bash(ls *)", "Bash(cat *)", "Bash(head *)", "Bash(tail *)", "Bash(grep *)", "Bash(wc *)", "Bash(du *)", "Bash(gzip -c *)",
       "Bash(curl -s *)", "Bash(curl -sS *)", "Bash(curl -sSL *)", "Bash(curl -I *)",
       "Bash(pkill -f vite *)",
-      "Bash(npm install *)", "Bash(npm install)", "Bash(npx playwright install *)", "Bash(git worktree *)", "mcp__plugin_figma_figma__get_*"
+      "Bash(npm install *)", "Bash(npm install)", "Bash(npx playwright install *)", "Bash(git worktree *)", "mcp__plugin_figma_figma__get_*",
+      "Bash(mkdir -p *)", "Bash(bash /Users/mouga/git-repository/ai-workflow/plugins/studio/scripts/*)", "Bash(sips -Z *)", "Bash(curl -sL *)", "Bash(curl -sI *)"
     ],
-    "ask": [ "Bash(git push *)", "Bash(gh repo create *)", "Bash(npm publish *)", "Bash(npx wrangler *)", "Bash(vercel *)", "Bash(netlify *)" ],
+    "ask": [ "Bash(git push *)", "Bash(gh repo create *)", "Bash(npm publish *)", "Bash(npx wrangler *)", "Bash(vercel *)", "Bash(netlify *)", "Bash(curl * -F *)" ],
     "deny": [
       "Read(./.env)", "Read(./.env.*)", "Read(~/.ssh/**)", "Read(~/.aws/**)", "Read(~/.config/gh/**)",
-      "Bash(curl * -d *)", "Bash(curl * --data*)", "Bash(curl * -F *)", "Bash(wget --post*)",
+      "Bash(curl * -d *)", "Bash(curl * --data*)", "Bash(wget --post*)",
       "Bash(gh repo edit * --visibility *)", "Bash(gh secret *)"
     ]
   }

@@ -94,6 +94,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-15 | Plan validé : cadre-de-vie | 6 tâches (0 mesure des deux sources de la montagne et jugement de Vincent, 1 données type, montagne et prix tous biens, 2 lecture des données et tests recalés sur le code actuel, 3 bascule « Cadre de vie » taille et mer et départ, 4 montagne, 5 type, AC-14 d'immobilier et vérification de bout en bout avec l'iPhone) ; aucun paquet ; règle de recalage des tests hors critères (la même que pour les critères) ; Pourquoi de D10 corrigé (le fichier Insee 2025 n'a pas de grille à 4 niveaux : la coupe du rural est la nôtre, gardée par Vincent). |
 | 2026-10-15 | Tranche construite : cadre-de-vie | « Cadre de vie » (taille en chiffres, type d'environnement Insee, mer et montagne en 4 cases décochables, D12 de la démo), montagne = zone loi Montagne du Cerema (H85, Lyon à 14 km jugée fausse par Vincent : Mont d'Or hors zone légale), prix tous biens en Acheter (D12 d'immobilier) ; 65 critères verts dont 56 recalés des tranches d'avant ; double arrondi de la mer et de la montagne corrigé ; risque accepté : 150-165 ms pour la mer (H90). À suivre : calcul des trajets fragile quand l'IGN est dégradé (502/504 vus le 2026-10-15). |
 | 2026-10-16 | Mise en ligne : cadre-de-vie (et immobilier, jamais prouvé en ligne avant) | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `56ac3d6` ; vérification de bout en bout passée en ligne aux deux largeurs ; noindex d'achat.json vérifié. L'hébergeur est un Worker Cloudflare (et non Pages : `ou-vivre-en-france.pages.dev` n'a jamais existé, les mises en ligne du 13 et du 14 n'avaient pas de preuve). |
+| 2026-10-16 | Rétro | 5 leçons de la tranche gardées, 3 contrôles ajoutés (commandes autorisées, port de test 4173, `scripts/check-live.sh`) ; réessai automatique des tests écarté ; 6 retours envoyés au workflow (chemin court, build autonome, scripts à la volée, relecteurs, /ship). [docs/retro/2026-10-16.md](docs/retro/2026-10-16.md) |
 
 ## Hypothèses à vérifier
 
@@ -146,6 +147,7 @@ Autres questions :
 
 ## Documents
 
+- [Rétro — 2026-10-16](docs/retro/2026-10-16.md)
 - [Mise en ligne « Cadre de vie » — 2026-10-16](docs/ship/2026-10-15-cadre-de-vie/ship.md)
 - [Plan « Cadre de vie » — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/plan.md) · [relecture](docs/plans/2026-10-15-cadre-de-vie/review-plan.md) · [dossier du build](docs/plans/2026-10-15-cadre-de-vie/) : [progression](docs/plans/2026-10-15-cadre-de-vie/progress.md), [mesure de la montagne](docs/plans/2026-10-15-cadre-de-vie/mesure-tache-0.md), [risque](docs/plans/2026-10-15-cadre-de-vie/risque-demo.md), [démo acceptée — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/demo.md)
 - [Design « Cadre de vie » — 2026-10-15](docs/design/cadre-de-vie/README.md)

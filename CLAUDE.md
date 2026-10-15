@@ -14,6 +14,7 @@ Une carte de France qui colore les villes selon tes critères à toi (l'adresse 
 - Types : `npm run typecheck`
 - Garde-fou secrets : `brew install gitleaks` puis `cp scripts/hooks/pre-commit .git/hooks/` (le crochet refuse un commit qui contient une clé)
 - Construire : `npm run build` (sortie `dist/`, avec `dist/version.txt` = hash du commit) ; vérifier la version construite : `npx vite preview`
+- Vérifier la mise en ligne (à chaque /ship, après le push) : `scripts/check-live.sh` (page qui répond, version servie = `origin/main`, `noindex` d'`achat.json`) ; échoue sinon. Les tests refusent un serveur déjà ouvert sur le port 4173 : l'arrêter (`lsof -nP -iTCP:4173 -sTCP:LISTEN`).
 
 ## Où sont les choses
 - `docs/distribution/plan.md` — positionnement, canal, test de demande, seuils (/distribution, /growth)
