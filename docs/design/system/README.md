@@ -1,5 +1,5 @@
 # Système de design — Carte où vivre
-2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches et /ui interface-telephone · le 2026-10-14 par /ui immobilier (sans Figma : le prototype F fait foi) · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
+2026-10-12 · créé par /ui loyer-mer · étendu le 2026-10-13 par /ui proches et /ui interface-telephone · le 2026-10-14 par /ui immobilier (sans Figma : le prototype F fait foi) · le 2026-10-15 par /ui cadre-de-vie (sans Figma : le prototype F fait foi) · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « Système » (planche `9:636`, composants maîtres à droite)
 
 **Le contrat de tout agent qui produit de l'interface.** Toute valeur visuelle (couleur, rayon, espacement, taille de texte) vient d'un jeton ci-dessous. Une valeur manque → on ajoute un jeton ici et dans Figma, et on le dit ; jamais de valeur arbitraire (`[13px]`, `#3a3a3a`).
 
@@ -68,6 +68,9 @@ Source Sans 3 pour l'interface, **chiffres tabulaires** (`font-variant-numeric: 
 | Tuile de bien | groupe « Type de logement », deux `button[aria-pressed]` : icône SVG 24 px à gauche (immeuble, maison ; trait 2 px `currentColor`) et libellé `pastille` ; `radius-chip`, `border`, actif `primary` (/ui immobilier) | Appartement / Maison ; 44 px de haut partout |
 | Segmenté d'unité | groupe « Unité du prix », deux `button[aria-pressed]` « Total » / « Au m² » collés dans un cadre `border` `radius-chip`, actif `primary` ; moitié de la largeur (/ui immobilier) | Total / Au m² ; 28 px en bureau, 44 px à 390 px |
 | Champ surface | `input inputMode=numeric` nommé « Surface en m² », sans libellé visible, suivi de « m² » ; `taille-toucher` de large, centré, chiffres tabulaires, 16 px à 390 px (/ui immobilier) | Repos / Focus / En saisie |
+| Cases séparées | groupe `role=group` nommé (« Taille de la commune »), `button[aria-pressed]` en grille de 4 (2 × 2 en bureau), écart `space-2`, `radius-chip`, `border`, actif `primary` ; libellé entier sur deux lignes, centré, espaces insécables dans les nombres (/ui cadre-de-vie) | choix **multiple** ; 44 px de haut au moins |
+| Cases collées | `role=radiogroup` nommé (« Mer à moins de »), `button role=radio aria-checked`, cases collées par un filet `border` d'1 px dans un cadre `radius-chip` ; actif `primary` ; libellés entiers (« Peu importe » sur deux lignes) (/ui cadre-de-vie) | choix **unique** ; 5 colonnes ; 44 px de haut au moins |
+| Rangée qui défile | groupe nommé de Pastilles (Toggle) avec coche SVG quand cochée ; une ligne qui défile sur le côté sous 1 024 px (bord à bord de la feuille, barre masquée) ; passe à la ligne en bureau (/ui cadre-de-vie) | pour un groupe de libellés longs (Type d'environnement) |
 Panneaux : `card` + `border` + `radius-panel` + `ombre-panneau`, padding `space-4`, écart `space-3`.
 
 ## Tailles (ajoutées par /build, tâche 0b, le 2026-10-12)

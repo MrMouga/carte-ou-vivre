@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : spec (tranche cadre-de-vie) — validée le 2026-10-14 (docs/specs/2026-10-14-cadre-de-vie/spec.md, révisée D9) ; prochaine étape /ui. Immobilier poussé sur main le 2026-10-14 et mis en ligne par le déploiement automatique, d'après Vincent (version en ligne non vérifiée par /ship).
+- Étape : ui (tranche cadre-de-vie) — design validé le 2026-10-15 (docs/design/cadre-de-vie/README.md, prototype F) ; spec révisée D10, D11 ; prochaine étape /breakdown. Immobilier poussé sur main le 2026-10-14 et mis en ligne par le déploiement automatique, d'après Vincent (version en ligne non vérifiée par /ship).
 - Statut : active
 
 ## Décisions
@@ -89,6 +89,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-14 | Plan validé : immobilier | 6 tâches : données (achat.json non indexé, loyers des maisons, test des 5 communes de Vincent), règles du prix sans écran, réglage pour un appartement (feuille 338 px), maison, communes sans prix, finitions ; aucun paquet ; AC-2, AC-5, AC-9 d'interface-telephone révisés (D12, « Loyer mensuel »). |
 | 2026-10-14 | Tranche construite : immobilier | Démo acceptée : catégorie « Logement » (Louer / Acheter, Appartement / Maison, Total / Au m², surface) ; carte, liste, fiche, résumé replié et adresse suivent ; 13 critères verts, ceux des tranches précédentes toujours verts. Décisions de Vincent pendant le build, reportées dans la spec : prix d'achat 2023-2025 dès 30 ventes sinon 2021-2025, plancher 300 €/m² (D5, H61, H62) ; commune sans prix toujours après celles qui ont un prix (D6, R25) ; H67 à la lettre ; risque des prix ruraux en tête de liste accepté. Mineurs notés dans la démo (légende sans le sable, raison inexacte après le seuil). |
 | 2026-10-14 | Spec validée : cadre-de-vie | Section « Cadre de vie » : taille en chiffres, type d'environnement Insee (filtre), mer en choix fixes 10/30/50/100 km (au lieu du curseur), montagne à vol d'oiseau depuis la mairie (filtre + note, « En montagne »), tout sur Peu importe au départ ; forêt et lac en tranche B ; 50 critères des tranches construites recalés de 60 à 50 km ; source de la montagne tranchée en tâche 0 (D9, test de la discovery manqué à l'écriture). Claude recommandait la mer à 50 km au départ (tête de liste : villages vosgiens à 326 €) : coût accepté par Vincent. |
+| 2026-10-15 | Design validé : cadre-de-vie | Prototype F (fusion de Vincent) : type d'environnement en rangée de pastilles qui défile (4 niveaux Insee, D10), taille en cases séparées, mer et montagne en cases collées à 5 choix (D11, « En montagne » retiré) ; pas de Figma. Relecture : la taille en cases ressemble aux cases de la mer (contesté, gardé, à juger à la démo). |
 
 ## Hypothèses à vérifier
 
@@ -141,6 +142,7 @@ Autres questions :
 
 ## Documents
 
+- [Design « Cadre de vie » — 2026-10-15](docs/design/cadre-de-vie/README.md)
 - [Spec « Cadre de vie » — 2026-10-14](docs/specs/2026-10-14-cadre-de-vie/spec.md) · [recalage des tranches précédentes](docs/specs/2026-10-14-cadre-de-vie/recalage.md) · [relecture](docs/specs/2026-10-14-cadre-de-vie/relecture.md)
 - [Plan de distribution — 2026-10-12](docs/distribution/plan.md)
 - [Spec « Loyer et mer » — 2026-10-12](docs/specs/2026-10-12-loyer-mer/spec.md)
