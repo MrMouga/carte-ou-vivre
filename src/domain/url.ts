@@ -1,8 +1,9 @@
 // R7, H7 : les réglages vivent dans l'adresse de la page (D7 : pas la commune choisie).
 // Spec immobilier, R26 : le plafond du prix s'écrit `loyer` (Louer) ou `achat` (Acheter) ; `bien`, `unite` et `surface`
 // n'apparaissent que s'ils diffèrent de leur valeur de départ.
-// Spec cadre-de-vie, R31 : `mer` et `montagne` en cinq choix, écrites seulement si elles diffèrent de Peu importe.
-import { CHOIX_MER, CHOIX_MONTAGNE, type Reglages, type Taille } from './score';
+// Spec cadre-de-vie, R31 : `mer` et `montagne` en cinq choix, écrites seulement si elles diffèrent de Peu importe ; `env`
+// liste les types d'environnement cochés, comme `taille`.
+import { CHOIX_MER, CHOIX_MONTAGNE, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
@@ -35,6 +36,8 @@ const CLE_PRIX: Record<Mode, string> = { louer: 'loyer', acheter: 'achat' };
 
 /** Ordre de D11, celui de l'adresse. */
 export const ORDRE_TAILLES: Taille[] = ['petite-commune', 'petite-ville', 'ville-moyenne', 'grande-ville'];
+/** Ordre de R27 (noms de H71), celui des pastilles et de l'adresse. */
+export const ORDRE_TYPES: TypeEnv[] = ['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee'];
 
 function plafond(v: string | null, b: { min: number; max: number; pas: number }, depart: number | null): number | null {
   if (v === 'aucun') return null;
@@ -60,21 +63,28 @@ export function lireAdresse(search: string): Reglages {
   const q = new URLSearchParams(search);
   const prix = lirePrix(search);
   const demandees = (q.get('taille') ?? '').split(',');
+  // R31 : comme `taille`, noms inconnus ignorés, ordre de R27, sans doublon ; `types` n'est renseigné que s'il en reste un
+  // (facultatif, comme `montagne` : les réglages écrits avant le type restent valables).
+  const env = (q.get('env') ?? '').split(',');
+  const types = ORDRE_TYPES.filter((t) => env.includes(t));
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: lireMer(q.get('mer')),
     montagne: lireMontagne(q.get('montagne')),
     tailles: ORDRE_TAILLES.filter((t) => demandees.includes(t)),
+    ...(types.length ? { types } : {}),
   };
 }
 
-/** Ordre de R31 : plafond du prix, `mer`, `montagne`, `taille`, `bien`, `unite`, `surface` ; `mer` et `montagne` absentes si Peu importe. */
+/** Ordre de R31 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `bien`, `unite`, `surface` ; absents si Peu importe. */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
   const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`];
   if (r.mer != null) parts.push(`mer=${r.mer}`);
   if (r.montagne != null) parts.push(`montagne=${r.montagne}`);
   const tailles = ORDRE_TAILLES.filter((t) => r.tailles.includes(t));
   if (tailles.length) parts.push(`taille=${tailles.join(',')}`);
+  const types = ORDRE_TYPES.filter((t) => r.types?.includes(t));
+  if (types.length) parts.push(`env=${types.join(',')}`);
   if (prix.bien !== PRIX_DEPART.bien) parts.push(`bien=${prix.bien}`);
   if (prix.unite !== UNITE_DEPART[prix.mode]) parts.push(`unite=${prix.unite}`);
   if (prix.surface !== SURFACE_DEPART[prix.bien]) parts.push(`surface=${prix.surface}`);

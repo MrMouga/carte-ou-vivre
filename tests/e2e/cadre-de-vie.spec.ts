@@ -365,3 +365,183 @@ test('390 px : cases de la montagne de 44 px au moins', async ({ page }, info) =
     expect((await c.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
 });
+
+// ---------- Tâche 5 : le type d'environnement (R27, R31 pour `env`), le départ (R32) ----------
+
+const types = (page: Page) => page.getByRole('group', { name: "Type d'environnement" });
+const choixType = (page: Page, nom: string) => types(page).getByRole('button', { name: nom, exact: true });
+/** Les pastilles de type enfoncées, dans l'ordre affiché. */
+const typesCoches = async (page: Page) => (await types(page).getByRole('button', { pressed: true }).allInnerTexts()).map((t) => nbsp(t).trim());
+const tailleCochees = async (page: Page) => (await taille(page).getByRole('button', { pressed: true }).allInnerTexts()).map((t) => nbsp(t).replace(/\s+/g, ' ').trim());
+
+test('AC-1 ouverture de / : /?loyer=1200 ; mer et montagne sur « Peu importe », aucune taille ni aucun type coché ; 5 communes, Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 ; Montcher non colorée', async ({ page }) => {
+  await ouvrirSix(page);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await merCochee(page, 'Peu importe');
+  await montagneCochee(page, 'Peu importe');
+  await expect(taille(page).getByRole('button', { pressed: true })).toHaveCount(0);
+  await expect(types(page).getByRole('button')).toHaveCount(4);
+  await expect(types(page).getByRole('button', { pressed: true })).toHaveCount(0);
+  await attendreCouleurs<Six>(page, { C: null }, { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('5 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    '1 · Terrebasse (23) · 65 · 416 € · 180 km',
+    '2 · Rhinval (67) · 52 · 572 € · 420 km',
+    "3 · Portmer (17) · 46 · 650 € · moins d'1 km",
+    '4 · Grandeville (33) · 31 · 832 € · 40 km',
+    '5 · Quaibleu (13) · 9 · 1 092 € · 7 km',
+  ]);
+});
+
+test('AC-5 depuis /, type « Ville dense » : /?loyer=1200&env=ville-dense ; 1 commune, Grandeville 31 ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis » ; puis « Bourg et village » : env=ville-dense,bourg-et-village, Terrebasse 65 et Grandeville 31', async ({ page }) => {
+  await ouvrirSix(page);
+  await choixType(page, 'Ville dense').click();
+  await expect(choixType(page, 'Ville dense')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=ville-dense');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('1 commune passe tes critères');
+  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 31 · 832 € · 40 km']);
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  expect(await texteFiche(page)).toContain('Environnement : ville et périphérie, hors des types choisis');
+
+  await page.getByRole('button', { name: '← Les 10 premières' }).click();
+  await voirCriteres(page);
+  await choixType(page, 'Bourg et village').click();
+  expect(await typesCoches(page)).toEqual(['Ville dense', 'Bourg et village']);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=ville-dense,bourg-et-village');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect((await lignes(page)).map(sansNum)).toEqual(['Terrebasse (23) · 65', 'Grandeville (33) · 31']);
+});
+
+test('AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village : mer et montagne sur « Peu importe », « Moins de 10 000 hab. » et « Bourg et village » cochés ; /?loyer=1200&taille=petite-commune&env=bourg-et-village ; 1 commune, Terrebasse 65', async ({ page }) => {
+  await ouvrirSix(page, '/?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village');
+  await merCochee(page, 'Peu importe');
+  await montagneCochee(page, 'Peu importe');
+  expect(await tailleCochees(page)).toEqual(['Moins de 10 000 hab.']);
+  expect(await typesCoches(page)).toEqual(['Bourg et village']);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&taille=petite-commune&env=bourg-et-village');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('1 commune passe tes critères');
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 65 · 416 € · 180 km']);
+});
+
+test('AC-10 /?loyer=aucun&env=bourg-et-village : Terrebasse en couleur neutre « sans plafond », les 5 autres non colorées ; message de liste ; fiche de Terrebasse « Commune de montagne » sans score ni rang ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=aucun&env=bourg-et-village');
+  await attendreCouleurs<Six>(page, { D: 'area-unranked', A: null, B: null, C: null, E: null, F: null }, { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('Fixe un loyer ou une distance à la mer pour classer les communes.');
+  await expect(liste(page).getByRole('button')).toHaveCount(0);
+
+  await ficheDeCarte(page, 'D', 'Terrebasse (23)');
+  let t = await texteFiche(page);
+  expect(t).toContain('Commune de montagne');
+  expect(t).not.toContain('/ 100');
+  expect(t).not.toMatch(/sur \d+ communes? qui passen?t/);
+  await expect(fiche(page).getByRole('heading', { name: 'Ne passe pas tes critères' })).toHaveCount(0);
+
+  // Choisir une commune déplace la carte : on rouvre la même adresse pour cliquer Portmer à sa place d'ouverture.
+  await ouvrirSix(page, '/?loyer=aucun&env=bourg-et-village');
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  t = await texteFiche(page);
+  expect(t).toContain('Environnement : ville et périphérie, hors des types choisis');
+});
+
+// Hors AC (R31) : comme `taille`, un nom inconnu est ignoré, la liste réécrite dans l'ordre de R27, sans doublon.
+test('R31 : env=campagne-isolee,village,ville-dense,campagne-isolee → /?loyer=1200&env=ville-dense,campagne-isolee, ces deux types cochés', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&env=campagne-isolee,village,ville-dense,campagne-isolee');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=ville-dense,campagne-isolee');
+  expect(await typesCoches(page)).toEqual(['Ville dense', 'Campagne isolée']);
+  // Décocher le dernier : l'adresse ne garde que l'autre ; décocher les deux : `env` disparaît.
+  await choixType(page, 'Campagne isolée').click();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=ville-dense');
+  await choixType(page, 'Ville dense').click();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+});
+
+// Hors AC (H75) : « 1 type » dans le résumé replié, entre les tailles et la mer.
+test('H75 : « Cadre de vie » repliée dit « 1 taille · 1 type · Mer 50 km · Montagne 30 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer=50&montagne=30&taille=petite-ville&env=ville-dense');
+  await titreCadre(page).click();
+  await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie1 taille · 1 type · Mer 50 km · Montagne 30 km');
+});
+
+// Hors AC (H76, design F) : « Type d'environnement » entre la taille et « Proximité avec la nature », quatre boutons à bascule.
+test('H76 : « Type d’environnement » (4 boutons à bascule, dans l’ordre de R27) entre « Taille de la commune » et « Proximité avec la nature » ; coche visible sur le type coché', async ({ page }) => {
+  await ouvrirSix(page);
+  expect((await types(page).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim())).toEqual([
+    'Ville dense', 'Ville et périphérie', 'Bourg et village', 'Campagne isolée',
+  ]);
+  for (const b of await types(page).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
+  const y = async (l: ReturnType<typeof types>) => (await l.boundingBox())!.y;
+  expect(await y(types(page))).toBeGreaterThan(await y(taille(page)));
+  expect(await y(nature(page))).toBeGreaterThan(await y(types(page)));
+  // La couleur n'est pas le seul indice : une coche apparaît sur le type coché.
+  await expect(choixType(page, 'Ville dense').locator('svg')).toHaveCount(0);
+  await choixType(page, 'Ville dense').click();
+  await expect(choixType(page, 'Ville dense').locator('svg')).toHaveCount(1);
+});
+
+// Hors AC (contrat « Rangée qui défile ») — 390 px : une ligne qui défile au toucher, bord à bord de la feuille ; le dernier
+// type s'atteint au clavier ; pastilles de 44 px.
+test.describe('390 px, au toucher', () => {
+  test.use({ hasTouch: true });
+  test('rangée des types : une seule ligne, bord à bord, qui défile au doigt ; « Campagne isolée » atteinte à la tabulation et cochée à la barre d’espace ; pastilles de 44 px', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'rangée qui défile : sous 1 024 px');
+    await ouvrirSix(page);
+    await voirCriteres(page);
+    // À l'ouverture, la rangée est sous le bas de l'écran : on l'y amène, comme l'utilisateur qui fait défiler « Critères ».
+    await types(page).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    const boutons = await types(page).getByRole('button').all();
+    const boites = await Promise.all(boutons.map(async (b) => (await b.boundingBox())!));
+    expect(new Set(boites.map((b) => Math.round(b.y))).size).toBe(1); // une seule ligne
+    for (const b of boites) expect(b.height).toBeGreaterThanOrEqual(44);
+    const rangee = (await types(page).boundingBox())!;
+    expect(rangee.x).toBeLessThanOrEqual(0); // bord à bord de la feuille
+    expect(rangee.x + rangee.width).toBeGreaterThanOrEqual(390);
+    const defile = () => types(page).evaluate((el) => ({ gauche: el.scrollLeft, depasse: el.scrollWidth - el.clientWidth }));
+    expect((await defile()).depasse).toBeGreaterThan(0);
+    expect((await defile()).gauche).toBe(0);
+
+    // Glisser au doigt vers la gauche, par le protocole du navigateur (des PointerEvent fabriqués ne défilent pas, H41).
+    const cdp = await page.context().newCDPSession(page);
+    const y = rangee.y + rangee.height / 2;
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 300, y }] });
+    for (let i = 1; i <= 10; i++) {
+      await page.waitForTimeout(20);
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 300 - 20 * i, y }] });
+    }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await cdp.detach();
+    await expect.poll(async () => (await defile()).gauche).toBeGreaterThan(0);
+    await expect(types(page).getByRole('button', { pressed: true })).toHaveCount(0); // un glisser ne coche rien
+
+    // Au clavier : de « Ville dense », trois tabulations mènent à « Campagne isolée », amenée dans la vue.
+    await types(page).evaluate((el) => (el.scrollLeft = 0));
+    await choixType(page, 'Ville dense').focus();
+    for (let i = 0; i < 3; i++) await page.keyboard.press('Tab');
+    const derniere = choixType(page, 'Campagne isolée');
+    await expect(derniere).toBeFocused();
+    await expect(derniere).toBeInViewport({ ratio: 1 });
+    await page.keyboard.press('Space');
+    await expect(derniere).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=campagne-isolee');
+  });
+});
+
+// Hors AC (design F) — bureau : les quatre types passent à la ligne, tous visibles sans défiler, dans le panneau.
+test('bureau : les quatre types visibles sans défilement, dans le panneau de réglages', async ({ page }, info) => {
+  test.skip(info.project.name !== 'bureau', 'passe à la ligne : en bureau');
+  await ouvrirSix(page);
+  const defile = await types(page).evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(defile).toBeLessThanOrEqual(0);
+  const panneau = (await page.getByRole('region', { name: 'Réglages' }).boundingBox())!;
+  for (const b of await types(page).getByRole('button').all()) {
+    await expect(b).toBeInViewport({ ratio: 1 });
+    const r = (await b.boundingBox())!;
+    expect(r.x).toBeGreaterThanOrEqual(panneau.x);
+    expect(r.x + r.width).toBeLessThanOrEqual(panneau.x + panneau.width);
+  }
+});

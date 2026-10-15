@@ -20,6 +20,14 @@ export const FIXTURE: Jeu = { items, tuiles: new URL('../../fixtures/tuiles/', i
  * métropole, et deux communes qui ne passent pas aux coins de l'emprise de la métropole avec la Corse (R1, R2).
  */
 export const METROPOLE: Jeu = { items: metropole.items, tuiles: new URL('../../fixtures/tuiles-metropole/', import.meta.url) };
+/**
+ * Variante « D tous biens » de la fixture « 6 communes » d'immobilier, pour AC-14 seulement (D12, H84) : l'achat
+ * d'appartement de Terrebasse (23) vaut { m2 : 1 100, source : « tous-biens » }, tout le reste inchangé.
+ */
+export const D_TOUS_BIENS: Jeu = {
+  items: immobilier.fixture.items.map((it) => (it.id === 'D' ? { ...it, achat_appartement: { m2: 1100, source: 'tous-biens' } } : it)),
+  tuiles: new URL('../../fixtures/tuiles-immobilier/', import.meta.url),
+};
 
 // Loyer des maisons et prix d'achat (spec immobilier) : un champ absent du jeu (5 communes de loyer-mer, métropole) est
 // servi inconnu, `null` et source « inconnu-secteur ».

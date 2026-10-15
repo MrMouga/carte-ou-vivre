@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
-import { apresRendu, attendreCouleurs, ouvrir, vue, type Jeu } from './lib/carte';
+import { apresRendu, attendreCouleurs, D_TOUS_BIENS, ouvrir, vue, type Jeu } from './lib/carte';
 import { mobile, voirCriteres, voirListe } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { ajouter, pret } from './lib/proches';
@@ -415,6 +415,25 @@ test('AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1
   await expect(liste(page)).toContainText('2 communes passent tes critères');
   expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 46 · 598 € · 180 km', "2 · Portmer (17) · 12 · 966 € · moins d'1 km"]);
   expect(adresse(page)).toBe(chemin);
+});
+
+// D12 (2026-10-15), H84 : sans prix d'appartement, le prix tous biens (commune puis intercommunalité) et sa ligne. Variante
+// « D tous biens » de la fixture, servie par tests/e2e/lib/carte.ts pour ce seul test ; départ de cadre-de-vie (R32).
+test('AC-14 variante « D tous biens », /?achat=5000 : 4 communes, Terrebasse 78 · 1 100 €/m², Portmer 24, Grandeville 12, Quaibleu 4 ; fiche de Terrebasse « 1 100 €/m² à l’achat » et « Estimation tous biens (trop peu de ventes d’appartements) » ; Rhinval en couleur neutre', async ({ page }) => {
+  await ouvrir(page, '/?achat=5000', { jeu: D_TOUS_BIENS });
+  await attendreCouleurs<Six>(page, { F: 'area-unranked' }, { jeu: D_TOUS_BIENS });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('4 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    '1 · Terrebasse (23) · 78 · 1 100 €/m² · 180 km',
+    "2 · Portmer (17) · 24 · 3 800 €/m² · moins d'1 km",
+    '3 · Grandeville (33) · 12 · 4 400 €/m² · 40 km',
+    '4 · Quaibleu (13) · 4 · 4 800 €/m² · 7 km',
+  ]);
+  await ficheDeListe(page, 'Terrebasse');
+  const t = await texteFiche(page);
+  expect(t).toContain("1 100 €/m² à l'achat");
+  expect(t).toContain("Estimation tous biens (trop peu de ventes d'appartements)");
 });
 
 // Hors AC (details.md, états de la page en mode Acheter ; R25).

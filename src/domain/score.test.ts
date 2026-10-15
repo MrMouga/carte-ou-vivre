@@ -288,3 +288,63 @@ describe('R29 — la montagne (spec cadre-de-vie)', () => {
     expect([e.valeurPrix, e.score]).toEqual([744, 29]);
   });
 });
+
+// Spec cadre-de-vie, tâche 5 : le type d'environnement filtre sans noter (R27, D3, D10), sur la fixture « 6 communes ».
+describe('R27 — le type d’environnement (spec cadre-de-vie)', () => {
+  const six: Commune[] = cadreDeVie.fixture.items.map((it) => ({
+    code: it.code_insee,
+    nom: it.nom,
+    dep: it.dep,
+    population: it.population,
+    loyerM2: it.loyer_m2,
+    estimationPropre: it.estimation_propre,
+    merKm: it.mer_km,
+    typeEnv: it.type_env as Commune['typeEnv'],
+    montagneKm: it.montagne_km,
+  }));
+  type Id6 = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  const code6 = Object.fromEntries(cadreDeVie.fixture.items.map((it) => [it.id, it.code_insee])) as Record<Id6, string>;
+  const ev = (r: Reglages) => {
+    const res = evaluer(six, r);
+    return { res, by: (id: Id6) => res.parCode.get(code6[id])!, classement: res.classement.map((e) => [e.commune.nom, e.score]) };
+  };
+
+  it('AC-5 (calcul) « Ville dense » : Grandeville 31 seule (Montcher, ville dense, dépasse le prix) ; Portmer : type hors des choisis. Avec « Bourg et village » : Terrebasse 65, Grandeville 31', () => {
+    const v = ev({ loyer: 1200, mer: null, tailles: [], types: ['ville-dense'] });
+    expect(v.classement).toEqual([['Grandeville', 31]]);
+    expect(v.by('A').raisons).toEqual([{ critere: 'type', type: 'ville-et-peripherie' }]);
+    expect(ev({ loyer: 1200, mer: null, tailles: [], types: ['ville-dense', 'bourg-et-village'] }).classement).toEqual([['Terrebasse', 65], ['Grandeville', 31]]);
+  });
+
+  it('AC-8 (calcul) taille « Moins de 10 000 hab. » et type « Bourg et village » : Terrebasse 65 seule', () => {
+    expect(ev({ loyer: 1200, mer: null, tailles: ['petite-commune'], types: ['bourg-et-village'] }).classement).toEqual([['Terrebasse', 65]]);
+  });
+
+  it('AC-10 (calcul) prix sur Sans limite, « Bourg et village » : page sans plafond ; Terrebasse passe sans score ; les 5 autres écartées, Portmer par son type', () => {
+    const v = ev({ loyer: null, mer: null, tailles: [], types: ['bourg-et-village'] });
+    expect(v.res.actif).toBe(false);
+    expect(v.classement).toEqual([]);
+    expect([v.by('D').passe, v.by('D').score, v.by('D').sansNote]).toEqual([true, null, false]);
+    expect((['A', 'B', 'C', 'E', 'F'] as const).map((id) => v.by(id).passe)).toEqual([false, false, false, false, false]);
+    expect(v.by('A').raisons).toEqual([{ critere: 'type', type: 'ville-et-peripherie' }]);
+  });
+
+  it('aucun type coché (absent ou vide) : ni filtre ni note, comme au départ', () => {
+    const depart = ev({ loyer: 1200, mer: null, tailles: [] }).classement;
+    expect(ev({ loyer: 1200, mer: null, tailles: [], types: [] }).classement).toEqual(depart);
+    expect(depart.map(([n]) => n)).toEqual(['Terrebasse', 'Rhinval', 'Portmer', 'Grandeville', 'Quaibleu']);
+  });
+
+  it('type inconnu avec un type coché : ne passe pas, raison « type-inconnu »', () => {
+    const inconnu = { ...six[0], code: '99903', typeEnv: null };
+    expect(evaluer([inconnu], { loyer: null, mer: null, tailles: [], types: ['ville-dense'] }).parCode.get('99903')).toMatchObject({
+      passe: false,
+      raisons: [{ critere: 'type-inconnu' }],
+    });
+  });
+
+  it('H83 : raisons dans l’ordre prix, mer, montagne, taille, type', () => {
+    const v = ev({ loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'] });
+    expect(v.by('C').raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille', 'type']);
+  });
+});

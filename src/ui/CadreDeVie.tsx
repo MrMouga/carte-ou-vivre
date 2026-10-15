@@ -1,14 +1,15 @@
 import { useId, useRef } from 'react';
-import { LIBELLE_TAILLE, resumeCadre } from '@/domain/format';
-import { CHOIX_MER, type Reglages, type Taille } from '@/domain/score';
-import { ORDRE_TAILLES } from '@/domain/url';
+import { LIBELLE_TAILLE, LIBELLE_TYPE, resumeCadre } from '@/domain/format';
+import { CHOIX_MER, type Reglages, type Taille, type TypeEnv } from '@/domain/score';
+import { ORDRE_TAILLES, ORDRE_TYPES } from '@/domain/url';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
 
 // Catégorie « Cadre de vie » (spec cadre-de-vie, design F : docs/design/cadre-de-vie/README.md). Elle remplace les
 // catégories « Mer » et « Taille de ville ». Groupes, dans l'ordre : « Taille de la commune » (Cases séparées, choix
-// multiple, aria-pressed), puis « Proximité avec la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins
-// de » (Cases collées, boutons radio). Le type d'environnement vient à la tâche 5. Noms pour les lecteurs d'écran : H76.
+// multiple, aria-pressed), « Type d'environnement » (Rangée qui défile, choix multiple, aria-pressed), puis « Proximité avec
+// la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins de » (Cases collées, boutons radio). Noms pour
+// les lecteurs d'écran : H76.
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -73,6 +74,58 @@ function CasesCollees({ titre, valeur, onChange, disabled }: { titre: string; va
   );
 }
 
+/** Coche des pastilles cochées de la rangée (contrat « Rangée qui défile ») : la couleur n'est pas le seul indice. */
+function Coche() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-echantillon shrink-0" aria-hidden="true">
+      <path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Rangée qui défile (contrat du système, design F) : sous 1 024 px, une seule ligne qui défile sur le côté, bord à bord de
+ * la feuille (la marge des réglages est rendue à l'intérieur), barre masquée ; en bureau, les pastilles passent à la ligne.
+ * La marge verticale laisse la place au focus, que le défilement couperait sinon ; la marge de défilement (`scroll-px-4`)
+ * garde une pastille atteinte au clavier à la même distance du bord que la première.
+ */
+function RangeeTypes({ types, onChange, disabled }: { types: TypeEnv[]; onChange: (t: TypeEnv[]) => void; disabled: boolean }) {
+  const id = useId();
+  const basculer = (t: TypeEnv) => onChange(ORDRE_TYPES.filter((x) => (x === t ? !types.includes(t) : types.includes(x))));
+  return (
+    <div className="flex flex-col gap-1">
+      <span id={id} className="text-secondaire text-muted-foreground">
+        Type d'environnement
+      </span>
+      <div
+        role="group"
+        aria-labelledby={id}
+        className="flex gap-2 max-bureau:-mx-4 max-bureau:overflow-x-auto max-bureau:scroll-px-4 max-bureau:px-4 max-bureau:py-1 max-bureau:[scrollbar-width:none] bureau:flex-wrap"
+      >
+        {ORDRE_TYPES.map((t) => {
+          const cochee = types.includes(t);
+          return (
+            <button
+              key={t}
+              type="button"
+              aria-pressed={cochee}
+              disabled={disabled}
+              onClick={() => basculer(t)}
+              // Au clavier, une pastille à moitié visible prend le focus sans que Chromium la fasse défiler : on l'amène
+              // entière dans la vue (avec la marge de défilement), sans bouger « Critères » plus que nécessaire.
+              onFocus={(e) => e.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })}
+              className="flex min-h-pastille shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-chip border border-border bg-card px-3 text-pastille text-foreground disabled:cursor-default disabled:opacity-50 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground max-bureau:min-h-toucher"
+            >
+              {cochee && <Coche />}
+              {LIBELLE_TYPE[t]}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
   const idTaille = useId();
   const basculer = (t: Taille) =>
@@ -100,6 +153,7 @@ export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
             ))}
           </div>
         </div>
+        <RangeeTypes types={reglages.types ?? []} onChange={(types) => onChange({ ...reglages, types })} disabled={disabled} />
         <div role="group" aria-label="Proximité avec la nature" className="flex flex-col gap-3">
           <CasesCollees titre="Mer à moins de" valeur={reglages.mer} onChange={(mer) => onChange({ ...reglages, mer })} disabled={disabled} />
           <CasesCollees

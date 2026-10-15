@@ -2,7 +2,8 @@
 // Spec proches : chaque proche prêt est un critère de plus (R10, R11).
 // Spec immobilier : le critère du prix suit le réglage du prix, passé en paramètre (R21, R22) ; un prix inconnu passe le
 // filtre sans donner de note (R25, D21 de loyer-mer).
-// Spec cadre-de-vie : la montagne filtre et note comme la mer (R29) ; raisons dans l'ordre de H83.
+// Spec cadre-de-vie : la montagne filtre et note comme la mer (R29) ; le type d'environnement filtre sans noter, comme la
+// taille (R27) ; raisons dans l'ordre de H83.
 // Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer et montagne au km (sous 1 km : comparée
 // comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
@@ -23,7 +24,7 @@ export type Commune = {
   achatAppartement?: Achat;
   achatMaison?: Achat;
   // Spec cadre-de-vie (D10, R29) : type d'environnement et distance à la montagne en km (0 = commune de montagne).
-  // Absent ou null = inconnu. La montagne est évaluée (R29) ; le type, pas encore (tâche 5).
+  // Absent ou null = inconnu.
   typeEnv?: TypeEnv | null;
   montagneKm?: number | null;
 };
@@ -51,8 +52,9 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
  * gardé de loyer-mer), `null` = « Sans limite ». `mer` : un des choix de `CHOIX_MER` en km, `null` = « Peu importe »
  * (R28 de cadre-de-vie). `montagne` : un des choix de `CHOIX_MONTAGNE` en km, absente ou `null` = « Peu importe » (R29 ;
  * facultative, pour que les réglages écrits avant la montagne restent valables). `tailles` vide = « Peu importe ».
+ * `types` : types d'environnement cochés (R27) ; absent ou vide = « Peu importe » (facultatif, comme `montagne`).
  */
-export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[] };
+export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[]; types?: TypeEnv[] };
 
 /** R28, H69 de cadre-de-vie : les distances de la mer, après « Peu importe ». */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
@@ -77,13 +79,15 @@ export type Raison =
   | { critere: 'mer'; valeur: number; plafond: number }
   | { critere: 'montagne'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
+  | { critere: 'type'; type: TypeEnv }
   /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h. */
   | { critere: 'proche'; nom: string; valeur: number; plafond: number }
   /** Plus produite depuis R25 (un prix inconnu passe) ; gardée pour son texte. */
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
   | { critere: 'montagne-inconnue' }
-  | { critere: 'taille-inconnue' };
+  | { critere: 'taille-inconnue' }
+  | { critere: 'type-inconnu' };
 
 export type Evaluation = {
   commune: Commune;
@@ -166,6 +170,11 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       const t = tailleDe(c.population);
       if (t == null) raisons.push({ critere: 'taille-inconnue' });
       else if (!r.tailles.includes(t)) raisons.push({ critere: 'taille', taille: t, population: c.population! });
+    }
+    if (r.types?.length) {
+      const t = c.typeEnv;
+      if (t == null) raisons.push({ critere: 'type-inconnu' });
+      else if (!r.types.includes(t)) raisons.push({ critere: 'type', type: t });
     }
     for (const p of proches) {
       const v = p.temps[i];

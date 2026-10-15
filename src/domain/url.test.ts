@@ -164,3 +164,41 @@ describe('R31 — la montagne dans l’adresse (spec cadre-de-vie)', () => {
     expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe('/?achat=300000&mer=50&montagne=30&taille=petite-ville&bien=maison&unite=total&surface=100');
   });
 });
+
+// Spec cadre-de-vie, R31 : `env` liste les types cochés (noms de H71) ; comme `taille`, un nom inconnu est ignoré et la
+// liste réécrite dans l'ordre de R27, sans doublon ; absente quand aucun type n'est coché ; après `taille`, avant `bien`.
+describe('R31 — le type d’environnement dans l’adresse (spec cadre-de-vie)', () => {
+  it('AC-5 (adresse) : « Ville dense » depuis / → /?loyer=1200&env=ville-dense ; puis « Bourg et village » → env=ville-dense,bourg-et-village', () => {
+    expect(ecrireAdresse({ ...lireAdresse(''), types: ['ville-dense'] })).toBe('/?loyer=1200&env=ville-dense');
+    expect(ecrireAdresse({ ...lireAdresse(''), types: ['bourg-et-village', 'ville-dense'] })).toBe('/?loyer=1200&env=ville-dense,bourg-et-village');
+  });
+
+  it('AC-8 (adresse) : /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village → /?loyer=1200&taille=petite-commune&env=bourg-et-village', () => {
+    const r = lireAdresse('?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village');
+    expect(r.mer).toBeNull();
+    expect(r.montagne ?? null).toBeNull();
+    expect(r.tailles).toEqual(['petite-commune']);
+    expect(r.types).toEqual(['bourg-et-village']);
+    expect(ecrireAdresse(r)).toBe('/?loyer=1200&taille=petite-commune&env=bourg-et-village');
+  });
+
+  it('noms inconnus ignorés, ordre de R27, doublons retirés : env=campagne-isolee,village,ville-dense,campagne-isolee → env=ville-dense,campagne-isolee', () => {
+    const r = lireAdresse('?loyer=1200&env=campagne-isolee,village,ville-dense,campagne-isolee');
+    expect(r.types).toEqual(['ville-dense', 'campagne-isolee']);
+    expect(ecrireAdresse(r)).toBe('/?loyer=1200&env=ville-dense,campagne-isolee');
+  });
+
+  it('aucun type (absent, vide ou seulement des noms inconnus) = Peu importe, et l’adresse ne l’écrit pas', () => {
+    for (const q of ['?loyer=1200', '?loyer=1200&env=', '?loyer=1200&env=village,urbain']) {
+      expect(lireAdresse(q).types ?? []).toEqual([]);
+      expect(ecrireAdresse(lireAdresse(q))).toBe('/?loyer=1200');
+    }
+  });
+
+  it('ordre : prix, mer, montagne, taille, env, bien, unite, surface', () => {
+    const q = '?achat=300000&surface=100&env=campagne-isolee&unite=total&bien=maison&taille=petite-ville&montagne=30&mer=50';
+    expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe(
+      '/?achat=300000&mer=50&montagne=30&taille=petite-ville&env=campagne-isolee&bien=maison&unite=total&surface=100',
+    );
+  });
+});

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, ligneListe, loyerTexte, merFiche, merTexte, montagneFiche, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
+import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, LIBELLE_TYPE, ligneListe, loyerTexte, merFiche, merTexte, montagneFiche, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -129,5 +129,26 @@ describe('R29, R30, H75 — la montagne', () => {
     expect(s(resumeCadre({ loyer: 1200, mer: null, montagne: 30, tailles: [] }))).toBe('Montagne 30 km');
     expect(s(resumeCadre({ loyer: 1200, mer: 50, montagne: 30, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km · Montagne 30 km');
     expect(resumeCadre({ loyer: 1200, mer: null, montagne: null, tailles: [] })).toBe('Peu importe');
+  });
+});
+
+// Spec cadre-de-vie, tâche 5 : le type d'environnement — libellés (R27), raison (R27), résumé replié (H75).
+describe('R27, H75 — le type d’environnement', () => {
+  it('R27 : les quatre types, dans l’ordre « Ville dense », « Ville et périphérie », « Bourg et village », « Campagne isolée »', () => {
+    expect(Object.values(LIBELLE_TYPE)).toEqual(['Ville dense', 'Ville et périphérie', 'Bourg et village', 'Campagne isolée']);
+  });
+
+  it('R27 : raison « Environnement : ville et périphérie, hors des types choisis » ; type inconnu', () => {
+    expect(raisonTexte({ critere: 'type', type: 'ville-et-peripherie' })).toBe('Environnement : ville et périphérie, hors des types choisis');
+    expect(raisonTexte({ critere: 'type', type: 'ville-dense' })).toBe('Environnement : ville dense, hors des types choisis');
+    expect(raisonTexte({ critere: 'type-inconnu' })).toBe("Type d'environnement inconnu");
+  });
+
+  it('H75 : « 1 type » au singulier, « 2 types », après les tailles et avant la mer', () => {
+    expect(s(resumeCadre({ loyer: 1200, mer: null, tailles: [], types: ['ville-dense'] }))).toBe('1 type');
+    expect(s(resumeCadre({ loyer: 1200, mer: 50, montagne: 30, tailles: ['petite-ville'], types: ['ville-dense', 'bourg-et-village'] }))).toBe(
+      '1 taille · 2 types · Mer 50 km · Montagne 30 km',
+    );
+    expect(resumeCadre({ loyer: 1200, mer: null, tailles: [], types: [] })).toBe('Peu importe');
   });
 });

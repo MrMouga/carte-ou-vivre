@@ -91,11 +91,13 @@ export const typeTexte = (type: TypeEnv | null | undefined, pop: number | null) 
 
 /**
  * Résumé de la catégorie « Cadre de vie » repliée (H75) : « Peu importe », ou les choix dans l'ordre des groupes,
- * « 2 tailles · Mer 50 km · Montagne 30 km ».
+ * « 1 taille · 2 types · Mer 50 km · Montagne 30 km ».
  */
 export function resumeCadre(r: Reglages): string {
   const parts: string[] = [];
+  const types = r.types?.length ?? 0;
   if (r.tailles.length) parts.push(`${r.tailles.length}${NBSP}taille${r.tailles.length > 1 ? 's' : ''}`);
+  if (types) parts.push(`${types}${NBSP}type${types > 1 ? 's' : ''}`);
   if (r.mer != null) parts.push(`Mer ${km(r.mer)}`);
   if (r.montagne != null) parts.push(`Montagne ${km(r.montagne)}`);
   return parts.length ? parts.join(' · ') : 'Peu importe';
@@ -169,6 +171,8 @@ export function raisonTexte(r: Raison): string {
       return `Montagne ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
     case 'taille':
       return `Taille : ${population(r.population)}${NBSP}habitants, hors des tailles choisies`;
+    case 'type':
+      return `Environnement : ${LIBELLE_TYPE[r.type].toLowerCase()}, hors des types choisis`;
     case 'loyer-inconnu':
       return 'Loyer inconnu';
     case 'mer-inconnue':
@@ -177,6 +181,8 @@ export function raisonTexte(r: Raison): string {
       return 'Distance à la montagne inconnue';
     case 'taille-inconnue':
       return 'Taille inconnue';
+    case 'type-inconnu':
+      return "Type d'environnement inconnu";
     case 'proche':
       return `${r.nom} ${duree(r.valeur)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
   }
