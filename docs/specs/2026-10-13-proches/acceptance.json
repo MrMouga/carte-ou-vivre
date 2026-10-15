@@ -315,7 +315,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, aucun proche gardé",
       "when": "l'utilisateur tape « 1 rue Test », choisit « 1 rue Test 44000 Nantesville », garde le nom proposé et appuie sur « Ajouter »",
       "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 2 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer=50",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -323,7 +323,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, proche Nantesville (44) prêt avec le plafond 2 h",
       "when": "l'utilisateur règle le plafond de Nantesville (44) sur 2 h 15",
       "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km » (fin de tranche 2 h 15 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -331,7 +331,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, proche Nantesville (44) prêt avec le plafond 2 h",
       "when": "l'utilisateur choisit Grandeville (33) sur la carte",
       "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » et « 40 km de la mer à vol d'oiseau », sans score ni rang",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -339,7 +339,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15",
       "when": "l'utilisateur ajoute « 2 place Test 31000 Toulouseville » et règle son plafond sur 2 h 45",
       "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 50 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 26 · 832 € · 40 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -347,7 +347,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15 puis Toulouseville (31) prêt à 2 h 45",
       "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
       "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 2 h 15 en voiture » et « Toulouseville (31) : 1 h 15 en voiture », le score 26 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 3 h : au-dessus de ton plafond de 2 h 15 », sans score",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -363,7 +363,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
       "when": "la zone « Tes proches » est affichée",
       "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le lien « + Ajouter un proche » revient et ouvre le champ de recherche",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -371,7 +371,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15 et gardé dans ce navigateur",
       "when": "l'utilisateur ferme la page puis rouvre /?loyer=1200&mer=50",
       "then": "Nantesville (44) est prêt avec le plafond 2 h 15, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 66 puis Grandeville (33) 17 ; l'adresse de la page est /?loyer=1200&mer=50",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -379,7 +379,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) et Toulouseville (31) prêts et gardés dans ce navigateur",
       "when": "l'utilisateur appuie sur « Effacer mes proches » puis rouvre /?loyer=1200&mer=50",
       "then": "aucun proche n'est affiché et la zone est dans l'état vide ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -387,7 +387,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de trajets en panne",
       "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville »",
       "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -395,7 +395,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de recherche d'adresse en panne",
       "when": "l'utilisateur tape « 1 rue Test »",
       "then": "la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. », « Ajouter » reste inactif, et la liste montre toujours « 3 communes passent tes critères »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",
@@ -403,7 +403,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, aucun proche gardé",
       "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) sur la carte une fois le calcul fini",
       "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 2 h 15 : au-dessus de ton plafond de 2 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-16",
@@ -411,7 +411,7 @@
       "given": "Fixture, largeur bureau (1 440 px), page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt avec le plafond 2 h, aucune commune choisie",
       "when": "l'utilisateur regarde le haut de la carte, puis choisit Grandeville (33) sur la carte",
       "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 2 h au plus » ; après le choix, la même pastille affiche « 2 h 15 · au-dessus de 2 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
-      "passes": false
+      "passes": true
     }
   ],
   "reportes": {

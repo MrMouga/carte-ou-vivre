@@ -198,7 +198,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur règle le loyer sur 650 €",
       "then": "A passe avec le score 49 (650 € affiché, égal au plafond) ; B, C, D et E ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -206,7 +206,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "la liste est affichée",
       "then": "la liste montre « 3 communes passent tes critères » puis, dans l'ordre : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 48 · 1 092 € · 7 km », « 3 · Grandeville (33) · 25 · 832 € · 40 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -246,7 +246,7 @@
       "given": "Fixture « 5 communes », réglages loyer 1 200 €, mer 50 km, taille « Peu importe »",
       "when": "l'utilisateur choisit Montcher (75) sur la carte",
       "then": "la fiche affiche « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » et « Mer 148 km : au-dessus de ton plafond de 50 km », sans score ni rang",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
