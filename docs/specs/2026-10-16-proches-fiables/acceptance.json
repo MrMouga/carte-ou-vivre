@@ -86,7 +86,7 @@
       "given": "Fixture, largeur bureau (1 440 px), panne « panne-totale », proche « Rochelleville (17) » à vol d'oiseau avec le plafond 120 km (état final d'AC-4), aucune commune choisie",
       "when": "l'utilisateur règle le plafond du proche sur 90 km, regarde le haut de la carte, puis choisit Quaibleu (13)",
       "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 67 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 18 · 832 € · 40 km » ; avant le choix, la pastille affiche « Rochelleville (17) » et « 90 km au plus » ; après, elle affiche « 118 km · au-dessus de 90 km » et la fiche de Quaibleu affiche « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km » ; aucune zone n'a été demandée depuis la fin du calcul",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
