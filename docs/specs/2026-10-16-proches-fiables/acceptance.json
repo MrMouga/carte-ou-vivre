@@ -54,7 +54,7 @@
       "given": "Fixture, panne « zone-135-une-fois », aucun proche gardé",
       "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville » en gardant le nom proposé, attend la fin du calcul, puis choisit Grandeville (33) sur la carte",
       "then": "le proche « Nantesville (44) » est prêt avec le plafond 2 h, sans « Temps approximatifs » ni « Recalculer avec l'IGN » ; la fiche de Grandeville affiche « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » ; la zone de 135 min a été demandée deux fois, chacune des 11 autres une fois",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
