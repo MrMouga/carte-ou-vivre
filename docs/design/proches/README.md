@@ -1,5 +1,5 @@
 2026-10-13 · validé
-À revoir (2026-10-16) : états d'un proche — **indisponible** disparaît ; **partiel**, **km** et **recalcul** arrivent (D18 de proches, [proches-fiables](../../specs/2026-10-16-proches-fiables/details.md#écrans-et-états)) ; pas de page Figma prévue : textes et états dans la spec.
+Traité (2026-10-16, tranche proches-fiables construite, démo acceptée) : états d'un proche — **indisponible** disparaît ; **partiel**, **km** et **recalcul** arrivent (D18 de proches, [proches-fiables](../../specs/2026-10-16-proches-fiables/details.md#écrans-et-états)) ; pas de page Figma prévue : textes et états dans la spec.
 # Design — proches
 
 Spec : [docs/specs/2026-10-13-proches/](../../specs/2026-10-13-proches/spec.md) (révisée D10 à D13) · Temps convenu : 2 h, 1 session · Figma : [Carte où vivre](https://www.figma.com/design/uJG30M95NtOV9eDkv8oF0q), page « proches » (`21:561`) et composants sur « Système » · Étend le design [loyer-mer](../loyer-mer/README.md) (construit : le code fait foi pour ce qui existe) et le [système](../system/README.md).

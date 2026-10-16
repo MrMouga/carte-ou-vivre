@@ -67,3 +67,5 @@ Corrections 1 : faites — commits 9e6d03d..011628c — preuve : captures/C1-pre
 - Simplification : 14 min, 111 k jetons.
 - Corrections 1 : 42 min, 104 k jetons.
 - Relectures : spec ×2 (110 k, 129 k), plan (136 k), code contre spec (195 k, 79 min avec la suite), navigateur (170 k en deux fois, 13 min).
+
+Terminé 2026-10-16 — démo acceptée par Vincent ; décisions gardées écrites dans la spec (H103–H107).

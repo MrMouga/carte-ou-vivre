@@ -95,6 +95,11 @@ Avec un IGN qui répond (fixtures actuelles) : loyer-mer AC-1 à AC-15 ; proches
 - **H100** — Les textes « Temps approximatifs… », « Au-delà de 2 h 45… », « À vol d'oiseau… » et « Recalcul avec l'IGN… » font partie de la ligne du proche, lue par les lecteurs d'écran ; aucune annonce nouvelle n'est ajoutée à la zone d'annonce de la page (H51 d'interface-telephone inchangée).
 - **H102** — En km, une île ou la Corse est à sa distance à vol d'oiseau comme toute commune, même sans route : le repli ne connaît pas les routes, et l'écran dit « à vol d'oiseau ». *Décidé par Claude.*
 - **H101** — Le point de départ d'un proche choisi par commune reste sa mairie (D6 de proches), y compris pour la distance à vol d'oiseau.
+- **H103** — Le second essai d'une zone en erreur part hors du cache du navigateur (`cache: 'reload'`) : l'IGN fait garder ses erreurs 21 jours (`max-age=1814400`), un essai ordinaire relirait l'erreur. *Décidé au build (après la mesure de T0), gardé à la démo (2026-10-16).*
+- **H104** — Format gardé lisible par la version d'avant : l'entrée garde `v: 1` et ses champs ; un proche partiel ou km s'écrit « non prêt », donc relu « indisponible » par l'ancienne version au lieu d'être perdu. *Idem.*
+- **H105** — Ligne d'un proche approximatif : nom, adresse, phrases d'état en texte normal, curseur, puis « Recalculer avec l'IGN » (nom accessible « Recalculer avec l'IGN <nom> », 44 px sous 1 024 px) et « Retirer ». Curseur d'un proche partiel à l'échelle 15 min → couverture. *Idem.*
+- **H106** — Un ajout ou un « Recalculer avec l'IGN » se place juste devant le premier recalcul automatique en attente ; à l'ouverture, tous les calculs partent dans l'ordre d'ajout. *Idem.*
+- **H107** — Pastille d'un proche km avec une commune choisie : « 88 km », sans « à vol d'oiseau » (la ligne et la fiche le disent). *Idem.*
 
 ## Exceptions
 Aucune.

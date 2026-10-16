@@ -1,5 +1,5 @@
 # Proches fiables
-2026-10-16 · validée (par délégation de Vincent, le 2026-10-16 au soir : « J'te fais confiance » ; relectures : [relecture.md](relecture.md), [relecture-2.md](relecture-2.md)) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
+2026-10-16 · validée (par délégation de Vincent, le 2026-10-16 au soir : « J'te fais confiance » ; relectures : [relecture.md](relecture.md), [relecture-2.md](relecture-2.md)) · révisée 2026-10-16 (H103–H107, gardées à la démo) · Pour les agents : [détails](details.md) · [critères](acceptance.json)
 
 **En une phrase** : un proche compte toujours, même quand l'IGN rame ou tombe : temps justes quand il répond, temps partiels quand il manque des zones, distance à vol d'oiseau quand il ne couvre plus le plafond choisi.
 **Pourquoi** : le soir de la démo de cadre-de-vie, sur l'iPhone et le PC de Vincent, « Trajets indisponibles » : 3 zones sur 12 ratées (une 502, deux sans réponse après 60 s), et une seule zone ratée jette tout le proche. Le critère qui fait la Différence du pitch disparaît dès que l'IGN faiblit.
@@ -16,6 +16,6 @@
 - **D6** — Le plafond reste de 15 min à 3 h, avec 12 zones. *Pourquoi* : choix de Vincent ; baisser à 2 h retire La Rochelle et Bordeaux depuis Nantes, et la zone de 75 min a raté elle aussi. *Écarté* : 2 h au plus ; des paliers de 30 min (précision divisée par deux, tous les critères de proches à refaire) ; ne demander que les zones jusqu'au plafond.
 
 **Pas maintenant** : les km affichés dès l'ajout, remplacés par les temps quand l'IGN répond (tranche suivante « proches-km-d-abord », choix de Vincent) ; un autre service de trajets ; des temps précalculés ; un serveur de calcul à soi ; la mer en minutes.
-**Hypothèses** : H92 à H102 dans [détails](details.md#hypothèses).
+**Hypothèses** : H92 à H107 dans [détails](details.md#hypothèses).
 **Le risque** : avec 45 s, un IGN aussi lent que le soir de la démo met beaucoup de proches en partiel ou en km. Tâche 0 : remesurer l'IGN (12 zones depuis 3 adresses, à deux moments de la journée) pour savoir à quelle fréquence on y tombe.
 **Questions ouvertes** : aucune.
