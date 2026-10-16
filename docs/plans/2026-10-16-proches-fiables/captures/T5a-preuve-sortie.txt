@@ -1,0 +1,98 @@
+# Tâche 5a — sortie de la preuve (2026-10-16, 12:41–12:43) : un proche gardé à vol d'oiseau recalculé à la réouverture
+# Script jetable (scratch) : Playwright, Chromium ; version locale (vite, port 5199), vraies données, vraie recherche d'adresse. A = calcul de trajets bloqué par une route du navigateur de test ; B = réouverture 16 min plus tard (horloge simulée de la page), vrai IGN ; C = réouverture 16 min après B, zones servies par une route (disques de rayon = durée × 1 km, formes simples et non réelles : l'IGN ne rendait pas les 12 zones ce midi). Temps en base64 abrégés. Aucune demande ne contient le nom du proche (le script l'aurait signalé : « NOM DANS UNE DEMANDE »).
+```
+[bureau +3.5 s] carte prête en 3.1 s
+[bureau +10.3 s] A. ligne : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer · curseur : 120 km au plus
+[bureau +10.3 s] A. zones demandées (bloquées) : 24
+[bureau +10.9 s] capture T5a-bureau-1-km-garde.png
+[bureau +10.9 s] A. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":null,"temps":null,"etat":"km","zones":[],"essai":1792147310044}
+[bureau +11.7 s] carte prête en 0.6 s
+[bureau +11.8 s] B. ligne pendant le recalcul : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalcul avec l'IGN… | Retirer · curseur : 120 km au plus
+[bureau +12.2 s] capture T5a-bureau-2-recalcul-ign-reel.png
+[bureau +56.6 s] B. recalcul fini après 44.3 s
+[bureau +57.1 s] B. ligne après : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Temps approximatifs : l'IGN n'a pas tout donné. | Au-delà de 2 h : l'IGN n'a pas répondu. | Recalculer avec l'IGN | Retirer · curseur : 2 h au plus
+[bureau +57.1 s] B. zones demandées au vrai IGN (23) :
+   90 min → 200
+   15 min → 502
+   30 min → 502
+   60 min → 502
+   75 min → 502
+   105 min → 502
+   150 min → 502
+   45 min → 502
+   165 min → 502
+   120 min → 502
+   15 min → 200
+   60 min → 200
+   105 min → 502
+   135 min → 502
+   180 min → 502
+   45 min → 502
+   30 min → 502
+   75 min → 200
+   120 min → 200
+   150 min → échec (net::ERR_ABORTED)
+   165 min → échec (net::ERR_ABORTED)
+   135 min → échec (net::ERR_ABORTED)
+   180 min → échec (net::ERR_ABORTED)
+[bureau +57.5 s] capture T5a-bureau-3-apres-ign-reel.png
+[bureau +57.5 s] B. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"partiel","zones":[15,60,75,90,120],"essai":1792148276764}
+[bureau +59.5 s] carte prête en 1.6 s
+[bureau +59.5 s] C. ligne pendant le recalcul : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Temps approximatifs : l'IGN n'a pas tout donné. | Au-delà de 2 h : l'IGN n'a pas répondu. | Recalcul avec l'IGN… | Retirer · curseur : 2 h au plus
+[bureau +59.9 s] capture T5a-bureau-4-recalcul-zones-servies.png
+[bureau +63.5 s] C. ligne après : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Retirer · curseur : 2 h au plus
+[bureau +63.5 s] C. zones demandées (servies par la route) : 12
+[bureau +64.0 s] capture T5a-bureau-5-pret.png
+[bureau +64.0 s] C. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":true,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"pret","zones":[15,30,45,60,75,90,105,120,135,150,165,180],"essai":1792149283471}
+
+[390 +1.9 s] carte prête en 1.6 s
+[390 +8.6 s] A. ligne : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer · curseur : 120 km au plus
+[390 +8.6 s] A. zones demandées (bloquées) : 24
+[390 +9.1 s] capture T5a-390-1-km-garde.png
+[390 +9.1 s] A. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":null,"temps":null,"etat":"km","zones":[],"essai":1792147372594}
+[390 +9.6 s] carte prête en 0.3 s
+[390 +9.6 s] B. ligne pendant le recalcul : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalcul avec l'IGN… | Retirer · curseur : 120 km au plus
+[390 +10.1 s] capture T5a-390-2-recalcul-ign-reel.png
+[390 +23.0 s] B. recalcul fini après 12.9 s
+[390 +23.5 s] B. ligne après : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer · curseur : 120 km au plus
+[390 +23.5 s] B. zones demandées au vrai IGN (24) :
+   180 min → 502
+   150 min → 502
+   120 min → 502
+   15 min → 502
+   120 min → 502
+   180 min → 502
+   60 min → 502
+   75 min → 502
+   150 min → 502
+   30 min → 502
+   135 min → 502
+   45 min → 502
+   90 min → 502
+   105 min → 502
+   165 min → 502
+   15 min → 502
+   60 min → 502
+   30 min → 502
+   135 min → 502
+   75 min → 504
+   45 min → 504
+   90 min → 504
+   105 min → 504
+   165 min → 504
+[390 +24.1 s] capture T5a-390-3-apres-ign-reel.png
+[390 +24.1 s] B. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":null,"temps":null,"etat":"km","zones":[],"essai":1792148339215}
+[390 +27.3 s] carte prête en 2.7 s
+[390 +27.3 s] C. ligne pendant le recalcul : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalcul avec l'IGN… | Retirer · curseur : 120 km au plus
+[390 +27.6 s] capture T5a-390-4-recalcul-zones-servies.png
+[390 +30.3 s] C. ligne après : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Retirer · curseur : 2 h au plus
+[390 +30.3 s] C. zones demandées (servies par la route) : 12
+[390 +30.6 s] capture T5a-390-5-pret.png
+[390 +30.6 s] C. stockage :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":true,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"pret","zones":[15,30,45,60,75,90,105,120,135,150,165,180],"essai":1792149314327}
+```
