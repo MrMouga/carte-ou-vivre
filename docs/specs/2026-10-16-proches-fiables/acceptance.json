@@ -126,7 +126,7 @@
       "given": "Fixture, l'IGN répond normalement ; proche « Nantesville (44) » gardé par la version précédente avec le plafond 2 h 15, dans trois cas : (a) gardé indisponible, (b) gardé prêt mais dont l'empreinte des codes INSEE ne correspond plus à la carte, (c) gardé pendant son calcul (page fermée avant la fin)",
       "when": "l'utilisateur ouvre la page et attend la fin du calcul",
       "then": "dans les trois cas, la ligne affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche est prêt avec le plafond 2 h 15 ; « Trajets indisponibles » n'est affiché à aucun moment ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
