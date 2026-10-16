@@ -1,0 +1,70 @@
+# T1 — vrai IGN, version locale (vite, port 5180), vraies données ; route du navigateur de test : zone de 75 min en 502 au premier essai
+# Script : /private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/84640ed0-4bd4-4bee-94d0-fd6591584b19/scratchpad/t1/preuve.mjs (hors dépôt). Essai 1 lancé à 07:30:26, essai 2 à 07:31:32, essai 3 à 07:39:30 (heure de Paris), 2026-10-16.
+
+## Essai 1
+Ajout le 2026-10-16T05:30:29.636Z ; fin du calcul vue après 45.4 s ; état affiché : Trajets indisponibles
+20 demandes de zones :
+  180 min : départ +0.01 s, 502, fin +19.23 s
+  165 min : départ +0.25 s, 500, fin +15.21 s
+  150 min : départ +0.50 s, échec : net::ERR_ABORTED, fin +44.98 s
+  135 min : départ +0.76 s, 502, fin +19.23 s
+  120 min : départ +1.01 s, 502, fin +19.75 s
+  105 min : départ +1.26 s, échec : net::ERR_ABORTED, fin +44.98 s
+   90 min : départ +1.51 s, 200, fin +9.97 s
+   75 min : départ +1.77 s, 502 (route du test), fin +1.77 s
+   60 min : départ +2.02 s, 200, fin +25.12 s
+   45 min : départ +2.27 s, 502, fin +19.23 s
+   30 min : départ +2.52 s, 502, fin +19.23 s
+   15 min : départ +2.77 s, 502, fin +19.23 s
+   75 min : départ +3.03 s, 502, fin +15.21 s
+  165 min : départ +15.16 s, 502, fin +19.23 s
+   45 min : départ +19.18 s, 200, fin +29.32 s
+   15 min : départ +19.43 s, 200, fin +20.32 s
+   30 min : départ +19.68 s, 200, fin +31.57 s
+  180 min : départ +19.94 s, échec : net::ERR_ABORTED, fin +44.98 s
+  135 min : départ +20.19 s, échec : net::ERR_ABORTED, fin +44.98 s
+  120 min : départ +20.44 s, échec : net::ERR_ABORTED, fin +44.98 s
+zones obtenues (5) : 15, 30, 45, 60, 90
+
+## Essai 2
+Ajout le 2026-10-16T05:31:35.595Z ; fin du calcul vue après 45.4 s ; état affiché : Trajets indisponibles
+18 demandes de zones :
+  180 min : départ +0.00 s, échec : net::ERR_ABORTED, fin +44.98 s
+  165 min : départ +0.25 s, échec : net::ERR_ABORTED, fin +44.98 s
+  150 min : départ +0.50 s, 502, fin +12.21 s
+  135 min : départ +0.76 s, échec : net::ERR_ABORTED, fin +44.98 s
+  120 min : départ +1.01 s, 502, fin +12.21 s
+  105 min : départ +1.26 s, échec : net::ERR_ABORTED, fin +44.98 s
+   90 min : départ +1.51 s, 502, fin +12.21 s
+   75 min : départ +1.76 s, 502 (route du test), fin +1.76 s
+   60 min : départ +2.01 s, 502, fin +12.21 s
+   45 min : départ +2.27 s, 200, fin +17.94 s
+   30 min : départ +2.52 s, 200, fin +7.09 s
+   15 min : départ +2.77 s, 502, fin +12.21 s
+   75 min : départ +3.02 s, 200, fin +28.80 s
+   15 min : départ +12.16 s, 200, fin +16.81 s
+  150 min : départ +12.41 s, échec : net::ERR_ABORTED, fin +44.98 s
+  120 min : départ +12.66 s, échec : net::ERR_ABORTED, fin +44.98 s
+   90 min : départ +12.92 s, échec : net::ERR_ABORTED, fin +44.98 s
+   60 min : départ +13.17 s, échec : net::ERR_ABORTED, fin +44.98 s
+zones obtenues (4) : 15, 30, 45, 75
+
+## Essai 3 (07:39:30)
+Ajout le 2026-10-16T05:39:33.706Z ; fin du calcul vue après 45.3 s ; état affiché : Trajets indisponibles
+15 demandes de zones :
+  180 min : départ +0.00 s, échec : net::ERR_ABORTED, fin +44.98 s
+  165 min : départ +0.25 s, échec : net::ERR_ABORTED, fin +44.98 s
+  150 min : départ +0.50 s, échec : net::ERR_ABORTED, fin +44.98 s
+  135 min : départ +0.75 s, 502, fin +23.55 s
+  120 min : départ +1.01 s, échec : net::ERR_ABORTED, fin +44.98 s
+  105 min : départ +1.26 s, échec : net::ERR_ABORTED, fin +44.98 s
+   90 min : départ +1.51 s, échec : net::ERR_ABORTED, fin +44.98 s
+   75 min : départ +1.76 s, 502 (route du test), fin +1.76 s
+   60 min : départ +2.01 s, 200, fin +27.44 s
+   45 min : départ +2.26 s, 502, fin +23.55 s
+   30 min : départ +2.51 s, 200, fin +16.16 s
+   15 min : départ +2.76 s, 200, fin +16.42 s
+   75 min : départ +3.01 s, 200, fin +44.39 s
+   45 min : départ +23.50 s, échec : net::ERR_ABORTED, fin +44.98 s
+  135 min : départ +23.75 s, échec : net::ERR_ABORTED, fin +44.98 s
+zones obtenues (4) : 15, 30, 60, 75

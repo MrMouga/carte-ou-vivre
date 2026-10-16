@@ -1,0 +1,8 @@
+# Ajouter un nouvel essai à une file limitée allonge chaque panne simulée : compter la durée d'une panne totale avant de promettre « aucun test ne change »
+Étiquettes : tests, spec, process · Tranche : proches-fiables · Source : tâche 1 de /build proches-fiables, `docs/plans/2026-10-16-proches-fiables/taches/T1.md`
+
+**Problème** — Le plan de proches-fiables promettait qu'en tâche 1 (une zone en erreur redemandée une fois, R33, par la file à 250 ms, H92) aucun test existant ne changerait sauf `proches-temps.spec.ts`, grâce à une transition (un proche km montré « indisponible », comme avant).
+**Symptômes** — Une panne totale fait maintenant 24 demandes à 250 ms : le proche passe « indisponible » vers 5,8 s, et vers 8 s après des refus 429 (second essai 5 s plus tard). Les tests qui attendaient « Trajets indisponibles » avec l'attente par défaut de Playwright (5 s) échouent tous, dont le test d'AC-10 de proches (critère d'une autre tranche, protégé) : 8 échecs sur 2 largeurs, déterministes.
+**Ce qui n'a pas marché** — La transition d'état du plan : elle garde le bon texte, pas le bon moment.
+**Ce qui a marché** — Pour les tests hors critères (règle de recalage du plan) : l'attente portée à 15 s, avec en commentaire la durée qui vient de R33. Pour le test d'AC-10 de proches : arrêt et question (il ne se touche pas sans accord).
+**Prévention** — Règle de jugement pour /breakdown : quand une tâche change le nombre ou le rythme des demandes (nouvel essai, file, délai), calculer la durée de la panne la plus longue simulée par les tests existants (nombre de demandes × écart + attentes) et la comparer à l'attente par défaut de Playwright (5 s) ; lister les tests protégés qui l'attendent avant de promettre qu'aucun test ne change.

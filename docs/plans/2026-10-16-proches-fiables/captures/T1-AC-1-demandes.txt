@@ -1,0 +1,30 @@
+# T1 — AC-1, demandes de zones reçues par le faux IGN (panne « zone-135-une-fois », chaque zone répond 1 s après sa demande), lues dans tests/e2e/proches-fiables.spec.ts pendant npm test (2026-10-16, 07:32–07:38)
+AC-1 (bureau) demandes de zones :
+180 min à +0 ms
+165 min à +251 ms
+150 min à +503 ms
+135 min à +755 ms
+120 min à +1006 ms
+105 min à +1256 ms
+90 min à +1507 ms
+75 min à +1759 ms
+60 min à +2010 ms
+45 min à +2261 ms
+30 min à +2512 ms
+15 min à +2763 ms
+135 min à +3014 ms
+
+AC-1 (mobile) demandes de zones :
+180 min à +0 ms
+165 min à +251 ms
+150 min à +502 ms
+135 min à +754 ms
+120 min à +1003 ms
+105 min à +1254 ms
+90 min à +1505 ms
+75 min à +1758 ms
+60 min à +2008 ms
+45 min à +2260 ms
+30 min à +2509 ms
+15 min à +2761 ms
+135 min à +3012 ms

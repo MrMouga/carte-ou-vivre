@@ -1,0 +1,34 @@
+# T1 — npm test (2026-10-16, lancé à 07:32, port 4173 libre, charge 4,4) — extraits
+> vitest run && node scripts/check-tokens.mjs && playwright test
+ Test Files  14 passed (14)
+      Tests  227 passed (227)
+check-tokens : 39 fichier(s), aucune valeur arbitraire
+  ✘  110 [bureau] › tests/e2e/proches-etats.spec.ts:95:1 
+  ✘  278 [mobile] › tests/e2e/proches-etats.spec.ts:95:1 
+
+    Locator: getByRole('region', { name: 'Tes proches' })
+    Expected substring: "Trajets indisponibles depuis Nantesville (44)."
+    Received string:    "Tes prochesEffacer mes proches…Nantesville (44)1 rue Test 44000 NantesvilleCalcul des trajets depuis Nantesville (44)…Retirer+ Ajouter un proche"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Tes proches' }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Tes proches' })
+        14 × locator resolved to <section aria-labelledby="titre-proches">…</section>
+           - unexpected value "Tes prochesEffacer mes proches…Nantesville (44)1 rue Test 44000 NantesvilleCalcul des trajets depuis Nantesville (44)…Retirer+ Ajouter un proche"
+--
+
+    Locator: getByRole('region', { name: 'Tes proches' })
+    Expected substring: "Trajets indisponibles depuis Nantesville (44)."
+    Received string:    "Tes prochesEffacer mes proches…Nantesville (44)1 rue Test 44000 NantesvilleCalcul des trajets depuis Nantesville (44)…Retirer+ Ajouter un proche"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Tes proches' }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Tes proches' })
+        14 × locator resolved to <section aria-labelledby="titre-proches">…</section>
+           - unexpected value "Tes prochesEffacer mes proches…Nantesville (44)1 rue Test 44000 NantesvilleCalcul des trajets depuis Nantesville (44)…Retirer+ Ajouter un proche"
+    [mobile] › tests/e2e/proches-etats.spec.ts:95:1 › AC-10 depuis /?loyer=1200&mer=50, service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 48, 25 
+  35 skipped
+  1 did not run
+  299 passed (5.9m)
