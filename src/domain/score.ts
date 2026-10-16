@@ -124,14 +124,14 @@ export type Resultat = {
 
 /** Loyer affiché pour 52 m², à l'euro (fiche de loyer-mer ; ailleurs, `valeurAffichee` de prix.ts). */
 export const loyerPour = (m2: number) => Math.round(m2 * SURFACE_M2);
-/** Distance utilisée pour comparer et noter : « moins d'1 km » vaut 1 km. */
-const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.round(c.merKm)));
-/** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
-const montagneComparee = (c: Commune) =>
-  c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : Math.max(1, Math.round(c.montagneKm));
-
-/** Distance d'un proche à vol d'oiseau, comparée au km (R35 de proches-fiables, comme la mer) ; aussi par les pastilles. */
+/**
+ * Distance utilisée pour comparer et noter, au km affiché : « moins d'1 km » vaut 1 km. Pour la mer, la montagne et un
+ * proche à vol d'oiseau (R35 de proches-fiables) ; aussi par les pastilles.
+ */
 export const kmCompare = (km: number) => Math.max(1, Math.round(km));
+const merComparee = (c: Commune) => (c.merKm == null ? null : kmCompare(c.merKm));
+/** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
+const montagneComparee = (c: Commune) => (c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : kmCompare(c.montagneKm));
 
 /**
  * H74 : moyenne exacte des notes, moitié vers le haut. Une note en virgule flottante peut tomber juste sous la moitié

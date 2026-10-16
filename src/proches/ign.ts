@@ -108,12 +108,12 @@ const attendre = (ms: number, signal: AbortSignal) =>
 /**
  * Les 12 zones d'un départ, en texte brut (lu dans le worker), par la file commune (R33, H92) : une zone en erreur
  * (erreur du service, refus 429, réseau) est redemandée une fois, 5 s plus tard après un refus ; une zone sans réponse
- * ne l'est pas. Le calcul finit quand chaque zone a répondu ou échoué deux fois, et au plus tard `delaiMs` après son
- * début : ce qui n'a pas répondu manque. Seul `signal` (« Retirer ») fait lever une erreur.
+ * ne l'est pas. Le calcul finit quand chaque zone a répondu ou échoué deux fois, et au plus tard 45 s après son
+ * début (`DELAI_CALCUL_MS`) : ce qui n'a pas répondu manque. Seul `signal` (« Retirer ») fait lever une erreur.
  */
-export async function zones(depart: [number, number], signal?: AbortSignal, delaiMs = DELAI_CALCUL_MS): Promise<Zones> {
+export async function zones(depart: [number, number], signal?: AbortSignal): Promise<Zones> {
   const fin = new AbortController();
-  const minuterie = setTimeout(() => fin.abort(), delaiMs);
+  const minuterie = setTimeout(() => fin.abort(), DELAI_CALCUL_MS);
   const s = signal ? AbortSignal.any([signal, fin.signal]) : fin.signal;
   const zone = async (d: number): Promise<string | null> => {
     for (let essai = 1; essai <= 2; essai++) {

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { duree, km, PHRASE_KM, phrasesPartiel } from '@/domain/format';
 import { PROCHE } from '@/domain/score';
-import { couverture } from '@/proches/etat';
+import { commeUnPret, couverture } from '@/proches/etat';
 import type { Proche } from '@/proches/useProches';
 
 // Ligne de proche (Figma « Ligne de proche » 20:168) : repère en petit, nom, adresse, puis selon l'état le plafond et son
@@ -11,9 +11,9 @@ import type { Proche } from '@/proches/useProches';
 // « Retirer <nom> ».
 // Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
 // l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
-// (il met le proche en recalcul, R36). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
+// (il met le proche en recalcul, R36). Km : de même, avec la phrase « À vol d'oiseau : l'IGN ne
 // répond pas. » et un curseur en km, de 15 à 180 km par pas de 15 (R35), « 120 km au plus ».
-// Recalcul (tâche 5a, état « recalcul » de details.md) : l'état d'avant reste affiché, le curseur réglable, et
+// Recalcul (état « recalcul » de details.md) : l'état d'avant reste affiché, le curseur réglable, et
 // « Recalcul avec l'IGN… » remplace le lien, aussi quand le proche attend son tour. Texte de la ligne, sans annonce (H100).
 // Après un appui sur le lien, le focus passe à « Retirer » de la même ligne (le lien disparaît).
 
@@ -31,7 +31,7 @@ function IconeMaison() {
  * « … » en attente ou en calcul.
  */
 export function RepereEnPetit({ etat }: { etat: Proche['etat'] }) {
-  const pret = etat === 'pret' || etat === 'partiel' || etat === 'km';
+  const pret = commeUnPret(etat);
   return (
     <span
       aria-hidden="true"

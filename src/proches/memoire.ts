@@ -6,7 +6,7 @@ import type { Suggestion } from './ign';
 // 34 746 communes), avec l'empreinte de la liste des codes INSEE pour laquelle ils ont été calculés ; l'appelant compare
 // l'empreinte à celle de la carte (R12).
 //
-// Proches-fiables (R36, R37, tâche 4) : l'entrée garde en plus l'état (`pret`, `partiel`, `km`), les zones obtenues (d'elles
+// Proches-fiables (R36, R37) : l'entrée garde en plus l'état (`pret`, `partiel`, `km`), les zones obtenues (d'elles
 // se déduisent la couverture et les communes en « jusqu'à », `etat.ts`) et l'heure du début du dernier essai (H93) ; le
 // plafond est dans l'unité de l'état (km pour un proche km, R35). Le format reste lisible par la version d'avant (commit
 // 56ac3d6) : `v: 1`, et `pret: true` seulement pour un proche prêt — un proche partiel ou km y revient donc « indisponible »

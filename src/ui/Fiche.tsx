@@ -20,8 +20,9 @@ type Props = {
 };
 
 /**
- * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours » ; partiel (proches-fiables R34) : « Nantesville (44) : jusqu'à 2 h 30 en voiture », « … : plus
- * de 2 h 45 en voiture » ; km (R35) : « Rochelleville (17) : 88 km à vol d'oiseau ».
+ * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours » ;
+ * partiel (proches-fiables R34) : « Nantesville (44) : jusqu'à 2 h 30 en voiture », « … : plus de 2 h 45 en voiture » ;
+ * km (R35) : « Rochelleville (17) : 88 km à vol d'oiseau ».
  */
 export function ligneProche(p: Proche, index: number): string {
   if (p.etat === 'km' && p.distances) return `${p.nom} : ${distanceProche(p.distances[index])} à vol d'oiseau`;

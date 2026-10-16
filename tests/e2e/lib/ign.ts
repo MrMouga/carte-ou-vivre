@@ -5,7 +5,7 @@ import fiables from '../../../docs/specs/2026-10-16-proches-fiables/acceptance.j
 
 // Faux service IGN des proches (recherche d'adresse et zones de temps), tiré de la fixture d'acceptance.json, au format réel
 // relevé en tâche 0 (docs/plans/2026-10-13-proches/captures/T0-ign-exemples/). Aucun appel réel à l'IGN dans les tests.
-// Proches-fiables (tâche 1) : la fixture de proches-fiables s'y ajoute (« 6 rue Test », Rochelleville) avec ses pannes par
+// Proches-fiables : la fixture de proches-fiables s'y ajoute (« 6 rue Test », Rochelleville) avec ses pannes par
 // zone, aux erreurs de l'IGN relevées en tâche 0 (docs/plans/2026-10-16-proches-fiables/mesure-tache-0.md).
 //
 // À poser APRÈS `servirFixture` / `ouvrir` de carte.ts : leur route `data.geopf.fr/**` (fond de carte) reste en dessous,
@@ -43,7 +43,7 @@ export const DELAI_ZONE_MS = 1000 / 12;
 export type OptionsIgn = {
   /** Recherche : réponses de la fixture, ou erreur réseau sur toute recherche (R13, AC-11). */
   recherche?: 'ok' | 'panne';
-  /** Zones : réponses de la fixture, erreur réseau sur toute zone (AC-10), ou refus 429 de l'IGN (compté comme une panne, R13). */
+  /** Zones : réponses de la fixture, erreur réseau sur toute zone (AC-10), ou refus 429 de l'IGN (redemandée une fois, R33). */
   trajets?: 'ok' | 'panne' | '429';
   /** Délai de chaque zone, en ms (proches-fiables : 1 000, « chaque zone répond 1 s après sa demande ») ; une erreur arrive après le même délai. */
   delaiZoneMs?: number;

@@ -8,15 +8,15 @@
 //   au-dessus de toutes les gouttes : une goutte voisine ne cache jamais un nom (H29 : les deux restent visibles).
 // Le point est porté par l'élément (`data-lng`, `data-lat`) : un test lit la position d'un repère hors du cadre.
 import { Marker, type Map as MapLibreMap } from './maplibre';
-import type { ProcheGarde } from '@/proches/memoire';
+import { commeUnPret } from '@/proches/etat';
+import type { EtatProche } from '@/proches/memoire';
 import { map as carte, size, space } from '@/theme/tokens';
 
-export type RepereProche = { id: number; nom: string; etat: ProcheGarde['etat']; lngLat: [number, number] };
+export type RepereProche = { id: number; nom: string; etat: EtatProche; lngLat: [number, number] };
 type Forme = 'pret' | 'calcul';
 
 // Proches-fiables H99 : un proche approximatif (partiel ou km) a le repère d'un proche prêt.
-const formeDe = (etat: ProcheGarde['etat']): Forme =>
-  etat === 'pret' || etat === 'partiel' || etat === 'km' ? 'pret' : 'calcul';
+const formeDe = (etat: EtatProche): Forme => (commeUnPret(etat) ? 'pret' : 'calcul');
 
 // Tracés de Figma (goutte 26 × 34, maison 14 × 14 posée en 6, 6), dans le repère de la goutte.
 const GOUTTE = 'M13 1C6.4 1 1 6.2 1 12.7C1 21.2 13 33 13 33C13 33 25 21.2 25 12.7C25 6.2 19.6 1 13 1Z';

@@ -9,6 +9,12 @@ export type EtatCalcul = 'pret' | 'partiel' | 'km';
 
 const NB_ZONES = PROCHE.max / PROCHE.pas;
 
+/** Un proche partiel ou km est approximatif : il se recalcule (R36). */
+export const approximatif = (etat: string) => etat === 'partiel' || etat === 'km';
+
+/** D5, H99 : un proche prêt, partiel ou km compte comme un prêt (score, repère, ligne). */
+export const commeUnPret = (etat: string) => etat === 'pret' || approximatif(etat);
+
 /** Couverture : la plus grande zone obtenue, 0 si aucune. */
 export const couverture = (zones: readonly number[]) => Math.max(0, ...zones);
 
@@ -45,7 +51,7 @@ export const ATTENTE_RECALCUL_MS = 15 * 60_000;
 
 /** R36 : à l'ouverture, ce proche passe-t-il en recalcul ? Partiel ou km, et dernier essai commencé il y a 15 min au moins (ou inconnu). */
 export const aRecalculer = (p: { etat: string; essai?: number }, maintenant: number) =>
-  (p.etat === 'partiel' || p.etat === 'km') && (p.essai == null || maintenant - p.essai >= ATTENTE_RECALCUL_MS);
+  approximatif(p.etat) && (p.essai == null || maintenant - p.essai >= ATTENTE_RECALCUL_MS);
 
 /**
  * R36 : ce que devient un proche approximatif quand son recalcul rend `zones`. L'état se décide au plafond affiché à
