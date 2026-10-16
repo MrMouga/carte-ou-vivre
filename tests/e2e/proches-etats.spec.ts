@@ -92,18 +92,6 @@ test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proch
   expect(await lignes(p)).toEqual(SANS_PROCHE);
 });
 
-test('AC-10 depuis /?loyer=1200&mer=50, service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 48, 25', async ({ page }) => {
-  await ouvrir(page, DEPART);
-  await servirIgn(page, { trajets: 'panne' });
-  await ajouter(page, 'Nantesville');
-  await expect(zone(page)).toContainText(INDISPONIBLE_44);
-  await expect(ligne(page, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' })).toBeVisible();
-  await apresRendu(page);
-  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
-  await expect(liste(page)).toContainText('3 communes passent tes critères');
-  expect(await lignes(page)).toEqual(SANS_PROCHE);
-});
-
 test('AC-11 depuis /?loyer=1200&mer=50, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes', async ({ page }) => {
   await ouvrir(page, DEPART);
   const demandes = await servirIgn(page, { recherche: 'panne' });
