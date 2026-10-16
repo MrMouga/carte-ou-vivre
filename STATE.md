@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `56ac3d6` (cinq tranches, dont cadre-de-vie), prouvé le 2026-10-16 (docs/ship/2026-10-15-cadre-de-vie/ship.md). Hébergeur : Cloudflare Workers. À suivre : calcul des trajets fragile quand l'IGN est dégradé (pistes dans la démo de cadre-de-vie).
+- Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `b29757b` (six tranches, dont proches-fiables), prouvé le 2026-10-16 à 22:21 (docs/ship/2026-10-16-proches-fiables/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent, tests instables de cadre-de-vie.
 - Statut : active
 
 ## Décisions
@@ -98,6 +98,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-16 | Spec validée : proches-fiables (par délégation de Vincent) | Un proche compte toujours quand l'IGN rame : nouvel essai par zone, état partiel (« jusqu'à 2 h 30 »), repli en km quand l'IGN ne couvre pas le plafond choisi, recalcul à la réouverture (15 min au moins entre deux essais) ; « Trajets indisponibles » disparaît (D18 de proches, AC-10 remplacé). Km dès l'ajout reporté à la tranche « proches-km-d-abord » (choix de Vincent). Second avis d'un autre LLM apporté par Vincent : D3 et D4 réécrites. |
 | 2026-10-16 | Plan validé : proches-fiables (par délégation de Vincent) | 8 tâches (mesure IGN, calcul tolérant, partiel, km ×2, mémoire compatible avec la version d'avant, recalcul ×2) ; pas de page Figma (textes et états dans la spec) ; aucune dépendance ; relu par un agent neuf (7 majeurs corrigés). |
 | 2026-10-16 | Tranche construite : proches-fiables | Un proche compte toujours quand l'IGN rame : nouvel essai hors cache, partiel (« jusqu'à »), repli en km, recalcul à la réouverture ; 12/12 critères ; vérifié sur le vrai IGN ; démo acceptée. Découverte : l'IGN fait garder ses erreurs 21 jours par le navigateur. Reste : tests instables de cadre-de-vie (clic sur la carte), à part. |
+| 2026-10-16 | Mise en ligne : proches-fiables | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `b29757b` ; vérification de bout en bout passée en ligne aux deux largeurs sur le vrai IGN ; check-live.sh vert. |
 
 ## Hypothèses à vérifier
 
@@ -150,6 +151,7 @@ Autres questions :
 
 ## Documents
 
+- [Mise en ligne « Proches fiables » — 2026-10-16](docs/ship/2026-10-16-proches-fiables/ship.md)
 - [Plan « Proches fiables » — 2026-10-16](docs/plans/2026-10-16-proches-fiables/plan.md) · [relecture](docs/plans/2026-10-16-proches-fiables/review-plan.md) · [dossier du build](docs/plans/2026-10-16-proches-fiables/) : [progression](docs/plans/2026-10-16-proches-fiables/progress.md), [mesure de l'IGN](docs/plans/2026-10-16-proches-fiables/mesure-tache-0.md), [démo acceptée — 2026-10-16](docs/plans/2026-10-16-proches-fiables/demo.md)
 - [Spec « Proches fiables » — 2026-10-16](docs/specs/2026-10-16-proches-fiables/spec.md) · [relecture](docs/specs/2026-10-16-proches-fiables/relecture.md) · [relecture 2](docs/specs/2026-10-16-proches-fiables/relecture-2.md)
 - [Rétro — 2026-10-16](docs/retro/2026-10-16.md)
