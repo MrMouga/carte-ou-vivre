@@ -1,4 +1,5 @@
-import { SURFACE_M2, loyerPour, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { SURFACE_M2, loyerPour, PROCHE, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { couverture, marque } from '../proches/etat';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
@@ -28,6 +29,30 @@ export function duree(min: number): string {
   if (min < 60) return `${min}${NBSP}min`;
   const m = min % 60;
   return `${Math.floor(min / 60)}${NBSP}h${m ? `${NBSP}${String(m).padStart(2, '0')}` : ''}`;
+}
+
+/**
+ * Temps d'une commune pour un proche (R34, H96 de proches-fiables) : `fin` est la fin de la plus petite zone obtenue qui
+ * contient sa mairie (0 = dans aucune), `zones` les zones obtenues (absentes : proche prêt relu de la mémoire, les 12).
+ * « jusqu'à 2 h 30 » quand la zone juste dessous manque, « plus de 2 h 45 » hors de la couverture, sinon comme `duree`.
+ */
+export function tempsProche(fin: number, zones?: readonly number[]): string {
+  if (!zones) return duree(fin);
+  const m = marque(fin, zones);
+  if (m === 'au-dela') return `plus de ${duree(couverture(zones))}`;
+  return m === 'jusqua' ? `jusqu'à ${duree(fin)}` : duree(fin);
+}
+
+/**
+ * Phrases d'état de la ligne d'un proche partiel (details.md de proches-fiables), dans l'ordre : « Temps approximatifs… »
+ * si une zone manque sous la couverture, puis « Au-delà de 2 h 45… » si la couverture est sous 3 h.
+ */
+export function phrasesPartiel(zones: readonly number[]): string[] {
+  const c = couverture(zones);
+  const phrases: string[] = [];
+  if (zones.length < c / PROCHE.pas) phrases.push("Temps approximatifs : l'IGN n'a pas tout donné.");
+  if (c < PROCHE.max) phrases.push(`Au-delà de ${duree(c)} : l'IGN n'a pas répondu.`);
+  return phrases;
 }
 
 export const nomAffiche = (c: { nom: string; dep: string }) => `${c.nom} (${c.dep})`;
@@ -184,6 +209,6 @@ export function raisonTexte(r: Raison): string {
     case 'type-inconnu':
       return "Type d'environnement inconnu";
     case 'proche':
-      return `${r.nom} ${duree(r.valeur)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
+      return `${r.nom} ${tempsProche(r.valeur, r.zones)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
   }
 }

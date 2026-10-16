@@ -68,10 +68,12 @@ export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: null, tailles: [] }
 export const PROCHE = { pas: 15, max: 180, ajout: 120 } as const;
 
 /**
- * Proche **prêt** (R11) : son plafond en minutes et ses temps, un par commune dans l'ordre de `communes`.
- * Un temps est la fin de la tranche de 15 min (15 à 180) ; 0 = plus de 3 h ou sans route (R10).
+ * Proche **prêt** (R11), ou **partiel** (proches-fiables D5, R34 : il compte comme un prêt) : son plafond en minutes et ses
+ * temps, un par commune dans l'ordre de `communes`. Un temps est la fin de la tranche de 15 min (15 à 180) ; 0 = plus de
+ * 3 h ou sans route (R10) ; pour un partiel, la fin de la plus petite zone obtenue (« jusqu'à 2 h 30 » compte pour 2 h 30),
+ * 0 = hors de sa couverture (ne tient aucun plafond). `zones` : zones obtenues, pour écrire la raison (`tempsProche`).
  */
-export type ProchePret = { nom: string; plafond: number; temps: Uint16Array };
+export type ProchePret = { nom: string; plafond: number; temps: Uint16Array; zones?: readonly number[] };
 
 export type Raison =
   /** Prix au-dessus du plafond, selon le mode et l'unité (R24). */
@@ -80,8 +82,8 @@ export type Raison =
   | { critere: 'montagne'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
   | { critere: 'type'; type: TypeEnv }
-  /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h. */
-  | { critere: 'proche'; nom: string; valeur: number; plafond: number }
+  /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h (ou, pour un partiel, plus que sa couverture) ; `zones` : celles du proche. */
+  | { critere: 'proche'; nom: string; valeur: number; plafond: number; zones?: readonly number[] }
   /** Plus produite depuis R25 (un prix inconnu passe) ; gardée pour son texte. */
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
@@ -178,7 +180,7 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
     }
     for (const p of proches) {
       const v = p.temps[i];
-      if (v === 0 || v > p.plafond) raisons.push({ critere: 'proche', nom: p.nom, valeur: v, plafond: p.plafond });
+      if (v === 0 || v > p.plafond) raisons.push({ critere: 'proche', nom: p.nom, valeur: v, plafond: p.plafond, ...(p.zones && { zones: p.zones }) });
       else notes.push(100 * (1 - v / p.plafond));
     }
     const passe = raisons.length === 0;

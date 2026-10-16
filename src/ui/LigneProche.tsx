@@ -1,13 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { duree } from '@/domain/format';
+import { duree, phrasesPartiel } from '@/domain/format';
 import { PROCHE } from '@/domain/score';
 import { cn } from '@/lib/cn';
+import { couverture } from '@/proches/etat';
 import type { EtatProche, Proche } from '@/proches/useProches';
 
 // Ligne de proche (Figma « Ligne de proche » 20:168) : repère en petit, nom, adresse, puis selon l'état le plafond et son
 // curseur (prêt), ou la phrase d'état (en attente, calcul, indisponible). « Retirer » dans tous les états (il arrête un
 // calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté.
+// Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
+// l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
+// (sans effet avant la tâche 5b de proches-fiables).
 
 /** Icône maison de Figma (« Icône maison », 14 × 14), à la couleur du texte. */
 function IconeMaison() {
@@ -18,9 +22,13 @@ function IconeMaison() {
   );
 }
 
-/** « Repère en petit » (24 px) : goutte ronde terre cuite à maison ; « … » en attente ou en calcul ; « ! » pointillé si indisponible. */
+/**
+ * « Repère en petit » (24 px) : goutte ronde terre cuite à maison (prêt, et partiel : H99 de proches-fiables) ; « … » en
+ * attente ou en calcul ; « ! » pointillé si indisponible.
+ */
 export function RepereEnPetit({ etat }: { etat: EtatProche }) {
   const indisponible = etat === 'indisponible';
+  const pret = etat === 'pret' || etat === 'partiel';
   return (
     <span
       aria-hidden="true"
@@ -29,7 +37,7 @@ export function RepereEnPetit({ etat }: { etat: EtatProche }) {
         indisponible ? 'border-dashed border-place-marker bg-card text-place-marker' : 'border-card bg-place-marker text-place-marker-foreground',
       )}
     >
-      {etat === 'pret' ? <IconeMaison /> : <span className="text-rang">{indisponible ? '!' : '…'}</span>}
+      {pret ? <IconeMaison /> : <span className="text-rang">{indisponible ? '!' : '…'}</span>}
     </span>
   );
 }
@@ -42,8 +50,11 @@ type Props = { proche: Proche; onPlafond: (minutes: number) => void; onReessayer
 
 export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif }: Props) {
   const { nom, plafond, etat } = proche;
-  const pret = etat === 'pret';
+  const partiel = etat === 'partiel' && proche.zones != null;
+  const pret = etat === 'pret' || partiel;
   const indisponible = etat === 'indisponible';
+  // Partiel (R34) : le plafond va de 15 min à la couverture.
+  const max = partiel ? couverture(proche.zones!) : PROCHE.max;
   const phrase =
     etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
   const retirer = (
@@ -60,12 +71,18 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
           {pret && <span className="shrink-0 text-valeur-curseur tabular-nums">{duree(plafond)}</span>}
         </div>
         <span className="text-secondaire text-muted-foreground break-words">{adresseDe(proche)}</span>
+        {partiel &&
+          phrasesPartiel(proche.zones!).map((p) => (
+            <p key={p} className="text-texte text-foreground">
+              {p}
+            </p>
+          ))}
         {pret && (
           <Slider
             aria-label={`Plafond de ${nom}`}
             aria-valuetext={`${duree(plafond)} au plus`}
             min={PROCHE.pas}
-            max={PROCHE.max}
+            max={max}
             step={PROCHE.pas}
             value={[plafond]}
             disabled={inactif}
@@ -78,6 +95,14 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
           <div className="flex items-center gap-2">
             <Button className="max-bureau:min-h-toucher" aria-label={`Réessayer ${nom}`} onClick={onReessayer}>
               Réessayer
+            </Button>
+            {retirer}
+          </div>
+        ) : partiel ? (
+          <div className="flex items-center gap-2">
+            {/* Sans effet avant la tâche 5b de proches-fiables (recalcul à la demande). */}
+            <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Recalculer avec l'IGN ${nom}`}>
+              Recalculer avec l'IGN
             </Button>
             {retirer}
           </div>

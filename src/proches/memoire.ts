@@ -6,7 +6,9 @@ import type { Suggestion } from './ign';
 // 34 746 communes), avec l'empreinte de la liste des codes INSEE pour laquelle ils ont été calculés. À la relecture, un
 // proche qui n'était pas prêt revient indisponible ; l'appelant compare l'empreinte à celle de la carte (R12).
 
-export type EtatProche = 'attente' | 'calcul' | 'pret' | 'indisponible';
+// Proches-fiables (tâche 2) : `partiel` = des zones manquent, la couverture atteint le plafond (R33, R34). Jusqu'à la
+// tâche 4, il s'écrit comme un proche qui n'est pas prêt (`pret: false`) et revient donc indisponible à la réouverture.
+export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'indisponible';
 
 export type ProcheGarde = {
   /** Ordre d'ajout. */

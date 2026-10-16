@@ -1,4 +1,4 @@
-import { duree } from '@/domain/format';
+import { duree, tempsProche } from '@/domain/format';
 import type { Proche } from '@/proches/useProches';
 import { RepereEnPetit } from './LigneProche';
 
@@ -7,13 +7,17 @@ import { RepereEnPetit } from './LigneProche';
 // Affichage seul : une liste « Temps vers tes proches », pas des boutons ; un clic ne fait rien (ni ne passe à la carte).
 // Sur deux lignes ou plus quand elles ne tiennent pas entre les panneaux (accepté par Vincent, design decisions.md).
 
-/** Valeur d'une pastille (R15) : sans commune choisie « 2 h au plus » ; avec, son temps (R10) et « · au-dessus de 2 h » s'il dépasse. */
+/**
+ * Valeur d'une pastille (R15) : sans commune choisie « 2 h au plus » ; avec, son temps (R10) et « · au-dessus de 2 h » s'il
+ * dépasse. Proche partiel (proches-fiables R34) : le temps tel que la fiche l'écrit, « jusqu'à 2 h 30 », « plus de 2 h 45 ».
+ */
 export function valeurPastille(p: Proche, commune: number | null): string {
   if (p.etat === 'indisponible') return 'trajets indisponibles';
-  if (p.etat !== 'pret' || !p.temps) return 'calcul en cours';
+  if ((p.etat !== 'pret' && p.etat !== 'partiel') || !p.temps) return 'calcul en cours';
   if (commune == null) return `${duree(p.plafond)} au plus`;
   const t = p.temps[commune];
-  return t === 0 || t > p.plafond ? `${duree(t)} · au-dessus de ${duree(p.plafond)}` : duree(t);
+  const valeur = tempsProche(t, p.zones);
+  return t === 0 || t > p.plafond ? `${valeur} · au-dessus de ${duree(p.plafond)}` : valeur;
 }
 
 type Props = { proches: Proche[]; /** Index de la commune choisie dans communes.json, ou null. */ commune: number | null };

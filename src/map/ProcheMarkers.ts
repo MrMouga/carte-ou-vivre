@@ -14,7 +14,8 @@ import { map as carte, size, space } from '@/theme/tokens';
 export type RepereProche = { id: number; nom: string; etat: EtatProche; lngLat: [number, number] };
 type Forme = 'pret' | 'calcul' | 'indisponible';
 
-const formeDe = (etat: EtatProche): Forme => (etat === 'pret' ? 'pret' : etat === 'indisponible' ? 'indisponible' : 'calcul');
+// Proches-fiables H99 : un proche partiel a le repère d'un proche prêt.
+const formeDe = (etat: EtatProche): Forme => (etat === 'pret' || etat === 'partiel' ? 'pret' : etat === 'indisponible' ? 'indisponible' : 'calcul');
 
 // Tracés de Figma (goutte 26 × 34, maison 14 × 14 posée en 6, 6), dans le repère de la goutte.
 const GOUTTE = 'M13 1C6.4 1 1 6.2 1 12.7C1 21.2 13 33 13 33C13 33 25 21.2 25 12.7C25 6.2 19.6 1 13 1Z';

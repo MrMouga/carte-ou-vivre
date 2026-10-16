@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import loyerMer from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import proches from '../../docs/specs/2026-10-13-proches/acceptance.json';
-import { duree, raisonTexte } from './format';
+import { duree, phrasesPartiel, raisonTexte, tempsProche } from './format';
 import { evaluer, PROCHE, type Commune, type ProchePret, type Reglages } from './score';
 
 // Cadre-de-vie, règle (1) du recalage : le départ n'a plus de mer ; ces calculs partent du réglage explicite, mer 50 km
@@ -96,5 +96,61 @@ describe('H22 — formats des temps des proches', () => {
   it('raison d’un proche : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h »', () => {
     expect(s(raisonTexte({ critere: 'proche', nom: 'Nantesville (44)', valeur: 135, plafond: 120 }))).toBe('Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h');
     expect(s(raisonTexte({ critere: 'proche', nom: 'Nantesville (44)', valeur: 0, plafond: 135 }))).toBe('Nantesville (44) plus de 3 h : au-dessus de ton plafond de 2 h 15');
+  });
+});
+
+// Proches-fiables (R34, H96, tâche 2) : un proche **partiel** — des zones manquent, sa couverture atteint le plafond. Ses
+// temps sont la fin de la plus petite zone obtenue qui contient la mairie (0 = dans aucune) ; « jusqu'à » quand la zone juste
+// dessous manque, « plus de <couverture> » hors de la couverture. Fixture de proches-fiables, pannes « zone-135-toujours »
+// (AC-2) et « zone-180-toujours » (AC-3), depuis « 1 rue Test 44000 Nantesville ».
+const TOUTES = Array.from({ length: 12 }, (_, i) => (i + 1) * 15);
+const SANS_135 = TOUTES.filter((d) => d !== 135);
+const SANS_180 = TOUTES.filter((d) => d !== 180);
+/** Fin de la plus petite zone obtenue qui contient la mairie de chaque commune (R34) ; 0 = dans aucune. */
+const tempsPartiel = (libelle: string, zones: number[]) =>
+  Uint16Array.from(communes, (c) => {
+    const fin = trajets[libelle][c.code];
+    return fin == null ? 0 : (zones.find((z) => z >= fin) ?? 0);
+  });
+const nantesPartiel = (plafond: number, zones: number[]): ProchePret => ({ nom: 'Nantesville (44)', plafond, temps: tempsPartiel('1 rue Test 44000 Nantesville', zones), zones });
+
+describe('R34, H96 (proches-fiables) — valeurs et phrases d’un proche partiel', () => {
+  it('H96 : « jusqu’à 2 h 30 » quand la zone juste dessous manque ; « plus de 2 h 45 » hors de la couverture ; sinon comme avant', () => {
+    expect(s(tempsProche(150, SANS_135))).toBe("jusqu'à 2 h 30");
+    expect(s(tempsProche(60, SANS_135))).toBe('1 h');
+    expect(s(tempsProche(0, SANS_135))).toBe('plus de 3 h');
+    expect(s(tempsProche(0, SANS_180))).toBe('plus de 2 h 45');
+    expect(s(tempsProche(135, SANS_180))).toBe('2 h 15');
+    expect(s(tempsProche(0, TOUTES))).toBe('plus de 3 h');
+    // Proche prêt relu de la mémoire (sans zones) : inchangé.
+    expect(s(tempsProche(135))).toBe('2 h 15');
+    expect(s(tempsProche(0))).toBe('plus de 3 h');
+  });
+
+  it('phrases de la ligne : « Temps approximatifs… » si une zone manque sous la couverture, « Au-delà de 2 h 45… » sous 3 h, dans cet ordre', () => {
+    expect(phrasesPartiel(SANS_135)).toEqual(["Temps approximatifs : l'IGN n'a pas tout donné."]);
+    expect(phrasesPartiel(SANS_180).map(s)).toEqual(["Au-delà de 2 h 45 : l'IGN n'a pas répondu."]);
+    expect(phrasesPartiel(SANS_135.filter((d) => d !== 180)).map(s)).toEqual([
+      "Temps approximatifs : l'IGN n'a pas tout donné.",
+      "Au-delà de 2 h 45 : l'IGN n'a pas répondu.",
+    ]);
+    expect(phrasesPartiel(TOUTES)).toEqual([]);
+  });
+
+  it('AC-2 (calcul) : à 2 h 30, Portmer 68, Grandeville 17 (« jusqu’à 2 h 30 » compte pour 2 h 30) ; à 2 h 15, Portmer 66 seule, raison « jusqu’à 2 h 30 »', () => {
+    expect(scores(MER50, [nantesPartiel(150, SANS_135)]).res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 68], ['Grandeville', 17]]);
+    const { res, by } = scores(MER50, [nantesPartiel(135, SANS_135)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 66]]);
+    expect(by('B').raisons.map(raisonTexte).map(s)).toEqual(["Nantesville (44) jusqu'à 2 h 30 : au-dessus de ton plafond de 2 h 15"]);
+  });
+
+  it('AC-3 (calcul) : couverture 2 h 45, à 2 h, Portmer 65 seule ; Quaibleu « plus de 2 h 45 : au-dessus de ton plafond de 2 h »', () => {
+    const { res, by } = scores(MER50, [nantesPartiel(120, SANS_180)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 65]]);
+    expect(by('E').raisons.filter((r) => r.critere === 'proche').map(raisonTexte).map(s)).toEqual(['Nantesville (44) plus de 2 h 45 : au-dessus de ton plafond de 2 h']);
+  });
+
+  it('D5 : un proche partiel sort la page de l’état « sans plafond » (loyer et mer sur « Sans limite »)', () => {
+    expect(scores({ loyer: null, mer: null, tailles: [] }, [nantesPartiel(150, SANS_135)]).res.actif).toBe(true);
   });
 });

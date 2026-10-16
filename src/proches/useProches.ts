@@ -9,9 +9,9 @@ import { departDe, pointsDes } from './temps';
 // - File : un proche calcule à la fois, les suivants sont « en attente » ; la file des zones IGN est commune à la page.
 // - Calcul tolérant (proches-fiables R33) : une zone ratée est redemandée une fois ; 45 s au plus après le début de SON
 //   calcul (H21), le proche prend ce qu'il a — prêt, partiel ou km selon ses zones et son plafond (`etat.ts`).
-//   Transition (tâche 1 de proches-fiables) : jusqu'à la tâche 2, un proche partiel est montré prêt, avec ses temps ;
-//   jusqu'à la tâche 3a, un proche km est montré indisponible, comme avant. « Réessayer » remet un proche indisponible
-//   dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
+//   Un proche partiel compte comme un prêt (D5). Transition (tâche 1 de proches-fiables) : jusqu'à la tâche 3a, un proche
+//   km est montré indisponible, comme avant. « Réessayer » remet un proche indisponible dans la file. « Retirer » arrête
+//   son calcul ; « Effacer mes proches » arrête tout.
 // - Mémoire du navigateur (R12) : chaque changement d'un proche réécrit son entrée ; à l'ouverture, les proches gardés
 //   reviennent sans calcul ; un proche dont l'empreinte des codes INSEE ne correspond plus à la carte revient indisponible.
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
@@ -36,10 +36,14 @@ export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
 
 type Tache = { id: number; depart: [number, number] };
 
-/** R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment (transition de la tâche 1 : voir en tête). */
+/** R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment (transition pour km : voir en tête). */
 function apresCalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: string | null): Proche {
-  return etatDe(zones, p.plafond) === 'km' ? { ...p, ...INDISPONIBLE, zones } : { ...p, etat: 'pret', temps, empreinte, zones };
+  const etat = etatDe(zones, p.plafond);
+  return etat === 'km' ? { ...p, ...INDISPONIBLE, zones } : { ...p, etat, temps, empreinte, zones };
 }
+
+/** D5 de proches-fiables : un proche prêt ou partiel compte (score, état « sans plafond », commune sans prix). */
+const compteAuScore = (p: Proche) => p.etat === 'pret' || p.etat === 'partiel';
 
 /** `reperes` : mairies dans l'ordre de communes.json (D18 de loyer-mer) ; `codes` : codes INSEE dans le même ordre. */
 export function useProches(reperes: number[][] | null, codes: string[] | null) {
@@ -141,7 +145,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   // R12 : un proche gardé dont les temps ne correspondent plus aux codes INSEE de la carte revient indisponible.
   useEffect(() => {
     if (!empreinte) return;
-    const perime = (p: Proche) => p.etat === 'pret' && p.empreinte !== empreinte;
+    const perime = (p: Proche) => compteAuScore(p) && p.empreinte !== empreinte;
     setProches((ps) => (ps.some(perime) ? ps.map((p) => (perime(p) ? { ...p, ...INDISPONIBLE } : p)) : ps));
   }, [empreinte]);
 
@@ -171,12 +175,15 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     if (refus) setMemoireRefusee(true);
   }, [proches, stockage]);
 
-  /** Proches prêts, pour le score (R11) : un proche dans un autre état, ou aux temps d'une autre carte, ne compte pas. */
+  /**
+   * Proches qui comptent, pour le score (R11) : prêts ou partiels (D5 de proches-fiables). Un proche dans un autre état, ou
+   * aux temps d'une autre carte, ne compte pas.
+   */
   const prets = useMemo<ProchePret[]>(
     () =>
       proches
-        .filter((p) => p.etat === 'pret' && p.temps && p.empreinte === empreinte)
-        .map((p) => ({ nom: p.nom, plafond: p.plafond, temps: p.temps! })),
+        .filter((p) => compteAuScore(p) && p.temps && p.empreinte === empreinte)
+        .map((p) => ({ nom: p.nom, plafond: p.plafond, temps: p.temps!, zones: p.zones })),
     [proches, empreinte],
   );
 
