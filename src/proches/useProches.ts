@@ -187,7 +187,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   // À l'ouverture, une fois la carte chargée (R12, R36, R37) : un proche km retrouve ses distances ; un proche gardé en
   // attente (non fini, `memoire.ts`) ou en heures aux temps d'une autre carte est calculé comme un nouveau proche (son nom
   // et son plafond restent) ; un proche partiel ou km dont le dernier essai date de 15 min au moins passe en recalcul.
-  // Tous dans une même file, dans l'ordre d'ajout. Idempotent : un proche déjà dans la file ou en calcul n'y revient pas.
+  // Tous dans une même file, dans l'ordre d'ajout, calculs de R37 compris. Idempotent : un proche déjà dans la file ou en calcul n'y revient pas.
   useEffect(() => {
     if (!points || !empreinte) return;
     const maintenant = Date.now();
@@ -200,7 +200,8 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
       if (aCalculer(p)) calculs.add(p.id);
       else if (aRecalculer(p, maintenant)) recalculs.add(p.id);
       else continue;
-      enFiler(recalculs.has(p.id) ? { id: p.id, depart, recalcul: true, auto: true } : { id: p.id, depart });
+      // R36 : à l'ouverture, chaque calcul va en fin de file, sans la priorité d'un ajout (`placer`) : l'ordre d'ajout.
+      file.current = [...file.current, recalculs.has(p.id) ? { id: p.id, depart, recalcul: true, auto: true } : { id: p.id, depart }];
     }
     setProches((ps) =>
       ps.map((p) => {

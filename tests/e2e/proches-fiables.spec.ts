@@ -247,12 +247,12 @@ test('classement en échec : Nantesville (44) passe à vol d’oiseau, « 120 km
  * AC-10 : entrée de « Nantesville (44) » (plafond 2 h 15) telle que l'écrit la version précédente (code de 56ac3d6, copié
  * dans tests/fixtures/memoire-56ac3d6.ts), dans un stockage simulé ; rend sa clé et son texte.
  */
-function entreeAncienne(p: Pick<ancienne.ProcheGarde, 'etat' | 'temps' | 'empreinte'>): [string, string] {
+function entreeAncienne(p: Pick<ancienne.ProcheGarde, 'etat' | 'temps' | 'empreinte'>, id = 1): [string, string] {
   const m = new Map<string, string>();
   const s = { setItem: (k: string, v: string) => void m.set(k, v) } as Storage;
   const [suggestion] = proches.fixture.services["recherche d'adresse (IGN) — suggestions par texte tapé"]['1 rue Test'].suggestions;
   const lieu = { libelle: suggestion.libelle, commune: suggestion.commune, dep: suggestion.dep, code: '44999', point: suggestion.point as [number, number], estCommune: false };
-  ancienne.ecrireProche(s, { id: 1, nom: 'Nantesville (44)', lieu, depart: lieu.point, plafond: 135, ...p });
+  ancienne.ecrireProche(s, { id, nom: 'Nantesville (44)', lieu, depart: lieu.point, plafond: 135, ...p });
   return [...m.entries()][0];
 }
 const CODES = proches.fixture.items.map((it) => it.code_insee);
@@ -759,6 +759,29 @@ test('AC-11 depuis /?loyer=1200&mer=50, Nantesville (44) partiel puis Rochellevi
   expect(rochelleAvantToulouse).toHaveLength(12);
   expect(rochelleAvantToulouse.filter(Boolean), 'zones de Rochelleville (17) demandées avant Toulouseville (31) prêt').toEqual([]);
   expect(ordre.lastIndexOf(POINT.Toulouseville)).toBeLessThan(ordre.indexOf(POINT.Rochelleville));
+});
+
+// Hors AC (R36 : « à l'ouverture, la file suit l'ordre d'ajout, proches de R37 compris » ; corrections 1, majeur 1) :
+// Rochelleville (17) ajouté en premier, gardé à vol d'oiseau, dernier essai il y a plus de 15 min, puis Nantesville (44)
+// gardé « indisponible » par la version précédente (R37, calculé comme un nouveau proche). À la réouverture, le recalcul
+// de Rochelleville (17) part d'abord : ses 12 zones sont demandées avant toute zone de Nantesville (44).
+test('réouverture : Rochelleville (17) à vol d’oiseau (ajouté en premier, recalcul) puis Nantesville (44) gardé indisponible par la version précédente (R37) → les zones de Rochelleville (17) partent d’abord, puis celles de Nantesville (44) ; les deux prêts', async ({ page }) => {
+  test.setTimeout(120_000);
+  await rochellevilleKm(page, 120);
+  const [cle, valeur] = entreeAncienne({ etat: 'indisponible', temps: null, empreinte: null }, 2);
+  const { p, demandes } = await rouvrir(page, 16, ZONE_1_S, (q) =>
+    q.addInitScript(([cle, valeur]) => localStorage.setItem(cle, valeur), [cle, valeur]),
+  );
+  await finRecalcul(p, 'Rochelleville (17)');
+  await pret(p, 'Nantesville (44)', 45_000);
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuemax', '180');
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
+
+  const ordre = demandes.zones.map(pointDe);
+  console.log(`ouverture, ordre d'ajout (${test.info().project.name}) : ${ordre.join(' ; ')}`);
+  expect(ordre.filter((x) => x === POINT.Rochelleville), 'zones depuis Rochelleville (17)').toHaveLength(12);
+  expect(ordre.filter((x) => x === POINT.Nantesville), 'zones depuis Nantesville (44)').toHaveLength(12);
+  expect(ordre.slice(0, 12), 'les 12 premières zones demandées').toEqual(Array(12).fill(POINT.Rochelleville));
 });
 
 // Hors AC (R36, details.md « Interactions ») : « Retirer » pendant un recalcul — le proche disparaît ; son recalcul en

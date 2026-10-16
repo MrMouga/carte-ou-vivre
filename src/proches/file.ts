@@ -1,6 +1,8 @@
 // File des calculs de proches (spec proches-fiables R36, D4, H98), sans effet : `useProches` en lance un à la fois, le
 // premier de la file. Un ajout ou un « Recalculer avec l'IGN » passe devant les recalculs automatiques pas encore
 // commencés (ceux de l'ouverture) ; entre eux, l'ordre d'arrivée. Le calcul en cours continue : il n'est plus dans la file.
+// À l'ouverture, `useProches` met chaque calcul (recalcul automatique ou calcul de R37) en fin de file, sans `placer` :
+// la file suit l'ordre d'ajout.
 // Un proche n'a jamais deux calculs à la fois : déjà dans la file ou en cours, il n'y entre pas.
 
 /**
