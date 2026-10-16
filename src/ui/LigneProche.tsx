@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { duree, phrasesPartiel } from '@/domain/format';
+import { duree, km, PHRASE_KM, phrasesPartiel } from '@/domain/format';
 import { PROCHE } from '@/domain/score';
 import { cn } from '@/lib/cn';
 import { couverture } from '@/proches/etat';
@@ -11,7 +11,8 @@ import type { EtatProche, Proche } from '@/proches/useProches';
 // calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté.
 // Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
 // l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
-// (sans effet avant la tâche 5b de proches-fiables).
+// (sans effet avant la tâche 5b de proches-fiables). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
+// répond pas. » et un curseur en km, de 15 à 180 km par pas de 15 (R35), « 120 km au plus ».
 
 /** Icône maison de Figma (« Icône maison », 14 × 14), à la couleur du texte. */
 function IconeMaison() {
@@ -23,12 +24,12 @@ function IconeMaison() {
 }
 
 /**
- * « Repère en petit » (24 px) : goutte ronde terre cuite à maison (prêt, et partiel : H99 de proches-fiables) ; « … » en
- * attente ou en calcul ; « ! » pointillé si indisponible.
+ * « Repère en petit » (24 px) : goutte ronde terre cuite à maison (prêt, et partiel ou km : H99 de proches-fiables) ;
+ * « … » en attente ou en calcul ; « ! » pointillé si indisponible.
  */
 export function RepereEnPetit({ etat }: { etat: EtatProche }) {
   const indisponible = etat === 'indisponible';
-  const pret = etat === 'pret' || etat === 'partiel';
+  const pret = etat === 'pret' || etat === 'partiel' || etat === 'km';
   return (
     <span
       aria-hidden="true"
@@ -51,10 +52,14 @@ type Props = { proche: Proche; onPlafond: (minutes: number) => void; onReessayer
 export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif }: Props) {
   const { nom, plafond, etat } = proche;
   const partiel = etat === 'partiel' && proche.zones != null;
-  const pret = etat === 'pret' || partiel;
+  const enKm = etat === 'km';
+  const approximatif = partiel || enKm;
+  const pret = etat === 'pret' || approximatif;
   const indisponible = etat === 'indisponible';
-  // Partiel (R34) : le plafond va de 15 min à la couverture.
+  // Partiel (R34) : le plafond va de 15 min à la couverture. Km (R35) : de 15 à 180 km par pas de 15, les mêmes nombres.
   const max = partiel ? couverture(proche.zones!) : PROCHE.max;
+  const valeur = enKm ? km(plafond) : duree(plafond);
+  const phrases = partiel ? phrasesPartiel(proche.zones!) : enKm ? [PHRASE_KM] : [];
   const phrase =
     etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
   const retirer = (
@@ -68,19 +73,18 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-baseline justify-between gap-2">
           <span className="min-w-0 text-texte-fort break-words">{nom}</span>
-          {pret && <span className="shrink-0 text-valeur-curseur tabular-nums">{duree(plafond)}</span>}
+          {pret && <span className="shrink-0 text-valeur-curseur tabular-nums">{valeur}</span>}
         </div>
         <span className="text-secondaire text-muted-foreground break-words">{adresseDe(proche)}</span>
-        {partiel &&
-          phrasesPartiel(proche.zones!).map((p) => (
-            <p key={p} className="text-texte text-foreground">
-              {p}
-            </p>
-          ))}
+        {phrases.map((p) => (
+          <p key={p} className="text-texte text-foreground">
+            {p}
+          </p>
+        ))}
         {pret && (
           <Slider
             aria-label={`Plafond de ${nom}`}
-            aria-valuetext={`${duree(plafond)} au plus`}
+            aria-valuetext={`${valeur} au plus`}
             min={PROCHE.pas}
             max={max}
             step={PROCHE.pas}
@@ -98,7 +102,7 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
             </Button>
             {retirer}
           </div>
-        ) : partiel ? (
+        ) : approximatif ? (
           <div className="flex items-center gap-2">
             {/* Sans effet avant la tâche 5b de proches-fiables (recalcul à la demande). */}
             <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Recalculer avec l'IGN ${nom}`}>

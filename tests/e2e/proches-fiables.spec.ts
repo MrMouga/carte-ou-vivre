@@ -162,3 +162,33 @@ test('AC-3 depuis /?loyer=1200&mer=50, panne « zone-180-toujours » : « Au-del
   await expect(fiche(page)).toContainText('Quaibleu (13)');
   expect(await texteFiche(page)).toContain('Nantesville (44) plus de 2 h 45 : au-dessus de ton plafond de 2 h');
 });
+
+test('AC-4 depuis /?loyer=1200&mer=50, panne « panne-totale » : Rochelleville (17) à vol d’oiseau, « 120 km au plus », « Recalculer avec l’IGN » ; « Trajets indisponibles » nulle part ; Portmer 70, Quaibleu 32, Grandeville 26 ; fiche de Grandeville « Rochelleville (17) : 88 km à vol d’oiseau »', async ({ page }) => {
+  test.setTimeout(60_000);
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' });
+  await ajouter(page, 'Rochelleville'); // nom proposé gardé
+  await expect(ligne(page, 'Rochelleville (17)')).toContainText('Calcul des trajets depuis Rochelleville (17)…');
+  // R33 : chaque zone en erreur est redemandée une fois (24 demandes à 250 ms, ≈ 6 s), puis le calcul finit.
+  await pret(page, 'Rochelleville (17)', 45_000);
+
+  const rochelle = ligne(page, 'Rochelleville (17)');
+  await expect(rochelle).toContainText("À vol d'oiseau : l'IGN ne répond pas.");
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  expect(nbsp(await plafond(page, 'Rochelleville (17)').getAttribute('aria-valuetext'))).toBe('120 km au plus');
+  await expect(rochelle.getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" })).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/trajets indisponibles/i);
+
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
+    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+  ]);
+
+  await choisirSurLaCarte(page, 'B');
+  await expect(fiche(page)).toContainText('Grandeville (33)');
+  expect(await texteFiche(page)).toContain("Rochelleville (17) : 88 km à vol d'oiseau");
+  await expect(page.locator('body')).not.toContainText(/trajets indisponibles/i);
+});

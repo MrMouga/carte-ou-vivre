@@ -1,5 +1,6 @@
 // Règles de la spec loyer-mer : passage (R1, D11), note et score (R2, D4), palier de couleur (R3, D5), classement (R5, H4).
-// Spec proches : chaque proche prêt est un critère de plus (R10, R11).
+// Spec proches : chaque proche prêt est un critère de plus (R10, R11) ; proches-fiables : un proche partiel ou à vol
+// d'oiseau aussi (D5), ce dernier en km (R35).
 // Spec immobilier : le critère du prix suit le réglage du prix, passé en paramètre (R21, R22) ; un prix inconnu passe le
 // filtre sans donner de note (R25, D21 de loyer-mer).
 // Spec cadre-de-vie : la montagne filtre et note comme la mer (R29) ; le type d'environnement filtre sans noter, comme la
@@ -73,7 +74,13 @@ export const PROCHE = { pas: 15, max: 180, ajout: 120 } as const;
  * 3 h ou sans route (R10) ; pour un partiel, la fin de la plus petite zone obtenue (« jusqu'à 2 h 30 » compte pour 2 h 30),
  * 0 = hors de sa couverture (ne tient aucun plafond). `zones` : zones obtenues, pour écrire la raison (`tempsProche`).
  */
-export type ProchePret = { nom: string; plafond: number; temps: Uint16Array; zones?: readonly number[] };
+export type ProchePret =
+  | { nom: string; plafond: number; temps: Uint16Array; zones?: readonly number[] }
+  /**
+   * Proche **km** (proches-fiables D5, R35 : il compte aussi) : son plafond en km (15 à 180) et ses distances à vol
+   * d'oiseau, en km non arrondis, une par commune dans l'ordre de `communes` ; comparées au km affiché.
+   */
+  | { nom: string; plafond: number; distances: Float64Array };
 
 export type Raison =
   /** Prix au-dessus du plafond, selon le mode et l'unité (R24). */
@@ -84,6 +91,8 @@ export type Raison =
   | { critere: 'type'; type: TypeEnv }
   /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h (ou, pour un partiel, plus que sa couverture) ; `zones` : celles du proche. */
   | { critere: 'proche'; nom: string; valeur: number; plafond: number; zones?: readonly number[] }
+  /** Proche à vol d'oiseau (R35) : `valeur` et `plafond` en km, `valeur` telle qu'affichée (au km). */
+  | { critere: 'proche-km'; nom: string; valeur: number; plafond: number }
   /** Plus produite depuis R25 (un prix inconnu passe) ; gardée pour son texte. */
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
@@ -120,6 +129,9 @@ const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.r
 /** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
 const montagneComparee = (c: Commune) =>
   c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : Math.max(1, Math.round(c.montagneKm));
+
+/** Distance d'un proche à vol d'oiseau, comparée au km (R35 de proches-fiables, comme la mer). */
+const kmCompare = (km: number) => Math.max(1, Math.round(km));
 
 /**
  * H74 : moyenne exacte des notes, moitié vers le haut. Une note en virgule flottante peut tomber juste sous la moitié
@@ -179,6 +191,13 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       else if (!r.types.includes(t)) raisons.push({ critere: 'type', type: t });
     }
     for (const p of proches) {
+      if ('distances' in p) {
+        // R35 : comparée et notée sur la distance affichée, au km (« moins d'1 km » comme 1 km).
+        const v = kmCompare(p.distances[i]);
+        if (v > p.plafond) raisons.push({ critere: 'proche-km', nom: p.nom, valeur: v, plafond: p.plafond });
+        else notes.push(100 * (1 - v / p.plafond));
+        continue;
+      }
       const v = p.temps[i];
       if (v === 0 || v > p.plafond) raisons.push({ critere: 'proche', nom: p.nom, valeur: v, plafond: p.plafond, ...(p.zones && { zones: p.zones }) });
       else notes.push(100 * (1 - v / p.plafond));

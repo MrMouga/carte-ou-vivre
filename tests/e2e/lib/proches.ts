@@ -27,6 +27,8 @@ export const ADRESSES = {
   Lyonville: ['3 rue Test', '3 rue Test, 69000 Lyonville'],
   Brestville: ['4 rue Test', '4 rue Test, 29000 Brestville'],
   Lilleville: ['5 rue Test', '5 rue Test, 59000 Lilleville'],
+  // Proches-fiables : « 6 rue Test 17000 Rochelleville », au point [0.5, 0.5].
+  Rochelleville: ['6 rue Test', '6 rue Test, 17000 Rochelleville'],
 } as const;
 
 /** Cherche, choisit la suggestion, garde le nom proposé, « Ajouter » (ouvre le champ par « + Ajouter un proche » s'il le faut). */

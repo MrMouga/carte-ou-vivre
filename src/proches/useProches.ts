@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROCHE, type ProchePret } from '../domain/score';
+import { kmDePlafond, distances } from './distance';
 import { etatDe } from './etat';
 import { calculerTemps, type Suggestion } from './ign';
 import { effacerProche, effacerTout, ecrireProche, empreinteDe, lireProches, stockageNavigateur, type ProcheGarde } from './memoire';
@@ -9,9 +10,9 @@ import { departDe, pointsDes } from './temps';
 // - File : un proche calcule à la fois, les suivants sont « en attente » ; la file des zones IGN est commune à la page.
 // - Calcul tolérant (proches-fiables R33) : une zone ratée est redemandée une fois ; 45 s au plus après le début de SON
 //   calcul (H21), le proche prend ce qu'il a — prêt, partiel ou km selon ses zones et son plafond (`etat.ts`).
-//   Un proche partiel compte comme un prêt (D5). Transition (tâche 1 de proches-fiables) : jusqu'à la tâche 3a, un proche
-//   km est montré indisponible, comme avant. « Réessayer » remet un proche indisponible dans la file. « Retirer » arrête
-//   son calcul ; « Effacer mes proches » arrête tout.
+//   Un proche partiel ou km compte comme un prêt (D5) ; un proche km vaut ses distances à vol d'oiseau (R35), son plafond
+//   passe des minutes aux km (H94). « Réessayer » remet un proche indisponible (empreinte périmée, relu de la mémoire,
+//   classement en échec) dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
 // - Mémoire du navigateur (R12) : chaque changement d'un proche réécrit son entrée ; à l'ouverture, les proches gardés
 //   reviennent sans calcul ; un proche dont l'empreinte des codes INSEE ne correspond plus à la carte revient indisponible.
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
@@ -21,9 +22,10 @@ export type { EtatProche } from './memoire';
 /**
  * `zones` : durées des zones obtenues au dernier calcul, croissantes (12 pour un proche prêt) ; d'elles se déduisent la
  * couverture, l'état et les communes en « jusqu'à » (`etat.ts`). Absent pour un proche relu de la mémoire (format inchangé
- * jusqu'à la tâche 4 de proches-fiables).
+ * jusqu'à la tâche 4 de proches-fiables). `distances` : proche km seulement (R35), en km non arrondis, une par commune dans
+ * l'ordre de communes.json, pour les codes INSEE de `empreinte` ; son `plafond` est alors en km (15 à 180).
  */
-export type Proche = ProcheGarde & { zones?: number[] };
+export type Proche = ProcheGarde & { zones?: number[]; distances?: Float64Array };
 
 export const NOM_MAX = 30;
 export const MAX_PROCHES = 5;
@@ -36,14 +38,19 @@ export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
 
 type Tache = { id: number; depart: [number, number] };
 
-/** R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment (transition pour km : voir en tête). */
-function apresCalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: string | null): Proche {
+/**
+ * R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment. En km (R35) : ses distances à vol
+ * d'oiseau depuis son départ (`points` : mairies), sans temps, et son plafond converti en km (H94 : 2 h → 120 km).
+ */
+function apresCalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: string | null, points: Float64Array): Proche {
   const etat = etatDe(zones, p.plafond);
-  return etat === 'km' ? { ...p, ...INDISPONIBLE, zones } : { ...p, etat, temps, empreinte, zones };
+  if (etat !== 'km') return { ...p, etat, temps, empreinte, zones };
+  const depart = p.depart ?? p.lieu.point;
+  return { ...p, etat, temps: null, empreinte, zones, distances: distances(depart, points), plafond: kmDePlafond(p.plafond) };
 }
 
-/** D5 de proches-fiables : un proche prêt ou partiel compte (score, état « sans plafond », commune sans prix). */
-const compteAuScore = (p: Proche) => p.etat === 'pret' || p.etat === 'partiel';
+/** D5 de proches-fiables : un proche prêt, partiel ou km compte (score, état « sans plafond », commune sans prix). */
+const compteAuScore = (p: Proche) => p.etat === 'pret' || p.etat === 'partiel' || p.etat === 'km';
 
 /** `reperes` : mairies dans l'ordre de communes.json (D18 de loyer-mer) ; `codes` : codes INSEE dans le même ordre. */
 export function useProches(reperes: number[][] | null, codes: string[] | null) {
@@ -75,7 +82,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     const arrete = new Promise<never>((_, ko) => arret.signal.addEventListener('abort', () => ko(arret.signal.reason), { once: true }));
     Promise.race([calculerTemps(tache.depart, points, arret.signal), arrete])
       .then(
-        ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, temps, zones, empreinte) : x))),
+        ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, temps, zones, empreinte, points) : x))),
         () => arret.signal.reason !== RETIRE && changer(tache.id, INDISPONIBLE), // classement en échec
       )
       .finally(() => {
@@ -176,14 +183,18 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   }, [proches, stockage]);
 
   /**
-   * Proches qui comptent, pour le score (R11) : prêts ou partiels (D5 de proches-fiables). Un proche dans un autre état, ou
-   * aux temps d'une autre carte, ne compte pas.
+   * Proches qui comptent, pour le score (R11) : prêts, partiels ou km (D5 de proches-fiables), km avec ses distances (R35).
+   * Un proche dans un autre état, ou aux valeurs d'une autre carte, ne compte pas.
    */
   const prets = useMemo<ProchePret[]>(
     () =>
       proches
-        .filter((p) => compteAuScore(p) && p.temps && p.empreinte === empreinte)
-        .map((p) => ({ nom: p.nom, plafond: p.plafond, temps: p.temps!, zones: p.zones })),
+        .filter((p) => compteAuScore(p) && (p.temps || p.distances) && p.empreinte === empreinte)
+        .map((p) =>
+          p.etat === 'km' && p.distances
+            ? { nom: p.nom, plafond: p.plafond, distances: p.distances }
+            : { nom: p.nom, plafond: p.plafond, temps: p.temps!, zones: p.zones },
+        ),
     [proches, empreinte],
   );
 

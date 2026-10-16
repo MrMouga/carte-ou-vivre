@@ -265,7 +265,8 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
 
 /**
  * Résumé de la catégorie repliée (design decisions.md) : « Aucun », « 3 », « 3 · 1 en calcul », « 5 · 1 en attente, 2
- * indisponibles » ; un proche partiel compte comme « approximatif » (H34 étendue par proches-fiables) : « 4 · 2 approximatifs ».
+ * indisponibles » ; un proche partiel ou km compte comme « approximatif » (H34 étendue par proches-fiables) : « 4 · 2
+ * approximatifs ».
  */
 export function resumeDe(proches: Proche[]): string {
   if (!proches.length) return 'Aucun';
@@ -273,7 +274,7 @@ export function resumeDe(proches: Proche[]): string {
   const etats = [
     [n('calcul'), 'en calcul', 'en calcul'],
     [n('attente'), 'en attente', 'en attente'],
-    [n('partiel'), 'approximatif', 'approximatifs'],
+    [n('partiel') + n('km'), 'approximatif', 'approximatifs'],
     [n('indisponible'), 'indisponible', 'indisponibles'],
   ]
     .filter(([k]) => k)

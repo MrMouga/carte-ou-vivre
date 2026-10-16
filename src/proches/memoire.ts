@@ -6,9 +6,10 @@ import type { Suggestion } from './ign';
 // 34 746 communes), avec l'empreinte de la liste des codes INSEE pour laquelle ils ont été calculés. À la relecture, un
 // proche qui n'était pas prêt revient indisponible ; l'appelant compare l'empreinte à celle de la carte (R12).
 
-// Proches-fiables (tâche 2) : `partiel` = des zones manquent, la couverture atteint le plafond (R33, R34). Jusqu'à la
-// tâche 4, il s'écrit comme un proche qui n'est pas prêt (`pret: false`) et revient donc indisponible à la réouverture.
-export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'indisponible';
+// Proches-fiables (tâches 2 et 3a) : `partiel` = des zones manquent, la couverture atteint le plafond (R33, R34) ; `km` =
+// la couverture est sous le plafond, le proche vaut ses distances à vol d'oiseau et son plafond est en km (R35). Jusqu'à
+// la tâche 4, ils s'écrivent comme un proche qui n'est pas prêt (`pret: false`) et reviennent donc indisponibles.
+export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'km' | 'indisponible';
 
 export type ProcheGarde = {
   /** Ordre d'ajout. */
@@ -19,7 +20,7 @@ export type ProcheGarde = {
   lieu: Suggestion;
   /** Point de départ des trajets (D6) : l'adresse, ou la mairie d'une commune choisie seule. */
   depart: [number, number] | null;
-  /** Plafond en minutes, de 15 min à 3 h ; 2 h à l'ajout (H19). */
+  /** Plafond en minutes, de 15 min à 3 h ; 2 h à l'ajout (H19). Proche km : en km, de 15 à 180 km (R35). */
   plafond: number;
   etat: EtatProche;
   /** Fins de tranche par commune, dans l'ordre de communes.json (0 = plus de 3 h) ; null tant que le proche n'est pas prêt. */

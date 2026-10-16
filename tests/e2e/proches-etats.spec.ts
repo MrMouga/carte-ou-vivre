@@ -11,6 +11,8 @@ import { ADRESSES, SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, p
 
 const AJOUTER = { name: 'Ajouter', exact: true } as const;
 const INDISPONIBLE_44 = 'Trajets indisponibles depuis Nantesville (44).';
+/** Proches-fiables R33, R35 : une panne totale ou un délai dépassé sans aucune zone donnent un proche à vol d'oiseau (km). */
+const KM = "À vol d'oiseau : l'IGN ne répond pas.";
 
 /**
  * Ferme la page et rouvre « /?loyer=1200&mer=50 » dans le même navigateur (recalage de cadre-de-vie : réglage explicite) ;
@@ -122,7 +124,7 @@ test('deux proches ajoutés d’affilée : le second « En attente… » ; repli
   await expect(plafond(page, 'Toulouseville (31)')).toBeVisible();
 });
 
-test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles', async ({ page }) => {
+test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent à vol d’oiseau', async ({ page }) => {
   await page.clock.install();
   await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page, { delaiZoneMs: 60_000 }); // le service ne répond pas pendant le test
@@ -144,35 +146,34 @@ test('H21 délai de 45 s compté depuis le début de chaque calcul (horloge simu
   await page.clock.runFor(44_000 - 300); // 44 s
   await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets');
   await page.clock.runFor(2_000);
-  await expect(zone(page)).toContainText(INDISPONIBLE_44);
+  // Proches-fiables R33, R35 (recalage) : aucune zone à 45 s → à vol d'oiseau, au lieu de « Trajets indisponibles ».
+  await expect(ligne(page, 'Nantesville (44)')).toContainText(KM);
   await expect(ligne(page, 'Toulouseville (31)')).toContainText('Calcul des trajets depuis Toulouseville (31)…');
 
   // Toulouseville a attendu 45 s : son délai part du début de son calcul (à 45 s), pas de son ajout. On est à 46 s.
   await page.clock.runFor(43_000);
   await expect(ligne(page, 'Toulouseville (31)')).toContainText('Calcul des trajets');
   await page.clock.runFor(2_000);
-  await expect(zone(page)).toContainText('Trajets indisponibles depuis Toulouseville (31).');
+  await expect(ligne(page, 'Toulouseville (31)')).toContainText(KM);
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
-  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  // Les deux proches comptent, en km (D5) : toutes les communes de la fixture sont à plus de 120 km de chacun d'eux.
+  await expect(liste(page)).toContainText('Aucune commune ne passe tes critères');
 });
 
-test('R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt', async ({ page }) => {
+// Proches-fiables (recalage, tâche 3a) : le proche passe à vol d'oiseau au lieu d'« indisponible » (R33, R35). La seconde
+// moitié (« Réessayer » quand le service répond : calcul, puis prêt) n'a plus d'objet : un proche km n'a pas de
+// « Réessayer » ; son « Recalculer avec l'IGN » est couvert par AC-9 de proches-fiables (tâche 5b).
+test('R13 refus 429 de l’IGN : le proche passe à vol d’oiseau ; repliée, la zone dit « 1 · 1 approximatif »', async ({ page }) => {
   await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page, { trajets: '429' });
   await ajouter(page, 'Nantesville');
   // Proches-fiables R33, H92 : chaque zone refusée est redemandée 5 s plus tard (24 demandes, ≈ 8 s) avant la fin du calcul.
-  await expect(zone(page)).toContainText(INDISPONIBLE_44, { timeout: 15_000 });
+  await expect(ligne(page, 'Nantesville (44)')).toContainText(KM, { timeout: 15_000 });
+  await expect(zone(page)).not.toContainText('Trajets indisponibles');
   const titre = page.getByRole('button', { name: /^Tes proches/ });
   await titre.click();
-  await expect(titre).toHaveAccessibleName('Tes proches 1 · 1 indisponible');
+  await expect(titre).toHaveAccessibleName('Tes proches 1 · 1 approximatif');
   await titre.click();
-
-  await servirIgn(page); // le service répond de nouveau (la dernière route posée gagne)
-  await ligne(page, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' }).click();
-  await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets depuis Nantesville (44)…');
-  await pret(page, 'Nantesville (44)');
-  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
 });
 
 test('« Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi', async ({ page }) => {

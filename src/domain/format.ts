@@ -55,6 +55,12 @@ export function phrasesPartiel(zones: readonly number[]): string[] {
   return phrases;
 }
 
+/** Distance à vol d'oiseau d'un proche en km (R35, H96 de proches-fiables) : « 88 km », « moins d'1 km » sous 1 km. */
+export const distanceProche = merTexte;
+
+/** Phrase d'état de la ligne d'un proche à vol d'oiseau (details.md de proches-fiables). */
+export const PHRASE_KM = "À vol d'oiseau : l'IGN ne répond pas.";
+
 export const nomAffiche = (c: { nom: string; dep: string }) => `${c.nom} (${c.dep})`;
 
 /** Compte de la liste et de la zone annoncée (R5, D17). */
@@ -210,5 +216,7 @@ export function raisonTexte(r: Raison): string {
       return "Type d'environnement inconnu";
     case 'proche':
       return `${r.nom} ${tempsProche(r.valeur, r.zones)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
+    case 'proche-km':
+      return `${r.nom} ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
   }
 }

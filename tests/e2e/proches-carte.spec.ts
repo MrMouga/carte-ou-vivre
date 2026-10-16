@@ -3,7 +3,7 @@ import { apresRendu, ouvrir, vue } from './lib/carte';
 import { voirListe } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { readPixels } from './lib/pixels';
-import { ajouter, liste, pret, regler, zone } from './lib/proches';
+import { ajouter, ligne, liste, pret, regler, zone } from './lib/proches';
 import { color, map as carte } from '../../src/theme/tokens';
 
 // Tâche 4 (proches) : repères sur la carte, pastilles de temps en haut de la carte (bureau), fiche (R10, R15, D4, D10).
@@ -161,8 +161,9 @@ test('aucune commune avec un proche prêt : « Relâche le loyer, la mer, la tai
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le loyer, la mer, la taille ou un proche.');
 });
 
-// Hors AC : les repères suivent l'état du proche (Calcul, Prêt, Indisponible) et ne se cliquent pas.
-test('repère : calcul dès « Ajouter », puis prêt ; indisponible si les trajets tombent en panne ; ne se clique pas', async ({ page }) => {
+// Hors AC : les repères suivent l'état du proche (Calcul, Prêt) et ne se cliquent pas. Proches-fiables (recalage, tâche 3a) :
+// une panne des trajets donne un proche à vol d'oiseau (R33, R35), qui a le repère d'un proche prêt (H99).
+test('repère : calcul dès « Ajouter », puis prêt ; prêt aussi à vol d’oiseau si les trajets tombent en panne ; ne se clique pas', async ({ page }) => {
   await ouvrir(page);
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
@@ -175,7 +176,9 @@ test('repère : calcul dès « Ajouter », puis prêt ; indisponible si les traj
   await servirIgn(page, { trajets: 'panne' });
   await ajouter(page, 'Toulouseville');
   // Proches-fiables R33 : chaque zone en erreur est redemandée une fois (24 demandes à 250 ms, ≈ 6 s) avant la fin du calcul.
-  await expect(repere(page, 'Toulouseville (31)')).toHaveAttribute('data-etat', 'indisponible', { timeout: 15_000 });
+  await expect(repere(page, 'Toulouseville (31)')).toHaveAttribute('data-etat', 'calcul');
+  await expect(ligne(page, 'Toulouseville (31)')).toContainText("À vol d'oiseau : l'IGN ne répond pas.", { timeout: 15_000 });
+  await expect(repere(page, 'Toulouseville (31)')).toHaveAttribute('data-etat', 'pret');
   await zone(page).getByRole('button', { name: 'Retirer Toulouseville (31)' }).click();
   await expect(repere(page, 'Toulouseville (31)')).toHaveCount(0);
   await expect(reperes(page)).toHaveCount(1);

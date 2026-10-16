@@ -3,6 +3,7 @@ import loyerMer from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import proches from '../../docs/specs/2026-10-13-proches/acceptance.json';
 import { duree, phrasesPartiel, raisonTexte, tempsProche } from './format';
 import { evaluer, PROCHE, type Commune, type ProchePret, type Reglages } from './score';
+import { distances } from '../proches/distance';
 
 // Cadre-de-vie, règle (1) du recalage : le départ n'a plus de mer ; ces calculs partent du réglage explicite, mer 50 km
 // (valeurs de proches AC-1, AC-2, AC-4 et AC-9 recalées).
@@ -152,5 +153,41 @@ describe('R34, H96 (proches-fiables) — valeurs et phrases d’un proche partie
 
   it('D5 : un proche partiel sort la page de l’état « sans plafond » (loyer et mer sur « Sans limite »)', () => {
     expect(scores({ loyer: null, mer: null, tailles: [] }, [nantesPartiel(150, SANS_135)]).res.actif).toBe(true);
+  });
+});
+
+// Proches-fiables (R35, H94, H96, tâche 3a) : un proche **km** — l'IGN n'a pas couvert son plafond. Sa valeur est la
+// distance à vol d'oiseau de son départ à chaque mairie, comparée au km (« moins d'1 km » comme 1 km) ; plafond en km.
+// Fixture de proches-fiables : « 6 rue Test 17000 Rochelleville » au point [0.5, 0.5], panne « panne-totale ».
+const mairieDe = new Map(proches.fixture.items.map((it) => [it.code_insee, it.mairie]));
+const rochellevilleKm = (plafond: number): ProchePret => ({
+  nom: 'Rochelleville (17)',
+  plafond,
+  distances: distances([0.5, 0.5], Float64Array.from(communes.flatMap((c) => mairieDe.get(c.code)!))),
+});
+
+describe('R35 (proches-fiables) — proche à vol d’oiseau', () => {
+  it('AC-4 (calcul) : plafond 120 km, 3 communes : Portmer 70, Quaibleu 32, Grandeville 26', () => {
+    const { res, by } = scores(MER50, [rochellevilleKm(120)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 70], ['Quaibleu', 32], ['Grandeville', 26]]);
+    expect(by('C').raisons.filter((r) => r.critere === 'proche-km').map(raisonTexte).map(s)).toEqual(['Rochelleville (17) 197 km : au-dessus de ton plafond de 120 km']);
+  });
+
+  it('plafond 90 km : Portmer 67, Grandeville 18 ; Quaibleu « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km »', () => {
+    const { res, by } = scores(MER50, [rochellevilleKm(90)]);
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 67], ['Grandeville', 18]]);
+    expect(by('E').raisons.filter((r) => r.critere === 'proche-km').map(raisonTexte).map(s)).toEqual(['Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km']);
+  });
+
+  it('distance comparée au km affiché : 88,4 km tient 88 km ; 88,5 km ne le tient pas ; « moins d’1 km » compte pour 1 km', () => {
+    const un = (km: number, plafond: number): ProchePret => ({ nom: 'R', plafond, distances: Float64Array.from([km, 0, 0, 0, 0]) });
+    expect(evaluer(communes, { loyer: null, mer: null, tailles: [] }, [un(88.4, 88)]).parCode.get(code.A)!.passe).toBe(true);
+    expect(evaluer(communes, { loyer: null, mer: null, tailles: [] }, [un(88.5, 88)]).parCode.get(code.A)!.passe).toBe(false);
+    // 0,3 km sous un plafond de 15 km : note 100 × (1 − 1 / 15) = 93,3 → 93.
+    expect(evaluer(communes, { loyer: null, mer: null, tailles: [] }, [un(0.3, 15)]).parCode.get(code.A)!.score).toBe(93);
+  });
+
+  it('D5 : un proche km sort la page de l’état « sans plafond »', () => {
+    expect(scores({ loyer: null, mer: null, tailles: [] }, [rochellevilleKm(120)]).res.actif).toBe(true);
   });
 });
