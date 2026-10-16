@@ -1,0 +1,28 @@
+Preuve T3b (2026-10-16 11:15), version locale, vraies données, fond Plan IGN et recherche d'adresse réels ; /navigation/isochrone bloqué :
+fond : ign
+pastille sans commune : Nantes (44) | 120 km au plus
+repère : pret ; goutte : fill-place-marker stroke-card stroke-2
+commune choisie : La Rochelle (17)
+pastille avec La Rochelle : Nantes (44) | 121 km · au-dessus de 120 km
+fiche : … Nantes (44) 121 km : au-dessus de ton plafond de 120 km … TES PROCHES | Nantes (44) : 121 km à vol d'oiseau
+demandes de zones bloquées : 24 ; avec le nom du proche : 0
+
+grep -rniE "trajets indisponibles|'indisponible'" src/ (11:26) :
+src/ui/Proches.tsx:278:    [n('indisponible'), 'indisponible', 'indisponibles'], // proche gardé relu sans ses temps (jusqu'à la tâche 4)
+src/ui/Pastilles.tsx:19:  if (p.etat === 'indisponible') return 'trajets indisponibles';
+src/ui/LigneProche.tsx:32:  const indisponible = etat === 'indisponible';
+src/ui/LigneProche.tsx:59:  const indisponible = etat === 'indisponible';
+src/ui/LigneProche.tsx:65:    etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
+src/ui/Fiche.tsx:24: * trajets indisponibles » ; partiel (proches-fiables R34) : « Nantesville (44) : jusqu'à 2 h 30 en voiture », « … : plus
+src/ui/Fiche.tsx:28:  if (p.etat === 'indisponible') return `${p.nom} : trajets indisponibles`; // proche gardé relu sans ses temps (jusqu'à la tâche 4)
+src/map/ProcheMarkers.ts:16:type Forme = 'pret' | 'calcul' | 'indisponible';
+src/map/ProcheMarkers.ts:20:  etat === 'pret' || etat === 'partiel' || etat === 'km' ? 'pret' : etat === 'indisponible' ? 'indisponible' : 'calcul';
+src/map/ProcheMarkers.ts:31:    forme === 'indisponible'
+src/proches/memoire.ts:19:export type EtatRelu = 'indisponible';
+src/proches/memoire.ts:133:          etat: temps ? 'pret' : 'indisponible',
+src/proches/memoire.test.ts:76:    ecrireProche(s, nantesville({ id: 3, etat: 'indisponible', temps: null, empreinte: null }));
+src/proches/memoire.test.ts:78:      [1, 'indisponible', null],
+src/proches/memoire.test.ts:79:      [2, 'indisponible', null],
+src/proches/memoire.test.ts:80:      [3, 'indisponible', null],
+src/proches/useProches.ts:34:const INDISPONIBLE = { etat: 'indisponible', temps: null, empreinte: null } as const;
+src/proches/useProches.ts:125:      if (p.etat !== 'indisponible' || file.current.some((t) => t.id === p.id)) return;
