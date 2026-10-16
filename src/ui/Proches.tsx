@@ -284,6 +284,8 @@ type Props = {
   proches: Proche[];
   onAjouter: (lieu: Suggestion, nom: string) => void;
   onPlafond: (id: number, minutes: number) => void;
+  /** « Recalculer avec l'IGN » d'un proche approximatif (R36). */
+  onRecalculer: (id: number) => void;
   onRetirer: (id: number) => void;
   onEffacer: () => void;
   /** Un enregistrement dans le navigateur a échoué (R12). */
@@ -296,7 +298,7 @@ type Props = {
   monte?: boolean;
 };
 
-export function Proches({ proches, onAjouter, onPlafond, onRetirer, onEffacer, memoireRefusee, inactif, onAjout, monte = false }: Props) {
+export function Proches({ proches, onAjouter, onPlafond, onRecalculer, onRetirer, onEffacer, memoireRefusee, inactif, onAjout, monte = false }: Props) {
   // D13 : dès un proche, le champ est replié derrière « + Ajouter un proche ».
   const [ouvert, setOuvert] = useState(false);
   const vide = proches.length === 0;
@@ -376,6 +378,7 @@ export function Proches({ proches, onAjouter, onPlafond, onRetirer, onEffacer, m
                 proche={p}
                 inactif={inactif}
                 onPlafond={(v) => onPlafond(p.id, v)}
+                onRecalculer={() => onRecalculer(p.id)}
                 onRetirer={() => {
                   onRetirer(p.id);
                   if (proches.length === 1 || ouvert) versLeChamp();

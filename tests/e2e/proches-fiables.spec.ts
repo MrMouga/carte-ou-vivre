@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { voirCriteres, voirListe } from './lib/feuille';
-import { servirIgn } from './lib/ign';
+import { servirIgn, type OptionsIgn } from './lib/ign';
 import { ADRESSES, ajouter, champ, ligne, liste, lignes, plafond, pret, regler, zone } from './lib/proches';
 import { map as carte } from '../../src/theme/tokens';
 import { empreinteDe } from '../../src/proches/memoire';
@@ -330,4 +330,328 @@ test('réouverture : Rochelleville (17) à vol d’oiseau et Nantesville (44) pa
   expect(await lignes(p)).toEqual(avant);
   await p.waitForTimeout(500);
   expect(demandes.zones).toEqual([]);
+});
+
+// ——— Tâche 5a : recalcul à la réouverture (R36, D4, H93, H97, H98, H100) ———
+// « Dernier essai il y a plus de 15 min / il y a 5 min » : la page rouverte prend une horloge simulée en avance de 16 ou de
+// 5 min (`clock.install`, l'heure avance ensuite normalement) ; l'heure gardée du dernier essai est la vraie, celle du
+// calcul joué avant. Quand le test lit la page pendant le recalcul, chaque zone répond 5 s après sa demande (recalcul
+// d'au moins 7 s) pour que la lecture se fasse avant la fin.
+
+const MIN = 60_000;
+const ZONE_5_S = { delaiZoneMs: 5000 } as const;
+const RECALCUL = "Recalcul avec l'IGN…";
+const VOL = "À vol d'oiseau : l'IGN ne répond pas.";
+const APPROX = "Temps approximatifs : l'IGN n'a pas tout donné.";
+
+/** Joue AC-4 (panne totale, Rochelleville (17) à vol d'oiseau, 120 km), puis règle le plafond sur `km`. */
+async function rochellevilleKm(page: Page, km: number) {
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' });
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  await expect(ligne(page, 'Rochelleville (17)')).toContainText(VOL);
+  const pas = (km - 120) / 15;
+  if (pas) await regler(page, 'Rochelleville (17)', pas > 0 ? 'ArrowRight' : 'ArrowLeft', Math.abs(pas));
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', String(km));
+}
+
+/** Joue AC-2 cas (a) (zone de 135 min toujours en erreur), puis remet le plafond sur 2 h 30 (Grandeville à « jusqu'à 2 h 30 »). */
+async function nantesvillePartiel(page: Page) {
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'zone-135-toujours' });
+  await ajouter(page, 'Nantesville');
+  await pret(page, 'Nantesville (44)', 45_000);
+  await expect(ligne(page, 'Nantesville (44)')).toContainText(APPROX);
+  await regler(page, 'Nantesville (44)', 'ArrowRight', 2); // 2 h 30
+  await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '150');
+}
+
+/**
+ * Ferme la page et en rouvre une dans le même navigateur, `minutes` plus tard pour la page (horloge simulée), avec le faux
+ * IGN `ign` posé avant l'ouverture ; `avant` : scripts à poser avant l'ouverture. Rend la page et ses demandes.
+ */
+async function rouvrir(page: Page, minutes: number, ign: OptionsIgn = ZONE_1_S, avant?: (p: Page) => Promise<unknown>) {
+  const contexte = page.context();
+  await page.close();
+  const p = await contexte.newPage();
+  await p.clock.install({ time: Date.now() + minutes * MIN });
+  await avant?.(p);
+  await servirFixture(p);
+  const demandes = await servirIgn(p, ign);
+  await p.goto(DEPART);
+  await expect(p.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  return { p, demandes };
+}
+
+/** Attend la fin du recalcul du proche `nom` (« Recalcul avec l'IGN… » disparu de sa ligne). */
+async function finRecalcul(page: Page, nom: string) {
+  await expect(ligne(page, nom)).not.toContainText(RECALCUL, { timeout: 45_000 });
+  await apresRendu(page);
+}
+
+const valeurTexte = async (page: Page, nom: string) => nbsp(await plafond(page, nom).getAttribute('aria-valuetext'));
+
+test('AC-6 (a) depuis /?loyer=1200&mer=50, panne « zones-120-a-180-toujours », ajout de Rochelleville (17) : à vol d’oiseau, « 120 km au plus » ; Portmer 70, Quaibleu 32, Grandeville 26', async ({ page }) => {
+  test.setTimeout(60_000);
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'zones-120-a-180-toujours' });
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  await expect(ligne(page, 'Rochelleville (17)')).toContainText(VOL);
+  expect(await valeurTexte(page, 'Rochelleville (17)')).toBe('120 km au plus');
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
+    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+  ]);
+});
+
+test('AC-6 (b) depuis /?loyer=1200&mer=50, panne « zones-135-a-180-toujours », ajout de Rochelleville (17) : en heures à 2 h, « Au-delà de 2 h : l’IGN n’a pas répondu. », plafond au plus 2 h ; Portmer 69, Quaibleu 36, Grandeville 29 ; Montcher « plus de 2 h : au-dessus de ton plafond de 2 h »', async ({ page }) => {
+  test.setTimeout(60_000);
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'zones-135-a-180-toujours' });
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  const rochelle = ligne(page, 'Rochelleville (17)');
+  await expect(rochelle).toContainText("Au-delà de 2 h : l'IGN n'a pas répondu.");
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  expect(await valeurTexte(page, 'Rochelleville (17)')).toBe('2 h au plus');
+  await regler(page, 'Rochelleville (17)', 'End');
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuemax', '120');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 69 · 650 € · moins d'1 km",
+    '2 · Quaibleu (13) · 36 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 29 · 832 € · 40 km',
+  ]);
+  await choisirSurLaCarte(page, 'C');
+  await expect(fiche(page)).toContainText('Montcher (75)');
+  expect(await texteFiche(page)).toContain('Rochelleville (17) plus de 2 h : au-dessus de ton plafond de 2 h');
+});
+
+test('AC-6 (c) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 45 km, dernier essai il y a plus de 15 min, panne « zones-120-a-180-toujours » : à la réouverture, en heures à 45 min, « Au-delà de 1 h 45 : l’IGN n’a pas répondu. », plafond au plus 1 h 45 ; Portmer 48 seule', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 45);
+  const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zones-120-a-180-toujours' });
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).toContainText("Au-delà de 1 h 45 : l'IGN n'a pas répondu.");
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '45');
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('45 min au plus');
+  await regler(p, 'Rochelleville (17)', 'End');
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuemax', '105');
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '105');
+  await regler(p, 'Rochelleville (17)', 'ArrowLeft', 4); // revient à 45 min
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '45');
+  await voirListe(p);
+  await expect(liste(p)).toContainText('1 commune passe tes critères');
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 48 · 650 € · moins d'1 km"]);
+});
+
+test('AC-7 depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, service de trajets rétabli : dès l’ouverture, « Recalcul avec l’IGN… » et Portmer 68, Grandeville 17 ; ensuite prêt à 2 h 30, Portmer 68, Grandeville 20 ; fiche de Grandeville « 2 h 15 en voiture »', async ({ page }) => {
+  test.setTimeout(90_000);
+  await nantesvillePartiel(page);
+  const { p, demandes } = await rouvrir(page, 16, ZONE_5_S);
+  const nantes = ligne(p, 'Nantesville (44)');
+  await expect(nantes).toContainText(RECALCUL);
+  await expect(nantes.getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0); // à la place du lien
+  await expect(nantes).toContainText(APPROX); // l'état d'avant reste affiché
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  await voirCriteres(p);
+  await expect(nantes).toContainText(RECALCUL); // la liste a été lue pendant le recalcul
+
+  await finRecalcul(p, 'Nantesville (44)');
+  await expect(nantes).not.toContainText('Temps approximatifs');
+  await expect(nantes.getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0);
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '150');
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuemax', '180');
+  expect(demandes.zones).toHaveLength(12);
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 20 · 832 € · 40 km']);
+  await choisirSurLaCarte(p, 'B');
+  await expect(fiche(p)).toContainText('Grandeville (33)');
+  expect(await texteFiche(p)).toContain('Nantesville (44) : 2 h 15 en voiture');
+});
+
+/** AC-8 (a), (d) : Rochelleville (17) repassé en heures à 1 h 30 ; Portmer 65, Grandeville 22. */
+async function rochellevilleEnHeures(p: Page) {
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '90');
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('1 h 30 au plus');
+  await voirListe(p);
+  await expect(liste(p)).toContainText('2 communes passent tes critères');
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km", '2 · Grandeville (33) · 22 · 832 € · 40 km']);
+}
+
+/** AC-8 (b), (d), (e) : Rochelleville (17) toujours à vol d'oiseau, 90 km. */
+async function rochellevilleA90km(p: Page) {
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).toContainText(VOL);
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('90 km au plus');
+  await expect(rochelle.getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" })).toBeVisible();
+}
+
+test('AC-8 (a) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, IGN normal : à la réouverture, en heures à 1 h 30 ; Portmer 65, Grandeville 22', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 90);
+  const { p, demandes } = await rouvrir(page, 16);
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  await rochellevilleEnHeures(p);
+  expect(demandes.zones).toHaveLength(12);
+});
+
+test('AC-8 (b) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours à vol d’oiseau à 90 km, sans « Temps approximatifs », « Trajets indisponibles » ni message d’erreur ; Portmer 67, Grandeville 18', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 90);
+  const { p, demandes } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  expect(demandes.zones).toHaveLength(24); // R33 : chaque zone redemandée une fois
+  await rochellevilleA90km(p);
+  await expect(ligne(p, 'Rochelleville (17)')).not.toContainText('Temps approximatifs');
+  await expect(p.locator('body')).not.toContainText(/trajets indisponibles/i);
+  await expect(p.getByTestId('message-carte')).toHaveText('');
+  await expect(zone(p).getByRole('button', { name: /Réessayer/ })).toHaveCount(0);
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 18 · 832 € · 40 km']);
+});
+
+test('AC-8 (c) depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours partiel à 2 h 30, « Temps approximatifs », sans « À vol d’oiseau » ; Portmer 68, Grandeville 17', async ({ page }) => {
+  test.setTimeout(90_000);
+  await nantesvillePartiel(page);
+  const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
+  const nantes = ligne(p, 'Nantesville (44)');
+  await expect(nantes).toContainText(RECALCUL);
+  await finRecalcul(p, 'Nantesville (44)');
+  await expect(nantes).toContainText(APPROX);
+  await expect(nantes).not.toContainText("À vol d'oiseau");
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '150');
+  expect(await valeurTexte(p, 'Nantesville (44)')).toBe('2 h 30 au plus');
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+});
+
+test('AC-8 (d) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a 5 min, IGN normal : à l’ouverture aucune zone demandée, toujours 90 km ; après « Recalculer avec l’IGN », en heures à 1 h 30 ; Portmer 65, Grandeville 22', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 90);
+  const { p, demandes } = await rouvrir(page, 5);
+  await pret(p, 'Rochelleville (17)');
+  await p.waitForTimeout(1_000);
+  expect(demandes.zones).toEqual([]);
+  await expect(ligne(p, 'Rochelleville (17)')).not.toContainText(RECALCUL);
+  await rochellevilleA90km(p);
+
+  await ligne(p, 'Rochelleville (17)').getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" }).click();
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  expect(demandes.zones).toHaveLength(12);
+  await rochellevilleEnHeures(p);
+});
+
+test('AC-8 (e) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : le recalcul échoue, toujours 90 km ; seconde réouverture 5 min après la première : aucune zone demandée', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 90);
+  const premiere = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
+  await expect(ligne(premiere.p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(premiere.p, 'Rochelleville (17)');
+  expect(premiere.demandes.zones).toHaveLength(24);
+  await rochellevilleA90km(premiere.p);
+
+  const seconde = await rouvrir(premiere.p, 21, { ...ZONE_1_S, panne: 'panne-totale' });
+  await pret(seconde.p, 'Rochelleville (17)');
+  await seconde.p.waitForTimeout(1_000);
+  expect(seconde.demandes.zones).toEqual([]);
+  await expect(ligne(seconde.p, 'Rochelleville (17)')).not.toContainText(RECALCUL);
+  await rochellevilleA90km(seconde.p);
+});
+
+test('AC-12 (a) depuis /?loyer=1200&mer=50, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 180 km, dernier essai il y a plus de 15 min : reste à vol d’oiseau à 180 km, « Recalculer avec l’IGN », aucun plafond de 2 h 45', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 180);
+  const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zone-180-toujours-rochelleville' });
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).toContainText(VOL);
+  await expect(rochelle.getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" })).toBeVisible();
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '180');
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('180 km au plus');
+  expect(nbsp(await rochelle.innerText())).not.toContain('2 h 45');
+});
+
+test('AC-12 (b) depuis /?loyer=1200&mer=50, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 165 km, dernier essai il y a plus de 15 min : en heures à 2 h 45, « Au-delà de 2 h 45 : l’IGN n’a pas répondu. », plafond au plus 2 h 45', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 165);
+  const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zone-180-toujours-rochelleville' });
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await finRecalcul(p, 'Rochelleville (17)');
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).toContainText("Au-delà de 2 h 45 : l'IGN n'a pas répondu.");
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '165');
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('2 h 45 au plus');
+  await regler(p, 'Rochelleville (17)', 'End');
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuemax', '165');
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '165');
+});
+
+// Hors AC (cas limite de details.md, R33, R36) : le curseur bougé pendant un recalcul décide, à l'arrivée du résultat, de
+// l'état et de la conversion. Sans le geste, Rochelleville (17) resterait à vol d'oiseau (couverture 1 h 45 < 120 km).
+test('recalcul : curseur bougé de 120 à 90 km pendant le recalcul, l’IGN donne jusqu’à 1 h 45 → en heures à 1 h 30, « Au-delà de 1 h 45 »', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 120);
+  const { p } = await rouvrir(page, 16, { ...ZONE_5_S, panne: 'zones-120-a-180-toujours' });
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await regler(p, 'Rochelleville (17)', 'ArrowLeft', 2); // 90 km, curseur réglable pendant le recalcul
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '90');
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL); // réglé pendant le recalcul
+  await finRecalcul(p, 'Rochelleville (17)');
+  const rochelle = ligne(p, 'Rochelleville (17)');
+  await expect(rochelle).toContainText("Au-delà de 1 h 45 : l'IGN n'a pas répondu.");
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('1 h 30 au plus');
+});
+
+// Hors AC (H100) : pendant un recalcul, rien de nouveau dans les zones d'annonce de la page (le compte `role=status`, le
+// message de la carte, l'avis de la recherche) : ni texte changé, ni zone nouvelle. « Recalcul avec l'IGN… » est un texte
+// de la ligne, hors de toute zone d'annonce.
+test('recalcul : les zones d’annonce de la page ne changent pas pendant le recalcul de Nantesville (44), ni à son arrivée', async ({ page }) => {
+  test.setTimeout(90_000);
+  await nantesvillePartiel(page);
+  const guetteur = (p: Page) =>
+    p.addInitScript(() => {
+      const w = window as unknown as { annonces: string[] };
+      w.annonces = [];
+      const derniers = new Map<Element, string>();
+      new MutationObserver(() => {
+        for (const el of document.querySelectorAll('[role="status"], [role="alert"], [aria-live]')) {
+          const t = el.textContent ?? '';
+          if (derniers.get(el) !== t) {
+            derniers.set(el, t);
+            w.annonces.push(t);
+          }
+        }
+      }).observe(document, { subtree: true, childList: true, characterData: true, attributes: true });
+    });
+  const { p } = await rouvrir(page, 16, ZONE_5_S, guetteur);
+  await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL);
+  await expect(p.getByRole('status')).toHaveText('2 communes passent tes critères');
+  await p.evaluate(() => ((window as unknown as { annonces: string[] }).annonces = []));
+  await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL); // on est encore pendant le recalcul
+  expect(await ligne(p, 'Nantesville (44)').evaluate((el) => el.closest('[role="status"], [role="alert"], [aria-live]'))).toBeNull();
+  await finRecalcul(p, 'Nantesville (44)');
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuemax', '180'); // prêt
+  await p.waitForTimeout(500);
+  expect(await p.evaluate(() => (window as unknown as { annonces: string[] }).annonces)).toEqual([]);
+  await expect(p.getByRole('status')).toHaveText('2 communes passent tes critères');
 });

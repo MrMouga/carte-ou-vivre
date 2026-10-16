@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROCHE, type ProchePret } from '../domain/score';
 import { kmDePlafond, distances } from './distance';
-import { etatDe } from './etat';
+import { aRecalculer, etatDe, recalcule, type EtatCalcul } from './etat';
 import { calculerTemps, type Suggestion } from './ign';
 import { effacerProche, effacerTout, ecrireProche, empreinteDe, lireProches, stockageNavigateur, type ProcheGarde } from './memoire';
 import { departDe, pointsDes } from './temps';
@@ -17,6 +17,13 @@ import { departDe, pointsDes } from './temps';
 //   prêt, partiel ou km revient dans son état sans calcul (km : ses distances recalculées des mairies) ; un proche gardé
 //   non fini (en attente, en calcul, non prêt par la version d'avant) ou en heures dont l'empreinte des codes INSEE ne
 //   correspond plus à la carte est calculé à l'ouverture comme un nouveau proche, dans l'ordre d'ajout (R37).
+// - Recalcul (R36, tâche 5a) : à l'ouverture, un proche partiel ou km dont le dernier essai a commencé il y a 15 min au
+//   moins (H93) passe en recalcul, dans l'ordre d'ajout et dans la même file (H98). Pendant ce temps (aussi en attendant
+//   son tour), il garde son état, compte et se règle ; `recalcul` le dit à la ligne. Le résultat le remplace s'il est plus
+//   complet (H97), au plafond affiché à son arrivée (km ÷ 60, `etat.ts`) ; sinon seule l'heure du dernier essai change.
+//   L'heure du dernier essai est notée dès le début de chaque recalcul : une page fermée pendant un recalcul ne fait pas
+//   redemander l'IGN avant 15 min. « Recalculer avec l'IGN » (`recalculer`) met le proche en recalcul à tout moment, en
+//   fin de file (la priorité sur les recalculs automatiques est la tâche 5b).
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
 // Le nom ne part jamais vers l'IGN (H30) : seul le point de départ est envoyé.
 
@@ -27,7 +34,11 @@ export type { EtatProche } from './memoire';
  * arrondis, une par commune dans l'ordre de communes.json, pour les codes INSEE de `empreinte` ; son `plafond` est alors en
  * km (15 à 180). Non gardées : recalculées des mairies à l'ouverture.
  */
-export type Proche = ProcheGarde & { distances?: Float64Array };
+export type Proche = ProcheGarde & {
+  distances?: Float64Array;
+  /** R36 : en recalcul (en cours ou en attente de son tour) ; l'état affiché reste celui d'avant. Non gardé. */
+  recalcul?: boolean;
+};
 
 export const NOM_MAX = 30;
 export const MAX_PROCHES = 5;
@@ -36,7 +47,8 @@ const RETIRE = 'retiré';
 /** Nom proposé pour une suggestion : sa commune et son département, « Nantes (44) » (R9). */
 export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
 
-type Tache = { id: number; depart: [number, number] };
+/** Un calcul de la file : celui d'un nouveau proche (R33, R37), ou le recalcul d'un proche approximatif (R36). */
+type Tache = { id: number; depart: [number, number]; recalcul?: boolean };
 
 /**
  * R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment. En km (R35) : ses distances à vol
@@ -46,6 +58,16 @@ function apresCalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: 
   const etat = etatDe(zones, p.plafond);
   if (etat !== 'km') return { ...p, etat, temps, empreinte, zones, essai, distances: undefined };
   return { ...p, etat, temps: null, empreinte, zones, essai, distances: distances(departKm(p), points), plafond: kmDePlafond(p.plafond) };
+}
+
+/**
+ * R36 : le proche approximatif `p` à l'arrivée de son recalcul. Plus complet (H97) → ses nouveaux temps, son état et son
+ * plafond en minutes ; sinon l'état d'avant reste. Dans les deux cas, l'heure du dernier essai est celle de ce recalcul.
+ */
+function apresRecalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: string | null, essai: number): Proche {
+  const r = recalcule({ etat: p.etat as EtatCalcul, zones: p.zones ?? [], plafond: p.plafond }, zones);
+  if (!r) return { ...p, recalcul: false, essai };
+  return { ...p, ...r, temps, empreinte, zones, essai, distances: undefined, recalcul: false };
 }
 
 /** Point de départ des distances à vol d'oiseau (H101). */
@@ -68,6 +90,8 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   const page = useRef({ points, empreinte });
   page.current = { points, empreinte };
   const file = useRef<Tache[]>([]);
+  const actuels = useRef(proches);
+  actuels.current = proches;
   const courant = useRef<{ id: number; arret: AbortController } | null>(null);
 
   const changer = (id: number, p: Partial<Proche>) => setProches((ps) => ps.map((x) => (x.id === id ? { ...x, ...p } : x)));
@@ -81,15 +105,18 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     const arret = new AbortController();
     courant.current = { id: tache.id, arret };
     const essai = Date.now(); // H93 : début de l'essai
-    changer(tache.id, { etat: 'calcul' });
+    // Un recalcul garde l'état affiché (R36) ; son heure est notée tout de suite (gardée même si la page se ferme avant la fin).
+    changer(tache.id, tache.recalcul ? { essai } : { etat: 'calcul' });
+    const fin = (temps: Uint16Array, zones: number[]) => (x: Proche) =>
+      tache.recalcul ? apresRecalcul(x, temps, zones, empreinte, essai) : apresCalcul(x, temps, zones, empreinte, points, essai);
     const arrete = new Promise<never>((_, ko) => arret.signal.addEventListener('abort', () => ko(arret.signal.reason), { once: true }));
     Promise.race([calculerTemps(tache.depart, points, arret.signal), arrete])
       .then(
-        ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, temps, zones, empreinte, points, essai) : x))),
-        // Classement en échec : comme un calcul sans zone, le proche passe à vol d'oiseau (R33, R35).
+        ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? fin(temps, zones)(x) : x))),
+        // Classement en échec : comme un calcul sans zone, le proche passe à vol d'oiseau (R33, R35), ou reste tel quel (R36).
         () =>
           arret.signal.reason !== RETIRE &&
-          setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, new Uint16Array(points.length / 2), [], empreinte, points, essai) : x))),
+          setProches((ps) => ps.map((x) => (x.id === tache.id ? fin(new Uint16Array(points.length / 2), [])(x) : x))),
       )
       .finally(() => {
         courant.current = null;
@@ -122,6 +149,20 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
 
   const regler = useCallback((id: number, plafond: number) => changer(id, { plafond }), []);
 
+  const enFile = (id: number) => courant.current?.id === id || file.current.some((t) => t.id === id);
+
+  /** « Recalculer avec l'IGN » (R36) : le proche approximatif passe en recalcul, en fin de file ; déjà en file : rien. */
+  const recalculer = useCallback(
+    (id: number) => {
+      const p = actuels.current.find((x) => x.id === id);
+      if (!p || enFile(id) || (p.etat !== 'partiel' && p.etat !== 'km')) return;
+      file.current.push({ id, depart: p.depart ?? departDe(p.lieu, mairie), recalcul: true });
+      changer(id, { recalcul: true });
+      suivant();
+    },
+    [mairie, suivant],
+  );
+
   /** Retire un proche dans tous ses états ; s'il calcule, son calcul s'arrête (ses zones pas encore parties ne partent pas). */
   const retirer = useCallback((id: number) => {
     file.current = file.current.filter((t) => t.id !== id);
@@ -142,23 +183,29 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   }, [stockage]);
 
   // À l'ouverture, une fois la carte chargée (R12, R36, R37) : un proche km retrouve ses distances ; un proche gardé en
-  // attente (non fini, `memoire.ts`) ou en heures aux temps d'une autre carte est calculé comme un nouveau proche, dans
-  // l'ordre d'ajout (son nom et son plafond restent). Idempotent : un proche déjà dans la file ou en calcul n'y revient pas.
-  const actuels = useRef(proches);
-  actuels.current = proches;
+  // attente (non fini, `memoire.ts`) ou en heures aux temps d'une autre carte est calculé comme un nouveau proche (son nom
+  // et son plafond restent) ; un proche partiel ou km dont le dernier essai date de 15 min au moins passe en recalcul.
+  // Tous dans une même file, dans l'ordre d'ajout. Idempotent : un proche déjà dans la file ou en calcul n'y revient pas.
   useEffect(() => {
     if (!points || !empreinte) return;
-    const enFile = (id: number) => courant.current?.id === id || file.current.some((t) => t.id === id);
-    const aCalculer = (p: Proche) =>
-      !enFile(p.id) && (p.etat === 'attente' || ((p.etat === 'pret' || p.etat === 'partiel') && p.empreinte !== empreinte));
-    const nouveaux = actuels.current.filter(aCalculer);
-    for (const p of nouveaux) file.current.push({ id: p.id, depart: p.depart ?? departDe(p.lieu, mairie) });
-    const ids = new Set(nouveaux.map((p) => p.id));
+    const maintenant = Date.now();
+    const aCalculer = (p: Proche) => p.etat === 'attente' || ((p.etat === 'pret' || p.etat === 'partiel') && p.empreinte !== empreinte);
+    const calculs = new Set<number>();
+    const recalculs = new Set<number>();
+    for (const p of actuels.current) {
+      if (enFile(p.id)) continue;
+      const depart = p.depart ?? departDe(p.lieu, mairie);
+      if (aCalculer(p)) calculs.add(p.id);
+      else if (aRecalculer(p, maintenant)) recalculs.add(p.id);
+      else continue;
+      file.current.push({ id: p.id, depart, recalcul: recalculs.has(p.id) });
+    }
     setProches((ps) =>
       ps.map((p) => {
-        if (ids.has(p.id)) return { ...p, etat: 'attente', depart: p.depart ?? departDe(p.lieu, mairie), temps: null, empreinte: null, zones: undefined, distances: undefined };
-        if (p.etat === 'km' && (!p.distances || p.empreinte !== empreinte)) return { ...p, distances: distances(departKm(p), points), empreinte };
-        return p;
+        if (calculs.has(p.id)) return { ...p, etat: 'attente', depart: p.depart ?? departDe(p.lieu, mairie), temps: null, empreinte: null, zones: undefined, distances: undefined };
+        const q = recalculs.has(p.id) ? { ...p, recalcul: true } : p;
+        if (q.etat === 'km' && (!q.distances || q.empreinte !== empreinte)) return { ...q, distances: distances(departKm(q), points), empreinte };
+        return q;
       }),
     );
     suivant();
@@ -206,5 +253,5 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     [proches, empreinte],
   );
 
-  return { proches, prets, memoireRefusee, ajouter, regler, retirer, effacer };
+  return { proches, prets, memoireRefusee, ajouter, regler, recalculer, retirer, effacer };
 }

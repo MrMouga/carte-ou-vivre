@@ -1,6 +1,8 @@
 import { PROCHE } from '../domain/score';
+import { minutesDeKm } from './distance';
 
-// État d'un proche à la fin de son calcul (spec proches-fiables R33, R34, H97), sans effet ni réseau.
+// État d'un proche à la fin de son calcul (spec proches-fiables R33, R34, H97) et recalcul à la réouverture (R36), sans
+// effet ni réseau.
 // `zones` : durées des zones obtenues de l'IGN, en minutes (15, 30… 180), dans n'importe quel ordre.
 
 export type EtatCalcul = 'pret' | 'partiel' | 'km';
@@ -36,4 +38,25 @@ export function plusComplet(nouveau: { etat: EtatCalcul; zones: readonly number[
   if (nouveau.etat !== 'partiel') return false;
   if (nouveau.zones.length !== ancien.zones.length) return nouveau.zones.length > ancien.zones.length;
   return couverture(nouveau.zones) > couverture(ancien.zones);
+}
+
+/** D4, H93 : un proche approximatif se recalcule à l'ouverture au plus une fois par 15 min, comptées depuis le début du dernier essai. */
+export const ATTENTE_RECALCUL_MS = 15 * 60_000;
+
+/** R36 : à l'ouverture, ce proche passe-t-il en recalcul ? Partiel ou km, et dernier essai commencé il y a 15 min au moins (ou inconnu). */
+export const aRecalculer = (p: { etat: string; essai?: number }, maintenant: number) =>
+  (p.etat === 'partiel' || p.etat === 'km') && (p.essai == null || maintenant - p.essai >= ATTENTE_RECALCUL_MS);
+
+/**
+ * R36 : ce que devient un proche approximatif quand son recalcul rend `zones`. L'état se décide au plafond affiché à
+ * l'arrivée du résultat (R33 ; en km, le même nombre de minutes, H94) ; le nouveau résultat remplace l'ancien seulement
+ * s'il est plus complet (H97) : rend alors l'état et le plafond en minutes (km ÷ 60 h), sinon null (l'ancien reste).
+ */
+export function recalcule(
+  ancien: { etat: EtatCalcul; zones: readonly number[]; plafond: number },
+  zones: readonly number[],
+): { etat: EtatCalcul; plafond: number } | null {
+  const plafond = ancien.etat === 'km' ? minutesDeKm(ancien.plafond) : ancien.plafond;
+  const etat = etatDe(zones, plafond);
+  return plusComplet({ etat, zones }, ancien) ? { etat, plafond } : null;
 }

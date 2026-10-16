@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { couverture, etatDe, marque, plusComplet } from './etat';
+import { aRecalculer, ATTENTE_RECALCUL_MS, couverture, etatDe, marque, plusComplet, recalcule } from './etat';
 
 // État d'un proche à la fin de son calcul (spec proches-fiables R33, R34, H97) : prêt (12 zones), partiel ou km,
 // selon les zones obtenues et le plafond. Durées en minutes : 15, 30… 180.
@@ -91,5 +91,77 @@ describe('H97 — un résultat plus complet remplace l’ancien', () => {
     expect(plusComplet(partiel(sans(135)), partiel(sans(135)))).toBe(false);
     expect(plusComplet(km(jusqua(105)), km())).toBe(false);
     expect(plusComplet(pret, pret)).toBe(false);
+  });
+});
+
+describe('R36 — à l’ouverture, quels proches se recalculent (15 min au moins depuis le début du dernier essai, H93)', () => {
+  const maintenant = Date.UTC(2026, 9, 16, 12, 0);
+  const il_y_a = (min: number) => maintenant - min * 60_000;
+
+  it('15 min = 900 000 ms', () => expect(ATTENTE_RECALCUL_MS).toBe(900_000));
+
+  it('AC-8 (a) à (c) : partiel ou km, dernier essai il y a plus de 15 min → recalculé', () => {
+    expect(aRecalculer({ etat: 'km', essai: il_y_a(16) }, maintenant)).toBe(true);
+    expect(aRecalculer({ etat: 'partiel', essai: il_y_a(16) }, maintenant)).toBe(true);
+  });
+
+  it('borne : 15 min tout juste → recalculé ; une milliseconde de moins → non', () => {
+    expect(aRecalculer({ etat: 'km', essai: il_y_a(15) }, maintenant)).toBe(true);
+    expect(aRecalculer({ etat: 'km', essai: il_y_a(15) + 1 }, maintenant)).toBe(false);
+  });
+
+  it('AC-8 (d) et (e) : dernier essai il y a 5 min → non recalculé', () => {
+    expect(aRecalculer({ etat: 'km', essai: il_y_a(5) }, maintenant)).toBe(false);
+    expect(aRecalculer({ etat: 'partiel', essai: il_y_a(5) }, maintenant)).toBe(false);
+  });
+
+  it('un proche prêt, en attente ou en calcul ne passe jamais en recalcul (AC-8 de proches ; R37 le calcule à part)', () => {
+    for (const etat of ['pret', 'attente', 'calcul'] as const) expect(aRecalculer({ etat, essai: il_y_a(60) }, maintenant)).toBe(false);
+  });
+
+  it('partiel ou km sans heure de dernier essai → recalculé', () => {
+    expect(aRecalculer({ etat: 'km' }, maintenant)).toBe(true);
+  });
+});
+
+describe('R36 — résultat d’un recalcul : remplacé s’il est plus complet (H97), plafond affiché à l’arrivée, km ÷ 60', () => {
+  const partiel = (zones: number[], plafond: number) => ({ etat: 'partiel', zones, plafond }) as const;
+  const km = (plafond: number, zones: number[] = []) => ({ etat: 'km', zones, plafond }) as const;
+
+  it('AC-6 (c) : km 45 km, l’IGN donne jusqu’à 1 h 45 → partiel, plafond 45 min', () => {
+    expect(recalcule(km(45), jusqua(105))).toEqual({ etat: 'partiel', plafond: 45 });
+  });
+
+  it('AC-7 : partiel à 2 h 30 (2 h 15 manquait), l’IGN donne les 12 zones → prêt, plafond 2 h 30', () => {
+    expect(recalcule(partiel(sans(135), 150), toutes)).toEqual({ etat: 'pret', plafond: 150 });
+  });
+
+  it('AC-8 (a) et (d) : km 90 km, les 12 zones → prêt, plafond 1 h 30', () => {
+    expect(recalcule(km(90), toutes)).toEqual({ etat: 'pret', plafond: 90 });
+  });
+
+  it('AC-8 (b) et (e) : km 90 km, panne totale → l’ancien reste (km)', () => {
+    expect(recalcule(km(90), [])).toBeNull();
+  });
+
+  it('AC-8 (c) : partiel à 2 h 30, panne totale → l’ancien reste (partiel, pas km)', () => {
+    expect(recalcule(partiel(sans(135), 150), [])).toBeNull();
+  });
+
+  it('AC-12 (a) : km 180 km, l’IGN donne jusqu’à 2 h 45 → l’ancien reste (3 h n’est pas vérifiée)', () => {
+    expect(recalcule(km(180), sans(180))).toBeNull();
+  });
+
+  it('AC-12 (b) : km 165 km, l’IGN donne jusqu’à 2 h 45 → partiel, plafond 2 h 45', () => {
+    expect(recalcule(km(165), sans(180))).toEqual({ etat: 'partiel', plafond: 165 });
+  });
+
+  it('H97 : un partiel à 3 zones ne remplace pas un partiel à 11 zones', () => {
+    expect(recalcule(partiel(sans(135), 30), jusqua(45))).toBeNull();
+  });
+
+  it('curseur bougé pendant le recalcul : le plafond affiché à l’arrivée décide (km 120 → 90 km, jusqu’à 1 h 45 → partiel 1 h 30)', () => {
+    expect(recalcule(km(120), jusqua(105))).toBeNull();
+    expect(recalcule(km(90), jusqua(105))).toEqual({ etat: 'partiel', plafond: 90 });
   });
 });

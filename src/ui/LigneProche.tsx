@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { duree, km, PHRASE_KM, phrasesPartiel } from '@/domain/format';
@@ -10,8 +11,11 @@ import type { Proche } from '@/proches/useProches';
 // « Retirer <nom> ».
 // Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
 // l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
-// (sans effet avant la tâche 5b de proches-fiables). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
+// (il met le proche en recalcul, R36). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
 // répond pas. » et un curseur en km, de 15 à 180 km par pas de 15 (R35), « 120 km au plus ».
+// Recalcul (tâche 5a, état « recalcul » de details.md) : l'état d'avant reste affiché, le curseur réglable, et
+// « Recalcul avec l'IGN… » remplace le lien, aussi quand le proche attend son tour. Texte de la ligne, sans annonce (H100).
+// Après un appui sur le lien, le focus passe à « Retirer » de la même ligne (le lien disparaît).
 
 /** Icône maison de Figma (« Icône maison », 14 × 14), à la couleur du texte. */
 function IconeMaison() {
@@ -42,9 +46,10 @@ export function RepereEnPetit({ etat }: { etat: Proche['etat'] }) {
  *  déjà dans le nom, corrections 3 du 2026-10-13). */
 export const adresseDe = (p: Pick<Proche, 'lieu'>) => (p.lieu.estCommune ? 'départ de la mairie' : p.lieu.libelle);
 
-type Props = { proche: Proche; onPlafond: (minutes: number) => void; onRetirer: () => void; inactif?: boolean };
+type Props = { proche: Proche; onPlafond: (minutes: number) => void; onRecalculer: () => void; onRetirer: () => void; inactif?: boolean };
 
-export function LigneProche({ proche, onPlafond, onRetirer, inactif }: Props) {
+export function LigneProche({ proche, onPlafond, onRecalculer, onRetirer, inactif }: Props) {
+  const boutonRetirer = useRef<HTMLButtonElement>(null);
   const { nom, plafond, etat } = proche;
   const partiel = etat === 'partiel' && proche.zones != null;
   const enKm = etat === 'km';
@@ -56,7 +61,7 @@ export function LigneProche({ proche, onPlafond, onRetirer, inactif }: Props) {
   const phrases = partiel ? phrasesPartiel(proche.zones!) : enKm ? [PHRASE_KM] : [];
   const phrase = etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : null;
   const retirer = (
-    <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
+    <Button ref={boutonRetirer} variant="lien" className="max-bureau:min-h-toucher" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
       Retirer
     </Button>
   );
@@ -89,10 +94,21 @@ export function LigneProche({ proche, onPlafond, onRetirer, inactif }: Props) {
         {phrase && <p className="text-texte text-muted-foreground">{phrase}</p>}
         {approximatif ? (
           <div className="flex items-center gap-2">
-            {/* Sans effet avant la tâche 5b de proches-fiables (recalcul à la demande). */}
-            <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Recalculer avec l'IGN ${nom}`}>
-              Recalculer avec l'IGN
-            </Button>
+            {proche.recalcul ? (
+              <p className="text-texte text-foreground">Recalcul avec l'IGN…</p>
+            ) : (
+              <Button
+                variant="lien"
+                className="max-bureau:min-h-toucher"
+                aria-label={`Recalculer avec l'IGN ${nom}`}
+                onClick={() => {
+                  onRecalculer();
+                  boutonRetirer.current?.focus();
+                }}
+              >
+                Recalculer avec l'IGN
+              </Button>
+            )}
             {retirer}
           </div>
         ) : (

@@ -23,3 +23,6 @@ export function distances(depart: readonly number[], points: Float64Array): Floa
 
 /** H94 : plafond en km à l'entrée en repli, depuis le plafond en minutes (45 min → 45 km, 3 h → 180 km). */
 export const kmDePlafond = (minutes: number) => (minutes / 60) * KM_PAR_HEURE;
+
+/** H94, dans l'autre sens (R36) : un proche km qui repasse en heures garde son plafond converti (90 km → 1 h 30). */
+export const minutesDeKm = (plafondKm: number) => (plafondKm / KM_PAR_HEURE) * 60;
