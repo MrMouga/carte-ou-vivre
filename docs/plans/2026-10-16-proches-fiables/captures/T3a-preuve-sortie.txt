@@ -1,0 +1,36 @@
+# Tâche 3a — sorties des preuves (2026-10-16)
+
+## Étape 2 de la vérification de bout en bout, version locale (vite), vraies données, vrai fond et vraie recherche d'adresse IGN ; /navigation/isochrone bloqué par une route du navigateur de test (abort)
+```
+390 fond : ign
+390 fin du calcul après 5.9 s, 24 demandes de zones bloquées
+390 ligne : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer
+390 curseur : 120 km au plus max 180
+390 commune choisie : Lagord (17)
+390 commune choisie : Lagord (17)
+390 commune choisie : La Rochelle (17)
+390 fiche : ← Les 10 premières | La Rochelle (17) | Ville dense · 80 000 habitants | NE PASSE PAS TES CRITÈRES | Nantes (44) 121 km : au-dessus de ton plafond de 120 km | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer | 196 km de la montagne à vol d'oiseau | TES PROCHES | Nantes (44) : 121 km à vol d'oiseau
+bureau fond : ign
+bureau fin du calcul après 5.9 s, 24 demandes de zones bloquées
+bureau ligne : Nantes (44) | 120 km | 12 Rue de la Paix 44000 Nantes | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer
+bureau curseur : 120 km au plus max 180
+bureau compte : 643 communes passent tes critères
+bureau commune choisie : La Rochelle (17)
+bureau fiche : ← Les 10 premières | La Rochelle (17) | Ville dense · 80 000 habitants | NE PASSE PAS TES CRITÈRES | Nantes (44) 121 km : au-dessus de ton plafond de 120 km | 767 € par mois pour 52 m² (14,7 €/m²) | moins d'1 km de la mer | 196 km de la montagne à vol d'oiseau | TES PROCHES | Nantes (44) : 121 km à vol d'oiseau
+bureau demandes de zones bloquées en tout : 24 ; avec le nom du proche : 0
+```
+
+## Contrôle d'AC-6 (a) et (b), fixture, sans marquer le critère (posé en tâche 5a)
+```
+bureau (b) ligne : Rochelleville (17) | 2 h | 6 rue Test 17000 Rochelleville | Au-delà de 2 h : l'IGN n'a pas répondu. | Recalculer avec l'IGN | Retirer
+bureau (b) liste : 1 · Portmer (17) · 69 · 650 € · moins d'1 km / 2 · Quaibleu (13) · 36 · 1 092 € · 7 km / 3 · Grandeville (33) · 29 · 832 € · 40 km
+bureau (a) ligne : Rochelleville (17) | 120 km | 6 rue Test 17000 Rochelleville | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer
+bureau (a) curseur : 120 km au plus
+bureau (a) liste : 1 · Portmer (17) · 70 · 650 € · moins d'1 km / 2 · Quaibleu (13) · 32 · 1 092 € · 7 km / 3 · Grandeville (33) · 26 · 832 € · 40 km
+mobile (a) ligne : Rochelleville (17) | 120 km | 6 rue Test 17000 Rochelleville | À vol d'oiseau : l'IGN ne répond pas. | Recalculer avec l'IGN | Retirer
+mobile (a) curseur : 120 km au plus
+mobile (b) ligne : Rochelleville (17) | 2 h | 6 rue Test 17000 Rochelleville | Au-delà de 2 h : l'IGN n'a pas répondu. | Recalculer avec l'IGN | Retirer
+mobile (a) liste : 1 · Portmer (17) · 70 · 650 € · moins d'1 km / 2 · Quaibleu (13) · 32 · 1 092 € · 7 km / 3 · Grandeville (33) · 26 · 832 € · 40 km
+mobile (b) liste : 1 · Portmer (17) · 69 · 650 € · moins d'1 km / 2 · Quaibleu (13) · 36 · 1 092 € · 7 km / 3 · Grandeville (33) · 29 · 832 € · 40 km
+  4 passed (16.6s)
+```
