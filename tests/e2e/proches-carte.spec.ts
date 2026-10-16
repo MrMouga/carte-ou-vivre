@@ -174,7 +174,8 @@ test('repère : calcul dès « Ajouter », puis prêt ; indisponible si les traj
 
   await servirIgn(page, { trajets: 'panne' });
   await ajouter(page, 'Toulouseville');
-  await expect(repere(page, 'Toulouseville (31)')).toHaveAttribute('data-etat', 'indisponible');
+  // Proches-fiables R33 : chaque zone en erreur est redemandée une fois (24 demandes à 250 ms, ≈ 6 s) avant la fin du calcul.
+  await expect(repere(page, 'Toulouseville (31)')).toHaveAttribute('data-etat', 'indisponible', { timeout: 15_000 });
   await zone(page).getByRole('button', { name: 'Retirer Toulouseville (31)' }).click();
   await expect(repere(page, 'Toulouseville (31)')).toHaveCount(0);
   await expect(reperes(page)).toHaveCount(1);

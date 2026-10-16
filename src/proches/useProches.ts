@@ -1,25 +1,32 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROCHE, type ProchePret } from '../domain/score';
+import { etatDe } from './etat';
 import { calculerTemps, type Suggestion } from './ign';
 import { effacerProche, effacerTout, ecrireProche, empreinteDe, lireProches, stockageNavigateur, type ProcheGarde } from './memoire';
 import { departDe, pointsDes } from './temps';
 
 // Les proches de la page (spec proches R9–R13, D3–D7) : ajout, calcul de leurs temps, plafond, retrait, mémoire.
 // - File : un proche calcule à la fois, les suivants sont « en attente » ; la file des zones IGN est commune à la page.
-// - Échec (zone ratée, 429, réseau) ou plus de 45 s depuis le début de SON calcul (H21) → indisponible ; « Réessayer »
-//   le remet dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
+// - Calcul tolérant (proches-fiables R33) : une zone ratée est redemandée une fois ; 45 s au plus après le début de SON
+//   calcul (H21), le proche prend ce qu'il a — prêt, partiel ou km selon ses zones et son plafond (`etat.ts`).
+//   Transition (tâche 1 de proches-fiables) : jusqu'à la tâche 2, un proche partiel est montré prêt, avec ses temps ;
+//   jusqu'à la tâche 3a, un proche km est montré indisponible, comme avant. « Réessayer » remet un proche indisponible
+//   dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
 // - Mémoire du navigateur (R12) : chaque changement d'un proche réécrit son entrée ; à l'ouverture, les proches gardés
 //   reviennent sans calcul ; un proche dont l'empreinte des codes INSEE ne correspond plus à la carte revient indisponible.
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
 // Le nom ne part jamais vers l'IGN (H30) : seul le point de départ est envoyé.
 
 export type { EtatProche } from './memoire';
-export type Proche = ProcheGarde;
+/**
+ * `zones` : durées des zones obtenues au dernier calcul, croissantes (12 pour un proche prêt) ; d'elles se déduisent la
+ * couverture, l'état et les communes en « jusqu'à » (`etat.ts`). Absent pour un proche relu de la mémoire (format inchangé
+ * jusqu'à la tâche 4 de proches-fiables).
+ */
+export type Proche = ProcheGarde & { zones?: number[] };
 
 export const NOM_MAX = 30;
 export const MAX_PROCHES = 5;
-/** Délai d'échec d'un proche, compté depuis le début de son calcul (H21). */
-export const DELAI_PROCHE_MS = 45_000;
 const RETIRE = 'retiré';
 /** Un proche indisponible n'a pas de temps (R12, R13). */
 const INDISPONIBLE = { etat: 'indisponible', temps: null, empreinte: null } as const;
@@ -28,6 +35,11 @@ const INDISPONIBLE = { etat: 'indisponible', temps: null, empreinte: null } as c
 export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
 
 type Tache = { id: number; depart: [number, number] };
+
+/** R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment (transition de la tâche 1 : voir en tête). */
+function apresCalcul(p: Proche, temps: Uint16Array, zones: number[], empreinte: string | null): Proche {
+  return etatDe(zones, p.plafond) === 'km' ? { ...p, ...INDISPONIBLE, zones } : { ...p, etat: 'pret', temps, empreinte, zones };
+}
 
 /** `reperes` : mairies dans l'ordre de communes.json (D18 de loyer-mer) ; `codes` : codes INSEE dans le même ordre. */
 export function useProches(reperes: number[][] | null, codes: string[] | null) {
@@ -56,15 +68,13 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     const arret = new AbortController();
     courant.current = { id: tache.id, arret };
     changer(tache.id, { etat: 'calcul' });
-    const delai = setTimeout(() => arret.abort(new DOMException('plus de 45 s', 'TimeoutError')), DELAI_PROCHE_MS);
     const arrete = new Promise<never>((_, ko) => arret.signal.addEventListener('abort', () => ko(arret.signal.reason), { once: true }));
     Promise.race([calculerTemps(tache.depart, points, arret.signal), arrete])
       .then(
-        (temps) => changer(tache.id, { etat: 'pret', temps, empreinte }),
-        () => arret.signal.reason !== RETIRE && changer(tache.id, INDISPONIBLE), // R13
+        ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, temps, zones, empreinte) : x))),
+        () => arret.signal.reason !== RETIRE && changer(tache.id, INDISPONIBLE), // classement en échec
       )
       .finally(() => {
-        clearTimeout(delai);
         courant.current = null;
         suivant();
       });
@@ -95,7 +105,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     [reperes, mairie, suivant],
   );
 
-  /** Indisponible → en attente, puis calcul quand son tour vient (le délai de 45 s repart de zéro). */
+  /** Indisponible → en attente, puis calcul quand son tour vient (ses 45 s repartent de zéro). */
   const reessayer = useCallback(
     (p: Proche) => {
       if (p.etat !== 'indisponible' || file.current.some((t) => t.id === p.id)) return;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import isochrone15 from '../../docs/plans/2026-10-13-proches/captures/T0-ign-exemples/isochrone-15min-nantes.json';
+import { marque } from './etat';
 import { classer, departDe, pointsDes, type Geometrie } from './temps';
 
 // Classement des mairies dans les zones d'un proche (R10) : la fin de tranche est la plus petite durée dont la zone
@@ -45,6 +46,42 @@ describe('R10 — fin de tranche d’une mairie', () => {
   it('vraie zone de l’IGN (15 min depuis 12 rue de la Paix, Nantes) : le départ y est, Bordeaux non', () => {
     const zone = isochrone15.geometry as Geometrie;
     expect([...classer([[15, zone]], points([-1.554555, 47.215051], [-0.5792, 44.8378]))]).toEqual([15, 0]);
+  });
+});
+
+describe('R34 (proches-fiables) — classement avec des zones manquantes', () => {
+  // 12 zones emboîtées : celle de d minutes est un carré de demi-côté d / 60 ; une mairie à d / 60 − 0,1 est dans la tranche d.
+  const DUREES = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180];
+  const zonesSans = (...manquantes: number[]) =>
+    DUREES.filter((d) => !manquantes.includes(d)).map((d): [number, Geometrie] => [d, poly(carre(d / 60))]);
+  const mairies = (...tranches: number[]) => points(...tranches.map((d): [number, number] => [d / 60 - 0.1, 0]));
+  const valeurs = (zones: [number, Geometrie][], fins: Uint16Array) => [...fins].map((f) => [f, marque(f, zones.map(([d]) => d))]);
+
+  it('les 12 zones : chaque mairie prend sa tranche, exacte', () => {
+    const z = zonesSans();
+    expect(valeurs(z, classer(z, mairies(60, 135, 150, 180)))).toEqual([[60, 'exacte'], [135, 'exacte'], [150, 'exacte'], [180, 'exacte']]);
+  });
+
+  it('zone de 2 h 15 manquante (au milieu) : les tranches 2 h 15 et 2 h 30 disent « jusqu’à 2 h 30 », les autres ne changent pas', () => {
+    const z = zonesSans(135);
+    expect(valeurs(z, classer(z, mairies(60, 120, 135, 150, 165)))).toEqual([
+      [60, 'exacte'],
+      [120, 'exacte'],
+      [150, 'jusqua'],
+      [150, 'jusqua'],
+      [165, 'exacte'],
+    ]);
+  });
+
+  it('zones de 2 h 45 et 3 h manquantes (en haut) : au-delà de la couverture de 2 h 30, la mairie vaut 0 (« plus de 2 h 30 »)', () => {
+    const z = zonesSans(165, 180);
+    expect(valeurs(z, classer(z, mairies(150, 165, 180)))).toEqual([[150, 'exacte'], [0, 'au-dela'], [0, 'au-dela']]);
+  });
+
+  it('au milieu et en haut à la fois (1 h 30 et 3 h) : tranches 1 h 30 et 1 h 45 « jusqu’à 1 h 45 », 3 h au-delà ; aucune zone : tout à 0', () => {
+    const z = zonesSans(90, 180);
+    expect(valeurs(z, classer(z, mairies(75, 90, 105, 120, 180)))).toEqual([[75, 'exacte'], [105, 'jusqua'], [105, 'jusqua'], [120, 'exacte'], [0, 'au-dela']]);
+    expect([...classer([], mairies(15, 180))]).toEqual([0, 0]);
   });
 });
 

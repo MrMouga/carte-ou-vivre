@@ -101,7 +101,8 @@ test('cibles des proches : 44 px de haut à 390 px, 24 px au moins en bureau', a
   await ouvrir(page);
   await servirIgn(page, { trajets: 'panne' }); // ligne indisponible : « Réessayer » et « Retirer »
   await ajouter(page, 'Nantesville');
-  await expect(zone(page).getByRole('button', { name: 'Réessayer Nantesville (44)' })).toBeVisible();
+  // Proches-fiables R33 : chaque zone en erreur est redemandée une fois (24 demandes à 250 ms, ≈ 6 s) avant la fin du calcul.
+  await expect(zone(page).getByRole('button', { name: 'Réessayer Nantesville (44)' })).toBeVisible({ timeout: 15_000 });
   const attendu = mobile(page) ? size['taille-toucher'] : size['taille-cible'];
   const hauteur = async (l: ReturnType<Page['locator']>) => (await boite(l)).height;
 

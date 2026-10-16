@@ -172,7 +172,8 @@ test('R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer »
   await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page, { trajets: '429' });
   await ajouter(page, 'Nantesville');
-  await expect(zone(page)).toContainText(INDISPONIBLE_44);
+  // Proches-fiables R33, H92 : chaque zone refusée est redemandée 5 s plus tard (24 demandes, ≈ 8 s) avant la fin du calcul.
+  await expect(zone(page)).toContainText(INDISPONIBLE_44, { timeout: 15_000 });
   const titre = page.getByRole('button', { name: /^Tes proches/ });
   await titre.click();
   await expect(titre).toHaveAccessibleName('Tes proches 1 · 1 indisponible');

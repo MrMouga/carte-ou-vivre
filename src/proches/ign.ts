@@ -90,26 +90,55 @@ function creneau(signal: AbortSignal): Promise<void> {
   return file;
 }
 
+/** Fin d'un calcul, comptée depuis son début (H21 de proches, R33) : une zone sans réponse à ce moment manque. */
+export const DELAI_CALCUL_MS = 45_000;
+/** Après un refus (429), l'IGN bloque 5 s : le second essai de la zone attend d'autant, puis passe par la file (H92). */
+export const ATTENTE_REFUS_MS = 5_000;
+
+/** Zones d'un départ : obtenues ([minutes, réponse brute]) et manquantes, dans l'ordre des demandes (la plus longue d'abord). */
+export type Zones = { obtenues: [number, string][]; manquantes: number[] };
+
+/** Attend `ms`, ou moins si `signal` s'arrête avant. */
+const attendre = (ms: number, signal: AbortSignal) =>
+  new Promise<void>((ok) => {
+    const t = setTimeout(ok, ms);
+    signal.addEventListener('abort', () => (clearTimeout(t), ok()), { once: true });
+  });
+
 /**
- * Les 12 zones d'un départ, en texte brut (lu dans le worker) : [minutes, réponse]. La première zone qui échoue
- * (refus 429, erreur 504, réseau) fait échouer le proche (R13) et les zones pas encore lancées ne le sont pas.
+ * Les 12 zones d'un départ, en texte brut (lu dans le worker), par la file commune (R33, H92) : une zone en erreur
+ * (erreur du service, refus 429, réseau) est redemandée une fois, 5 s plus tard après un refus ; une zone sans réponse
+ * ne l'est pas. Le calcul finit quand chaque zone a répondu ou échoué deux fois, et au plus tard `delaiMs` après son
+ * début : ce qui n'a pas répondu manque. Seul `signal` (« Retirer ») fait lever une erreur.
  */
-export async function zones(depart: [number, number], signal?: AbortSignal): Promise<[number, string][]> {
-  const arret = new AbortController();
-  const s = signal ? AbortSignal.any([signal, arret.signal]) : arret.signal;
+export async function zones(depart: [number, number], signal?: AbortSignal, delaiMs = DELAI_CALCUL_MS): Promise<Zones> {
+  const fin = new AbortController();
+  const minuterie = setTimeout(() => fin.abort(), delaiMs);
+  const s = signal ? AbortSignal.any([signal, fin.signal]) : fin.signal;
+  const zone = async (d: number): Promise<string | null> => {
+    for (let essai = 1; essai <= 2; essai++) {
+      await creneau(s);
+      if (s.aborted) return null;
+      try {
+        // Second essai hors du cache du navigateur : l'IGN lui fait garder ses erreurs 21 jours (tâche 0 de proches-fiables).
+        const r = await fetch(urlIsochrone(depart, d), essai === 1 ? { signal: s } : { signal: s, cache: 'reload' });
+        if (r.ok) return await r.text();
+        if (r.status === 429 && essai === 1) await attendre(ATTENTE_REFUS_MS, s);
+      } catch {
+        if (s.aborted) return null; // sans réponse à temps : pas redemandée
+      }
+    }
+    return null;
+  };
   try {
-    return await Promise.all(
-      [...DUREES].reverse().map(async (d): Promise<[number, string]> => {
-        await creneau(s);
-        s.throwIfAborted();
-        const r = await fetch(urlIsochrone(depart, d), { signal: s });
-        if (!r.ok) throw new Error(`zone de ${d} min : ${r.status}`);
-        return [d, await r.text()];
-      }),
-    );
-  } catch (e) {
-    arret.abort();
-    throw e;
+    const textes = await Promise.all([...DUREES].reverse().map(async (d) => [d, await zone(d)] as const));
+    signal?.throwIfAborted();
+    return {
+      obtenues: textes.filter((x): x is [number, string] => x[1] != null),
+      manquantes: textes.filter(([, t]) => t == null).map(([d]) => d),
+    };
+  } finally {
+    clearTimeout(minuterie);
   }
 }
 
@@ -122,10 +151,16 @@ function classerDansWorker(textes: [number, string][], points: Float64Array): Pr
   });
 }
 
+/** Résultat d'un calcul : temps par commune et durées des zones obtenues, croissantes (12 pour un proche prêt). */
+export type Calcul = { temps: Uint16Array; zones: number[] };
+
 /**
- * Temps d'un proche (R10) : un entier par commune, dans l'ordre de `points` (mairies, lon et lat alternés) —
- * fin de tranche en minutes, 0 = plus de 3 h. Le délai de 45 s (H21) et la file des proches sont à l'appelant.
+ * Temps d'un proche (R10, R34) : un entier par commune, dans l'ordre de `points` (mairies, lon et lat alternés) — fin de
+ * la plus petite zone obtenue qui contient la mairie, 0 = dans aucune (« plus de 3 h », ou « plus de <couverture> »).
+ * La marque « jusqu'à » et l'état se déduisent des zones obtenues (`etat.ts`). La file des proches est à l'appelant.
  */
-export async function calculerTemps(depart: [number, number], points: Float64Array, signal?: AbortSignal): Promise<Uint16Array> {
-  return classerDansWorker(await zones(depart, signal), points);
+export async function calculerTemps(depart: [number, number], points: Float64Array, signal?: AbortSignal): Promise<Calcul> {
+  const { obtenues } = await zones(depart, signal);
+  const temps = obtenues.length ? await classerDansWorker(obtenues, points) : new Uint16Array(points.length / 2);
+  return { temps, zones: obtenues.map(([d]) => d).sort((a, b) => a - b) };
 }
