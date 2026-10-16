@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { voirCriteres, voirListe } from './lib/feuille';
 import { servirIgn, type OptionsIgn } from './lib/ign';
-import { ADRESSES, ajouter, champ, ligne, liste, lignes, plafond, pret, regler, zone } from './lib/proches';
+import { ADRESSES, ajouter, champ, ligne, liste, lignes, memoire, plafond, pret, regler, SANS_PROCHE, zone } from './lib/proches';
 import { map as carte } from '../../src/theme/tokens';
 import { empreinteDe } from '../../src/proches/memoire';
 import * as ancienne from '../fixtures/memoire-56ac3d6';
@@ -646,6 +646,9 @@ test('recalcul : les zones d’annonce de la page ne changent pas pendant le rec
   const { p } = await rouvrir(page, 16, ZONE_5_S, guetteur);
   await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL);
   await expect(p.getByRole('status')).toHaveText('2 communes passent tes critères');
+  // Le chargement de la carte est fini, son indicateur parti (il reste au moins 300 ms après la carte prête, H9) : son
+  // retrait n'est pas une annonce du recalcul (tâche 5b : il tombait parfois après la remise à zéro du guetteur).
+  await expect(p.getByTestId('message-carte')).toHaveText('');
   await p.evaluate(() => ((window as unknown as { annonces: string[] }).annonces = []));
   await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL); // on est encore pendant le recalcul
   expect(await ligne(p, 'Nantesville (44)').evaluate((el) => el.closest('[role="status"], [role="alert"], [aria-live]'))).toBeNull();
@@ -654,4 +657,134 @@ test('recalcul : les zones d’annonce de la page ne changent pas pendant le rec
   await p.waitForTimeout(500);
   expect(await p.evaluate(() => (window as unknown as { annonces: string[] }).annonces)).toEqual([]);
   await expect(p.getByRole('status')).toHaveText('2 communes passent tes critères');
+});
+
+// ——— Tâche 5b : « Recalculer avec l'IGN », priorité d'un ajout, « Retirer » pendant un recalcul (R36, D4, H98) ———
+// Chaque zone répond 5 s après sa demande quand le test lit la page pendant un recalcul (comme en tâche 5a).
+
+/** Point de départ d'une demande de zone (« 0.5,0.5 » pour Rochelleville). */
+const pointDe = (u: string) => new URL(u).searchParams.get('point');
+const POINT = { Nantesville: '-2,3', Toulouseville: '3,-2', Rochelleville: '0.5,0.5' } as const;
+
+test('AC-9 depuis /?loyer=1200&mer=50, Rochelleville (17) à vol d’oiseau à 120 km (AC-4), service de trajets rétabli : après « Recalculer avec l’IGN », « Recalcul avec l’IGN… » et Portmer 70, Quaibleu 32, Grandeville 26 ; ensuite prêt à 2 h, « 3 communes passent tes critères », Portmer 69, Quaibleu 36, Grandeville 29', async ({ page }) => {
+  test.setTimeout(90_000);
+  await rochellevilleKm(page, 120);
+  const demandes = await servirIgn(page, ZONE_5_S); // rétabli : posé après, il gagne
+  const rochelle = ligne(page, 'Rochelleville (17)');
+  await rochelle.getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" }).click();
+
+  await expect(rochelle).toContainText(RECALCUL);
+  await expect(rochelle.getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0);
+  await expect(rochelle).toContainText(VOL); // l'état d'avant reste affiché et compte
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
+    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+  ]);
+  await voirCriteres(page);
+  await expect(rochelle).toContainText(RECALCUL); // la liste a été lue pendant le recalcul
+
+  await finRecalcul(page, 'Rochelleville (17)');
+  await expect(rochelle).not.toContainText("À vol d'oiseau");
+  await expect(rochelle).not.toContainText('Temps approximatifs');
+  await expect(rochelle.getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0);
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuemax', '180');
+  expect(await valeurTexte(page, 'Rochelleville (17)')).toBe('2 h au plus');
+  expect(demandes.zones).toHaveLength(12);
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    "1 · Portmer (17) · 69 · 650 € · moins d'1 km",
+    '2 · Quaibleu (13) · 36 · 1 092 € · 7 km',
+    '3 · Grandeville (33) · 29 · 832 € · 40 km',
+  ]);
+});
+
+/** Nantesville (44) partiel à 2 h 30 (comme AC-7), puis Rochelleville (17) à vol d'oiseau à 120 km (comme AC-9), gardés. */
+async function deuxApproximatifs(page: Page) {
+  await nantesvillePartiel(page);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' }); // posé après : il gagne
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  await expect(ligne(page, 'Rochelleville (17)')).toContainText(VOL);
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+}
+
+test('AC-11 depuis /?loyer=1200&mer=50, Nantesville (44) partiel puis Rochelleville (17) à vol d’oiseau gardés, dernier essai il y a plus de 15 min, service rétabli : ajout de Toulouseville (31) pendant le recalcul de Nantesville (44) → « En attente… », puis « Calcul des trajets depuis Toulouseville (31)… » ; aucune zone de Rochelleville (17) avant que Toulouseville (31) soit prêt ; les trois prêts, Rochelleville (17) à 2 h', async ({ page }) => {
+  test.setTimeout(120_000);
+  await deuxApproximatifs(page);
+  // À chaque demande de zone de Rochelleville (17), on note si Toulouseville (31) est déjà prêt (son curseur affiché),
+  // puis la demande passe au faux IGN.
+  const rochelleAvantToulouse: boolean[] = [];
+  const guetter = (p: Page) =>
+    p.route('https://data.geopf.fr/navigation/isochrone*', async (r) => {
+      if (pointDe(r.request().url()) === POINT.Rochelleville)
+        rochelleAvantToulouse.push((await p.getByRole('slider', { name: 'Plafond de Toulouseville (31)' }).count()) === 0);
+      await r.fallback();
+    });
+  const { p, demandes } = await rouvrir(page, 16, ZONE_5_S);
+  await guetter(p); // posé après le faux IGN : il passe d'abord, puis lui laisse la demande
+  const nantes = ligne(p, 'Nantesville (44)');
+  await expect(nantes).toContainText(RECALCUL);
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL); // attend son tour
+  await expect.poll(() => demandes.zones.filter((u) => pointDe(u) === POINT.Nantesville).length).toBeGreaterThan(0);
+
+  await ajouter(p, 'Toulouseville');
+  const toulouse = ligne(p, 'Toulouseville (31)');
+  await expect(toulouse).toContainText('En attente…');
+  await expect(nantes).toContainText(RECALCUL); // tant que Nantesville (44) se recalcule
+
+  await expect(toulouse).toContainText('Calcul des trajets depuis Toulouseville (31)…', { timeout: 45_000 });
+  await expect(nantes).not.toContainText(RECALCUL);
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL); // toujours derrière
+  await pret(p, 'Toulouseville (31)', 45_000);
+  await finRecalcul(p, 'Rochelleville (17)');
+
+  // Les trois prêts : aucune phrase d'approximation, aucun lien, curseurs jusqu'à 3 h.
+  for (const nom of ['Nantesville (44)', 'Rochelleville (17)', 'Toulouseville (31)']) {
+    await expect(plafond(p, nom)).toHaveAttribute('aria-valuemax', '180');
+    await expect(ligne(p, nom)).not.toContainText('Temps approximatifs');
+    await expect(ligne(p, nom)).not.toContainText("À vol d'oiseau");
+    await expect(ligne(p, nom).getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0);
+  }
+  await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('2 h au plus');
+
+  const ordre = demandes.zones.map(pointDe);
+  console.log(`AC-11 (${test.info().project.name}) départs des demandes de zones, dans l'ordre : ${ordre.join(' ; ')}`);
+  for (const point of Object.values(POINT)) expect(ordre.filter((x) => x === point), `zones depuis ${point}`).toHaveLength(12);
+  expect(rochelleAvantToulouse).toHaveLength(12);
+  expect(rochelleAvantToulouse.filter(Boolean), 'zones de Rochelleville (17) demandées avant Toulouseville (31) prêt').toEqual([]);
+  expect(ordre.lastIndexOf(POINT.Toulouseville)).toBeLessThan(ordre.indexOf(POINT.Rochelleville));
+});
+
+// Hors AC (R36, details.md « Interactions ») : « Retirer » pendant un recalcul — le proche disparaît ; son recalcul en
+// cours s'arrête (aucune zone ne part plus), celui qui attendait son tour ne part pas ; la mémoire ne les garde plus.
+test('recalcul : « Retirer » Rochelleville (17) qui attend son tour puis Nantesville (44) qui se recalcule → plus aucune zone demandée, ni l’un ni l’autre gardé ; liste sans proche', async ({ page }) => {
+  test.setTimeout(120_000);
+  await deuxApproximatifs(page);
+  const { p, demandes } = await rouvrir(page, 16, ZONE_5_S);
+  const depuis = (point: string) => demandes.zones.filter((u) => pointDe(u) === point).length;
+  await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL);
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText(RECALCUL);
+  await expect.poll(() => depuis(POINT.Nantesville)).toBeGreaterThan(0);
+
+  await zone(p).getByRole('button', { name: 'Retirer Rochelleville (17)' }).click();
+  await expect(ligne(p, 'Rochelleville (17)')).toHaveCount(0);
+  await expect(ligne(p, 'Nantesville (44)')).toContainText(RECALCUL); // le recalcul en cours continue
+  await zone(p).getByRole('button', { name: 'Retirer Nantesville (44)' }).click();
+  await expect(ligne(p, 'Nantesville (44)')).toHaveCount(0);
+  await p.waitForTimeout(300); // une demande déjà partie au moment du clic arrive au faux IGN
+  const nantesAuRetrait = depuis(POINT.Nantesville);
+  console.log(`retirer pendant un recalcul (${test.info().project.name}) : ${nantesAuRetrait} zones de Nantesville (44) parties avant le retrait`);
+
+  await p.waitForTimeout(6_000); // plus long qu'une zone (5 s) : un recalcul qui continuerait demanderait encore
+  expect(depuis(POINT.Nantesville), 'zones de Nantesville (44) après le retrait').toBe(nantesAuRetrait);
+  expect(depuis(POINT.Rochelleville), 'zones de Rochelleville (17)').toBe(0);
+  expect(await memoire(p)).toEqual([]);
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(SANS_PROCHE);
 });

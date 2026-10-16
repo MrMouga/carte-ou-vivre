@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PROCHE, type ProchePret } from '../domain/score';
 import { kmDePlafond, distances } from './distance';
 import { aRecalculer, etatDe, recalcule, type EtatCalcul } from './etat';
+import { placer, type Tache } from './file';
 import { calculerTemps, type Suggestion } from './ign';
 import { effacerProche, effacerTout, ecrireProche, empreinteDe, lireProches, stockageNavigateur, type ProcheGarde } from './memoire';
 import { departDe, pointsDes } from './temps';
@@ -22,9 +23,10 @@ import { departDe, pointsDes } from './temps';
 //   son tour), il garde son état, compte et se règle ; `recalcul` le dit à la ligne. Le résultat le remplace s'il est plus
 //   complet (H97), au plafond affiché à son arrivée (km ÷ 60, `etat.ts`) ; sinon seule l'heure du dernier essai change.
 //   L'heure du dernier essai est notée dès le début de chaque recalcul : une page fermée pendant un recalcul ne fait pas
-//   redemander l'IGN avant 15 min. « Recalculer avec l'IGN » (`recalculer`) met le proche en recalcul à tout moment, en
-//   fin de file (la priorité sur les recalculs automatiques est la tâche 5b).
+//   redemander l'IGN avant 15 min. « Recalculer avec l'IGN » (`recalculer`) met le proche en recalcul à tout moment.
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
+// - Priorité (R36, tâche 5b, `file.ts`) : un ajout ou un « Recalculer avec l'IGN » passe devant les recalculs automatiques
+//   pas encore commencés ; le calcul en cours continue. « Retirer » pendant un recalcul l'arrête, ou l'empêche de partir.
 // Le nom ne part jamais vers l'IGN (H30) : seul le point de départ est envoyé.
 
 export type { EtatProche } from './memoire';
@@ -46,9 +48,6 @@ const RETIRE = 'retiré';
 
 /** Nom proposé pour une suggestion : sa commune et son département, « Nantes (44) » (R9). */
 export const nomPropose = (s: Suggestion) => `${s.commune} (${s.dep})`;
-
-/** Un calcul de la file : celui d'un nouveau proche (R33, R37), ou le recalcul d'un proche approximatif (R36). */
-type Tache = { id: number; depart: [number, number]; recalcul?: boolean };
 
 /**
  * R33 : le proche à la fin de son calcul, selon ses zones et son plafond du moment. En km (R35) : ses distances à vol
@@ -89,19 +88,22 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
   // Lu par la file, qui vit hors du rendu.
   const page = useRef({ points, empreinte });
   page.current = { points, empreinte };
-  const file = useRef<Tache[]>([]);
+  const file = useRef<readonly Tache[]>([]);
   const actuels = useRef(proches);
   actuels.current = proches;
   const courant = useRef<{ id: number; arret: AbortController } | null>(null);
 
   const changer = (id: number, p: Partial<Proche>) => setProches((ps) => ps.map((x) => (x.id === id ? { ...x, ...p } : x)));
+  /** Met `tache` à sa place dans la file (R36 : priorité ; un seul calcul par proche). */
+  const enFiler = (tache: Tache) => (file.current = placer(file.current, tache, courant.current?.id ?? null));
 
   /** Lance le calcul du premier proche en attente, si aucun ne calcule et que les mairies sont chargées. */
   const suivant = useCallback(() => {
     const { points, empreinte } = page.current;
     if (courant.current || !points) return;
-    const tache = file.current.shift();
+    const [tache, ...reste] = file.current;
     if (!tache) return;
+    file.current = reste;
     const arret = new AbortController();
     courant.current = { id: tache.id, arret };
     const essai = Date.now(); // H93 : début de l'essai
@@ -141,7 +143,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
       const depart = departDe(lieu, mairie);
       const proche: Proche = { id, nom: nom.trim().slice(0, NOM_MAX) || nomPropose(lieu), lieu, depart, plafond: PROCHE.ajout, etat: 'attente', temps: null, empreinte: null };
       setProches((ps) => [...ps, proche]);
-      file.current.push({ id, depart });
+      enFiler({ id, depart });
       suivant();
     },
     [reperes, mairie, suivant],
@@ -151,19 +153,25 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
 
   const enFile = (id: number) => courant.current?.id === id || file.current.some((t) => t.id === id);
 
-  /** « Recalculer avec l'IGN » (R36) : le proche approximatif passe en recalcul, en fin de file ; déjà en file : rien. */
+  /**
+   * « Recalculer avec l'IGN » (R36) : le proche approximatif passe en recalcul, devant les recalculs automatiques pas
+   * encore commencés ; déjà en file ou en calcul : rien.
+   */
   const recalculer = useCallback(
     (id: number) => {
       const p = actuels.current.find((x) => x.id === id);
       if (!p || enFile(id) || (p.etat !== 'partiel' && p.etat !== 'km')) return;
-      file.current.push({ id, depart: p.depart ?? departDe(p.lieu, mairie), recalcul: true });
+      enFiler({ id, depart: p.depart ?? departDe(p.lieu, mairie), recalcul: true });
       changer(id, { recalcul: true });
       suivant();
     },
     [mairie, suivant],
   );
 
-  /** Retire un proche dans tous ses états ; s'il calcule, son calcul s'arrête (ses zones pas encore parties ne partent pas). */
+  /**
+   * Retire un proche dans tous ses états, en recalcul compris ; s'il calcule, son calcul s'arrête (ses zones pas encore
+   * parties ne partent pas) ; s'il attend son tour, il ne part pas.
+   */
   const retirer = useCallback((id: number) => {
     file.current = file.current.filter((t) => t.id !== id);
     if (courant.current?.id === id) courant.current.arret.abort(RETIRE);
@@ -198,7 +206,7 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
       if (aCalculer(p)) calculs.add(p.id);
       else if (aRecalculer(p, maintenant)) recalculs.add(p.id);
       else continue;
-      file.current.push({ id: p.id, depart, recalcul: recalculs.has(p.id) });
+      enFiler(recalculs.has(p.id) ? { id: p.id, depart, recalcul: true, auto: true } : { id: p.id, depart });
     }
     setProches((ps) =>
       ps.map((p) => {
