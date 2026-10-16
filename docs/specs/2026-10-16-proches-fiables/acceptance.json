@@ -62,7 +62,7 @@
       "given": "Fixture, aucun proche gardé ; deux cas : (a) panne « zone-135-toujours », (b) panne « zone-135-muette »",
       "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville », attend la fin du calcul, règle son plafond sur 2 h 30, choisit Grandeville (33) puis Portmer (17), puis règle le plafond sur 2 h 15",
       "then": "(a) le calcul finit avant 45 s ; (b) il ne finit pas avant 45 s après son début, et au plus 1 s après (horloge simulée). Dans les deux cas : la ligne du proche affiche « Temps approximatifs : l'IGN n'a pas tout donné. » et « Recalculer avec l'IGN » ; à 2 h 30, la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 68 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km » ; la fiche de Grandeville affiche « Nantesville (44) : jusqu'à 2 h 30 en voiture » et celle de Portmer « Nantesville (44) : 1 h en voiture » ; à 2 h 15, la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km », et la fiche de Grandeville affiche « Nantesville (44) jusqu'à 2 h 30 : au-dessus de ton plafond de 2 h 15 »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -70,7 +70,7 @@
       "given": "Fixture, panne « zone-180-toujours », aucun proche gardé",
       "when": "l'utilisateur ajoute « 1 rue Test 44000 Nantesville », attend la fin du calcul, essaie de régler le plafond au plus haut, puis le remet sur 2 h et choisit Quaibleu (13)",
       "then": "la ligne du proche affiche « Au-delà de 2 h 45 : l'IGN n'a pas répondu. » et « Recalculer avec l'IGN », sans « Temps approximatifs » ; le plafond le plus haut possible est 2 h 45 ; à 2 h, la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 2 h 45 : au-dessus de ton plafond de 2 h »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
