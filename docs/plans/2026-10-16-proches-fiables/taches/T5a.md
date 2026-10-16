@@ -1,5 +1,5 @@
 # Tâche 5a — Recalcul à la réouverture
-Statut : faite · Début 12:26 · Fin 13:20 · Commits : 3f783f7..(commit du rapport, juste après)
+Statut : faite · Début 12:26 · Fin 13:20 · Commits : 3f783f7..e172edf
 
 ## Ce que l'utilisateur peut faire maintenant
 - Il rouvre le site avec un proche aux temps approximatifs (partiel) ou à vol d'oiseau (km) gardé depuis au moins 15 min : le proche se recalcule seul avec l'IGN, en tâche de fond. Sa ligne dit « Recalcul avec l'IGN… » à la place du lien ; il compte déjà dans la liste et la carte avec ses valeurs d'avant, et son curseur reste réglable.
