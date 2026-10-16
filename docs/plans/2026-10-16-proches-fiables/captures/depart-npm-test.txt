@@ -1,0 +1,387 @@
+
+> carte-ou-vivre@0.0.0 test
+> vitest run && node scripts/check-tokens.mjs && playwright test
+
+
+ RUN  v5.0.3 /Users/mouga/git-repository/carte-ou-vivre
+
+
+ Test Files  13 passed (13)
+      Tests  202 passed (202)
+   Start at  01:44:06
+   Duration  598ms (tests 45%, transform 34%, import 19%, worker 2%)
+
+check-tokens : 38 fichier(s), aucune valeur arbitraire
+
+Running 335 tests using 2 workers
+
+  ✓    1 [bureau] › tests/e2e/adresse.spec.ts:27:1 › AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, aucune distance à la mer cochée, aucune taille cochée ; adresse /?loyer=1200 ; liste D 65, A 46, B 31, E 9 (1.8s)
+  ✓    2 [bureau] › tests/e2e/adresse.spec.ts:18:1 › AC-11 /?loyer=800&mer=50 : réglages 800 € et 50 km ; « 1 commune passe tes critères » puis Portmer 58 (1.8s)
+  ✓    4 [bureau] › tests/e2e/adresse.spec.ts:49:1 › AC-14 /?taille=petite-ville,ville-moyenne : « 10 000 – 50 000 hab. » et « 50 000 – 200 000 hab. » cochées ; adresse complétée ; Portmer 46, Quaibleu 9 (665ms)
+  -    5 [bureau] › tests/e2e/aucune.spec.ts:6:1 › 390 px, aucune commune : la raison est visible sans faire défiler
+  ✓    3 [bureau] › tests/e2e/adresse.spec.ts:39:1 › AC-13 régler le loyer sur 800 € depuis / : adresse /?loyer=800, et l'historique n'a pas gagné d'entrée (813ms)
+  ✓    7 [bureau] › tests/e2e/cadre-de-vie.spec.ts:79:1 › AC-6 depuis /, taille « 10 000 – 50 000 hab. » : pastilles en chiffres dans l’ordre ; /?loyer=1200&taille=petite-ville ; Rhinval 52, Portmer 46 ; fiche de Grandeville « Taille : 260 000 habitants, hors des tailles choisies » (621ms)
+  ✓    6 [bureau] › tests/e2e/cadre-de-vie.spec.ts:63:1 › AC-2 depuis /, mer « 50 km » : /?loyer=1200&mer=50 ; 3 communes, Portmer 72, Quaibleu 48, Grandeville 25 ; fiche de Rhinval « Mer 420 km : au-dessus de ton plafond de 50 km » (747ms)
+  ✓    8 [bureau] › tests/e2e/cadre-de-vie.spec.ts:98:1 › AC-9 /?loyer=1200&mer=60 : mer sur « 100 km », /?loyer=1200&mer=100, Portmer 72, Quaibleu 51, Grandeville 45 ; puis /?loyer=1200&mer=25 : « 30 km », /?loyer=1200&mer=30, Portmer 71, Quaibleu 43 (1.2s)
+  ✓    9 [bureau] › tests/e2e/cadre-de-vie.spec.ts:115:1 › R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200 (1.3s)
+  ✓   10 [bureau] › tests/e2e/cadre-de-vie.spec.ts:129:1 › R32 : / devient /?loyer=1200 ; aucune distance à la mer cochée, aucune taille cochée ; la liste classe par le prix seul (635ms)
+  ✓   11 [bureau] › tests/e2e/cadre-de-vie.spec.ts:142:1 › H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles · Mer 50 km » (941ms)
+  -   13 [bureau] › tests/e2e/cadre-de-vie.spec.ts:177:1 › 390 px : cases de taille et de mer de 44 px au moins ; libellés de taille entiers, aucun nombre coupé, rien ne déborde
+  ✓   12 [bureau] › tests/e2e/cadre-de-vie.spec.ts:160:1 › H76 : « Taille de la commune » (4 boutons à bascule), « Proximité avec la nature » qui porte « Mer à moins de » (4 boutons à bascule exclusifs, D12) (620ms)
+  ✓   15 [bureau] › tests/e2e/cadre-de-vie.spec.ts:221:1 › pied de page : « Type d’environnement : Insee, grille communale de densité » (578ms)
+  ✓   14 [bureau] › tests/e2e/cadre-de-vie.spec.ts:211:1 › R30 : fiche de Grandeville « Ville dense · 260 000 habitants », de Terrebasse « Bourg et village · 4 200 habitants » (763ms)
+  ✓   16 [bureau] › tests/e2e/cadre-de-vie.spec.ts:232:1 › AC-3 depuis /, montagne « 10 km » : /?loyer=1200&montagne=10 ; 2 communes, Terrebasse 83, Rhinval 71 ; fiche de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 10 km » (717ms)
+  ✓   17 [bureau] › tests/e2e/cadre-de-vie.spec.ts:244:1 › AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km » (711ms)
+  ✓   19 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (647ms)
+  ✓   20 [bureau] › tests/e2e/cadre-de-vie.spec.ts:295:1 › AC-12 ouverture de / : le pied de page cite la grille communale de densité (Insee) et « Zone de montagne : » avec le Cerema, à côté des mentions précédentes (598ms)
+  ✓   21 [bureau] › tests/e2e/cadre-de-vie.spec.ts:307:1 › R31 : montagne=0 et montagne=abc → Peu importe, /?loyer=1200 ; montagne=30 gardée (786ms)
+  ✓   22 [bureau] › tests/e2e/cadre-de-vie.spec.ts:320:1 › sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne « 50 km » décochée → /?loyer=aucun, couleur neutre partout, message de liste (763ms)
+  ✓   23 [bureau] › tests/e2e/cadre-de-vie.spec.ts:336:1 › H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 50 km · Montagne 30 km » (519ms)
+  ✓   24 [bureau] › tests/e2e/cadre-de-vie.spec.ts:345:1 › H76 : « Montagne à moins de » (4 boutons à bascule exclusifs, aucun coché) sous « Mer à moins de », dans « Proximité avec la nature » (548ms)
+  ✓   25 [bureau] › tests/e2e/cadre-de-vie.spec.ts:358:1 › D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée (597ms)
+  ✓   26 [bureau] › tests/e2e/cadre-de-vie.spec.ts:372:1 › D12, H76 : Tab passe de « 10 km » à « 30 km », « 50 km », « 100 km » de la mer puis à « 10 km » de la montagne ; Espace coche puis décoche (542ms)
+  ✘   18 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (5.7s)
+  ✓   27 [bureau] › tests/e2e/cadre-de-vie.spec.ts:391:1 › D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repliée dit « Peu importe » ; mer « 50 km » cochée puis décochée : « Peu importe » (705ms)
+  -   29 [bureau] › tests/e2e/cadre-de-vie.spec.ts:410:1 › 390 px : cases de la montagne de 44 px au moins
+  ✓   28 [bureau] › tests/e2e/cadre-de-vie.spec.ts:428:1 › AC-1 ouverture de / : /?loyer=1200 ; aucune distance à la mer ni à la montagne cochée, aucune taille ni aucun type coché ; 5 communes, Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 ; Montcher non colorée (644ms)
+  ✓   31 [bureau] › tests/e2e/cadre-de-vie.spec.ts:469:1 › AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village : aucune distance à la mer ni à la montagne cochée, « Moins de 10 000 hab. » et « Bourg et village » cochés ; /?loyer=1200&taille=petite-commune&env=bourg-et-village ; 1 commune, Terrebasse 65 (530ms)
+  ✓   30 [bureau] › tests/e2e/cadre-de-vie.spec.ts:448:1 › AC-5 depuis /, type « Ville dense » : /?loyer=1200&env=ville-dense ; 1 commune, Grandeville 31 ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis » ; puis « Bourg et village » : env=ville-dense,bourg-et-village, Terrebasse 65 et Grandeville 31 (1.8s)
+  ✓   32 [bureau] › tests/e2e/cadre-de-vie.spec.ts:481:1 › AC-10 /?loyer=aucun&env=bourg-et-village : Terrebasse en couleur neutre « sans plafond », les 5 autres non colorées ; message de liste ; fiche de Terrebasse « Commune de montagne » sans score ni rang ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis » (1.2s)
+  ✓   33 [bureau] › tests/e2e/cadre-de-vie.spec.ts:503:1 › R31 : env=campagne-isolee,village,ville-dense,campagne-isolee → /?loyer=1200&env=ville-dense,campagne-isolee, ces deux types cochés (682ms)
+  ✓   34 [bureau] › tests/e2e/cadre-de-vie.spec.ts:515:1 › H75 : « Cadre de vie » repliée dit « 1 taille · 1 type · Mer 50 km · Montagne 30 km » (596ms)
+  -   36 [bureau] › tests/e2e/cadre-de-vie.spec.ts:542:3 › 390 px, au toucher › rangée des types : une seule ligne, bord à bord, qui défile au doigt ; « Campagne isolée » atteinte à la tabulation et cochée à la barre d’espace ; pastilles de 44 px
+  ✓   35 [bureau] › tests/e2e/cadre-de-vie.spec.ts:523:1 › H76 : « Type d’environnement » (4 boutons à bascule, dans l’ordre de R27) entre « Taille de la commune » et « Proximité avec la nature » ; coche visible sur le type coché (627ms)
+  ✓   37 [bureau] › tests/e2e/cadre-de-vie.spec.ts:586:1 › bureau : les quatre types visibles sans défilement, dans le panneau de réglages (657ms)
+  ✓   38 [bureau] › tests/e2e/carte.spec.ts:8:1 › AC-1 réglages de départ : D palier 60–80, A palier 40–60, B palier 20–40, E palier 0–20 ; C non colorée (857ms)
+  ✓   39 [bureau] › tests/e2e/carte.spec.ts:13:1 › AC-2 depuis /?loyer=1200&mer=50, l’utilisateur décoche la mer « 50 km » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée (770ms)
+  ✓   41 [bureau] › tests/e2e/categories.spec.ts:10:1 › replier Logement affiche « Louer · Appartement · 52 m² · 1 200 € » et cache le curseur ; le clavier ouvre et ferme (661ms)
+  ✓   40 [bureau] › tests/e2e/carte.spec.ts:23:1 › AC-3 loyer 650 € depuis /?loyer=1200&mer=50 : A passe avec 49 (40–60, 650 € égal au plafond) ; B, C, D et E non colorées (792ms)
+  ✓   43 [bureau] › tests/e2e/categories.spec.ts:46:1 › cible du titre : 24 px de haut en bureau, 44 px à 390 px (624ms)
+  ✓   44 [bureau] › tests/e2e/composants.spec.ts:4:1 › page des composants : polices locales chargées, aucune requête vers Google Fonts (156ms)
+  ✓   45 [bureau] › tests/e2e/composants.spec.ts:18:1 › pastille : un clic la coche (aria-pressed) ; curseur : la flèche droite le déplace (178ms)
+  ✓   42 [bureau] › tests/e2e/categories.spec.ts:34:1 › toutes ouvertes au départ ; résumés « 2 tailles » (mer sur Peu importe et les tailles cochées), puis « Peu importe » (1.2s)
+  ✓   46 [bureau] › tests/e2e/etats.spec.ts:10:1 › AC-15 fond IGN en panne : D, A, B, E colorées sur le fond uni, « Fond de carte indisponible », 4 communes passent (770ms)
+  ✓   48 [bureau] › tests/e2e/etats.spec.ts:42:1 › chargement : indicateur après 300 ms, réglages inactifs ; erreur et « Réessayer » à 15 s (horloge simulée) (293ms)
+  ✓   47 [bureau] › tests/e2e/etats.spec.ts:26:1 › fond rétabli : nouvel essai après 60 s, retour au fond IGN (1.1s)
+  ✓   50 [bureau] › tests/e2e/etats.spec.ts:78:1 › sans WebGL : « La carte n’a pas pu se charger. » et « Réessayer » (318ms)
+  ✓   49 [bureau] › tests/e2e/etats.spec.ts:59:1 › chargement : données arrivées après 350 ms, l’indicateur s’efface quand la carte est prête (634ms)
+  ✓   51 [bureau] › tests/e2e/etats.spec.ts:93:1 › mentions de la tranche visibles dans le pied de page (372ms)
+  ✓   52 [bureau] › tests/e2e/fiche.spec.ts:16:1 › AC-7 depuis /?loyer=1200&mer=50, choisir Grandeville (33) dans la liste : « Ville dense · 260 000 habitants », 25, sans « Estimation du secteur » (705ms)
+  ✓   53 [bureau] › tests/e2e/fiche.spec.ts:27:1 › AC-8 depuis /?loyer=1200&mer=50, choisir Portmer (17) : ville et périphérie, 1re sur 3, estimation du secteur, moins d’1 km (644ms)
+  ✓   54 [bureau] › tests/e2e/fiche.spec.ts:36:1 › AC-9 depuis /?loyer=1200&mer=50, choisir Montcher (75) sur la carte : deux raisons, sans score ni rang (624ms)
+  ✓   55 [bureau] › tests/e2e/fiche.spec.ts:47:1 › AC-10 depuis /?loyer=1200&mer=50, cocher « 10 000 – 50 000 hab. » : seule A passe (72), « 1 commune passe tes critères », Grandeville : raison de taille (798ms)
+  ✓   57 [bureau] › tests/e2e/fiche.spec.ts:82:1 › ronds du top 10 : un rond par commune qui passe, son clic ouvre la fiche, le rond choisi est marqué (710ms)
+  ✓   56 [bureau] › tests/e2e/fiche.spec.ts:61:1 › parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste (1.2s)
+  ✓   58 [bureau] › tests/e2e/fumee.spec.ts:6:1 › la carte MapLibre se peint (WebGL disponible), sans erreur dans la console (760ms)
+  ✓   59 [bureau] › tests/e2e/immobilier.spec.ts:55:1 › AC-1 ouverture de / : Appartement, Louer, Total, 52 m², 1 200 € ; adresse /?loyer=1200 ; D 65, F 52, A 46, B 31, E 9 ; C non colorée (792ms)
+  ✓   60 [bureau] › tests/e2e/immobilier.spec.ts:74:1 › AC-2 depuis /?loyer=1200&mer=50, surface à 72 m² : adresse surface=72 ; Portmer 62 · 900 €, Grandeville 12 · 1 152 € ; fiches de Grandeville et de Quaibleu (806ms)
+  ✓   61 [bureau] › tests/e2e/immobilier.spec.ts:89:1 › AC-4 depuis /?loyer=1200&mer=50, Au m² puis Total : « Loyer mensuel » 23 €/m², sans champ surface, unite=m2, liste au m² (72, 47, 25), fiche « 16,0 €/m² par mois » ; retour à 1 200 €, 52 m² (971ms)
+  ✓   62 [bureau] › tests/e2e/immobilier.spec.ts:112:1 › AC-5 depuis /?loyer=1200&mer=50, Acheter puis Louer : Au m², 5 000 €/m², /?achat=5000&mer=50, Portmer 61, Quaibleu 45, Grandeville 16 ; retour à Total, 52 m², 1 200 € (976ms)
+  ✓   63 [bureau] › tests/e2e/immobilier.spec.ts:139:1 › AC-6 Total depuis /?achat=5000&mer=50 : 260 000 €, 52 m², unite=total ; Portmer 61 · 198 000 €, Quaibleu 45 · 250 000 €, Grandeville 16 · 229 000 € (737ms)
+  ✓   64 [bureau] › tests/e2e/immobilier.spec.ts:156:1 › AC-11 /?achat=abc&unite=litre&bien=villa&surface=0 : Appartement, Acheter, Au m², 5 000 €/m² ; adresse /?achat=5000 ; Portmer 24, Grandeville 12, Quaibleu 4 (622ms)
+  ✓   65 [bureau] › tests/e2e/immobilier.spec.ts:169:1 › AC-12 pied de page : « Prix d’achat : Demandes de valeurs foncières (DGFiP) » à côté des mentions de loyer-mer, avant et après Acheter (703ms)
+  ✓   66 [bureau] › tests/e2e/immobilier.spec.ts:182:1 › AC-3 Maison depuis /?loyer=1200&mer=50&surface=72 : 72 m² et 1 200 € gardés ; Portmer 68 · 756 €, Grandeville 21 · 936 € ; fiches de Portmer et de Quaibleu (847ms)
+  ✓   67 [bureau] › tests/e2e/immobilier.spec.ts:201:1 › AC-7 Maison depuis /?achat=5000&mer=50 : adresse bien=maison&surface=52 ; Portmer 64 · 3 500 €/m², Quaibleu 47 · 4 600 €/m² ; fiches de Portmer et de Grandeville (797ms)
+  ✓   68 [bureau] › tests/e2e/immobilier.spec.ts:220:1 › D2 : /?loyer=1200&mer=50&bien=maison s’ouvre en Maison à 92 m², adresse gardée ; retour à Appartement : 92 m² gardés, surface=92 (688ms)
+  ✓   69 [bureau] › tests/e2e/immobilier.spec.ts:231:1 › R21 : « Sans limite » le reste quand on change de bien (730ms)
+  ✓   70 [bureau] › tests/e2e/immobilier.spec.ts:242:1 › H65 : noms lus du curseur dans les quatre réglages, et du champ « Surface en m² » ; groupes nommés (908ms)
+  ✓   71 [bureau] › tests/e2e/immobilier.spec.ts:261:1 › surface en cours de saisie : champ vidé ou « 400 », la carte garde 52 m² ; en quittant le champ, il reprend la dernière surface valide (847ms)
+  ✓   72 [bureau] › tests/e2e/immobilier.spec.ts:283:1 › cibles : bascules, tuiles, unité et champ surface de 44 px à 390 px, d’au moins 24 px en bureau (tuiles : 44 partout) (628ms)
+  ✓   73 [bureau] › tests/e2e/immobilier.spec.ts:295:1 › catégorie « Logement » repliée : résumé sous le titre, « 1 200 € » jamais coupé (656ms)
+  ✓   74 [bureau] › tests/e2e/immobilier.spec.ts:315:1 › titre « Où vivre en France » : lu par les lecteurs d’écran partout, affiché seulement en bureau (678ms)
+  ✓   75 [bureau] › tests/e2e/immobilier.spec.ts:341:1 › AC-8 /?achat=5000&montagne=100 : 4 communes, Grandeville 31, Quaibleu 21, Terrebasse 100 et Rhinval 99 · prix inconnu ; fiche de Terrebasse « trop peu de ventes dans le secteur », 100, 3e sur 4 ; Portmer et Montcher non colorées (820ms)
+  ✓   76 [bureau] › tests/e2e/immobilier.spec.ts:360:1 › AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quaibleu 4 ; D et F neutres, C non colorée ; fiche de Rhinval « Alsace-Moselle », sans score ni rang (867ms)
+  ✓   77 [bureau] › tests/e2e/immobilier.spec.ts:376:1 › AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 €, aucune distance à la mer cochée ; adresse /?achat=300000&bien=maison&unite=total&surface=100 ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € » (842ms)
+  ✓   79 [bureau] › tests/e2e/immobilier.spec.ts:423:1 › AC-14 variante « D tous biens », /?achat=5000 : 4 communes, Terrebasse 78 · 1 100 €/m², Portmer 24, Grandeville 12, Quaibleu 4 ; fiche de Terrebasse « 1 100 €/m² à l’achat » et « Estimation tous biens (trop peu de ventes d’appartements) » ; Rhinval en couleur neutre (787ms)
+  ✓   78 [bureau] › tests/e2e/immobilier.spec.ts:397:1 › AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1 100 € ; adresse /?loyer=1100&bien=maison ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; F neutre ; fiches de Rhinval « Loyer inconnu » et de Grandeville (1.5s)
+  ✓   80 [bureau] › tests/e2e/immobilier.spec.ts:441:1 › aucune commune en Acheter, seules des communes sans prix passent : « Relâche le prix, la mer ou la taille. », D et F restent neutres, compte « Aucune commune » (691ms)
+  ✓   81 [bureau] › tests/e2e/immobilier.spec.ts:450:1 › sans plafond en Acheter : « Fixe un prix d’achat ou une distance à la mer pour classer les communes. », les 6 communes neutres (666ms)
+  ✓   83 [bureau] › tests/e2e/immobilier.spec.ts:470:1 › design F : panneau de réglages de 340 px à 1 440 × 900 (585ms)
+  ✓   82 [bureau] › tests/e2e/immobilier.spec.ts:458:1 › aucune commune en Acheter avec un proche prêt : « Relâche le prix, la mer, la taille ou un proche. » (4.8s)
+  ✓   85 [bureau] › tests/e2e/liste.spec.ts:20:1 › AC-4 la liste depuis /?loyer=1200&mer=50 : « 3 communes passent tes critères » puis Portmer 72, Quaibleu 48, Grandeville 25 au format de R5 (560ms)
+  ✓   84 [bureau] › tests/e2e/immobilier.spec.ts:477:1 › design F : valeur des curseurs du prix et des proches en 16 px gras ; « à vol d’oiseau » plus dans les réglages, gardé dans la fiche (4.8s)
+  ✓   86 [bureau] › tests/e2e/liste.spec.ts:33:1 › AC-5 loyer 300 € et mer 10 km : aucune commune colorée, message de liste (728ms)
+  ✓   87 [bureau] › tests/e2e/liste.spec.ts:45:1 › AC-6 loyer « Sans limite », aucune distance à la mer ni à la montagne n’étant cochée : couleur neutre sur les 5 communes, aucun score, message de liste (765ms)
+  ✓   88 [bureau] › tests/e2e/liste.spec.ts:60:1 › zone annoncée : le compte suit les réglages (3, 1, aucune) (726ms)
+  ✓   89 [bureau] › tests/e2e/proches-carte.spec.ts:35:1 › AC-3 depuis /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h, Grandeville (33) choisie sur la carte : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h », 40 km, sans score ni rang (4.8s)
+  ✓   91 [bureau] › tests/e2e/proches-carte.spec.ts:79:1 › AC-14 depuis /?loyer=1200&mer=50, « 1 rue Test 44000 Nantesville » nommé « Parents de Léa » : adresse dans la zone, repère au point [-2, 3], raison dans la fiche de Grandeville, nom jamais envoyé (4.7s)
+  ✓   90 [bureau] › tests/e2e/proches-carte.spec.ts:50:1 › AC-5 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de Grandeville (temps dans l’ordre, 26, 2e sur 2), puis Quaibleu (plus de 3 h, sans score) (10.2s)
+  ✓   92 [bureau] › tests/e2e/proches-carte.spec.ts:109:1 › AC-16 depuis /?loyer=1200&mer=50, pastille de Nantesville (44) : « 2 h au plus », puis « 2 h 15 · au-dessus de 2 h » avec Grandeville choisie ; un clic ne change rien ; aucune à 390 px (5.0s)
+  ✓   93 [bureau] › tests/e2e/proches-carte.spec.ts:143:1 › R15 pastille : un « · » sépare le nom de la valeur, à l’écran et pour les lecteurs d’écran (4.8s)
+  ✓   94 [bureau] › tests/e2e/proches-carte.spec.ts:155:1 › aucune commune avec un proche prêt : « Relâche le loyer, la mer, la taille ou un proche. » (4.7s)
+  ✓   95 [bureau] › tests/e2e/proches-carte.spec.ts:165:1 › repère : calcul dès « Ajouter », puis prêt ; indisponible si les trajets tombent en panne ; ne se clique pas (5.9s)
+  ✓   96 [bureau] › tests/e2e/proches-carte.spec.ts:210:1 › deux repères au même endroit : l’étiquette du proche ajouté en second passe à gauche de sa goutte (2.3s)
+  ✓   97 [bureau] › tests/e2e/proches-carte.spec.ts:226:1 › repère au-dessus du rond du top 10 posé au même endroit (ordre d’empilement, lu au pixel) (1.6s)
+  ✓   98 [bureau] › tests/e2e/proches-carte.spec.ts:247:1 › repère en calcul : l’anneau pulse, et reste fixe avec « réduire les animations » (1.3s)
+  ✓  100 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:73:1 › iPhone : toucher « Adresse ou ville » (0 proche) — au focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (674ms)
+  ✓   99 [bureau] › tests/e2e/proches-carte.spec.ts:262:1 › repère glissé sous la liste (bureau) ou la feuille (390 px) : le panneau le couvre (lu au pixel) (1.9s)
+  ✓  101 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:82:1 › iPhone : toucher « + Ajouter un proche » (1 proche) — au focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (1.4s)
+  ✓  102 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:93:1 › iPhone : les champs de l’ajout ne ressemblent pas à un formulaire d’adresse pour Safari (pas de « AutoFill Contact ») (1.3s)
+  ✓  103 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:141:3 › AC-8 à 390 × 664, au toucher, sans proche, « Adresse ou ville » : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi (1.6s)
+  ✓  105 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:191:3 › iPhone : « Effacer mes proches » (dernier proche) rend le focus au champ — au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (4.8s)
+  ✓  106 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:191:3 › iPhone : « Retirer Nantesville (44) » (dernier proche) rend le focus au champ — au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (4.9s)
+  ✓  104 [bureau] › tests/e2e/proches-clavier-iphone.spec.ts:141:3 › AC-8 à 390 × 664, au toucher, 4 proches prêts, « + Ajouter un proche » : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi (14.7s)
+  ✓  108 [bureau] › tests/e2e/proches-etats.spec.ts:52:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loyer=1200&mer=50 rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 66, Grandeville 17 (5.8s)
+  ✓  107 [bureau] › tests/e2e/proches-etats.spec.ts:33:1 › AC-7 depuis /?loyer=1200&mer=50, 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (16.7s)
+  ✓  109 [bureau] › tests/e2e/proches-etats.spec.ts:72:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis /?loyer=1200&mer=50 rouvert, état vide ; 3 communes, 72, 48, 25 (8.2s)
+  ✓  110 [bureau] › tests/e2e/proches-etats.spec.ts:95:1 › AC-10 depuis /?loyer=1200&mer=50, service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 48, 25 (1.7s)
+  ✓  111 [bureau] › tests/e2e/proches-etats.spec.ts:107:1 › AC-11 depuis /?loyer=1200&mer=50, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (1.3s)
+  ✓  113 [bureau] › tests/e2e/proches-etats.spec.ts:137:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (834ms)
+  ✓  114 [bureau] › tests/e2e/proches-etats.spec.ts:171:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (4.8s)
+  ✓  112 [bureau] › tests/e2e/proches-etats.spec.ts:119:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (7.4s)
+  ✓  116 [bureau] › tests/e2e/proches-etats.spec.ts:208:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (2.2s)
+  ✓  115 [bureau] › tests/e2e/proches-etats.spec.ts:189:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (3.8s)
+  ✓  117 [bureau] › tests/e2e/proches-etats.spec.ts:220:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (1.2s)
+  ✓  119 [bureau] › tests/e2e/proches-etats.spec.ts:247:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (4.8s)
+  ✓  118 [bureau] › tests/e2e/proches-etats.spec.ts:229:1 › aucune adresse en bureau, avec un proche : le panneau défile, « Ajouter » entier au-dessus du compte collé (5.6s)
+  ✓  121 [bureau] › tests/e2e/proches-etats.spec.ts:282:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (2.4s)
+  ✓  122 [bureau] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (0 proche déjà là) (1.4s)
+  ✓  120 [bureau] › tests/e2e/proches-etats.spec.ts:263:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (5.2s)
+  ✓  123 [bureau] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (1 proche déjà là) (2.2s)
+  ✓  125 [bureau] › tests/e2e/proches-mobile.spec.ts:88:1 › le focus sort de l’ajout sans rien ajouter : la feuille redescend (1.3s)
+  ✓  124 [bureau] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (4 proches déjà là) (4.9s)
+  ✓  126 [bureau] › tests/e2e/proches-mobile.spec.ts:100:1 › cibles des proches : 44 px de haut à 390 px, 24 px au moins en bureau (2.3s)
+  ✓  128 [bureau] › tests/e2e/proches-temps.spec.ts:30:1 › « 1 rue Test » : suggestion au code INSEE, 12 zones de 3 h à 15 min, fins de tranche de la fixture (3.4s)
+  ✓  127 [bureau] › tests/e2e/proches-mobile.spec.ts:128:1 › après l’ajout du 5ᵉ proche, le focus va au message « 5 proches au maximum… » (5.0s)
+  ✓  130 [bureau] › tests/e2e/proches-temps.spec.ts:48:1 › zones en panne (erreur réseau) : le calcul échoue (495ms)
+  ✓  131 [bureau] › tests/e2e/proches-temps.spec.ts:54:1 › refus 429 de l’IGN : le calcul échoue, sans demander les autres zones (506ms)
+  ✓  129 [bureau] › tests/e2e/proches-temps.spec.ts:43:1 › « 2 place Test » : autre proche, autres temps (3.3s)
+  ✓  132 [bureau] › tests/e2e/proches.spec.ts:44:1 › AC-1 depuis /?loyer=1200&mer=50, ajouter « 1 rue Test 44000 Nantesville » : nom proposé, calcul, puis plafond 2 h ; Portmer seule passe (65) ; adresse inchangée (4.8s)
+  ✓  133 [bureau] › tests/e2e/proches.spec.ts:65:1 › AC-2 depuis /?loyer=1200&mer=50, plafond de Nantesville (44) sur 2 h 15 : Portmer 66, Grandeville 17 ; Quaibleu non colorée ; aucun nouveau calcul (4.9s)
+  ✓  135 [bureau] › tests/e2e/proches.spec.ts:96:1 › AC-6 loyer « Sans limite », aucune distance à la mer cochée, Nantesville (44) à 2 h 15 : Portmer 56 (40–60), Grandeville 0 (0–20) ; pas de message « Fixe un loyer… » (5.0s)
+  ✓  134 [bureau] › tests/e2e/proches.spec.ts:80:1 › AC-4 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15, puis Toulouseville (31) ajouté et réglé à 2 h 45 : Portmer 50, Grandeville 26 (9.2s)
+  ✓  136 [bureau] › tests/e2e/proches.spec.ts:113:1 › vide : texte d’accueil et champ ; dès un proche, le champ se replie derrière « + Ajouter un proche », qui le rouvre (4.8s)
+  ✓  138 [bureau] › tests/e2e/proches.spec.ts:150:1 › « Retirer » sur un proche prêt : il disparaît, la liste revient sans calcul (72, 48, 25 depuis /?loyer=1200&mer=50) (4.9s)
+  ✓  139 [bureau] › tests/e2e/safari.spec.ts:6:1 › limite de Safari sur l’adresse : la page survit à 120 crans, puis l’adresse rattrape les réglages (2.6s)
+  ✓  140 [bureau] › tests/e2e/telephone-feuille.spec.ts:29:1 › AC-9 à 1 440 × 900 : ni onglets, ni « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste à droite, visibles ensemble (509ms)
+  -  141 [bureau] › tests/e2e/telephone-feuille.spec.ts:54:1 › AC-10 à 390 × 844, sur « Critères » : loyer réglé sur 1 000 €, le compte en haut de la feuille passe de 3 à 2 communes, sans changer d’onglet
+  -  142 [bureau] › tests/e2e/telephone-feuille.spec.ts:73:1 › onglets : flèches droite et gauche déplacent le focus et la sélection ; un seul panneau affiché
+  -  143 [bureau] › tests/e2e/telephone-feuille.spec.ts:101:1 › onglets : 44 px de haut au toucher, pilule de l’onglet choisi à `space-1` du bord du rail
+  -  144 [bureau] › tests/e2e/telephone-feuille.spec.ts:118:1 › défilement gardé : « Critères » défilé jusqu’à « Tes proches », passage à la liste, retour : même position
+  ✓  137 [bureau] › tests/e2e/proches.spec.ts:125:1 › recherche : rien sous 3 caractères ; un nom vide reprend la commune ; un nom libre est gardé (30 caractères au plus) (9.6s)
+  -  145 [bureau] › tests/e2e/telephone-feuille.spec.ts:136:1 › compte en tête : une ligne en style `valeur`, cachée aux lecteurs d’écran, « Aucun plafond fixé » sans plafond ; une seule zone annoncée ; mentions au bas des deux onglets
+  -  146 [bureau] › tests/e2e/telephone-feuille.spec.ts:161:1 › 375 × 548 : feuille de 272 px, curseur « Loyer maximum » entièrement visible à l’ouverture
+  -  147 [bureau] › tests/e2e/telephone-feuille.spec.ts:174:1 › ajout d’un proche : ni onglets ni compte au-dessus du champ ; ils reviennent quand le focus sort
+  -  148 [bureau] › tests/e2e/telephone-feuille.spec.ts:250:1 › AC-2 à 390 × 844 : « Replier la feuille » puis « Déplier la feuille » ; barre de 64 px au plus avec le compte, le rond « 1 » ne bouge pas, puis « Critères » et « Loyer maximum »
+  -  149 [bureau] › tests/e2e/telephone-feuille.spec.ts:268:1 › AC-3 depuis /?loyer=1200&mer=50 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 px vers le bas, barre 200 px vers le haut, glisser dans « Taille de la commune », puis toucher le texte de la barre
+  -  150 [bureau] › tests/e2e/telephone-feuille.spec.ts:324:1 › AC-5 à 390 × 844 : « Les 10 premières », repliée puis dépliée, c’est toujours la liste
+  -  151 [bureau] › tests/e2e/telephone-feuille.spec.ts:308:1 › AC-4 à 390 × 844 : repliée, la barre dit le compte de loyer-mer, « Aucun plafond fixé » sans plafond
+  -  153 [bureau] › tests/e2e/telephone-feuille.spec.ts:379:1 › AC-7 à 390 × 844, sur « Critères » : le carré de Grandeville (33) ouvre sa fiche à la place des onglets ; « ← Les 10 premières » mène à la liste, focus sur sa ligne
+  -  152 [bureau] › tests/e2e/telephone-feuille.spec.ts:341:1 › AC-6 à 390 × 844, feuille repliée : le rond « 1 » ouvre la feuille sur la fiche de Portmer (17), cadrée au-dessus de la feuille ouverte ; repliée puis dépliée, la fiche revient
+  -  154 [bureau] › tests/e2e/telephone-feuille.spec.ts:396:1 › AC-11 à 390 × 844 : repliée pendant le calcul de Nantesville (44), la barre passe de 3 à 1 commune sans être dépliée
+  -  155 [bureau] › tests/e2e/telephone-feuille.spec.ts:421:3 › animations réduites › déplier d’un toucher sur la barre n’ouvre aucune fiche (clic fantôme)
+  -  157 [bureau] › tests/e2e/telephone-feuille.spec.ts:452:1 › H45 transition de la feuille : 300 ms au plus
+  -  156 [bureau] › tests/e2e/telephone-feuille.spec.ts:444:3 › animations réduites › H45 sans animation si l’on réduit les animations : durée de transition 0 s
+  -  159 [bureau] › tests/e2e/telephone-feuille.spec.ts:481:1 › pendant le chargement, la tête est inactive ; pendant l’ajout d’un proche, il n’y a pas de tête à replier
+  -  158 [bureau] › tests/e2e/telephone-feuille.spec.ts:462:1 › focus : repli au clavier, puis repli au doigt avec le focus dans les réglages, le focus va à « Déplier la feuille »
+  -  161 [bureau] › tests/e2e/telephone-feuille.spec.ts:527:1 › glisser commencé sur « Adresse ou ville » : « Critères » défile, le champ ne prend pas le focus, la feuille ne monte pas
+  -  160 [bureau] › tests/e2e/telephone-feuille.spec.ts:504:1 › H50 « Fond de carte indisponible » juste au-dessus de la barre ; « Aucune commune » de la bande caché feuille repliée
+  -  162 [bureau] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 664, 0 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets
+  -  163 [bureau] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 664, 1 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets
+  -  165 [bureau] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 844, 1 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets
+  -  164 [bureau] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 844, 0 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets
+  -  166 [bureau] › tests/e2e/telephone-vue.spec.ts:18:5 › 375 × 548 › AC-1 ouverture à 375 × 548 : toute l'emprise au-dessus de la feuille ; Portmer, Quaibleu et Grandeville peintes (paliers 4, 3, 2) ; Montcher et Terrebasse non peintes
+  -  167 [bureau] › tests/e2e/telephone-vue.spec.ts:18:5 › 390 × 664 › AC-1 ouverture à 390 × 664 : toute l'emprise au-dessus de la feuille ; Portmer, Quaibleu et Grandeville peintes (paliers 4, 3, 2) ; Montcher et Terrebasse non peintes
+  ✓  168 [mobile] › tests/e2e/adresse.spec.ts:27:1 › AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, aucune distance à la mer cochée, aucune taille cochée ; adresse /?loyer=1200 ; liste D 65, A 46, B 31, E 9 (1.5s)
+  ✓  169 [mobile] › tests/e2e/adresse.spec.ts:18:1 › AC-11 /?loyer=800&mer=50 : réglages 800 € et 50 km ; « 1 commune passe tes critères » puis Portmer 58 (1.5s)
+  ✓  170 [mobile] › tests/e2e/adresse.spec.ts:39:1 › AC-13 régler le loyer sur 800 € depuis / : adresse /?loyer=800, et l'historique n'a pas gagné d'entrée (541ms)
+  ✓  171 [mobile] › tests/e2e/adresse.spec.ts:49:1 › AC-14 /?taille=petite-ville,ville-moyenne : « 10 000 – 50 000 hab. » et « 50 000 – 200 000 hab. » cochées ; adresse complétée ; Portmer 46, Quaibleu 9 (538ms)
+  ✓  172 [mobile] › tests/e2e/aucune.spec.ts:6:1 › 390 px, aucune commune : la raison est visible sans faire défiler (463ms)
+  ✓  173 [mobile] › tests/e2e/cadre-de-vie.spec.ts:63:1 › AC-2 depuis /, mer « 50 km » : /?loyer=1200&mer=50 ; 3 communes, Portmer 72, Quaibleu 48, Grandeville 25 ; fiche de Rhinval « Mer 420 km : au-dessus de ton plafond de 50 km » (588ms)
+  ✓  174 [mobile] › tests/e2e/cadre-de-vie.spec.ts:79:1 › AC-6 depuis /, taille « 10 000 – 50 000 hab. » : pastilles en chiffres dans l’ordre ; /?loyer=1200&taille=petite-ville ; Rhinval 52, Portmer 46 ; fiche de Grandeville « Taille : 260 000 habitants, hors des tailles choisies » (552ms)
+  ✓  175 [mobile] › tests/e2e/cadre-de-vie.spec.ts:98:1 › AC-9 /?loyer=1200&mer=60 : mer sur « 100 km », /?loyer=1200&mer=100, Portmer 72, Quaibleu 51, Grandeville 45 ; puis /?loyer=1200&mer=25 : « 30 km », /?loyer=1200&mer=30, Portmer 71, Quaibleu 43 (959ms)
+  ✓  176 [mobile] › tests/e2e/cadre-de-vie.spec.ts:115:1 › R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200 (965ms)
+  ✓  177 [mobile] › tests/e2e/cadre-de-vie.spec.ts:129:1 › R32 : / devient /?loyer=1200 ; aucune distance à la mer cochée, aucune taille cochée ; la liste classe par le prix seul (539ms)
+  ✓  179 [mobile] › tests/e2e/cadre-de-vie.spec.ts:160:1 › H76 : « Taille de la commune » (4 boutons à bascule), « Proximité avec la nature » qui porte « Mer à moins de » (4 boutons à bascule exclusifs, D12) (457ms)
+  ✓  178 [mobile] › tests/e2e/cadre-de-vie.spec.ts:142:1 › H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles · Mer 50 km » (627ms)
+  ✓  181 [mobile] › tests/e2e/cadre-de-vie.spec.ts:211:1 › R30 : fiche de Grandeville « Ville dense · 260 000 habitants », de Terrebasse « Bourg et village · 4 200 habitants » (620ms)
+  ✓  180 [mobile] › tests/e2e/cadre-de-vie.spec.ts:177:1 › 390 px : cases de taille et de mer de 44 px au moins ; libellés de taille entiers, aucun nombre coupé, rien ne déborde (739ms)
+  ✓  182 [mobile] › tests/e2e/cadre-de-vie.spec.ts:221:1 › pied de page : « Type d’environnement : Insee, grille communale de densité » (462ms)
+  ✓  183 [mobile] › tests/e2e/cadre-de-vie.spec.ts:232:1 › AC-3 depuis /, montagne « 10 km » : /?loyer=1200&montagne=10 ; 2 communes, Terrebasse 83, Rhinval 71 ; fiche de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 10 km » (553ms)
+  ✓  184 [mobile] › tests/e2e/cadre-de-vie.spec.ts:244:1 › AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km » (556ms)
+  ✓  185 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (634ms)
+  ✓  186 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (583ms)
+  ✓  187 [mobile] › tests/e2e/cadre-de-vie.spec.ts:295:1 › AC-12 ouverture de / : le pied de page cite la grille communale de densité (Insee) et « Zone de montagne : » avec le Cerema, à côté des mentions précédentes (464ms)
+  ✓  188 [mobile] › tests/e2e/cadre-de-vie.spec.ts:307:1 › R31 : montagne=0 et montagne=abc → Peu importe, /?loyer=1200 ; montagne=30 gardée (717ms)
+  ✓  189 [mobile] › tests/e2e/cadre-de-vie.spec.ts:320:1 › sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne « 50 km » décochée → /?loyer=aucun, couleur neutre partout, message de liste (766ms)
+  ✓  190 [mobile] › tests/e2e/cadre-de-vie.spec.ts:336:1 › H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 50 km · Montagne 30 km » (474ms)
+  ✓  191 [mobile] › tests/e2e/cadre-de-vie.spec.ts:345:1 › H76 : « Montagne à moins de » (4 boutons à bascule exclusifs, aucun coché) sous « Mer à moins de », dans « Proximité avec la nature » (520ms)
+  ✓  192 [mobile] › tests/e2e/cadre-de-vie.spec.ts:358:1 › D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée (561ms)
+  ✓  193 [mobile] › tests/e2e/cadre-de-vie.spec.ts:372:1 › D12, H76 : Tab passe de « 10 km » à « 30 km », « 50 km », « 100 km » de la mer puis à « 10 km » de la montagne ; Espace coche puis décoche (526ms)
+  ✓  194 [mobile] › tests/e2e/cadre-de-vie.spec.ts:391:1 › D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repliée dit « Peu importe » ; mer « 50 km » cochée puis décochée : « Peu importe » (690ms)
+  ✓  195 [mobile] › tests/e2e/cadre-de-vie.spec.ts:410:1 › 390 px : cases de la montagne de 44 px au moins (589ms)
+  ✓  196 [mobile] › tests/e2e/cadre-de-vie.spec.ts:428:1 › AC-1 ouverture de / : /?loyer=1200 ; aucune distance à la mer ni à la montagne cochée, aucune taille ni aucun type coché ; 5 communes, Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9 ; Montcher non colorée (679ms)
+  ✓  197 [mobile] › tests/e2e/cadre-de-vie.spec.ts:448:1 › AC-5 depuis /, type « Ville dense » : /?loyer=1200&env=ville-dense ; 1 commune, Grandeville 31 ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis » ; puis « Bourg et village » : env=ville-dense,bourg-et-village, Terrebasse 65 et Grandeville 31 (649ms)
+  ✓  198 [mobile] › tests/e2e/cadre-de-vie.spec.ts:469:1 › AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village : aucune distance à la mer ni à la montagne cochée, « Moins de 10 000 hab. » et « Bourg et village » cochés ; /?loyer=1200&taille=petite-commune&env=bourg-et-village ; 1 commune, Terrebasse 65 (497ms)
+  ✓  200 [mobile] › tests/e2e/cadre-de-vie.spec.ts:503:1 › R31 : env=campagne-isolee,village,ville-dense,campagne-isolee → /?loyer=1200&env=ville-dense,campagne-isolee, ces deux types cochés (496ms)
+  ✓  199 [mobile] › tests/e2e/cadre-de-vie.spec.ts:481:1 › AC-10 /?loyer=aucun&env=bourg-et-village : Terrebasse en couleur neutre « sans plafond », les 5 autres non colorées ; message de liste ; fiche de Terrebasse « Commune de montagne » sans score ni rang ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis » (962ms)
+  ✓  201 [mobile] › tests/e2e/cadre-de-vie.spec.ts:515:1 › H75 : « Cadre de vie » repliée dit « 1 taille · 1 type · Mer 50 km · Montagne 30 km » (472ms)
+  ✓  202 [mobile] › tests/e2e/cadre-de-vie.spec.ts:523:1 › H76 : « Type d’environnement » (4 boutons à bascule, dans l’ordre de R27) entre « Taille de la commune » et « Proximité avec la nature » ; coche visible sur le type coché (489ms)
+  -  204 [mobile] › tests/e2e/cadre-de-vie.spec.ts:586:1 › bureau : les quatre types visibles sans défilement, dans le panneau de réglages
+  ✓  205 [mobile] › tests/e2e/carte.spec.ts:8:1 › AC-1 réglages de départ : D palier 60–80, A palier 40–60, B palier 20–40, E palier 0–20 ; C non colorée (474ms)
+  ✓  203 [mobile] › tests/e2e/cadre-de-vie.spec.ts:542:3 › 390 px, au toucher › rangée des types : une seule ligne, bord à bord, qui défile au doigt ; « Campagne isolée » atteinte à la tabulation et cochée à la barre d’espace ; pastilles de 44 px (881ms)
+  ✓  206 [mobile] › tests/e2e/carte.spec.ts:13:1 › AC-2 depuis /?loyer=1200&mer=50, l’utilisateur décoche la mer « 50 km » : D 65 (60–80), A 46 (40–60), B 31 (20–40), E 9 (0–20) ; seule C non colorée (572ms)
+  ✓  207 [mobile] › tests/e2e/carte.spec.ts:23:1 › AC-3 loyer 650 € depuis /?loyer=1200&mer=50 : A passe avec 49 (40–60, 650 € égal au plafond) ; B, C, D et E non colorées (611ms)
+  ✓  208 [mobile] › tests/e2e/categories.spec.ts:10:1 › replier Logement affiche « Louer · Appartement · 52 m² · 1 200 € » et cache le curseur ; le clavier ouvre et ferme (472ms)
+  ✓  210 [mobile] › tests/e2e/categories.spec.ts:46:1 › cible du titre : 24 px de haut en bureau, 44 px à 390 px (454ms)
+  ✓  211 [mobile] › tests/e2e/composants.spec.ts:4:1 › page des composants : polices locales chargées, aucune requête vers Google Fonts (262ms)
+  ✓  209 [mobile] › tests/e2e/categories.spec.ts:34:1 › toutes ouvertes au départ ; résumés « 2 tailles » (mer sur Peu importe et les tailles cochées), puis « Peu importe » (917ms)
+  ✓  212 [mobile] › tests/e2e/composants.spec.ts:18:1 › pastille : un clic la coche (aria-pressed) ; curseur : la flèche droite le déplace (166ms)
+  ✓  213 [mobile] › tests/e2e/etats.spec.ts:10:1 › AC-15 fond IGN en panne : D, A, B, E colorées sur le fond uni, « Fond de carte indisponible », 4 communes passent (610ms)
+  ✓  214 [mobile] › tests/e2e/etats.spec.ts:26:1 › fond rétabli : nouvel essai après 60 s, retour au fond IGN (697ms)
+  ✓  215 [mobile] › tests/e2e/etats.spec.ts:42:1 › chargement : indicateur après 300 ms, réglages inactifs ; erreur et « Réessayer » à 15 s (horloge simulée) (217ms)
+  ✓  217 [mobile] › tests/e2e/etats.spec.ts:78:1 › sans WebGL : « La carte n’a pas pu se charger. » et « Réessayer » (311ms)
+  ✓  216 [mobile] › tests/e2e/etats.spec.ts:59:1 › chargement : données arrivées après 350 ms, l’indicateur s’efface quand la carte est prête (552ms)
+  ✓  218 [mobile] › tests/e2e/etats.spec.ts:93:1 › mentions de la tranche visibles dans le pied de page (237ms)
+  ✓  219 [mobile] › tests/e2e/fiche.spec.ts:16:1 › AC-7 depuis /?loyer=1200&mer=50, choisir Grandeville (33) dans la liste : « Ville dense · 260 000 habitants », 25, sans « Estimation du secteur » (546ms)
+  ✓  220 [mobile] › tests/e2e/fiche.spec.ts:27:1 › AC-8 depuis /?loyer=1200&mer=50, choisir Portmer (17) : ville et périphérie, 1re sur 3, estimation du secteur, moins d’1 km (534ms)
+  ✓  221 [mobile] › tests/e2e/fiche.spec.ts:36:1 › AC-9 depuis /?loyer=1200&mer=50, choisir Montcher (75) sur la carte : deux raisons, sans score ni rang (461ms)
+  -  223 [mobile] › tests/e2e/fiche.spec.ts:61:1 › parcours : fiche de Grandeville → loyer 800 € → ne passe pas → sans limite → ni score ni rang → retour à la liste
+  ✓  222 [mobile] › tests/e2e/fiche.spec.ts:47:1 › AC-10 depuis /?loyer=1200&mer=50, cocher « 10 000 – 50 000 hab. » : seule A passe (72), « 1 commune passe tes critères », Grandeville : raison de taille (655ms)
+  ✓  224 [mobile] › tests/e2e/fiche.spec.ts:82:1 › ronds du top 10 : un rond par commune qui passe, son clic ouvre la fiche, le rond choisi est marqué (507ms)
+  ✓  225 [mobile] › tests/e2e/fumee.spec.ts:6:1 › la carte MapLibre se peint (WebGL disponible), sans erreur dans la console (497ms)
+  ✓  226 [mobile] › tests/e2e/immobilier.spec.ts:55:1 › AC-1 ouverture de / : Appartement, Louer, Total, 52 m², 1 200 € ; adresse /?loyer=1200 ; D 65, F 52, A 46, B 31, E 9 ; C non colorée (535ms)
+  ✓  227 [mobile] › tests/e2e/immobilier.spec.ts:74:1 › AC-2 depuis /?loyer=1200&mer=50, surface à 72 m² : adresse surface=72 ; Portmer 62 · 900 €, Grandeville 12 · 1 152 € ; fiches de Grandeville et de Quaibleu (732ms)
+  ✓  228 [mobile] › tests/e2e/immobilier.spec.ts:89:1 › AC-4 depuis /?loyer=1200&mer=50, Au m² puis Total : « Loyer mensuel » 23 €/m², sans champ surface, unite=m2, liste au m² (72, 47, 25), fiche « 16,0 €/m² par mois » ; retour à 1 200 €, 52 m² (807ms)
+  ✓  229 [mobile] › tests/e2e/immobilier.spec.ts:112:1 › AC-5 depuis /?loyer=1200&mer=50, Acheter puis Louer : Au m², 5 000 €/m², /?achat=5000&mer=50, Portmer 61, Quaibleu 45, Grandeville 16 ; retour à Total, 52 m², 1 200 € (825ms)
+  ✓  230 [mobile] › tests/e2e/immobilier.spec.ts:139:1 › AC-6 Total depuis /?achat=5000&mer=50 : 260 000 €, 52 m², unite=total ; Portmer 61 · 198 000 €, Quaibleu 45 · 250 000 €, Grandeville 16 · 229 000 € (639ms)
+  ✓  231 [mobile] › tests/e2e/immobilier.spec.ts:156:1 › AC-11 /?achat=abc&unite=litre&bien=villa&surface=0 : Appartement, Acheter, Au m², 5 000 €/m² ; adresse /?achat=5000 ; Portmer 24, Grandeville 12, Quaibleu 4 (507ms)
+  ✓  232 [mobile] › tests/e2e/immobilier.spec.ts:169:1 › AC-12 pied de page : « Prix d’achat : Demandes de valeurs foncières (DGFiP) » à côté des mentions de loyer-mer, avant et après Acheter (573ms)
+  ✓  233 [mobile] › tests/e2e/immobilier.spec.ts:182:1 › AC-3 Maison depuis /?loyer=1200&mer=50&surface=72 : 72 m² et 1 200 € gardés ; Portmer 68 · 756 €, Grandeville 21 · 936 € ; fiches de Portmer et de Quaibleu (729ms)
+  ✓  234 [mobile] › tests/e2e/immobilier.spec.ts:201:1 › AC-7 Maison depuis /?achat=5000&mer=50 : adresse bien=maison&surface=52 ; Portmer 64 · 3 500 €/m², Quaibleu 47 · 4 600 €/m² ; fiches de Portmer et de Grandeville (696ms)
+  ✓  235 [mobile] › tests/e2e/immobilier.spec.ts:220:1 › D2 : /?loyer=1200&mer=50&bien=maison s’ouvre en Maison à 92 m², adresse gardée ; retour à Appartement : 92 m² gardés, surface=92 (545ms)
+  ✓  236 [mobile] › tests/e2e/immobilier.spec.ts:231:1 › R21 : « Sans limite » le reste quand on change de bien (540ms)
+  ✓  237 [mobile] › tests/e2e/immobilier.spec.ts:242:1 › H65 : noms lus du curseur dans les quatre réglages, et du champ « Surface en m² » ; groupes nommés (758ms)
+  ✓  238 [mobile] › tests/e2e/immobilier.spec.ts:261:1 › surface en cours de saisie : champ vidé ou « 400 », la carte garde 52 m² ; en quittant le champ, il reprend la dernière surface valide (665ms)
+  ✓  239 [mobile] › tests/e2e/immobilier.spec.ts:283:1 › cibles : bascules, tuiles, unité et champ surface de 44 px à 390 px, d’au moins 24 px en bureau (tuiles : 44 partout) (467ms)
+  ✓  240 [mobile] › tests/e2e/immobilier.spec.ts:295:1 › catégorie « Logement » repliée : résumé sous le titre, « 1 200 € » jamais coupé (518ms)
+  ✓  241 [mobile] › tests/e2e/immobilier.spec.ts:315:1 › titre « Où vivre en France » : lu par les lecteurs d’écran partout, affiché seulement en bureau (479ms)
+  ✓  242 [mobile] › tests/e2e/immobilier.spec.ts:341:1 › AC-8 /?achat=5000&montagne=100 : 4 communes, Grandeville 31, Quaibleu 21, Terrebasse 100 et Rhinval 99 · prix inconnu ; fiche de Terrebasse « trop peu de ventes dans le secteur », 100, 3e sur 4 ; Portmer et Montcher non colorées (619ms)
+  ✓  243 [mobile] › tests/e2e/immobilier.spec.ts:360:1 › AC-9 /?achat=5000&mer=aucun : 3 communes, Portmer 24, Grandeville 12, Quaibleu 4 ; D et F neutres, C non colorée ; fiche de Rhinval « Alsace-Moselle », sans score ni rang (606ms)
+  ✓  244 [mobile] › tests/e2e/immobilier.spec.ts:376:1 › AC-10 /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100 : Maison, Acheter, Total, 100 m², 300 000 €, aucune distance à la mer cochée ; adresse /?achat=300000&bien=maison&unite=total&surface=100 ; 1 commune, Terrebasse 57 · 130 000 € ; F neutre ; fiche de Portmer « Achat 350 000 € » (612ms)
+  ✓  246 [mobile] › tests/e2e/immobilier.spec.ts:423:1 › AC-14 variante « D tous biens », /?achat=5000 : 4 communes, Terrebasse 78 · 1 100 €/m², Portmer 24, Grandeville 12, Quaibleu 4 ; fiche de Terrebasse « 1 100 €/m² à l’achat » et « Estimation tous biens (trop peu de ventes d’appartements) » ; Rhinval en couleur neutre (629ms)
+  ✓  245 [mobile] › tests/e2e/immobilier.spec.ts:397:1 › AC-13 /?loyer=1100&mer=aucun&bien=maison : Maison, Louer, Total, 92 m², 1 100 € ; adresse /?loyer=1100&bien=maison ; Terrebasse 46 · 598 €, Portmer 12 · 966 € ; F neutre ; fiches de Rhinval « Loyer inconnu » et de Grandeville (1.0s)
+  ✓  247 [mobile] › tests/e2e/immobilier.spec.ts:441:1 › aucune commune en Acheter, seules des communes sans prix passent : « Relâche le prix, la mer ou la taille. », D et F restent neutres, compte « Aucune commune » (521ms)
+  ✓  248 [mobile] › tests/e2e/immobilier.spec.ts:450:1 › sans plafond en Acheter : « Fixe un prix d’achat ou une distance à la mer pour classer les communes. », les 6 communes neutres (536ms)
+  -  250 [mobile] › tests/e2e/immobilier.spec.ts:470:1 › design F : panneau de réglages de 340 px à 1 440 × 900
+  ✓  249 [mobile] › tests/e2e/immobilier.spec.ts:458:1 › aucune commune en Acheter avec un proche prêt : « Relâche le prix, la mer, la taille ou un proche. » (4.7s)
+  ✓  251 [mobile] › tests/e2e/immobilier.spec.ts:477:1 › design F : valeur des curseurs du prix et des proches en 16 px gras ; « à vol d’oiseau » plus dans les réglages, gardé dans la fiche (4.9s)
+  ✓  252 [mobile] › tests/e2e/liste.spec.ts:20:1 › AC-4 la liste depuis /?loyer=1200&mer=50 : « 3 communes passent tes critères » puis Portmer 72, Quaibleu 48, Grandeville 25 au format de R5 (509ms)
+  ✓  253 [mobile] › tests/e2e/liste.spec.ts:33:1 › AC-5 loyer 300 € et mer 10 km : aucune commune colorée, message de liste (681ms)
+  ✓  254 [mobile] › tests/e2e/liste.spec.ts:45:1 › AC-6 loyer « Sans limite », aucune distance à la mer ni à la montagne n’étant cochée : couleur neutre sur les 5 communes, aucun score, message de liste (545ms)
+  ✓  255 [mobile] › tests/e2e/liste.spec.ts:60:1 › zone annoncée : le compte suit les réglages (3, 1, aucune) (543ms)
+  ✓  256 [mobile] › tests/e2e/proches-carte.spec.ts:35:1 › AC-3 depuis /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h, Grandeville (33) choisie sur la carte : « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h », 40 km, sans score ni rang (4.7s)
+  ✓  258 [mobile] › tests/e2e/proches-carte.spec.ts:79:1 › AC-14 depuis /?loyer=1200&mer=50, « 1 rue Test 44000 Nantesville » nommé « Parents de Léa » : adresse dans la zone, repère au point [-2, 3], raison dans la fiche de Grandeville, nom jamais envoyé (4.7s)
+  ✓  257 [mobile] › tests/e2e/proches-carte.spec.ts:50:1 › AC-5 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15 et Toulouseville (31) à 2 h 45 : fiche de Grandeville (temps dans l’ordre, 26, 2e sur 2), puis Quaibleu (plus de 3 h, sans score) (10.1s)
+  ✓  259 [mobile] › tests/e2e/proches-carte.spec.ts:109:1 › AC-16 depuis /?loyer=1200&mer=50, pastille de Nantesville (44) : « 2 h au plus », puis « 2 h 15 · au-dessus de 2 h » avec Grandeville choisie ; un clic ne change rien ; aucune à 390 px (4.7s)
+  ✓  260 [mobile] › tests/e2e/proches-carte.spec.ts:143:1 › R15 pastille : un « · » sépare le nom de la valeur, à l’écran et pour les lecteurs d’écran (4.8s)
+  ✓  261 [mobile] › tests/e2e/proches-carte.spec.ts:155:1 › aucune commune avec un proche prêt : « Relâche le loyer, la mer, la taille ou un proche. » (4.7s)
+  ✓  263 [mobile] › tests/e2e/proches-carte.spec.ts:210:1 › deux repères au même endroit : l’étiquette du proche ajouté en second passe à gauche de sa goutte (2.2s)
+  ✓  262 [mobile] › tests/e2e/proches-carte.spec.ts:165:1 › repère : calcul dès « Ajouter », puis prêt ; indisponible si les trajets tombent en panne ; ne se clique pas (5.9s)
+  ✓  264 [mobile] › tests/e2e/proches-carte.spec.ts:226:1 › repère au-dessus du rond du top 10 posé au même endroit (ordre d’empilement, lu au pixel) (1.4s)
+  ✓  265 [mobile] › tests/e2e/proches-carte.spec.ts:247:1 › repère en calcul : l’anneau pulse, et reste fixe avec « réduire les animations » (1.4s)
+  ✓  267 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:73:1 › iPhone : toucher « Adresse ou ville » (0 proche) — au focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (592ms)
+  ✓  266 [mobile] › tests/e2e/proches-carte.spec.ts:262:1 › repère glissé sous la liste (bureau) ou la feuille (390 px) : le panneau le couvre (lu au pixel) (1.8s)
+  ✓  268 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:82:1 › iPhone : toucher « + Ajouter un proche » (1 proche) — au focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (1.4s)
+  ✓  269 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:93:1 › iPhone : les champs de l’ajout ne ressemblent pas à un formulaire d’adresse pour Safari (pas de « AutoFill Contact ») (1.3s)
+  ✓  270 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:141:3 › AC-8 à 390 × 664, au toucher, sans proche, « Adresse ou ville » : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi (1.6s)
+  ✓  272 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:191:3 › iPhone : « Effacer mes proches » (dernier proche) rend le focus au champ — au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (4.9s)
+  ✓  273 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:191:3 › iPhone : « Retirer Nantesville (44) » (dernier proche) rend le focus au champ — au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus (4.9s)
+  ✓  271 [mobile] › tests/e2e/proches-clavier-iphone.spec.ts:141:3 › AC-8 à 390 × 664, au toucher, 4 proches prêts, « + Ajouter un proche » : au focus, chaque champ est déjà à sa place au-dessus de y = 342 ; suggestion, « Nom » et « Ajouter » aussi (14.7s)
+  ✓  275 [mobile] › tests/e2e/proches-etats.spec.ts:52:1 › AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loyer=1200&mer=50 rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 66, Grandeville 17 (5.8s)
+  ✓  274 [mobile] › tests/e2e/proches-etats.spec.ts:33:1 › AC-7 depuis /?loyer=1200&mer=50, 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ (16.7s)
+  ✓  276 [mobile] › tests/e2e/proches-etats.spec.ts:72:1 › AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis /?loyer=1200&mer=50 rouvert, état vide ; 3 communes, 72, 48, 25 (8.1s)
+  ✓  277 [mobile] › tests/e2e/proches-etats.spec.ts:95:1 › AC-10 depuis /?loyer=1200&mer=50, service de trajets en panne : « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; 3 communes, 72, 48, 25 (1.4s)
+  ✓  278 [mobile] › tests/e2e/proches-etats.spec.ts:107:1 › AC-11 depuis /?loyer=1200&mer=50, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes (1.3s)
+  ✓  280 [mobile] › tests/e2e/proches-etats.spec.ts:137:1 › H21 délai de 45 s compté depuis le début de chaque calcul (horloge simulée) : le premier, puis le second, passent indisponibles (1.1s)
+  ✓  281 [mobile] › tests/e2e/proches-etats.spec.ts:171:1 › R13 refus 429 de l’IGN : le proche passe indisponible ; « Réessayer » quand le service répond : calcul, puis prêt (4.8s)
+  ✓  279 [mobile] › tests/e2e/proches-etats.spec.ts:119:1 › deux proches ajoutés d’affilée : le second « En attente… » ; repliée, la zone dit « 2 · 1 en calcul, 1 en attente », puis « 2 » (7.3s)
+  ✓  283 [mobile] › tests/e2e/proches-etats.spec.ts:208:1 › R9 doublon : la même adresse est refusée, « Cette adresse est déjà dans tes proches. » sous le champ (2.1s)
+  ✓  284 [mobile] › tests/e2e/proches-etats.spec.ts:220:1 › aucune adresse : « zzzz » → « Aucune adresse trouvée. », « Ajouter » inactif (1.2s)
+  ✓  282 [mobile] › tests/e2e/proches-etats.spec.ts:189:1 › « Retirer » pendant le calcul : le calcul s’arrête (plus aucune zone demandée), le proche disparaît ; « Retirer » en attente aussi (3.8s)
+  ✓  286 [mobile] › tests/e2e/proches-etats.spec.ts:247:1 › R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65) (4.7s)
+  ✓  285 [mobile] › tests/e2e/proches-etats.spec.ts:229:1 › aucune adresse en bureau, avec un proche : le panneau défile, « Ajouter » entier au-dessus du compte collé (5.6s)
+  ✓  288 [mobile] › tests/e2e/proches-etats.spec.ts:282:1 › R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul (2.2s)
+  ✓  289 [mobile] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (0 proche déjà là) (1.4s)
+  ✓  287 [mobile] › tests/e2e/proches-etats.spec.ts:263:1 › R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul (5.1s)
+  ✓  290 [mobile] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (1 proche déjà là) (2.3s)
+  ✓  292 [mobile] › tests/e2e/proches-mobile.spec.ts:88:1 › le focus sort de l’ajout sans rien ajouter : la feuille redescend (1.3s)
+  ✓  293 [mobile] › tests/e2e/proches-mobile.spec.ts:100:1 › cibles des proches : 44 px de haut à 390 px, 24 px au moins en bureau (2.1s)
+  ✓  291 [mobile] › tests/e2e/proches-mobile.spec.ts:23:3 › champ au focus : la feuille est en haut et la première suggestion est visible (4 proches déjà là) (4.9s)
+  ✓  295 [mobile] › tests/e2e/proches-temps.spec.ts:30:1 › « 1 rue Test » : suggestion au code INSEE, 12 zones de 3 h à 15 min, fins de tranche de la fixture (3.3s)
+  ✓  294 [mobile] › tests/e2e/proches-mobile.spec.ts:128:1 › après l’ajout du 5ᵉ proche, le focus va au message « 5 proches au maximum… » (4.9s)
+  ✓  297 [mobile] › tests/e2e/proches-temps.spec.ts:48:1 › zones en panne (erreur réseau) : le calcul échoue (402ms)
+  ✓  298 [mobile] › tests/e2e/proches-temps.spec.ts:54:1 › refus 429 de l’IGN : le calcul échoue, sans demander les autres zones (394ms)
+  ✓  296 [mobile] › tests/e2e/proches-temps.spec.ts:43:1 › « 2 place Test » : autre proche, autres temps (3.2s)
+  ✓  299 [mobile] › tests/e2e/proches.spec.ts:44:1 › AC-1 depuis /?loyer=1200&mer=50, ajouter « 1 rue Test 44000 Nantesville » : nom proposé, calcul, puis plafond 2 h ; Portmer seule passe (65) ; adresse inchangée (4.7s)
+  ✓  300 [mobile] › tests/e2e/proches.spec.ts:65:1 › AC-2 depuis /?loyer=1200&mer=50, plafond de Nantesville (44) sur 2 h 15 : Portmer 66, Grandeville 17 ; Quaibleu non colorée ; aucun nouveau calcul (4.8s)
+  ✓  302 [mobile] › tests/e2e/proches.spec.ts:96:1 › AC-6 loyer « Sans limite », aucune distance à la mer cochée, Nantesville (44) à 2 h 15 : Portmer 56 (40–60), Grandeville 0 (0–20) ; pas de message « Fixe un loyer… » (4.9s)
+  ✓  301 [mobile] › tests/e2e/proches.spec.ts:80:1 › AC-4 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15, puis Toulouseville (31) ajouté et réglé à 2 h 45 : Portmer 50, Grandeville 26 (9.2s)
+  ✓  303 [mobile] › tests/e2e/proches.spec.ts:113:1 › vide : texte d’accueil et champ ; dès un proche, le champ se replie derrière « + Ajouter un proche », qui le rouvre (4.7s)
+  ✓  305 [mobile] › tests/e2e/proches.spec.ts:150:1 › « Retirer » sur un proche prêt : il disparaît, la liste revient sans calcul (72, 48, 25 depuis /?loyer=1200&mer=50) (4.8s)
+  ✓  306 [mobile] › tests/e2e/safari.spec.ts:6:1 › limite de Safari sur l’adresse : la page survit à 120 crans, puis l’adresse rattrape les réglages (2.5s)
+  -  307 [mobile] › tests/e2e/telephone-feuille.spec.ts:29:1 › AC-9 à 1 440 × 900 : ni onglets, ni « Replier la feuille », ni barre repliée ; « Loyer maximum » à gauche et la liste à droite, visibles ensemble
+  ✓  308 [mobile] › tests/e2e/telephone-feuille.spec.ts:54:1 › AC-10 à 390 × 844, sur « Critères » : loyer réglé sur 1 000 €, le compte en haut de la feuille passe de 3 à 2 communes, sans changer d’onglet (480ms)
+  ✓  304 [mobile] › tests/e2e/proches.spec.ts:125:1 › recherche : rien sous 3 caractères ; un nom vide reprend la commune ; un nom libre est gardé (30 caractères au plus) (9.6s)
+  ✓  309 [mobile] › tests/e2e/telephone-feuille.spec.ts:73:1 › onglets : flèches droite et gauche déplacent le focus et la sélection ; un seul panneau affiché (477ms)
+  ✓  310 [mobile] › tests/e2e/telephone-feuille.spec.ts:101:1 › onglets : 44 px de haut au toucher, pilule de l’onglet choisi à `space-1` du bord du rail (464ms)
+  ✓  311 [mobile] › tests/e2e/telephone-feuille.spec.ts:118:1 › défilement gardé : « Critères » défilé jusqu’à « Tes proches », passage à la liste, retour : même position (604ms)
+  ✓  313 [mobile] › tests/e2e/telephone-feuille.spec.ts:161:1 › 375 × 548 : feuille de 272 px, curseur « Loyer maximum » entièrement visible à l’ouverture (452ms)
+  ✓  312 [mobile] › tests/e2e/telephone-feuille.spec.ts:136:1 › compte en tête : une ligne en style `valeur`, cachée aux lecteurs d’écran, « Aucun plafond fixé » sans plafond ; une seule zone annoncée ; mentions au bas des deux onglets (994ms)
+  ✓  314 [mobile] › tests/e2e/telephone-feuille.spec.ts:174:1 › ajout d’un proche : ni onglets ni compte au-dessus du champ ; ils reviennent quand le focus sort (518ms)
+  ✓  315 [mobile] › tests/e2e/telephone-feuille.spec.ts:250:1 › AC-2 à 390 × 844 : « Replier la feuille » puis « Déplier la feuille » ; barre de 64 px au plus avec le compte, le rond « 1 » ne bouge pas, puis « Critères » et « Loyer maximum » (1.2s)
+  ✓  316 [mobile] › tests/e2e/telephone-feuille.spec.ts:268:1 › AC-3 depuis /?loyer=1200&mer=50 à 390 × 844, au doigt (300 ms par geste) : poignée 30 px puis 200 px vers le bas, barre 200 px vers le haut, glisser dans « Taille de la commune », puis toucher le texte de la barre (4.1s)
+  ✓  317 [mobile] › tests/e2e/telephone-feuille.spec.ts:308:1 › AC-4 à 390 × 844 : repliée, la barre dit le compte de loyer-mer, « Aucun plafond fixé » sans plafond (3.7s)
+  ✓  318 [mobile] › tests/e2e/telephone-feuille.spec.ts:324:1 › AC-5 à 390 × 844 : « Les 10 premières », repliée puis dépliée, c’est toujours la liste (1.3s)
+  ✓  320 [mobile] › tests/e2e/telephone-feuille.spec.ts:379:1 › AC-7 à 390 × 844, sur « Critères » : le carré de Grandeville (33) ouvre sa fiche à la place des onglets ; « ← Les 10 premières » mène à la liste, focus sur sa ligne (485ms)
+  ✓  319 [mobile] › tests/e2e/telephone-feuille.spec.ts:341:1 › AC-6 à 390 × 844, feuille repliée : le rond « 1 » ouvre la feuille sur la fiche de Portmer (17), cadrée au-dessus de la feuille ouverte ; repliée puis dépliée, la fiche revient (2.5s)
+  ✓  322 [mobile] › tests/e2e/telephone-feuille.spec.ts:421:3 › animations réduites › déplier d’un toucher sur la barre n’ouvre aucune fiche (clic fantôme) (936ms)
+  ✓  323 [mobile] › tests/e2e/telephone-feuille.spec.ts:444:3 › animations réduites › H45 sans animation si l’on réduit les animations : durée de transition 0 s (417ms)
+  ✓  324 [mobile] › tests/e2e/telephone-feuille.spec.ts:452:1 › H45 transition de la feuille : 300 ms au plus (399ms)
+  ✓  321 [mobile] › tests/e2e/telephone-feuille.spec.ts:396:1 › AC-11 à 390 × 844 : repliée pendant le calcul de Nantesville (44), la barre passe de 3 à 1 commune sans être dépliée (4.5s)
+  ✓  325 [mobile] › tests/e2e/telephone-feuille.spec.ts:462:1 › focus : repli au clavier, puis repli au doigt avec le focus dans les réglages, le focus va à « Déplier la feuille » (1.9s)
+  ✓  326 [mobile] › tests/e2e/telephone-feuille.spec.ts:481:1 › pendant le chargement, la tête est inactive ; pendant l’ajout d’un proche, il n’y a pas de tête à replier (511ms)
+  ✓  328 [mobile] › tests/e2e/telephone-feuille.spec.ts:527:1 › glisser commencé sur « Adresse ou ville » : « Critères » défile, le champ ne prend pas le focus, la feuille ne monte pas (942ms)
+  ✓  327 [mobile] › tests/e2e/telephone-feuille.spec.ts:504:1 › H50 « Fond de carte indisponible » juste au-dessus de la barre ; « Aucune commune » de la bande caché feuille repliée (1.5s)
+  ✓  329 [mobile] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 664, 0 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets (1.4s)
+  ✓  331 [mobile] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 844, 0 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets (1.4s)
+  ✓  330 [mobile] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 664, 1 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets (5.7s)
+  ✓  333 [mobile] › tests/e2e/telephone-vue.spec.ts:18:5 › 390 × 664 › AC-1 ouverture à 390 × 664 : toute l'emprise au-dessus de la feuille ; Portmer, Quaibleu et Grandeville peintes (paliers 4, 3, 2) ; Montcher et Terrebasse non peintes (416ms)
+  ✓  334 [mobile] › tests/e2e/telephone-vue.spec.ts:18:5 › 375 × 548 › AC-1 ouverture à 375 × 548 : toute l'emprise au-dessus de la feuille ; Portmer, Quaibleu et Grandeville peintes (paliers 4, 3, 2) ; Montcher et Terrebasse non peintes (430ms)
+  ✓  332 [mobile] › tests/e2e/telephone-feuille.spec.ts:550:5 › après « Ajouter » à 390 × 844, 1 proche déjà là : « Tes proches » et « Effacer mes proches » entiers sous les onglets (5.7s)
+
+
+  1) [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Rhinval (67)"
+    Received string:    "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagne"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagne"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:276:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--bureau/error-context.md
+
+  1 failed
+    [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+  35 skipped
+  1 did not run
+  298 passed (5.2m)
+exit 1
