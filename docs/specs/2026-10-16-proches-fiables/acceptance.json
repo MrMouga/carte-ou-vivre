@@ -118,7 +118,7 @@
       "given": "Fixture, proche « Rochelleville (17) » à vol d'oiseau avec le plafond 120 km, obtenu en jouant AC-4 ; le service de trajets est ensuite rétabli et répond normalement",
       "when": "l'utilisateur appuie sur « Recalculer avec l'IGN » et attend la fin du recalcul",
       "then": "pendant le recalcul, la ligne affiche « Recalcul avec l'IGN… » et la liste reste Portmer (17) 70, Quaibleu (13) 32, Grandeville (33) 26 ; ensuite le proche est prêt avec le plafond 2 h et la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 36 · 1 092 € · 7 km » et « 3 · Grandeville (33) · 29 · 832 € · 40 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -134,7 +134,7 @@
       "given": "Fixture, deux proches gardés dans ce navigateur et approximatifs, chacun avec un dernier essai datant de plus de 15 min : « Nantesville (44) » partiel (comme dans AC-7) puis « Rochelleville (17) » à vol d'oiseau (comme dans AC-9) ; le service de trajets est rétabli et répond normalement",
       "when": "l'utilisateur rouvre la page et, pendant le recalcul de Nantesville (44), ajoute « 2 place Test 31000 Toulouseville »",
       "then": "Toulouseville (31) affiche « En attente… » tant que Nantesville (44) se recalcule, puis « Calcul des trajets depuis Toulouseville (31)… » ; aucune zone n'est demandée pour Rochelleville (17) avant que Toulouseville (31) soit prêt ; à la fin, les trois proches sont prêts, Rochelleville (17) avec le plafond 2 h",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
