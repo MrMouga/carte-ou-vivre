@@ -192,3 +192,50 @@ test('AC-4 depuis /?loyer=1200&mer=50, panne « panne-totale » : Rochelleville 
   expect(await texteFiche(page)).toContain("Rochelleville (17) : 88 km à vol d'oiseau");
   await expect(page.locator('body')).not.toContainText(/trajets indisponibles/i);
 });
+
+const pastilles = (page: Page) => page.getByRole('list', { name: 'Temps vers tes proches' });
+const pastille = (page: Page, nom: string) => pastilles(page).getByRole('listitem').filter({ hasText: nom });
+
+test('AC-5 en bureau (1 440 px), panne « panne-totale », Rochelleville (17) à vol d’oiseau : à 90 km, Portmer 67, Grandeville 18 ; pastille « 90 km au plus », puis « 118 km · au-dessus de 90 km » avec Quaibleu ; fiche « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km » ; aucune zone demandée depuis la fin du calcul', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile', 'AC-5 : largeur bureau (1 440 px) ; les pastilles n’existent qu’en bureau (AC-16 de proches)');
+  test.setTimeout(60_000);
+  await ouvrir(page, DEPART);
+  const demandes = await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' });
+  // État final d'AC-4 : Rochelleville (17) à vol d'oiseau, 120 km.
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  await expect(ligne(page, 'Rochelleville (17)')).toContainText("À vol d'oiseau : l'IGN ne répond pas.");
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
+  const apresCalcul = demandes.zones.length;
+
+  await regler(page, 'Rochelleville (17)', 'ArrowLeft', 2); // 90 km
+  await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '90');
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 18 · 832 € · 40 km']);
+
+  // Le haut de la carte, avant le choix.
+  await expect(pastille(page, 'Rochelleville (17)')).toBeVisible();
+  expect(nbsp(await pastille(page, 'Rochelleville (17)').innerText())).toMatch(/^Rochelleville \(17\)\s*90 km au plus$/);
+
+  await choisirSurLaCarte(page, 'E');
+  await expect(fiche(page)).toContainText('Quaibleu (13)');
+  await expect(pastille(page, 'Rochelleville (17)')).toBeVisible();
+  expect(nbsp(await pastille(page, 'Rochelleville (17)').innerText())).toMatch(/^Rochelleville \(17\)\s*118 km · au-dessus de 90 km$/);
+  expect(await texteFiche(page)).toContain('Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km');
+  expect(demandes.zones.length, 'zones demandées depuis la fin du calcul').toBe(apresCalcul);
+});
+
+// Hors AC (R33, tâche 3b) : un classement en échec (le module de classement ne se charge pas) finit comme un calcul sans
+// zone, à vol d'oiseau, et non plus « Trajets indisponibles ».
+test('classement en échec : Nantesville (44) passe à vol d’oiseau, « 120 km au plus », sans « Trajets indisponibles » ni « Réessayer »', async ({ page }) => {
+  await ouvrir(page, DEPART);
+  await servirIgn(page);
+  await page.route('**/classer.worker*', (r) => r.abort());
+  await ajouter(page, 'Nantesville');
+  await pret(page, 'Nantesville (44)', 20_000);
+  const nantes = ligne(page, 'Nantesville (44)');
+  await expect(nantes).toContainText("À vol d'oiseau : l'IGN ne répond pas.");
+  expect(nbsp(await plafond(page, 'Nantesville (44)').getAttribute('aria-valuetext'))).toBe('120 km au plus');
+  await expect(page.locator('body')).not.toContainText(/trajets indisponibles/i);
+  await expect(zone(page).getByRole('button', { name: /Réessayer/ })).toHaveCount(0);
+});

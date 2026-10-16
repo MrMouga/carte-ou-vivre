@@ -130,8 +130,8 @@ const merComparee = (c: Commune) => (c.merKm == null ? null : Math.max(1, Math.r
 const montagneComparee = (c: Commune) =>
   c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : Math.max(1, Math.round(c.montagneKm));
 
-/** Distance d'un proche à vol d'oiseau, comparée au km (R35 de proches-fiables, comme la mer). */
-const kmCompare = (km: number) => Math.max(1, Math.round(km));
+/** Distance d'un proche à vol d'oiseau, comparée au km (R35 de proches-fiables, comme la mer) ; aussi par les pastilles. */
+export const kmCompare = (km: number) => Math.max(1, Math.round(km));
 
 /**
  * H74 : moyenne exacte des notes, moitié vers le haut. Une note en virgule flottante peut tomber juste sous la moitié

@@ -9,7 +9,14 @@ import type { Suggestion } from './ign';
 // Proches-fiables (tâches 2 et 3a) : `partiel` = des zones manquent, la couverture atteint le plafond (R33, R34) ; `km` =
 // la couverture est sous le plafond, le proche vaut ses distances à vol d'oiseau et son plafond est en km (R35). Jusqu'à
 // la tâche 4, ils s'écrivent comme un proche qui n'est pas prêt (`pret: false`) et reviennent donc indisponibles.
-export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'km' | 'indisponible';
+// Tâche 3b : un calcul finit toujours prêt, partiel ou km (R33) ; « indisponible » n'est plus un état du calcul.
+export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'km';
+/**
+ * État d'un proche gardé relu sans ses temps (non prêt, ou empreinte des codes INSEE périmée, R12 de proches), au format
+ * d'avant proches-fiables. Retiré à la tâche 4 (R37 : un tel proche est calculé à l'ouverture) ; en retirant ce type, le
+ * compilateur liste ce qui l'affiche encore.
+ */
+export type EtatRelu = 'indisponible';
 
 export type ProcheGarde = {
   /** Ordre d'ajout. */
@@ -22,7 +29,7 @@ export type ProcheGarde = {
   depart: [number, number] | null;
   /** Plafond en minutes, de 15 min à 3 h ; 2 h à l'ajout (H19). Proche km : en km, de 15 à 180 km (R35). */
   plafond: number;
-  etat: EtatProche;
+  etat: EtatProche | EtatRelu;
   /** Fins de tranche par commune, dans l'ordre de communes.json (0 = plus de 3 h) ; null tant que le proche n'est pas prêt. */
   temps: Uint16Array | null;
   /** Empreinte des codes INSEE pour lesquels `temps` a été calculé. */

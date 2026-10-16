@@ -2,20 +2,21 @@
 // point de départ (l'adresse, ou la mairie d'une commune choisie seule), quel que soit son état. Il ne se clique pas
 // (les clics passent à la carte) et passe au-dessus des ronds du top 10.
 // - Prêt : goutte `place-marker` à contour `card` 2 px et maison ; Calcul (et En attente) : « … » et un anneau qui pulse
-//   (fixe à 40 % si l'on réduit les animations, index.css) ; Indisponible : goutte `card` à bord pointillé et « ! ».
+//   (fixe à 40 % si l'on réduit les animations, index.css) ; Indisponible (proche gardé relu sans ses temps, jusqu'à la
+//   tâche 4 de proches-fiables) : goutte `card` à bord pointillé et « ! ».
 // - Le nom est dans une étiquette à droite de la goutte ; si elle recouvre l'étiquette d'un proche ajouté avant, elle
 //   passe à gauche (design proches, decisions.md). Recalculé à chaque zoom. L'étiquette est un second marqueur, posé
 //   au-dessus de toutes les gouttes : une goutte voisine ne cache jamais un nom (H29 : les deux restent visibles).
 // Le point est porté par l'élément (`data-lng`, `data-lat`) : un test lit la position d'un repère hors du cadre.
 import { Marker, type Map as MapLibreMap } from './maplibre';
-import type { EtatProche } from '@/proches/memoire';
+import type { ProcheGarde } from '@/proches/memoire';
 import { map as carte, size, space } from '@/theme/tokens';
 
-export type RepereProche = { id: number; nom: string; etat: EtatProche; lngLat: [number, number] };
+export type RepereProche = { id: number; nom: string; etat: ProcheGarde['etat']; lngLat: [number, number] };
 type Forme = 'pret' | 'calcul' | 'indisponible';
 
 // Proches-fiables H99 : un proche approximatif (partiel ou km) a le repère d'un proche prêt.
-const formeDe = (etat: EtatProche): Forme =>
+const formeDe = (etat: ProcheGarde['etat']): Forme =>
   etat === 'pret' || etat === 'partiel' || etat === 'km' ? 'pret' : etat === 'indisponible' ? 'indisponible' : 'calcul';
 
 // Tracés de Figma (goutte 26 × 34, maison 14 × 14 posée en 6, 6), dans le repère de la goutte.

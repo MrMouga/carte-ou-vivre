@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Proche } from '@/proches/useProches';
 import { ligneProche } from './Fiche';
+import { valeurPastille } from './Pastilles';
 import { resumeDe } from './Proches';
 
 // Proches-fiables, tâche 3a (details.md « Écrans et états ») : un proche **km** dans la fiche et le résumé replié.
@@ -34,6 +35,25 @@ describe('Fiche, ligne d’un proche à vol d’oiseau (R35)', () => {
 
   it('sous 1 km : « moins d’1 km à vol d’oiseau » (H96)', () => {
     expect(s(ligneProche(km({ distances: Float64Array.from([0.4, 0, 0, 0, 0]) }), PORTMER))).toBe("Rochelleville (17) : moins d'1 km à vol d'oiseau");
+  });
+});
+
+describe('Pastilles d’un proche à vol d’oiseau (R15 de proches étendue, tâche 3b)', () => {
+  it('AC-5 sans commune choisie : « 90 km au plus »', () => {
+    expect(s(valeurPastille(km({ plafond: 90 }), null))).toBe('90 km au plus');
+    expect(s(valeurPastille(km(), null))).toBe('120 km au plus');
+  });
+
+  it('AC-5 Quaibleu choisie : « 118 km · au-dessus de 90 km » ; Portmer et Grandeville sous le plafond : la distance seule', () => {
+    expect(s(valeurPastille(km({ plafond: 90 }), QUAIBLEU))).toBe('118 km · au-dessus de 90 km');
+    expect(s(valeurPastille(km({ plafond: 90 }), GRANDEVILLE))).toBe('88 km');
+    expect(s(valeurPastille(km({ plafond: 90 }), PORTMER))).toBe('39 km');
+  });
+
+  it('comparée au km affiché, comme le score : 90,4 km tient 90 km, 90,5 km non ; « moins d’1 km » sous 1 km', () => {
+    expect(s(valeurPastille(km({ plafond: 90, distances: Float64Array.from([90.4, 0, 0, 0, 0]) }), PORTMER))).toBe('90 km');
+    expect(s(valeurPastille(km({ plafond: 90, distances: Float64Array.from([90.5, 0, 0, 0, 0]) }), PORTMER))).toBe('91 km · au-dessus de 90 km');
+    expect(s(valeurPastille(km({ plafond: 15, distances: Float64Array.from([0.4, 0, 0, 0, 0]) }), PORTMER))).toBe("moins d'1 km");
   });
 });
 

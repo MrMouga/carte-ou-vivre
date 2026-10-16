@@ -4,11 +4,12 @@ import { duree, km, PHRASE_KM, phrasesPartiel } from '@/domain/format';
 import { PROCHE } from '@/domain/score';
 import { cn } from '@/lib/cn';
 import { couverture } from '@/proches/etat';
-import type { EtatProche, Proche } from '@/proches/useProches';
+import type { Proche } from '@/proches/useProches';
 
 // Ligne de proche (Figma « Ligne de proche » 20:168) : repère en petit, nom, adresse, puis selon l'état le plafond et son
 // curseur (prêt), ou la phrase d'état (en attente, calcul, indisponible). « Retirer » dans tous les états (il arrête un
-// calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté.
+// calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté. Indisponible n'est
+// plus que l'état d'un proche gardé relu sans ses temps (`EtatRelu`), jusqu'à la tâche 4 de proches-fiables.
 // Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
 // l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
 // (sans effet avant la tâche 5b de proches-fiables). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
@@ -27,7 +28,7 @@ function IconeMaison() {
  * « Repère en petit » (24 px) : goutte ronde terre cuite à maison (prêt, et partiel ou km : H99 de proches-fiables) ;
  * « … » en attente ou en calcul ; « ! » pointillé si indisponible.
  */
-export function RepereEnPetit({ etat }: { etat: EtatProche }) {
+export function RepereEnPetit({ etat }: { etat: Proche['etat'] }) {
   const indisponible = etat === 'indisponible';
   const pret = etat === 'pret' || etat === 'partiel' || etat === 'km';
   return (

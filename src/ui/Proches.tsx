@@ -275,7 +275,7 @@ export function resumeDe(proches: Proche[]): string {
     [n('calcul'), 'en calcul', 'en calcul'],
     [n('attente'), 'en attente', 'en attente'],
     [n('partiel') + n('km'), 'approximatif', 'approximatifs'],
-    [n('indisponible'), 'indisponible', 'indisponibles'],
+    [n('indisponible'), 'indisponible', 'indisponibles'], // proche gardé relu sans ses temps (jusqu'à la tâche 4)
   ]
     .filter(([k]) => k)
     .map(([k, un, plusieurs]) => `${k} ${k === 1 ? un : plusieurs}`);

@@ -11,14 +11,14 @@ import { departDe, pointsDes } from './temps';
 // - Calcul tolérant (proches-fiables R33) : une zone ratée est redemandée une fois ; 45 s au plus après le début de SON
 //   calcul (H21), le proche prend ce qu'il a — prêt, partiel ou km selon ses zones et son plafond (`etat.ts`).
 //   Un proche partiel ou km compte comme un prêt (D5) ; un proche km vaut ses distances à vol d'oiseau (R35), son plafond
-//   passe des minutes aux km (H94). « Réessayer » remet un proche indisponible (empreinte périmée, relu de la mémoire,
-//   classement en échec) dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
+//   passe des minutes aux km (H94). Un classement en échec finit comme un calcul sans zone : km (R33). « Réessayer »
+//   remet un proche indisponible (relu de la mémoire, ou empreinte périmée : jusqu'à la tâche 4) dans la file. « Retirer » arrête son calcul ; « Effacer mes proches » arrête tout.
 // - Mémoire du navigateur (R12) : chaque changement d'un proche réécrit son entrée ; à l'ouverture, les proches gardés
 //   reviennent sans calcul ; un proche dont l'empreinte des codes INSEE ne correspond plus à la carte revient indisponible.
 //   Un enregistrement refusé → `memoireRefusee` (les proches marchent jusqu'à la fermeture de la page).
 // Le nom ne part jamais vers l'IGN (H30) : seul le point de départ est envoyé.
 
-export type { EtatProche } from './memoire';
+export type { EtatProche, EtatRelu } from './memoire';
 /**
  * `zones` : durées des zones obtenues au dernier calcul, croissantes (12 pour un proche prêt) ; d'elles se déduisent la
  * couverture, l'état et les communes en « jusqu'à » (`etat.ts`). Absent pour un proche relu de la mémoire (format inchangé
@@ -30,7 +30,7 @@ export type Proche = ProcheGarde & { zones?: number[]; distances?: Float64Array 
 export const NOM_MAX = 30;
 export const MAX_PROCHES = 5;
 const RETIRE = 'retiré';
-/** Un proche indisponible n'a pas de temps (R12, R13). */
+/** Un proche gardé relu sans ses temps n'a pas de temps (R12) ; jusqu'à la tâche 4 de proches-fiables. */
 const INDISPONIBLE = { etat: 'indisponible', temps: null, empreinte: null } as const;
 
 /** Nom proposé pour une suggestion : sa commune et son département, « Nantes (44) » (R9). */
@@ -83,7 +83,10 @@ export function useProches(reperes: number[][] | null, codes: string[] | null) {
     Promise.race([calculerTemps(tache.depart, points, arret.signal), arrete])
       .then(
         ({ temps, zones }) => setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, temps, zones, empreinte, points) : x))),
-        () => arret.signal.reason !== RETIRE && changer(tache.id, INDISPONIBLE), // classement en échec
+        // Classement en échec : comme un calcul sans zone, le proche passe à vol d'oiseau (R33, R35).
+        () =>
+          arret.signal.reason !== RETIRE &&
+          setProches((ps) => ps.map((x) => (x.id === tache.id ? apresCalcul(x, new Uint16Array(points.length / 2), [], empreinte, points) : x))),
       )
       .finally(() => {
         courant.current = null;

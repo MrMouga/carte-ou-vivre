@@ -1,4 +1,5 @@
-import { duree, tempsProche } from '@/domain/format';
+import { distanceProche, duree, km, tempsProche } from '@/domain/format';
+import { kmCompare } from '@/domain/score';
 import type { Proche } from '@/proches/useProches';
 import { RepereEnPetit } from './LigneProche';
 
@@ -10,9 +11,17 @@ import { RepereEnPetit } from './LigneProche';
 /**
  * Valeur d'une pastille (R15) : sans commune choisie « 2 h au plus » ; avec, son temps (R10) et « · au-dessus de 2 h » s'il
  * dépasse. Proche partiel (proches-fiables R34) : le temps tel que la fiche l'écrit, « jusqu'à 2 h 30 », « plus de 2 h 45 ».
+ * Proche km (R35) : « 90 km au plus » ; avec une commune, sa distance (« 88 km », « moins d'1 km ») et « · au-dessus de
+ * 90 km », comparée au km affiché comme le score (`kmCompare`).
  */
 export function valeurPastille(p: Proche, commune: number | null): string {
+  // Proche gardé non prêt, relu de la mémoire (format d'avant proches-fiables) : jusqu'à la tâche 4 seulement.
   if (p.etat === 'indisponible') return 'trajets indisponibles';
+  if (p.etat === 'km' && p.distances) {
+    if (commune == null) return `${km(p.plafond)} au plus`;
+    const d = p.distances[commune];
+    return kmCompare(d) > p.plafond ? `${distanceProche(d)} · au-dessus de ${km(p.plafond)}` : distanceProche(d);
+  }
   if ((p.etat !== 'pret' && p.etat !== 'partiel') || !p.temps) return 'calcul en cours';
   if (commune == null) return `${duree(p.plafond)} au plus`;
   const t = p.temps[commune];
