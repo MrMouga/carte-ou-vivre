@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-16 | Poser le stockage avant l'ouverture : garder la pose « une seule fois » dans localStorage, pas dans sessionStorage, si le test rouvre une page | tests, outil | — | [2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md](2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md) |
 | 2026-10-16 | Ajouter un nouvel essai à une file limitée allonge chaque panne simulée : compter la durée d'une panne totale avant de promettre « aucun test ne change » | tests, spec, process | — | [2026-10-16-nouvel-essai-allonge-les-pannes-attendues-par-les-tests.md](2026-10-16-nouvel-essai-allonge-les-pannes-attendues-par-les-tests.md) |
 | 2026-10-16 | Redemander une requête en erreur : vérifier d'abord que le navigateur ne rend pas l'erreur gardée en cache (IGN : 21 jours) | data, outil, perf | — | [2026-10-16-ign-erreurs-gardees-en-cache-navigateur.md](2026-10-16-ign-erreurs-gardees-en-cache-navigateur.md) |
 | 2026-10-16 | Choisir une vraie commune sur la carte du navigateur de test : la placer par le calcul du cadrage, zoomer à la molette sur ce point, cliquer, lire le titre de la fiche et réessayer plus au sud si c'est la voisine | tests, outil | — | [2026-10-16-choisir-une-vraie-commune-sur-la-carte-de-test.md](2026-10-16-choisir-une-vraie-commune-sur-la-carte-de-test.md) |

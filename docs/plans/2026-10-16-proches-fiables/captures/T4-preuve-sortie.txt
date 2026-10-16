@@ -1,0 +1,28 @@
+# Tâche 4 — sortie de la preuve (2026-10-16, 12:14) : entrées gardées par la version en ligne, relues par la version locale
+# Script jetable (scratch) : Playwright, Chromium ; A = site en ligne, B et C = version locale (vite, port 5199, vraies données, vrai IGN), D = site en ligne relisant les entrées écrites par B. Temps en base64 abrégés.
+```
+A. en ligne, version servie : 656fd867382cd4733a28c8f27ce9459948aebc8c
+A. carte prête 4.7 s
+A. Nantes fini 10.9 s
+A. Toulouse fini 12.0 s
+A. lignes : ! | Nantes (44) | 12 Rue de la Paix 44000 Nantes | Trajets indisponibles depuis Nantes (44). | Réessayer | Retirer // ! | Toulouse (31) | 1 Place du Capitole 31000 Toulouse | Trajets indisponibles depuis Toulouse (31). | Réessayer | Retirer
+A. stockage de la version en ligne (avant) :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":null,"temps":null}
+   carte-ou-vivre:proche:2 {"v":1,"id":2,"nom":"Toulouse (31)","lieu":{"libelle":"1 Place du Capitole 31000 Toulouse","commune":"Toulouse","dep":"31","code":"31555","point":[1.444053,43.603872],"estCommune":false},"depart":[1.444053,43.603872],"plafond":120,"pret":false,"empreinte":null,"temps":null}
+B. locale, carte prête 14.3 s
+B. lignes pendant le calcul : … | Nantes (44) | 12 Rue de la Paix 44000 Nantes | Calcul des trajets depuis Nantes (44)… | Retirer // … | Toulouse (31) | 1 Place du Capitole 31000 Toulouse | En attente… | Retirer
+B. Nantes (44) fini après 45.4 s
+B. Toulouse (31) fini après 90.5 s
+B. lignes : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Temps approximatifs : l'IGN n'a pas tout donné. | Au-delà de 2 h 30 : l'IGN n'a pas répondu. | Recalculer avec l'IGN | Retirer // Toulouse (31) | 2 h | 1 Place du Capitole 31000 Toulouse | Temps approximatifs : l'IGN n'a pas tout donné. | Recalculer avec l'IGN | Retirer
+B. zones demandées : 33 ; points de départ : -1.554555,47.215051 ; 1.444053,43.603872
+B. stockage après la relecture et le calcul :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"partiel","zones":[15,30,45,60,90,105,150],"essai":1792145545860}
+   carte-ou-vivre:proche:2 {"v":1,"id":2,"nom":"Toulouse (31)","lieu":{"libelle":"1 Place du Capitole 31000 Toulouse","commune":"Toulouse","dep":"31","code":"31555","point":[1.444053,43.603872],"estCommune":false},"depart":[1.444053,43.603872],"plafond":120,"pret":false,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"partiel","zones":[30,45,60,90,105,120,150,180],"essai":1792145590898}
+C. locale rouverte, lignes : Nantes (44) | 2 h | 12 Rue de la Paix 44000 Nantes | Temps approximatifs : l'IGN n'a pas tout donné. | Au-delà de 2 h 30 : l'IGN n'a pas répondu. | Recalculer avec l'IGN | Retirer // Toulouse (31) | 2 h | 1 Place du Capitole 31000 Toulouse | Temps approximatifs : l'IGN n'a pas tout donné. | Recalculer avec l'IGN | Retirer
+C. zones demandées : 0
+D. en ligne avec les entrées nouvelles, lignes : ! | Nantes (44) | 12 Rue de la Paix 44000 Nantes | Trajets indisponibles depuis Nantes (44). | Réessayer | Retirer // ! | Toulouse (31) | 1 Place du Capitole 31000 Toulouse | Trajets indisponibles depuis Toulouse (31). | Réessayer | Retirer
+D. zones demandées : 0
+D. stockage relu par la version en ligne (inchangé) :
+   carte-ou-vivre:proche:1 {"v":1,"id":1,"nom":"Nantes (44)","lieu":{"libelle":"12 Rue de la Paix 44000 Nantes","commune":"Nantes","dep":"44","code":"44109","point":[-1.554555,47.215051],"estCommune":false},"depart":[-1.554555,47.215051],"plafond":120,"pret":false,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"partiel","zones":[15,30,45,60,90,105,150],"essai":1792145545860}
+   carte-ou-vivre:proche:2 {"v":1,"id":2,"nom":"Toulouse (31)","lieu":{"libelle":"1 Place du Capitole 31000 Toulouse","commune":"Toulouse","dep":"31","code":"31555","point":[1.444053,43.603872],"estCommune":false},"depart":[1.444053,43.603872],"plafond":120,"pret":false,"empreinte":"34746-e5607c87","temps":"<base64, 92656 caractères>","etat":"partiel","zones":[30,45,60,90,105,120,150,180],"essai":1792145590898}
+```
