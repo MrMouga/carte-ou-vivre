@@ -2,14 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { duree, km, PHRASE_KM, phrasesPartiel } from '@/domain/format';
 import { PROCHE } from '@/domain/score';
-import { cn } from '@/lib/cn';
 import { couverture } from '@/proches/etat';
 import type { Proche } from '@/proches/useProches';
 
 // Ligne de proche (Figma « Ligne de proche » 20:168) : repère en petit, nom, adresse, puis selon l'état le plafond et son
-// curseur (prêt), ou la phrase d'état (en attente, calcul, indisponible). « Retirer » dans tous les états (il arrête un
-// calcul), nommé « Retirer <nom> » ; indisponible : « Réessayer <nom> » en bouton principal, à côté. Indisponible n'est
-// plus que l'état d'un proche gardé relu sans ses temps (`EtatRelu`), jusqu'à la tâche 4 de proches-fiables.
+// curseur (prêt), ou la phrase d'état (en attente, calcul). « Retirer » dans tous les états (il arrête un calcul), nommé
+// « Retirer <nom> ».
 // Partiel (proches-fiables, « Ligne d'un proche approximatif » du plan) : comme prêt, avec ses phrases d'état entre
 // l'adresse et le curseur, un curseur qui s'arrête à la couverture, puis « Recalculer avec l'IGN » à côté de « Retirer »
 // (sans effet avant la tâche 5b de proches-fiables). Km (tâche 3a) : de même, avec la phrase « À vol d'oiseau : l'IGN ne
@@ -26,20 +24,16 @@ function IconeMaison() {
 
 /**
  * « Repère en petit » (24 px) : goutte ronde terre cuite à maison (prêt, et partiel ou km : H99 de proches-fiables) ;
- * « … » en attente ou en calcul ; « ! » pointillé si indisponible.
+ * « … » en attente ou en calcul.
  */
 export function RepereEnPetit({ etat }: { etat: Proche['etat'] }) {
-  const indisponible = etat === 'indisponible';
   const pret = etat === 'pret' || etat === 'partiel' || etat === 'km';
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        'flex size-cible shrink-0 items-center justify-center rounded-full border-2',
-        indisponible ? 'border-dashed border-place-marker bg-card text-place-marker' : 'border-card bg-place-marker text-place-marker-foreground',
-      )}
+      className="flex size-cible shrink-0 items-center justify-center rounded-full border-2 border-card bg-place-marker text-place-marker-foreground"
     >
-      {pret ? <IconeMaison /> : <span className="text-rang">{indisponible ? '!' : '…'}</span>}
+      {pret ? <IconeMaison /> : <span className="text-rang">…</span>}
     </span>
   );
 }
@@ -48,21 +42,19 @@ export function RepereEnPetit({ etat }: { etat: Proche['etat'] }) {
  *  déjà dans le nom, corrections 3 du 2026-10-13). */
 export const adresseDe = (p: Pick<Proche, 'lieu'>) => (p.lieu.estCommune ? 'départ de la mairie' : p.lieu.libelle);
 
-type Props = { proche: Proche; onPlafond: (minutes: number) => void; onReessayer: () => void; onRetirer: () => void; inactif?: boolean };
+type Props = { proche: Proche; onPlafond: (minutes: number) => void; onRetirer: () => void; inactif?: boolean };
 
-export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif }: Props) {
+export function LigneProche({ proche, onPlafond, onRetirer, inactif }: Props) {
   const { nom, plafond, etat } = proche;
   const partiel = etat === 'partiel' && proche.zones != null;
   const enKm = etat === 'km';
   const approximatif = partiel || enKm;
   const pret = etat === 'pret' || approximatif;
-  const indisponible = etat === 'indisponible';
   // Partiel (R34) : le plafond va de 15 min à la couverture. Km (R35) : de 15 à 180 km par pas de 15, les mêmes nombres.
   const max = partiel ? couverture(proche.zones!) : PROCHE.max;
   const valeur = enKm ? km(plafond) : duree(plafond);
   const phrases = partiel ? phrasesPartiel(proche.zones!) : enKm ? [PHRASE_KM] : [];
-  const phrase =
-    etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : indisponible ? `Trajets indisponibles depuis ${nom}.` : null;
+  const phrase = etat === 'attente' ? 'En attente…' : etat === 'calcul' ? `Calcul des trajets depuis ${nom}…` : null;
   const retirer = (
     <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Retirer ${nom}`} onClick={onRetirer}>
       Retirer
@@ -94,16 +86,8 @@ export function LigneProche({ proche, onPlafond, onReessayer, onRetirer, inactif
             onValueChange={([v]) => onPlafond(v)}
           />
         )}
-        {phrase && <p className={cn('text-texte', indisponible ? 'text-foreground' : 'text-muted-foreground')}>{phrase}</p>}
-        {indisponible ? (
-          // Figma « Ligne de proche », état Indisponible : « Réessayer » en bouton principal, « Retirer » à côté.
-          <div className="flex items-center gap-2">
-            <Button className="max-bureau:min-h-toucher" aria-label={`Réessayer ${nom}`} onClick={onReessayer}>
-              Réessayer
-            </Button>
-            {retirer}
-          </div>
-        ) : approximatif ? (
+        {phrase && <p className="text-texte text-muted-foreground">{phrase}</p>}
+        {approximatif ? (
           <div className="flex items-center gap-2">
             {/* Sans effet avant la tâche 5b de proches-fiables (recalcul à la demande). */}
             <Button variant="lien" className="max-bureau:min-h-toucher" aria-label={`Recalculer avec l'IGN ${nom}`}>

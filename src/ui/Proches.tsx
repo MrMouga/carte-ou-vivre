@@ -264,9 +264,8 @@ function Ajout({ onAjouter, libelles, inactif, focus, champ, onAjout, monte }: A
 }
 
 /**
- * Résumé de la catégorie repliée (design decisions.md) : « Aucun », « 3 », « 3 · 1 en calcul », « 5 · 1 en attente, 2
- * indisponibles » ; un proche partiel ou km compte comme « approximatif » (H34 étendue par proches-fiables) : « 4 · 2
- * approximatifs ».
+ * Résumé de la catégorie repliée (design decisions.md) : « Aucun », « 3 », « 3 · 1 en calcul », « 5 · 1 en attente » ; un
+ * proche partiel ou km compte comme « approximatif » (H34 étendue par proches-fiables) : « 4 · 2 approximatifs ».
  */
 export function resumeDe(proches: Proche[]): string {
   if (!proches.length) return 'Aucun';
@@ -275,7 +274,6 @@ export function resumeDe(proches: Proche[]): string {
     [n('calcul'), 'en calcul', 'en calcul'],
     [n('attente'), 'en attente', 'en attente'],
     [n('partiel') + n('km'), 'approximatif', 'approximatifs'],
-    [n('indisponible'), 'indisponible', 'indisponibles'], // proche gardé relu sans ses temps (jusqu'à la tâche 4)
   ]
     .filter(([k]) => k)
     .map(([k, un, plusieurs]) => `${k} ${k === 1 ? un : plusieurs}`);
@@ -286,7 +284,6 @@ type Props = {
   proches: Proche[];
   onAjouter: (lieu: Suggestion, nom: string) => void;
   onPlafond: (id: number, minutes: number) => void;
-  onReessayer: (p: Proche) => void;
   onRetirer: (id: number) => void;
   onEffacer: () => void;
   /** Un enregistrement dans le navigateur a échoué (R12). */
@@ -299,7 +296,7 @@ type Props = {
   monte?: boolean;
 };
 
-export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer, onEffacer, memoireRefusee, inactif, onAjout, monte = false }: Props) {
+export function Proches({ proches, onAjouter, onPlafond, onRetirer, onEffacer, memoireRefusee, inactif, onAjout, monte = false }: Props) {
   // D13 : dès un proche, le champ est replié derrière « + Ajouter un proche ».
   const [ouvert, setOuvert] = useState(false);
   const vide = proches.length === 0;
@@ -379,7 +376,6 @@ export function Proches({ proches, onAjouter, onPlafond, onReessayer, onRetirer,
                 proche={p}
                 inactif={inactif}
                 onPlafond={(v) => onPlafond(p.id, v)}
-                onReessayer={() => onReessayer(p)}
                 onRetirer={() => {
                   onRetirer(p.id);
                   if (proches.length === 1 || ouvert) versLeChamp();

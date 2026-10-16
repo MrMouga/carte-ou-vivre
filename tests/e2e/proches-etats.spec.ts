@@ -10,7 +10,8 @@ import { ADRESSES, SANS_PROCHE, ajouter, champ, liste, lignes, ligne, memoire, p
 // une nouvelle page du même contexte de navigateur (même stockage), qui compte ses demandes au service dès l'ouverture.
 
 const AJOUTER = { name: 'Ajouter', exact: true } as const;
-const INDISPONIBLE_44 = 'Trajets indisponibles depuis Nantesville (44).';
+/** Proches-fiables R37 (recalage, tâche 4) : un proche gardé non fini, ou aux temps d'une autre carte, est calculé à l'ouverture. */
+const CALCUL_44 = 'Calcul des trajets depuis Nantesville (44)…';
 /** Proches-fiables R33, R35 : une panne totale ou un délai dépassé sans aucune zone donnent un proche à vol d'oiseau (km). */
 const KM = "À vol d'oiseau : l'IGN ne répond pas.";
 
@@ -250,7 +251,9 @@ test('R12 mémoire refusée (le stockage lève une erreur) : message sous le tit
   expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
 });
 
-test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé revient indisponible, sans calcul', async ({ page }) => {
+// Recalage (proches-fiables R37, tâche 4) : même départ et même réouverture ; le proche n'est plus « indisponible », il est
+// calculé à l'ouverture comme un nouveau proche (12 zones), puis prêt à son plafond de 2 h.
+test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé est calculé à l’ouverture, puis prêt (Portmer 65)', async ({ page }) => {
   await ouvrir(page, DEPART); // cadre-de-vie, règle (1) du recalage : réglage explicite
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
@@ -262,14 +265,17 @@ test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé re
     communes: loyerMer.fixture.items.map((it) => [it.code_insee === '99005' ? '99006' : it.code_insee, it.nom, it.dep, it.population, it.loyer_m2, it.estimation_propre, it.mer_km]),
   };
   const { page: p, demandes } = await rouvrir(page, {}, (p) => p.route('**/data/communes.json', (r) => r.fulfill({ json: communes })));
-  await expect(zone(p)).toContainText(INDISPONIBLE_44);
-  await expect(ligne(p, 'Nantesville (44)').getByRole('button', { name: 'Réessayer' })).toBeVisible();
+  await expect(zone(p)).toContainText(CALCUL_44);
+  await pret(p, 'Nantesville (44)');
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '120');
+  await expect(zone(p)).not.toContainText(/trajets indisponibles/i);
+  expect(demandes.zones).toHaveLength(12);
   await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
-  expect(await lignes(p)).toEqual(SANS_PROCHE);
-  expect(demandes.zones).toEqual([]);
+  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
 });
 
-test('R12 un proche fermé pendant son calcul revient indisponible à la réouverture, sans calcul', async ({ page }) => {
+// Recalage (proches-fiables R37, tâche 4) : même départ ; à la réouverture le proche est calculé (12 zones), puis prêt.
+test('R12 un proche fermé pendant son calcul est calculé à la réouverture, puis prêt', async ({ page }) => {
   await ouvrir(page);
   await servirIgn(page, { delaiZoneMs: 60_000 });
   await ajouter(page, 'Nantesville');
@@ -277,8 +283,9 @@ test('R12 un proche fermé pendant son calcul revient indisponible à la réouve
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 
   const { page: p, demandes } = await rouvrir(page);
-  await expect(zone(p)).toContainText(INDISPONIBLE_44);
-  await expect(zone(p)).not.toContainText('Calcul des trajets');
-  await p.waitForTimeout(500);
-  expect(demandes.zones).toEqual([]);
+  await expect(zone(p)).toContainText(CALCUL_44);
+  await pret(p, 'Nantesville (44)');
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '120');
+  await expect(zone(p)).not.toContainText(/trajets indisponibles/i);
+  expect(demandes.zones).toHaveLength(12);
 });

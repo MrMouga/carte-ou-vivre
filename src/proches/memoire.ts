@@ -3,20 +3,18 @@ import type { Suggestion } from './ign';
 // Mémoire du navigateur (spec proches R12, D7) : une entrée par proche dans le stockage du navigateur (localStorage),
 // jamais dans l'adresse de la page. Elle garde l'adresse (la suggestion choisie), le point de départ, le nom, le plafond
 // et les temps : un entier 16 bits par commune dans l'ordre de communes.json (0 = plus de 3 h), en base64 (≈ 93 Ko pour
-// 34 746 communes), avec l'empreinte de la liste des codes INSEE pour laquelle ils ont été calculés. À la relecture, un
-// proche qui n'était pas prêt revient indisponible ; l'appelant compare l'empreinte à celle de la carte (R12).
+// 34 746 communes), avec l'empreinte de la liste des codes INSEE pour laquelle ils ont été calculés ; l'appelant compare
+// l'empreinte à celle de la carte (R12).
+//
+// Proches-fiables (R36, R37, tâche 4) : l'entrée garde en plus l'état (`pret`, `partiel`, `km`), les zones obtenues (d'elles
+// se déduisent la couverture et les communes en « jusqu'à », `etat.ts`) et l'heure du début du dernier essai (H93) ; le
+// plafond est dans l'unité de l'état (km pour un proche km, R35). Le format reste lisible par la version d'avant (commit
+// 56ac3d6) : `v: 1`, et `pret: true` seulement pour un proche prêt — un proche partiel ou km y revient donc « indisponible »
+// au lieu d'être ignoré. Un proche partiel garde ses temps dans `temps` (la version d'avant ne les lit que si `pret`) ;
+// un proche km n'a pas de temps (ses distances se recalculent des mairies). Un proche gardé en attente, en calcul, ou non
+// prêt par la version d'avant revient « en attente » : l'appelant le calcule à l'ouverture comme un nouveau proche (R37).
 
-// Proches-fiables (tâches 2 et 3a) : `partiel` = des zones manquent, la couverture atteint le plafond (R33, R34) ; `km` =
-// la couverture est sous le plafond, le proche vaut ses distances à vol d'oiseau et son plafond est en km (R35). Jusqu'à
-// la tâche 4, ils s'écrivent comme un proche qui n'est pas prêt (`pret: false`) et reviennent donc indisponibles.
-// Tâche 3b : un calcul finit toujours prêt, partiel ou km (R33) ; « indisponible » n'est plus un état du calcul.
 export type EtatProche = 'attente' | 'calcul' | 'pret' | 'partiel' | 'km';
-/**
- * État d'un proche gardé relu sans ses temps (non prêt, ou empreinte des codes INSEE périmée, R12 de proches), au format
- * d'avant proches-fiables. Retiré à la tâche 4 (R37 : un tel proche est calculé à l'ouverture) ; en retirant ce type, le
- * compilateur liste ce qui l'affiche encore.
- */
-export type EtatRelu = 'indisponible';
 
 export type ProcheGarde = {
   /** Ordre d'ajout. */
@@ -29,17 +27,32 @@ export type ProcheGarde = {
   depart: [number, number] | null;
   /** Plafond en minutes, de 15 min à 3 h ; 2 h à l'ajout (H19). Proche km : en km, de 15 à 180 km (R35). */
   plafond: number;
-  etat: EtatProche | EtatRelu;
-  /** Fins de tranche par commune, dans l'ordre de communes.json (0 = plus de 3 h) ; null tant que le proche n'est pas prêt. */
+  etat: EtatProche;
+  /**
+   * Fins de tranche par commune, dans l'ordre de communes.json (0 = plus de 3 h ; partiel : hors de sa couverture) ; null
+   * pour un proche en attente, en calcul ou km.
+   */
   temps: Uint16Array | null;
-  /** Empreinte des codes INSEE pour lesquels `temps` a été calculé. */
+  /** Empreinte des codes INSEE pour lesquels `temps` (ou les distances d'un proche km) a été calculé. */
   empreinte: string | null;
+  /** Zones obtenues au dernier calcul, en minutes, croissantes (12 pour un proche prêt) ; absent pour un prêt gardé par la version d'avant. */
+  zones?: number[];
+  /** Début du dernier essai de calcul (ms depuis 1970, H93) ; absent avant le premier calcul de cette version. */
+  essai?: number;
 };
 
 export const CLE = 'carte-ou-vivre:proche:';
 const VERSION = 1;
 
-type Entree = Omit<ProcheGarde, 'etat' | 'temps'> & { v: number; pret: boolean; temps: string | null };
+/** Champs de la version d'avant (`v` à `temps`), puis ceux de proches-fiables, absents d'une entrée d'avant ou non finie. */
+type Entree = Omit<ProcheGarde, 'etat' | 'temps' | 'zones' | 'essai'> & {
+  v: number;
+  pret: boolean;
+  temps: string | null;
+  etat?: 'pret' | 'partiel' | 'km';
+  zones?: number[];
+  essai?: number;
+};
 
 /** Le stockage du navigateur, ou null s'il est refusé (certains modes privés lèvent une erreur dès l'accès). */
 export function stockageNavigateur(): Storage | null {
@@ -88,7 +101,8 @@ export function decoder(b64: string): Uint16Array {
 /** Écrit l'entrée d'un proche ; lève une erreur si le navigateur refuse ou si sa mémoire est pleine (R12). */
 export function ecrireProche(s: Storage | null, p: ProcheGarde): void {
   if (!s) throw new Error('stockage indisponible');
-  const pret = p.etat === 'pret' && p.temps != null;
+  const avecTemps = (p.etat === 'pret' || p.etat === 'partiel') && p.temps != null;
+  const fini = avecTemps || p.etat === 'km';
   const e: Entree = {
     v: VERSION,
     id: p.id,
@@ -96,9 +110,11 @@ export function ecrireProche(s: Storage | null, p: ProcheGarde): void {
     lieu: p.lieu,
     depart: p.depart,
     plafond: p.plafond,
-    pret,
-    empreinte: pret ? p.empreinte : null,
-    temps: pret ? encoder(p.temps!) : null,
+    pret: avecTemps && p.etat === 'pret',
+    empreinte: avecTemps ? p.empreinte : null,
+    temps: avecTemps ? encoder(p.temps!) : null,
+    // En attente ou en calcul : rien de plus, il sera calculé à l'ouverture (R37).
+    ...(fini && { etat: p.etat as 'pret' | 'partiel' | 'km', zones: p.zones, essai: p.essai }),
   };
   s.setItem(CLE + p.id, JSON.stringify(e));
 }
@@ -114,7 +130,23 @@ export function effacerTout(s: Storage | null): void {
   if (s) for (const k of clesDes(s)) s.removeItem(k);
 }
 
-/** Les proches gardés, dans l'ordre d'ajout ; un proche qui n'était pas prêt revient indisponible. Entrée illisible : ignorée. */
+/** Un proche gardé à calculer à l'ouverture (R37) : sans temps ni zones. */
+const A_CALCULER = { etat: 'attente', temps: null, empreinte: null } as const;
+
+/**
+ * État relu d'une entrée : prêt (y compris de la version d'avant), partiel avec ses temps et ses zones, km avec ses zones ;
+ * toute autre entrée (version d'avant non prête, en attente, en calcul, ou incomplète) est à calculer (R37).
+ */
+function relu(e: Entree): Pick<ProcheGarde, 'etat' | 'temps' | 'empreinte' | 'zones' | 'essai'> {
+  const zones = Array.isArray(e.zones) && e.zones.every(Number.isInteger) ? e.zones : undefined;
+  const essai = typeof e.essai === 'number' && Number.isFinite(e.essai) ? e.essai : undefined;
+  if (e.pret && e.temps && (e.etat ?? 'pret') === 'pret') return { etat: 'pret', temps: decoder(e.temps), empreinte: e.empreinte, zones, essai };
+  if (!e.pret && e.etat === 'partiel' && e.temps && zones) return { etat: 'partiel', temps: decoder(e.temps), empreinte: e.empreinte, zones, essai };
+  if (!e.pret && e.etat === 'km' && zones) return { etat: 'km', temps: null, empreinte: null, zones, essai };
+  return A_CALCULER;
+}
+
+/** Les proches gardés, dans l'ordre d'ajout ; un proche gardé non fini revient en attente (R37). Entrée illisible : ignorée. */
 export function lireProches(s: Storage | null): ProcheGarde[] {
   if (!s) return [];
   const proches: ProcheGarde[] = [];
@@ -123,17 +155,7 @@ export function lireProches(s: Storage | null): ProcheGarde[] {
       try {
         const e = JSON.parse(s.getItem(k)!) as Entree;
         if (e.v !== VERSION || !Number.isInteger(e.id) || !e.lieu) continue;
-        const temps = e.pret && e.temps ? decoder(e.temps) : null;
-        proches.push({
-          id: e.id,
-          nom: e.nom,
-          lieu: e.lieu,
-          depart: e.depart,
-          plafond: e.plafond,
-          etat: temps ? 'pret' : 'indisponible',
-          temps,
-          empreinte: temps ? e.empreinte : null,
-        });
+        proches.push({ id: e.id, nom: e.nom, lieu: e.lieu, depart: e.depart, plafond: e.plafond, ...relu(e) });
       } catch {
         // entrée illisible : ignorée
       }

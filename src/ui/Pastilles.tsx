@@ -15,8 +15,6 @@ import { RepereEnPetit } from './LigneProche';
  * 90 km », comparée au km affiché comme le score (`kmCompare`).
  */
 export function valeurPastille(p: Proche, commune: number | null): string {
-  // Proche gardé non prêt, relu de la mémoire (format d'avant proches-fiables) : jusqu'à la tâche 4 seulement.
-  if (p.etat === 'indisponible') return 'trajets indisponibles';
   if (p.etat === 'km' && p.distances) {
     if (commune == null) return `${km(p.plafond)} au plus`;
     const d = p.distances[commune];

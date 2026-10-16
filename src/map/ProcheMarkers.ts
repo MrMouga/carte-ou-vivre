@@ -2,8 +2,7 @@
 // point de départ (l'adresse, ou la mairie d'une commune choisie seule), quel que soit son état. Il ne se clique pas
 // (les clics passent à la carte) et passe au-dessus des ronds du top 10.
 // - Prêt : goutte `place-marker` à contour `card` 2 px et maison ; Calcul (et En attente) : « … » et un anneau qui pulse
-//   (fixe à 40 % si l'on réduit les animations, index.css) ; Indisponible (proche gardé relu sans ses temps, jusqu'à la
-//   tâche 4 de proches-fiables) : goutte `card` à bord pointillé et « ! ».
+//   (fixe à 40 % si l'on réduit les animations, index.css).
 // - Le nom est dans une étiquette à droite de la goutte ; si elle recouvre l'étiquette d'un proche ajouté avant, elle
 //   passe à gauche (design proches, decisions.md). Recalculé à chaque zoom. L'étiquette est un second marqueur, posé
 //   au-dessus de toutes les gouttes : une goutte voisine ne cache jamais un nom (H29 : les deux restent visibles).
@@ -13,11 +12,11 @@ import type { ProcheGarde } from '@/proches/memoire';
 import { map as carte, size, space } from '@/theme/tokens';
 
 export type RepereProche = { id: number; nom: string; etat: ProcheGarde['etat']; lngLat: [number, number] };
-type Forme = 'pret' | 'calcul' | 'indisponible';
+type Forme = 'pret' | 'calcul';
 
 // Proches-fiables H99 : un proche approximatif (partiel ou km) a le repère d'un proche prêt.
 const formeDe = (etat: ProcheGarde['etat']): Forme =>
-  etat === 'pret' || etat === 'partiel' || etat === 'km' ? 'pret' : etat === 'indisponible' ? 'indisponible' : 'calcul';
+  etat === 'pret' || etat === 'partiel' || etat === 'km' ? 'pret' : 'calcul';
 
 // Tracés de Figma (goutte 26 × 34, maison 14 × 14 posée en 6, 6), dans le repère de la goutte.
 const GOUTTE = 'M13 1C6.4 1 1 6.2 1 12.7C1 21.2 13 33 13 33C13 33 25 21.2 25 12.7C25 6.2 19.6 1 13 1Z';
@@ -27,16 +26,13 @@ const ETIQUETTE = 'absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-f
 const COTE = { droite: 'left-full ml-1', gauche: 'right-full mr-1' } as const;
 
 function dessin(forme: Forme): string {
-  const goutte =
-    forme === 'indisponible'
-      ? `<path d="${GOUTTE}" class="fill-card stroke-place-marker stroke-2" stroke-dasharray="3 2"/>`
-      : `<path d="${GOUTTE}" class="fill-place-marker stroke-card stroke-2"/>`;
+  const goutte = `<path d="${GOUTTE}" class="fill-place-marker stroke-card stroke-2"/>`;
   const anneau = forme === 'calcul' ? '<circle data-partie="anneau" cx="13" cy="13" r="16" class="anneau-pulse fill-none stroke-place-marker stroke-2 opacity-40"/>' : '';
   const maison = forme === 'pret' ? `<path transform="translate(6 6)" d="${MAISON}" class="fill-place-marker-foreground"/>` : '';
   const signe =
     forme === 'pret'
       ? ''
-      : `<span class="absolute left-0 top-0 flex size-goutte items-center justify-center text-rang ${forme === 'calcul' ? 'text-place-marker-foreground' : 'text-place-marker'}">${forme === 'calcul' ? '…' : '!'}</span>`;
+      : '<span class="absolute left-0 top-0 flex size-goutte items-center justify-center text-rang text-place-marker-foreground">…</span>';
   return `<svg data-partie="goutte" viewBox="0 0 26 34" class="absolute inset-0 h-full w-full overflow-visible">${anneau}${goutte}${maison}</svg>${signe}`;
 }
 

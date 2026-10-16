@@ -202,7 +202,6 @@ export function App() {
         proches={proches.proches}
         onAjouter={proches.ajouter}
         onPlafond={proches.regler}
-        onReessayer={proches.reessayer}
         onRetirer={proches.retirer}
         onEffacer={proches.effacer}
         memoireRefusee={proches.memoireRefusee}

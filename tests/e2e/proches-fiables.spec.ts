@@ -1,9 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
-import { apresRendu, ouvrir, vue } from './lib/carte';
+import { apresRendu, ouvrir, servirFixture, vue } from './lib/carte';
 import { voirCriteres, voirListe } from './lib/feuille';
 import { servirIgn } from './lib/ign';
 import { ADRESSES, ajouter, champ, ligne, liste, lignes, plafond, pret, regler, zone } from './lib/proches';
 import { map as carte } from '../../src/theme/tokens';
+import { empreinteDe } from '../../src/proches/memoire';
+import * as ancienne from '../fixtures/memoire-56ac3d6';
+import proches from '../../docs/specs/2026-10-13-proches/acceptance.json' with { type: 'json' };
 
 // Proches fiables (spec docs/specs/2026-10-16-proches-fiables/) : un proche compte même quand l'IGN rame ou tombe.
 // Faux service IGN de la fixture (tests/e2e/lib/ign.ts), pannes par zone de la fixture de proches-fiables ; chaque zone
@@ -238,4 +241,93 @@ test('classement en échec : Nantesville (44) passe à vol d’oiseau, « 120 km
   expect(nbsp(await plafond(page, 'Nantesville (44)').getAttribute('aria-valuetext'))).toBe('120 km au plus');
   await expect(page.locator('body')).not.toContainText(/trajets indisponibles/i);
   await expect(zone(page).getByRole('button', { name: /Réessayer/ })).toHaveCount(0);
+});
+
+/**
+ * AC-10 : entrée de « Nantesville (44) » (plafond 2 h 15) telle que l'écrit la version précédente (code de 56ac3d6, copié
+ * dans tests/fixtures/memoire-56ac3d6.ts), dans un stockage simulé ; rend sa clé et son texte.
+ */
+function entreeAncienne(p: Pick<ancienne.ProcheGarde, 'etat' | 'temps' | 'empreinte'>): [string, string] {
+  const m = new Map<string, string>();
+  const s = { setItem: (k: string, v: string) => void m.set(k, v) } as Storage;
+  const [suggestion] = proches.fixture.services["recherche d'adresse (IGN) — suggestions par texte tapé"]['1 rue Test'].suggestions;
+  const lieu = { libelle: suggestion.libelle, commune: suggestion.commune, dep: suggestion.dep, code: '44999', point: suggestion.point as [number, number], estCommune: false };
+  ancienne.ecrireProche(s, { id: 1, nom: 'Nantesville (44)', lieu, depart: lieu.point, plafond: 135, ...p });
+  return [...m.entries()][0];
+}
+const CODES = proches.fixture.items.map((it) => it.code_insee);
+const CAS_AC10 = [
+  ['a', 'indisponible', entreeAncienne({ etat: 'indisponible', temps: null, empreinte: null })],
+  // Une carte d'avant où le code de Quaibleu était autre : les temps ne correspondent plus aux codes INSEE de la carte.
+  ['b', 'prêt avec une empreinte périmée', entreeAncienne({ etat: 'pret', temps: Uint16Array.from([60, 135, 150, 150, 0]), empreinte: empreinteDe([...CODES.slice(0, 4), '99006']) })],
+  ['c', 'pendant son calcul (page fermée avant la fin)', entreeAncienne({ etat: 'calcul', temps: null, empreinte: null })],
+] as const;
+
+for (const [cas, quoi, [cle, valeur]] of CAS_AC10)
+  test(`AC-10 (${cas}) depuis /?loyer=1200&mer=50, Nantesville (44) gardé ${quoi} par la version précédente, plafond 2 h 15 : « Calcul des trajets depuis Nantesville (44)… », puis prêt à 2 h 15, « Trajets indisponibles » à aucun moment ; Portmer 66, Grandeville 17`, async ({ page }) => {
+    // Entrée posée avant l'ouverture (une seule fois), et un guetteur qui note tout texte « Trajets indisponibles » affiché.
+    await page.addInitScript(
+      ([cle, valeur]) => {
+        if (!sessionStorage.getItem('ac10-pose')) {
+          localStorage.setItem(cle, valeur);
+          sessionStorage.setItem('ac10-pose', '1');
+        }
+        const w = window as unknown as { vuIndisponible: boolean };
+        w.vuIndisponible = false;
+        new MutationObserver(() => {
+          if (/trajets indisponibles/i.test(document.body?.textContent ?? '')) w.vuIndisponible = true;
+        }).observe(document, { subtree: true, childList: true, characterData: true });
+      },
+      [cle, valeur],
+    );
+    await servirFixture(page);
+    const demandes = await servirIgn(page, ZONE_1_S);
+    await page.goto(DEPART);
+    await expect(ligne(page, 'Nantesville (44)')).toContainText('Calcul des trajets depuis Nantesville (44)…');
+    await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+    await pret(page, 'Nantesville (44)', 20_000);
+
+    await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
+    await expect(ligne(page, 'Nantesville (44)')).toContainText(/2\sh\s15/);
+    await expect(zone(page)).not.toContainText('Calcul des trajets');
+    expect(demandes.zones).toHaveLength(12);
+    await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+    await expect(liste(page)).toContainText('2 communes passent tes critères');
+    expect(await lignes(page)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+    expect(await page.evaluate(() => (window as unknown as { vuIndisponible: boolean }).vuIndisponible)).toBe(false);
+  });
+
+// Hors AC (R36, tâche 4) : un proche gardé à vol d'oiseau ou partiel revient dans son état à la réouverture, sans calcul
+// (son dernier essai date de moins de 15 min : aucun recalcul, même après la tâche 5a), avec les mêmes valeurs.
+test('réouverture : Rochelleville (17) à vol d’oiseau et Nantesville (44) partiel reviennent tels quels, sans zone demandée ; même liste', async ({ page }) => {
+  test.setTimeout(90_000);
+  await ouvrir(page, DEPART);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' });
+  await ajouter(page, 'Rochelleville');
+  await pret(page, 'Rochelleville (17)', 45_000);
+  await servirIgn(page, { ...ZONE_1_S, panne: 'zone-135-toujours' }); // posé après : il gagne
+  await ajouter(page, 'Nantesville');
+  await pret(page, 'Nantesville (44)', 45_000);
+  await expect(ligne(page, 'Nantesville (44)')).toContainText("Temps approximatifs : l'IGN n'a pas tout donné.");
+  await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
+  const avant = await lignes(page);
+
+  const contexte = page.context();
+  await page.close();
+  const p = await contexte.newPage();
+  await servirFixture(p);
+  const demandes = await servirIgn(p, ZONE_1_S);
+  await p.goto(DEPART);
+  await expect(p.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await pret(p, 'Rochelleville (17)');
+  await pret(p, 'Nantesville (44)');
+  await expect(ligne(p, 'Rochelleville (17)')).toContainText("À vol d'oiseau : l'IGN ne répond pas.");
+  expect(nbsp(await plafond(p, 'Rochelleville (17)').getAttribute('aria-valuetext'))).toBe('120 km au plus');
+  await expect(ligne(p, 'Nantesville (44)')).toContainText("Temps approximatifs : l'IGN n'a pas tout donné.");
+  await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuemax', '180');
+  await expect(zone(p)).not.toContainText('Calcul des trajets');
+  await voirListe(p);
+  expect(await lignes(p)).toEqual(avant);
+  await p.waitForTimeout(500);
+  expect(demandes.zones).toEqual([]);
 });

@@ -20,12 +20,10 @@ type Props = {
 };
 
 /**
- * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours », « … :
- * trajets indisponibles » ; partiel (proches-fiables R34) : « Nantesville (44) : jusqu'à 2 h 30 en voiture », « … : plus
+ * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours » ; partiel (proches-fiables R34) : « Nantesville (44) : jusqu'à 2 h 30 en voiture », « … : plus
  * de 2 h 45 en voiture » ; km (R35) : « Rochelleville (17) : 88 km à vol d'oiseau ».
  */
 export function ligneProche(p: Proche, index: number): string {
-  if (p.etat === 'indisponible') return `${p.nom} : trajets indisponibles`; // proche gardé relu sans ses temps (jusqu'à la tâche 4)
   if (p.etat === 'km' && p.distances) return `${p.nom} : ${distanceProche(p.distances[index])} à vol d'oiseau`;
   if ((p.etat !== 'pret' && p.etat !== 'partiel') || !p.temps) return `${p.nom} : calcul en cours`;
   return `${p.nom} : ${tempsProche(p.temps[index], p.zones)} en voiture`;
