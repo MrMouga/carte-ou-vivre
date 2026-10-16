@@ -78,7 +78,7 @@
       "given": "Fixture, panne « panne-totale », aucun proche gardé",
       "when": "l'utilisateur ajoute « 6 rue Test 17000 Rochelleville » en gardant le nom proposé, attend la fin du calcul, puis choisit Grandeville (33)",
       "then": "le proche « Rochelleville (17) » affiche « À vol d'oiseau : l'IGN ne répond pas. », le plafond « 120 km au plus » et « Recalculer avec l'IGN » ; « Trajets indisponibles » n'est affiché nulle part ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 70 · 650 € · moins d'1 km », « 2 · Quaibleu (13) · 32 · 1 092 € · 7 km » et « 3 · Grandeville (33) · 26 · 832 € · 40 km » ; la fiche de Grandeville affiche « Rochelleville (17) : 88 km à vol d'oiseau »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
