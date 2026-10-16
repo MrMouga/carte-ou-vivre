@@ -1,0 +1,8 @@
+# Redemander une requête en erreur : vérifier d'abord que le navigateur ne rend pas l'erreur gardée en cache (IGN : 21 jours)
+Étiquettes : data, outil, perf · Tranche : proches-fiables · Source : tâche 0 de /build proches-fiables, `docs/plans/2026-10-16-proches-fiables/mesure-tache-0.md`
+
+**Problème** — La spec prévoit de redemander une fois une zone de temps en erreur (R33) et de recalculer plus tard un proche incomplet (R36). Les réponses en erreur de la Géoplateforme IGN (500, 502, 504) portent pourtant le même `cache-control: private, max-age=1814400` (21 jours) que les réponses réussies.
+**Symptômes** — Dans Chromium (Playwright, serveur local qui imite ces en-têtes), la seconde demande de la même adresse rend la même 502 ou 504 sans qu'aucune requête n'atteigne le serveur : le second essai et le recalcul ne feraient rien, pendant 21 jours.
+**Ce qui n'a pas marché** — `fetch(url)` ordinaire (mode `default`) : l'erreur gardée revient.
+**Ce qui a marché** — `fetch(url, { cache: 'reload' })` ou `{ cache: 'no-store' }` : la demande repart vers le serveur (2 requêtes reçues sur 2). Safari non vérifié.
+**Prévention** — Avant d'écrire une règle de nouvel essai sur un service tiers, lire les en-têtes de cache de ses **réponses en erreur** (`curl -i`), et tester le nouvel essai dans le navigateur en comptant les requêtes reçues par le faux service, pas seulement les statuts vus par la page. Dans le faux IGN des tests, servir les erreurs avec les en-têtes réels pour que le test le voie. Mesuré aussi cette nuit-là : une 504 de l'IGN arrive toujours à 60 s, donc après un délai de 45 s, et ne peut jamais être redemandée.

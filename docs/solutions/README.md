@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-16 | Redemander une requête en erreur : vérifier d'abord que le navigateur ne rend pas l'erreur gardée en cache (IGN : 21 jours) | data, outil, perf | — | [2026-10-16-ign-erreurs-gardees-en-cache-navigateur.md](2026-10-16-ign-erreurs-gardees-en-cache-navigateur.md) |
 | 2026-10-15 | Avant de juger une suite rouge : regarder qui tient le port 4173 et la charge de la machine, puis relancer le test seul trois fois | tests, outil, build | — | [2026-10-15-suite-instable-port-4173-et-machine-saturee.md](2026-10-15-suite-instable-port-4173-et-machine-saturee.md) |
 | 2026-10-15 | Recaler une liste de communes sur le COG récent : suivre aussi les rétablissements, et compter ce que couvre vraiment une couche « infra-communale » | data, discovery, spec | — | [2026-10-15-recalage-cog-retablissements-et-couches-partielles.md](2026-10-15-recalage-cog-retablissements-et-couches-partielles.md) |
 | 2026-10-15 | Rangée qui défile sur le côté : amener soi-même la pastille focalisée dans la vue, Chromium ne le fait pas si elle dépasse déjà de plus de 32 px | build, design, tests | — | [2026-10-15-rangee-qui-defile-focus-clavier.md](2026-10-15-rangee-qui-defile-focus-clavier.md) |
