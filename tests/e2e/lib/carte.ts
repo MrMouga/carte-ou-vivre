@@ -3,6 +3,7 @@ import { expect, type Page } from '@playwright/test';
 import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json' with { type: 'json' };
 import immobilier from '../../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
 import cadreDeVie from '../../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
+import mairies from '../../../docs/specs/2026-10-18-mairies/acceptance.json' with { type: 'json' };
 import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
@@ -55,6 +56,19 @@ const achatJson = ({ items }: Jeu) => ({
     return [it.code_insee, a.m2, a.source, m.m2, m.source];
   }),
 });
+// Mairies élues en 2026 (spec mairies, plan « Fixtures ») : prises dans la fixture « 6 communes » de mairies, par code INSEE
+// (les « 5 communes » ont donc leur mairie) ; une nuance inventée par étiquette, de code égal à l'étiquette ; `[code, "",
+// liste]` sans étiquette, `[code, null, null]` sans résultat, comme tout le jeu « métropole ».
+const mairieParCode = new Map(mairies.fixture.items.map((it) => [it.code_insee, it]));
+const nuancesJson = () =>
+  Object.fromEntries(mairies.fixture.items.filter((it) => it.mairie_etiquette != null).map((it) => [it.mairie_etiquette, { etiquette: it.mairie_etiquette, bloc: it.mairie_bloc }]));
+const mairiesJson = (jeu: Jeu) => ({
+  champs: ['code', 'nuance', 'liste'],
+  communes: jeu.items.map((it) => {
+    const m = jeu.items === METROPOLE.items ? undefined : mairieParCode.get(it.code_insee);
+    return !m || m.sans_resultat ? [it.code_insee, null, null] : [it.code_insee, m.mairie_etiquette ?? '', m.mairie_liste];
+  }),
+});
 // Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
 const reperesJson = ({ items }: Jeu) => ({
   champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
@@ -71,6 +85,8 @@ export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIX
   await page.route('**/data/communes.json', (r) => r.fulfill({ json: communesJson(jeu) }));
   await page.route('**/data/reperes.json', (r) => r.fulfill({ json: reperesJson(jeu) }));
   await page.route('**/data/achat.json', (r) => r.fulfill({ json: achatJson(jeu) }));
+  await page.route('**/data/mairies.json', (r) => r.fulfill({ json: mairiesJson(jeu) }));
+  await page.route('**/data/nuances.json', (r) => r.fulfill({ json: nuancesJson() }));
   await page.route('**/tuiles/**', (r) => {
     const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });

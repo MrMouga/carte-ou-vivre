@@ -5,6 +5,8 @@
 // filtre sans donner de note (R25, D21 de loyer-mer).
 // Spec cadre-de-vie : la montagne filtre et note comme la mer (R29) ; le type d'environnement filtre sans noter, comme la
 // taille (R27) ; raisons dans l'ordre de H83.
+// Spec mairies : le bord de la mairie élue en 2026 filtre sans noter, comme le type (R38) ; raisons dans l'ordre de H113.
+// Le mot « mairie » désigne le point de chaque commune (D18 de loyer-mer) : la mairie élue s'appelle ici `bord`, `nuance`, `liste`.
 // Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer et montagne au km (sous 1 km : comparée
 // comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
@@ -28,7 +30,36 @@ export type Commune = {
   // Absent ou null = inconnu.
   typeEnv?: TypeEnv | null;
   montagneKm?: number | null;
+  // Spec mairies (R39, D8) : bord de la mairie élue en 2026 (un bloc, ou « sans-etiquette »), étiquette en clair de sa
+  // nuance (texte de la circulaire, null sans étiquette) et nom de sa liste. Absent ou null = sans résultat (D5).
+  bord?: Bord | null;
+  nuance?: string | null;
+  liste?: string | null;
 };
+
+/** H108 : les 6 blocs de la circulaire du 2 février 2026 et « sans étiquette » (D2, D8), noms de l'adresse. */
+export type Bord = 'extreme-gauche' | 'gauche' | 'divers' | 'centre' | 'droite' | 'extreme-droite' | 'sans-etiquette';
+
+/**
+ * `public/data/mairies.json` (tâche 0) : une ligne `[code, nuance, liste]` par commune ; nuance vide = sans étiquette,
+ * nuance et liste à null = sans résultat.
+ */
+export type MairiesJson = { champs: string[]; communes: [string, string | null, string | null][] };
+/** `public/data/nuances.json` : code de nuance → étiquette en clair et bloc. */
+export type NuancesJson = Record<string, { etiquette: string; bloc: Exclude<Bord, 'sans-etiquette'> }>;
+
+/** H122 : joint les mairies aux communes par code INSEE (jamais par position) ; une commune absente du fichier est sans résultat. */
+export function joindreBords(communes: Commune[], mairies: MairiesJson, nuances: NuancesJson): Commune[] {
+  const parCode = new Map(mairies.communes.map((l) => [l[0], l]));
+  return communes.map((c) => {
+    const [, codeNuance, liste] = parCode.get(c.code) ?? [c.code, null, null];
+    if (codeNuance == null) return { ...c, bord: null, nuance: null, liste: null };
+    if (codeNuance === '') return { ...c, bord: 'sans-etiquette', nuance: null, liste };
+    const n = nuances[codeNuance];
+    if (!n) throw new Error(`nuance inconnue : ${codeNuance}`);
+    return { ...c, bord: n.bloc, nuance: n.etiquette, liste };
+  });
+}
 
 /** H71 : les quatre types d'environnement (niveaux de D10). */
 export type TypeEnv = 'ville-dense' | 'ville-et-peripherie' | 'bourg-et-village' | 'campagne-isolee';
@@ -54,8 +85,9 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
  * (R28 de cadre-de-vie). `montagne` : un des choix de `CHOIX_MONTAGNE` en km, absente ou `null` = « Peu importe » (R29 ;
  * facultative, pour que les réglages écrits avant la montagne restent valables). `tailles` vide = « Peu importe ».
  * `types` : types d'environnement cochés (R27) ; absent ou vide = « Peu importe » (facultatif, comme `montagne`).
+ * `mairies` : bords de mairie cochés (R38 de mairies) ; absent ou vide = « Peu importe » (facultatif, comme `types`).
  */
-export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[]; types?: TypeEnv[] };
+export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[]; types?: TypeEnv[]; mairies?: Bord[] };
 
 /** R28, H69 de cadre-de-vie : les distances de la mer ; aucune cochée = « Peu importe » (D12). */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
@@ -89,6 +121,8 @@ export type Raison =
   | { critere: 'montagne'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
   | { critere: 'type'; type: TypeEnv }
+  /** R38 de mairies : bord de la mairie hors des pastilles cochées ; null = sans résultat. */
+  | { critere: 'bord'; bord: Bord | null }
   /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h (ou, pour un partiel, plus que sa couverture) ; `zones` : celles du proche. */
   | { critere: 'proche'; nom: string; valeur: number; plafond: number; zones?: readonly number[] }
   /** Proche à vol d'oiseau (R35) : `valeur` et `plafond` en km, `valeur` telle qu'affichée (au km). */
@@ -189,6 +223,11 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       const t = c.typeEnv;
       if (t == null) raisons.push({ critere: 'type-inconnu' });
       else if (!r.types.includes(t)) raisons.push({ critere: 'type', type: t });
+    }
+    // R38 : passe si son bord est coché ; une commune sans résultat ne passe jamais un filtre actif (D5).
+    if (r.mairies?.length) {
+      const b = c.bord ?? null;
+      if (b == null || !r.mairies.includes(b)) raisons.push({ critere: 'bord', bord: b });
     }
     for (const p of proches) {
       if ('distances' in p) {

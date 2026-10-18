@@ -1,4 +1,4 @@
-import { SURFACE_M2, loyerPour, PROCHE, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
 import { couverture, marque } from '../proches/etat';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
@@ -116,6 +116,17 @@ export const LIBELLE_TYPE: Record<TypeEnv, string> = {
   'campagne-isolee': 'Campagne isolée',
 };
 
+/** Pastilles de mairie (R38 de mairies), noms de H108. */
+export const LIBELLE_BORD: Record<Bord, string> = {
+  'extreme-gauche': 'Extrême gauche',
+  gauche: 'Gauche',
+  divers: 'Divers',
+  centre: 'Centre',
+  droite: 'Droite',
+  'extreme-droite': 'Extrême droite',
+  'sans-etiquette': 'Sans étiquette',
+};
+
 /** Fiche (R30 de cadre-de-vie, à la place de la ligne de taille) : « Ville dense · 260 000 habitants ». */
 export const typeTexte = (type: TypeEnv | null | undefined, pop: number | null) =>
   `${type ? LIBELLE_TYPE[type] : "Type d'environnement inconnu"} · ${pop == null ? 'population inconnue' : `${population(pop)}${NBSP}habitants`}`;
@@ -204,6 +215,8 @@ export function raisonTexte(r: Raison): string {
       return `Taille : ${population(r.population)}${NBSP}habitants, hors des tailles choisies`;
     case 'type':
       return `Environnement : ${LIBELLE_TYPE[r.type].toLowerCase()}, hors des types choisis`;
+    case 'bord':
+      return `Mairie : ${r.bord == null ? 'aucun résultat en 2026' : LIBELLE_BORD[r.bord].toLowerCase()}, hors des mairies choisies`;
     case 'loyer-inconnu':
       return 'Loyer inconnu';
     case 'mer-inconnue':

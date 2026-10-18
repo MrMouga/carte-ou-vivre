@@ -3,7 +3,8 @@
 // n'apparaissent que s'ils diffèrent de leur valeur de départ.
 // Spec cadre-de-vie, R31 : `mer` et `montagne` en cinq choix, écrites seulement si elles diffèrent de Peu importe ; `env`
 // liste les types d'environnement cochés, comme `taille`.
-import { CHOIX_MER, CHOIX_MONTAGNE, type Reglages, type Taille, type TypeEnv } from './score';
+// Spec mairies, R41 : `mairie` liste les bords cochés, comme `env`, placée après `env`.
+import { CHOIX_MER, CHOIX_MONTAGNE, type Bord, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
@@ -38,8 +39,10 @@ const CLE_PRIX: Record<Mode, string> = { louer: 'loyer', acheter: 'achat' };
 export const ORDRE_TAILLES: Taille[] = ['petite-commune', 'petite-ville', 'ville-moyenne', 'grande-ville'];
 /** Ordre de R27 (noms de H71), celui des pastilles et de l'adresse. */
 export const ORDRE_TYPES: TypeEnv[] = ['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee'];
+/** Ordre de R38 de mairies (noms de H108), celui des pastilles et de l'adresse. */
+export const ORDRE_BORDS: Bord[] = ['extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette'];
 
-/** `taille`, `env` (R7, R31) : noms séparés par des virgules ; inconnus ignorés, rendus dans `ordre`, sans doublon. */
+/** `taille`, `env`, `mairie` (R7, R31, R41) : noms séparés par des virgules ; inconnus ignorés, rendus dans `ordre`, sans doublon. */
 function lireListe<T extends string>(v: string | null, ordre: T[]): T[] {
   const demandes = (v ?? '').split(',');
   return ordre.filter((x) => demandes.includes(x));
@@ -71,16 +74,19 @@ export function lireAdresse(search: string): Reglages {
   // R31 : `env` comme `taille` ; `types` n'est renseigné que s'il en reste un (facultatif, comme `montagne` : les réglages
   // écrits avant le type restent valables).
   const types = lireListe(q.get('env'), ORDRE_TYPES);
+  // R41 de mairies : de même, `mairies` n'est renseigné que s'il reste un bord connu.
+  const mairies = lireListe(q.get('mairie'), ORDRE_BORDS);
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: lireMer(q.get('mer')),
     montagne: lireMontagne(q.get('montagne')),
     tailles: lireListe(q.get('taille'), ORDRE_TAILLES),
     ...(types.length ? { types } : {}),
+    ...(mairies.length ? { mairies } : {}),
   };
 }
 
-/** Ordre de R31 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `bien`, `unite`, `surface` ; absents si Peu importe. */
+/** Ordre de R31 et R41 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `mairie`, `bien`, `unite`, `surface` ; absents si Peu importe. */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
   const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`];
   if (r.mer != null) parts.push(`mer=${r.mer}`);
@@ -89,6 +95,8 @@ export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): str
   if (tailles.length) parts.push(`taille=${tailles.join(',')}`);
   const types = ORDRE_TYPES.filter((t) => r.types?.includes(t));
   if (types.length) parts.push(`env=${types.join(',')}`);
+  const mairies = ORDRE_BORDS.filter((b) => r.mairies?.includes(b));
+  if (mairies.length) parts.push(`mairie=${mairies.join(',')}`);
   if (prix.bien !== PRIX_DEPART.bien) parts.push(`bien=${prix.bien}`);
   if (prix.unite !== UNITE_DEPART[prix.mode]) parts.push(`unite=${prix.unite}`);
   if (prix.surface !== SURFACE_DEPART[prix.bien]) parts.push(`surface=${prix.surface}`);

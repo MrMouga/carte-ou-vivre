@@ -4,7 +4,7 @@ import { PALIERS } from './map/style';
 import { paddingCarte, type Repere } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
-import { communeDeLigne, evaluer, type Commune, type LigneCommunes, type Reglages } from './domain/score';
+import { communeDeLigne, evaluer, joindreBords, type Commune, type LigneCommunes, type MairiesJson, type NuancesJson, type Reglages } from './domain/score';
 import { ecrireAdresse, lireAdresse, lirePrix } from './domain/url';
 import { joindreAchats, type AchatJson, type Changement } from './domain/prix';
 import { Settings } from './ui/Settings';
@@ -44,15 +44,18 @@ async function lire<T>(url: string): Promise<T> {
   return (await r.json()) as T;
 }
 
-// H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE.
+// H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE ; H122 de
+// mairies : de même pour les mairies élues en 2026 et leurs nuances.
 async function charger(): Promise<Donnees> {
-  const [c, r, a] = await Promise.all([
+  const [c, r, a, m, n] = await Promise.all([
     lire<{ communes: LigneCommunes[] }>('/data/communes.json'),
     lire<{ reperes: Repere[] }>('/data/reperes.json'),
     lire<AchatJson>('/data/achat.json'),
+    lire<MairiesJson>('/data/mairies.json'),
+    lire<NuancesJson>('/data/nuances.json'),
   ]);
   const communes = c.communes.map(communeDeLigne);
-  return { communes: joindreAchats(communes, a), reperes: r.reperes };
+  return { communes: joindreBords(joindreAchats(communes, a), m, n), reperes: r.reperes };
 }
 
 export function App() {
