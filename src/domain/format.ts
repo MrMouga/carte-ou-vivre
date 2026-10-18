@@ -1,4 +1,4 @@
-import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
 import { couverture, marque } from '../proches/etat';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
@@ -193,6 +193,23 @@ export const montagneFiche = (k: number | null | undefined) =>
       : k < 1
         ? `moins d'1${NBSP}km de la montagne`
         : `${km(k)} de la montagne à vol d'oiseau`;
+
+/**
+ * Fiche, sous la montagne (R40 de mairies) : « Mairie : Droite (Divers droite) · « Portmer Avance » » ; pas de parenthèse
+ * quand l'étiquette s'écrit comme le bloc (« Mairie : Divers · … ») ; « sans étiquette (moins de 3 500 habitants) », texte
+ * fixe (D8) ; « aucun résultat en 2026 ». Le nom de la liste tel que publié (H114), entre guillemets français tenus au nom
+ * par des espaces insécables (la ligne passe à la ligne sans laisser un guillemet seul).
+ */
+export function mairieFiche(c: Pick<Commune, 'bord' | 'nuance' | 'liste'>): string {
+  if (c.bord == null) return 'Mairie : aucun résultat en 2026';
+  const bloc =
+    c.bord === 'sans-etiquette'
+      ? `sans étiquette (moins de 3${NBSP}500${NBSP}habitants)`
+      : c.nuance == null || c.nuance === LIBELLE_BORD[c.bord]
+        ? LIBELLE_BORD[c.bord]
+        : `${LIBELLE_BORD[c.bord]} (${c.nuance})`;
+  return c.liste == null ? `Mairie : ${bloc}` : `Mairie : ${bloc} · «${NBSP}${c.liste}${NBSP}»`;
+}
 
 /** « 1re », « 2e »… */
 export const ordinal = (n: number) => `${n}${n === 1 ? 're' : 'e'}`;

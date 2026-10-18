@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import mairies from '../../docs/specs/2026-10-18-mairies/acceptance.json';
-import { raisonTexte, resumeVieLocale } from './format';
+import { mairieFiche, raisonTexte, resumeVieLocale } from './format';
 import { evaluer, joindreBords, type Bord, type Commune, type MairiesJson, type NuancesJson, type Reglages } from './score';
 import { ecrireAdresse, lireAdresse, ORDRE_BORDS } from './url';
 
@@ -173,5 +173,48 @@ describe('H110 — résumé de « Vie locale » repliée', () => {
     expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: [] })).toBe('Peu importe');
     expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: ['droite'] })).toBe('1\u00a0choix');
     expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: ['gauche', 'sans-etiquette'] })).toBe('2\u00a0choix');
+  });
+});
+
+// Tâche 3 : la ligne « Mairie » de la fiche (R40, H114, D8). Les tests comparent le texte avec des espaces ordinaires
+// (`sp`) ; l'espace insécable de « 3 500 » est vérifiée à part (H3 de loyer-mer).
+const sp = (t: string) => t.replace(/\u00a0/g, ' ');
+
+describe('R40 — ligne « Mairie » de la fiche', () => {
+  it('AC-5 (calcul) les 6 communes de la fixture', () => {
+    expect((['A', 'B', 'C', 'D', 'E', 'F'] as const).map((id) => sp(mairieFiche(six.find((c) => c.code === code[id])!)))).toEqual([
+      'Mairie : Droite (Divers droite) · « Portmer Avance »',
+      'Mairie : Gauche (Union de la gauche) · « Grandeville en commun »',
+      'Mairie : Divers · « Montcher demain »',
+      'Mairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »',
+      "Mairie : Extrême droite (Rassemblement national) · « Quaibleu d'abord »",
+      'Mairie : aucun résultat en 2026',
+    ]);
+  });
+
+  it('D8 : « 3 500 habitants » avec des espaces insécables ; texte fixe, quelle que soit la population', () => {
+    const t = mairieFiche({ bord: 'sans-etiquette', nuance: null, liste: 'Vivre à Terrebasse' });
+    expect(t).toContain('moins de 3\u00a0500\u00a0habitants'); // comme « 260 000 habitants » de typeTexte
+    expect(sp(mairieFiche({ bord: 'sans-etiquette', nuance: null, liste: 'X' }))).toBe('Mairie : sans étiquette (moins de 3 500 habitants) · « X »');
+  });
+
+  it('étiquettes de la circulaire écrites comme le bloc : pas de parenthèse (Extrême gauche, Divers, Extrême droite)', () => {
+    expect(sp(mairieFiche({ bord: 'extreme-gauche', nuance: 'Extrême gauche', liste: 'L' }))).toBe('Mairie : Extrême gauche · « L »');
+    expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Extrême droite', liste: 'L' }))).toBe('Mairie : Extrême droite · « L »');
+    expect(sp(mairieFiche({ bord: 'centre', nuance: 'Union du centre', liste: 'Faire Gagner Bordeaux' }))).toBe('Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux »');
+    expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Union de l’extrême droite', liste: 'L' }))).toBe('Mairie : Extrême droite (Union de l’extrême droite) · « L »');
+  });
+
+  it('H114 : le nom de la liste tel que publié, en entier, casse comprise', () => {
+    const paris = "Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes";
+    expect(sp(mairieFiche({ bord: 'gauche', nuance: 'Union de la gauche', liste: paris }))).toBe(`Mairie : Gauche (Union de la gauche) · « ${paris} »`);
+    expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Union de l’extrême droite', liste: 'LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI' }))).toBe(
+      'Mairie : Extrême droite (Union de l’extrême droite) · « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI »',
+    );
+  });
+
+  it('sans résultat : champ absent ou null, sans nom de liste', () => {
+    expect(mairieFiche({})).toBe('Mairie : aucun résultat en 2026');
+    expect(mairieFiche({ bord: null, nuance: null, liste: null })).toBe('Mairie : aucun résultat en 2026');
   });
 });

@@ -5,6 +5,7 @@ import { cn } from '@/lib/cn';
 // Tranche immobilier (H61) : la mention des ventes, dans tous les modes (texte fixé en tâche 0 avec la règle de Vincent).
 // Tranche cadre-de-vie (R30, H80) : la grille de densité de l'Insee et la zone de montagne du Cerema, chacune posée avec la
 // ligne de la fiche qui l'utilise (textes fixés en tâche 1, CLAUDE.md « Données »).
+// Tranche mairies (R43, H118) : la source des résultats et celle des blocs, posées avec la ligne « Mairie » de la fiche.
 // Logos Shom et IGN : leurs conditions d'usage n'ont pas été trouvées en ligne ; à la place, leur nom encadré
 // et un lien vers leur site (repli du plan, tâche 5b), en attendant la réponse de Vincent.
 const lien = 'underline-offset-2 hover:text-foreground hover:underline';
@@ -28,7 +29,8 @@ export function Mentions({ className }: { className?: string }) {
       · Recherche d'adresse et temps de trajet : © IGN – Géoplateforme (Base Adresse Nationale, BD TOPO®) · Prix d'achat :
       Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type
       d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema,
-      communes soumises à la loi Montagne (2019)
+      communes soumises à la loi Montagne (2019) · Résultats des élections municipales 2026 : ministère de l'Intérieur ;
+      blocs politiques : circulaire du 2 février 2026
     </footer>
   );
 }

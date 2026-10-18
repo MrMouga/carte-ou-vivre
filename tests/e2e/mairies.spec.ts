@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
-import { voirCriteres, voirListe } from './lib/feuille';
+import { mobile, voirCriteres, voirListe } from './lib/feuille';
 
 // Tranche mairies, tâche 1 : le filtre de mairie (R38), de bout en bout par l'adresse (R41), sur la fixture « 6 communes »
 // de cadre-de-vie étendue par celle de mairies (mairies et nuances servies par tests/e2e/lib/carte.ts, par code INSEE).
@@ -203,4 +203,65 @@ test('H122 : pendant le chargement, les 7 pastilles sont désactivées', async (
   for (const b of await mairie(page).getByRole('button').all()) await expect(b).toBeDisabled();
   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
   for (const b of await mairie(page).getByRole('button').all()) await expect(b).toBeEnabled();
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 3 : la ligne « Mairie » de la fiche (R40, D6, H112, H114) et la mention du pied de page (R43, H118).
+
+/** La ligne qui suit celle de la montagne dans la fiche (R30 de cadre-de-vie), et toutes les lignes « Mairie : … ». */
+async function ligneMairie(page: Page) {
+  const l = (await texteFiche(page)).split('\n').map((t) => t.trim()).filter(Boolean);
+  const montagne = l.findIndex((t) => /de la montagne|^Commune de montagne$|^Distance à la montagne inconnue$/.test(t));
+  expect(montagne).toBeGreaterThanOrEqual(0);
+  return { sous: l[montagne + 1], mairies: l.filter((t) => t.startsWith('Mairie :')) };
+}
+
+test('AC-5 depuis /, fiches de Portmer, Grandeville, Montcher, Terrebasse, Quaibleu et Rhinval : ligne « Mairie » de R40 sous la montagne, aucune raison « Mairie : »', async ({ page }) => {
+  const attendu: [Six, string, string][] = [
+    ['A', 'Portmer (17)', 'Mairie : Droite (Divers droite) · « Portmer Avance »'],
+    ['B', 'Grandeville (33)', 'Mairie : Gauche (Union de la gauche) · « Grandeville en commun »'],
+    ['C', 'Montcher (75)', 'Mairie : Divers · « Montcher demain »'],
+    ['D', 'Terrebasse (23)', 'Mairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »'],
+    ['E', 'Quaibleu (13)', "Mairie : Extrême droite (Rassemblement national) · « Quaibleu d'abord »"],
+    ['F', 'Rhinval (67)', 'Mairie : aucun résultat en 2026'],
+  ];
+  await ouvrirSix(page);
+  for (const [id, nom, ligne] of attendu) {
+    await ficheDeCarte(page, id, nom);
+    const m = await ligneMairie(page);
+    expect(m.sous).toBe(ligne);
+    expect(m.mairies).toEqual([ligne]); // aucune raison « Mairie : … » (aucune pastille cochée)
+    await rouvrir(page);
+  }
+});
+
+// Hors AC (H112, design F) : la ligne a le style des autres lignes de la fiche, sans mise en avant ; « 3 500 » insécable.
+test('H112 : la ligne « Mairie » a le style de la ligne de la montagne ; « 3 500 habitants » avec des espaces insécables', async ({ page }) => {
+  await ouvrirSix(page);
+  await ficheDeCarte(page, 'D', 'Terrebasse (23)');
+  const ligne = fiche(page).getByText(/^Mairie : sans étiquette/);
+  await expect(ligne).toContainText('moins de 3 500 habitants');
+  const montagne = fiche(page).getByText(/de la montagne|^Commune de montagne$/);
+  const style = (l: typeof ligne) => l.evaluate((e) => ['font-size', 'font-weight', 'color', 'line-height'].map((p) => getComputedStyle(e).getPropertyValue(p)));
+  expect(await style(ligne)).toEqual(await style(montagne));
+});
+
+test('AC-10 ouverture de / : le pied de page cite les résultats des municipales 2026 et la circulaire du 2 février 2026 (H118), à côté des mentions précédentes', async ({ page }) => {
+  await ouvrirSix(page);
+  if (mobile(page)) await voirCriteres(page);
+  const mentions = page.getByRole('contentinfo').filter({ visible: true }).first();
+  await expect(mentions).toContainText(
+    "Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026",
+  );
+  for (const t of [
+    'Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin',
+    '© Shom-IGN, 2021',
+    'Source : Insee, populations légales',
+    "Contours des communes : Etalab, d'après Admin Express © IGN",
+    '© IGN – Géoplateforme',
+    "Prix d'achat : Demandes de valeurs foncières (DGFiP)",
+    "Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025)",
+    'Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)',
+  ])
+    await expect(mentions).toContainText(t);
 });
