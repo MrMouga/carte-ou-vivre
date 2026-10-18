@@ -101,6 +101,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-16 | Mise en ligne : proches-fiables | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `b29757b` ; vérification de bout en bout passée en ligne aux deux largeurs sur le vrai IGN ; check-live.sh vert. |
 | 2026-10-18 | Spec validée : mairies | Filtre « Mairie élue en 2026 » dans une catégorie « Vie locale » : les 6 blocs officiels de la circulaire du 2 février 2026 et « Sans étiquette » (communes de moins de 3 500 habitants, que le ministère ne classe pas), cumulables, « seulement ces mairies », sans noter ; la fiche dit toujours bloc, étiquette et liste (pas de tête de liste) ; mairie = liste qui a le plus de sièges (second tour, sinon premier). Rien de politique sur la carte. « Éviter ces mairies » (Claude) écarté. 8 décisions, 12 critères. |
 | 2026-10-18 | Design validé : mairies | Piste F (C resserrée) : Cases séparées en 3 × 2 dans l'ordre officiel, « Sans étiquette » au format d'une case avec « Moins de 3 500 habitants : le ministère ne classe pas les listes. » à côté ; aucune couleur par bloc ; sans Figma, prototype F sur `prototype/mairies`. A (rangée qui défile) et B (cases collées) écartées. |
+| 2026-10-18 | Plan validé : mairies | 5 tâches (0 mairies calculées et mesurées depuis les fichiers du ministère et l'annexe de la circulaire, 1 filtre par l'adresse, 2 catégorie « Vie locale » et tests décalés, 3 fiche et mentions, 4 téléphone et bout en bout) ; deux fichiers servis de plus (`mairies.json`, `nuances.json`) ; aucun paquet ; relu par un agent neuf (5 majeurs corrigés). Attend le PDF de la circulaire (Légifrance refuse le téléchargement automatique). |
 
 ## Hypothèses à vérifier
 
@@ -153,6 +154,7 @@ Autres questions :
 
 ## Documents
 
+- [Plan « Mairies » — 2026-10-18](docs/plans/2026-10-18-mairies/plan.md) · [relecture](docs/plans/2026-10-18-mairies/review-plan.md)
 - [Design « Mairies » — 2026-10-18](docs/design/mairies/README.md)
 - [Spec « Mairies » — 2026-10-18](docs/specs/2026-10-18-mairies/spec.md) · [relecture](docs/specs/2026-10-18-mairies/relecture.md)
 - [Mise en ligne « Proches fiables » — 2026-10-16](docs/ship/2026-10-16-proches-fiables/ship.md)
