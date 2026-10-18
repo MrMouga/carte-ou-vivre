@@ -100,6 +100,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-16 | Tranche construite : proches-fiables | Un proche compte toujours quand l'IGN rame : nouvel essai hors cache, partiel (« jusqu'à »), repli en km, recalcul à la réouverture ; 12/12 critères ; vérifié sur le vrai IGN ; démo acceptée. Découverte : l'IGN fait garder ses erreurs 21 jours par le navigateur. Reste : tests instables de cadre-de-vie (clic sur la carte), à part. |
 | 2026-10-16 | Mise en ligne : proches-fiables | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `b29757b` ; vérification de bout en bout passée en ligne aux deux largeurs sur le vrai IGN ; check-live.sh vert. |
 | 2026-10-18 | Spec validée : mairies | Filtre « Mairie élue en 2026 » dans une catégorie « Vie locale » : les 6 blocs officiels de la circulaire du 2 février 2026 et « Sans étiquette » (communes de moins de 3 500 habitants, que le ministère ne classe pas), cumulables, « seulement ces mairies », sans noter ; la fiche dit toujours bloc, étiquette et liste (pas de tête de liste) ; mairie = liste qui a le plus de sièges (second tour, sinon premier). Rien de politique sur la carte. « Éviter ces mairies » (Claude) écarté. 8 décisions, 12 critères. |
+| 2026-10-18 | Design validé : mairies | Piste F (C resserrée) : Cases séparées en 3 × 2 dans l'ordre officiel, « Sans étiquette » au format d'une case avec « Moins de 3 500 habitants : le ministère ne classe pas les listes. » à côté ; aucune couleur par bloc ; sans Figma, prototype F sur `prototype/mairies`. A (rangée qui défile) et B (cases collées) écartées. |
 
 ## Hypothèses à vérifier
 
@@ -152,6 +153,7 @@ Autres questions :
 
 ## Documents
 
+- [Design « Mairies » — 2026-10-18](docs/design/mairies/README.md)
 - [Spec « Mairies » — 2026-10-18](docs/specs/2026-10-18-mairies/spec.md) · [relecture](docs/specs/2026-10-18-mairies/relecture.md)
 - [Mise en ligne « Proches fiables » — 2026-10-16](docs/ship/2026-10-16-proches-fiables/ship.md)
 - [Plan « Proches fiables » — 2026-10-16](docs/plans/2026-10-16-proches-fiables/plan.md) · [relecture](docs/plans/2026-10-16-proches-fiables/review-plan.md) · [dossier du build](docs/plans/2026-10-16-proches-fiables/) : [progression](docs/plans/2026-10-16-proches-fiables/progress.md), [mesure de l'IGN](docs/plans/2026-10-16-proches-fiables/mesure-tache-0.md), [démo acceptée — 2026-10-16](docs/plans/2026-10-16-proches-fiables/demo.md)
