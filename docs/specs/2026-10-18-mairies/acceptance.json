@@ -187,7 +187,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=aucun&mairie=extreme-droite",
       "then": "Quaibleu (13) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Terrebasse (23) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Portmer affiche « Mairie : droite, hors des mairies choisies »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
