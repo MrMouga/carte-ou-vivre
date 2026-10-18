@@ -1,0 +1,58 @@
+22:56:18 ===== 1440x900
+22:56:26 1. adresse /?loyer=1200 · OK
+22:56:26 1. titres Logement > Cadre de vie > Vie locale > Tes proches · OK
+22:56:26 1. pastilles cochées 0 · OK
+22:56:33 1. adresse en ligne (avant la tranche) /?loyer=1200
+22:56:33 1. liste locale ["1 · Allarmont (88) · 73 · 326 € · 431 km","2 · Bréménil (54) · 73 · 326 € · 423 km","3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km","4 · La Petite-Raon (88) · 73 · 326 € · 434 km","5 · Luvigny (88) · 73 · 326 € · 434 km","6 · Moussey (88) · 73 · 326 € · 434 km","7 · Neufmaisons (54) · 73 · 326 € · 422 km","8 · Pexonne (54) · 73 · 326 € · 421 km","9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km","10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km"]
+22:56:33 1. liste en ligne ["1 · Allarmont (88) · 73 · 326 € · 431 km","2 · Bréménil (54) · 73 · 326 € · 423 km","3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km","4 · La Petite-Raon (88) · 73 · 326 € · 434 km","5 · Luvigny (88) · 73 · 326 € · 434 km","6 · Moussey (88) · 73 · 326 € · 434 km","7 · Neufmaisons (54) · 73 · 326 € · 422 km","8 · Pexonne (54) · 73 · 326 € · 421 km","9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km","10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km"]
+22:56:33 1. même liste qu’avant la tranche · OK
+22:56:46 2. Bordeaux (33) Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » · OK
+22:56:51 3. sans limite /?loyer=aucun
+22:56:53 3. adresse /?loyer=aucun&mairie=gauche · OK
+22:57:06 3. Paris (75) passe (couleur neutre) · Mairie : Gauche (Union de la gauche) · « Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes » · OK
+22:57:20 3. Lyon (69) passe (couleur neutre) · Mairie : Gauche (Divers gauche) · « POUR VIVRE LYON, L'UNION DE LA GAUCHE ET DES ECOLOGISTES AVEC GREGORY DOUCET » · OK
+22:57:33 3. Marseille (13) passe (couleur neutre) · Mairie : Gauche (Union de la gauche) · « POUR MARSEILLE, LA GAUCHE, LES ECOLOGISTES ET LES CITOYENS RASSEMBLES » · OK
+22:57:45 3. Bordeaux (33) ne passe pas · Mairie : centre, hors des mairies choisies | Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » · OK
+22:57:58 3. Nice (06) ne passe pas · Mairie : extrême droite, hors des mairies choisies | Mairie : Extrême droite (Union de l’extrême droite) · « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI » · OK
+22:58:05 4. adresse /?loyer=aucun&mairie=gauche,sans-etiquette · OK
+22:58:18 4. Val-Cenis (73) passe (couleur neutre) · Mairie : sans étiquette (moins de 3 500 habitants) · « Val-Cenis 2026, une commune unie » · OK
+22:58:23 5. mention · OK
+22:58:23 ===== 390x844
+22:58:28 1. adresse /?loyer=1200 · OK
+22:58:28 1. titres Logement > Cadre de vie > Vie locale > Tes proches · OK
+22:58:28 1. pastilles cochées 0 · OK
+22:58:34 1. adresse en ligne (avant la tranche) /?loyer=1200
+22:58:34 1. liste locale ["1 · Allarmont (88) · 73 · 326 € · 431 km","2 · Bréménil (54) · 73 · 326 € · 423 km","3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km","4 · La Petite-Raon (88) · 73 · 326 € · 434 km","5 · Luvigny (88) · 73 · 326 € · 434 km","6 · Moussey (88) · 73 · 326 € · 434 km","7 · Neufmaisons (54) · 73 · 326 € · 422 km","8 · Pexonne (54) · 73 · 326 € · 421 km","9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km","10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km"]
+22:58:34 1. liste en ligne ["1 · Allarmont (88) · 73 · 326 € · 431 km","2 · Bréménil (54) · 73 · 326 € · 423 km","3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km","4 · La Petite-Raon (88) · 73 · 326 € · 434 km","5 · Luvigny (88) · 73 · 326 € · 434 km","6 · Moussey (88) · 73 · 326 € · 434 km","7 · Neufmaisons (54) · 73 · 326 € · 422 km","8 · Pexonne (54) · 73 · 326 € · 421 km","9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km","10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km"]
+22:58:34 1. même liste qu’avant la tranche · OK
+22:58:45 2. Bordeaux (33) Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » · OK
+22:58:49 3. sans limite /?loyer=aucun
+22:58:52 3. adresse /?loyer=aucun&mairie=gauche · OK
+22:59:04 3. Paris (75) passe (couleur neutre) · Mairie : Gauche (Union de la gauche) · « Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes » · OK
+22:59:15 3. Lyon (69) passe (couleur neutre) · Mairie : Gauche (Divers gauche) · « POUR VIVRE LYON, L'UNION DE LA GAUCHE ET DES ECOLOGISTES AVEC GREGORY DOUCET » · OK
+22:59:27 3. Marseille (13) passe (couleur neutre) · Mairie : Gauche (Union de la gauche) · « POUR MARSEILLE, LA GAUCHE, LES ECOLOGISTES ET LES CITOYENS RASSEMBLES » · OK
+22:59:38 3. Bordeaux (33) ne passe pas · Mairie : centre, hors des mairies choisies | Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » · OK
+22:59:48 3. Nice (06) ne passe pas · Mairie : extrême droite, hors des mairies choisies | Mairie : Extrême droite (Union de l’extrême droite) · « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI » · OK
+22:59:55 4. adresse /?loyer=aucun&mairie=gauche,sans-etiquette · OK
+23:00:06 4. Val-Cenis (73) passe (couleur neutre) · Mairie : sans étiquette (moins de 3 500 habitants) · « Val-Cenis 2026, une commune unie » · OK
+23:00:11 5. mention · OK
+23:00:11 ===== 10 villes
+23:00:25 ville 75056 Paris (75) → Mairie : Gauche (Union de la gauche) · « Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes »
+23:00:37 ville 69123 Lyon (69) → Mairie : Gauche (Divers gauche) · « POUR VIVRE LYON, L'UNION DE LA GAUCHE ET DES ECOLOGISTES AVEC GREGORY DOUCET »
+23:00:50 ville 13055 Marseille (13) → Mairie : Gauche (Union de la gauche) · « POUR MARSEILLE, LA GAUCHE, LES ECOLOGISTES ET LES CITOYENS RASSEMBLES »
+23:01:03 ville 33063 Bordeaux (33) → Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux »
+23:01:15 ville 06088 Nice (06) → Mairie : Extrême droite (Union de l’extrême droite) · « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI »
+23:01:28 ville 66136 Perpignan (66) → Mairie : Extrême droite (Rassemblement National) · « CONTINUONS ENSEMBLE AVEC LOUIS ALIOT »
+23:01:42 ville 31555 Toulouse (31) → Mairie : Droite (Divers droite) · « Avec Jean-Luc MOUDENC, Protégeons l'Avenir de Toulouse »
+23:01:55 ville 44109 Nantes (44) → Mairie : Gauche (Divers gauche) · « La gauche unie pour Nantes »
+23:02:08 ville 59350 Lille (59) → Mairie : Gauche (Union de la gauche) · « TOUT POUR LILLE DEMAIN »
+23:02:20 ville 67482 Strasbourg (67) → Mairie : Gauche (Divers gauche) · « Pour Strasbourg »
+23:02:20 ===== 10 premières par bloc
+23:02:25 bloc extreme-gauche /?loyer=1200&mairie=extreme-gauche · OK 
+23:02:29 bloc gauche /?loyer=1200&mairie=gauche · OK 
+23:02:34 bloc divers /?loyer=1200&mairie=divers · OK 
+23:02:38 bloc centre /?loyer=1200&mairie=centre · OK 
+23:02:42 bloc droite /?loyer=1200&mairie=droite · OK 
+23:02:47 bloc extreme-droite /?loyer=1200&mairie=extreme-droite · OK 
+23:02:52 bloc sans-etiquette /?loyer=1200&mairie=sans-etiquette · OK 
+23:02:56 375 × 548 : feuille y 210 h 338 · curseur 519 → 537 · OK

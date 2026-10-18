@@ -1,7 +1,7 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
-import { mobile, voirCriteres, voirListe } from './lib/feuille';
+import { amenerEnBas, mobile, voirCriteres, voirListe } from './lib/feuille';
 
 // Tranche mairies, tâche 1 : le filtre de mairie (R38), de bout en bout par l'adresse (R41), sur la fixture « 6 communes »
 // de cadre-de-vie étendue par celle de mairies (mairies et nuances servies par tests/e2e/lib/carte.ts, par code INSEE).
@@ -264,4 +264,66 @@ test('AC-10 ouverture de / : le pied de page cite les résultats des municipales
     'Zone de montagne : Cerema, communes soumises à la loi Montagne (2019)',
   ])
     await expect(mentions).toContainText(t);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 4 : le téléphone (R42, H48 d'interface-telephone). Sous 1 024 px, « Vie locale » est dans l'onglet « Critères »,
+// après « Cadre de vie » ; ses pastilles se touchent au doigt.
+
+const panneau = (page: Page, nom: 'Critères' | 'Les 10 premières') => page.getByRole('tabpanel', { name: nom });
+const boite = async (l: Locator) => (await l.boundingBox())!;
+
+test.describe('téléphone, au toucher', () => {
+  test.use({ hasTouch: true });
+
+  test('AC-9 390 × 844, onglet « Critères » : « Vie locale » suit « Cadre de vie » ; chaque pastille amenée à l’écran en faisant défiler l’onglet se coche d’un toucher ; « Droite » puis « Les 10 premières » : 1 commune, Portmer (17) 46 ; mairie=droite', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'onglet « Critères » : sous 1 024 px, fenêtre de 390 × 844 du projet mobile');
+    await ouvrirSix(page);
+    await expect(panneau(page, 'Critères')).toBeVisible();
+    const titres = (await panneau(page, 'Critères').getByRole('heading', { level: 2 }).allTextContents()).map((t) => nbsp(t).trim());
+    expect(titres.indexOf('Vie locale')).toBe(titres.indexOf('Cadre de vie') + 1);
+
+    // Chaque pastille : l'onglet défile jusqu'à elle, elle est entière dans l'onglet et à l'écran, un toucher à son
+    // centre la coche (et un second la décoche, pour tester la suivante seule).
+    const noms = ['Extrême gauche', 'Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette'];
+    expect((await mairie(page).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim())).toEqual(noms);
+    for (const nom of noms) {
+      const b = pastille(page, nom);
+      await amenerEnBas(b);
+      const onglet = await boite(panneau(page, 'Critères'));
+      const p = await boite(b);
+      expect(p.y).toBeGreaterThanOrEqual(onglet.y);
+      expect(p.y + p.height).toBeLessThanOrEqual(Math.min(onglet.y + onglet.height, 844));
+      expect(p.x).toBeGreaterThanOrEqual(0);
+      expect(p.x + p.width).toBeLessThanOrEqual(390);
+      await page.touchscreen.tap(p.x + p.width / 2, p.y + p.height / 2);
+      await expect(b).toHaveAttribute('aria-pressed', 'true');
+      await page.touchscreen.tap(p.x + p.width / 2, p.y + p.height / 2);
+      await expect(b).toHaveAttribute('aria-pressed', 'false');
+    }
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+
+    const droite = await boite(pastille(page, 'Droite'));
+    await page.touchscreen.tap(droite.x + droite.width / 2, droite.y + droite.height / 2);
+    await expect.poll(() => cochees(page)).toEqual(['Droite']);
+    await page.getByRole('tab', { name: 'Les 10 premières', exact: true }).tap();
+    await expect(panneau(page, 'Les 10 premières')).toBeVisible();
+    await expect(liste(page)).toContainText('1 commune passe tes critères');
+    expect((await lignes(page)).map(nomScore)).toEqual(['Portmer (17) · 46']);
+    expect(adresse(page)).toContain('mairie=droite');
+  });
+
+  // Hors AC (H48 d'interface-telephone, decisions.md de mairies) : la catégorie ajoutée sous « Cadre de vie » ne pousse pas
+  // le curseur du prix hors de la feuille sur le plus petit écran visé.
+  test('375 × 548 : à l’ouverture, « Loyer maximum » entièrement visible dans la feuille ; « Vie locale » plus bas dans l’onglet', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+    await page.setViewportSize({ width: 375, height: 548 });
+    await ouvrirSix(page);
+    const f = await boite(page.getByTestId('feuille'));
+    const curseur = await boite(page.getByRole('slider', { name: 'Loyer maximum' }));
+    expect(curseur.y).toBeGreaterThanOrEqual(f.y);
+    expect(curseur.y + curseur.height).toBeLessThanOrEqual(548);
+    await expect(mairie(page).getByRole('button')).toHaveCount(7);
+    expect((await boite(titreVieLocale(page))).y).toBeGreaterThan(curseur.y);
+  });
 });
