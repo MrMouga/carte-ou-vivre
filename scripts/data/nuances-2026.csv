@@ -1,0 +1,26 @@
+code,etiquette,bloc,page_etiquette,page_bloc
+LEXG,Extrême gauche,extreme-gauche,9,12
+LFI,La France insoumise,extreme-gauche,9,12
+LCOM,Parti communiste français,gauche,9,12
+LSOC,Parti socialiste,gauche,9,12
+LVEC,Les Écologistes,gauche,9,12
+LUG,Union de la gauche,gauche,9,12
+LDVG,Divers gauche,gauche,9,12
+LECO,Ecologiste,divers,9,12
+LREG,Régionalistes,divers,9,12
+LDIV,Divers,divers,9,12
+LREN,Renaissance,centre,9,12
+LMDM,Modem,centre,9,12
+LHOR,Horizons,centre,9,12
+LUDI,Union des Démocrates et Indépendants,centre,9,12
+LUC,Union du centre,centre,9,12
+LDVC,Divers centre,centre,9,12
+LLR,Les Républicains,droite,10,12
+LUD,Union de la droite,droite,10,12
+LDVD,Divers droite,droite,10,12
+LDSV,Droite souverainiste,droite,10,12
+LUDR,Union des droites pour la République,extreme-droite,10,12
+LRN,Rassemblement National,extreme-droite,10,12
+LREC,Reconquête,extreme-droite,10,12
+LUXD,Union de l’extrême droite,extreme-droite,10,12
+LEXD,Extrême droite,extreme-droite,10,12

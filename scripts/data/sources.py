@@ -15,6 +15,12 @@ RAW = os.path.join(os.path.dirname(__file__), '..', '..', 'data-raw')
 DVF = 'stats_whole_period.csv'
 DVF_MOIS = 'stats_dvf.csv'
 # Pour chaque fichier DVF : <nom>.info.json = date de téléchargement, Last-Modified, sha256 (relus par communes.py).
+# Municipales 2026 (tranche mairies, H116) : ressource « Résultats - Communes » des jeux « Elections municipales 2026 -
+# Résultats du premier tour » et « … du second tour » du ministère de l'Intérieur sur data.gouv.fr (Licence Ouverte),
+# une ligne par commune et ses listes ; même <nom>.info.json que la DVF (relu par mairies.py).
+MUNI_T1 = 'municipales-2026-resultats-communes-2026-03-20.csv'
+MUNI_T2 = 'municipales-2026-resultats-communes-2026-03-23-16h14.csv'
+NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2)
 
 CEREMA = 'montagne/cerema'
 CEREMA_URL = 'https://static.data.gouv.fr/resources/application-des-dispositions-durbanisme-de-la-loi-montagne-en-france-metropolitaine/'
@@ -54,6 +60,10 @@ SOURCES = {
     'Limite_terre_mer_France_metropolitaine.7z': 'https://services.data.shom.fr/INSPIRE/telechargement/prepackageGroup/LIMTM_PACK_DL/prepackage/Limite_terre_mer_France_metropolitaine/file/Limite_terre_mer_France_metropolitaine.7z',
     # Mouvements des communes du COG 2025 (Insee) : recalage des communes 2019 de la zone de montagne (montagne.py).
     'v_mvt_commune_2025.csv': 'https://www.insee.fr/fr/statistiques/fichier/8377162/v_mvt_commune_2025.csv',
+    # Municipales 2026, premier tour (jeu 69b82a7de5d58cc06ad35ce0, ressource 4feeef01-24f7-4d5a-914f-8aa806f31ec2).
+    MUNI_T1: 'https://static.data.gouv.fr/resources/elections-municipales-2026-resultats-du-premier-tour/20260320-164339/municipales-2026-resultats-communes-2026-03-20.csv',
+    # Second tour (jeu 69c17fed9f18c7781fd11a14, ressource 6ff67a28-01bf-459e-beca-dd7aa8132dc1).
+    MUNI_T2: 'https://static.data.gouv.fr/resources/elections-municipales-2026-resultats-du-scond-tour/20260323-180124/municipales-2026-resultats-communes-2026-03-23-16h14.csv',
     # Grille communale de densité 2025 (Insee, mise en ligne le 21/07/2025, géographie au 01/01/2025) : type
     # d'environnement (D10 de cadre-de-vie), feuille « Maille communale », colonne DENS7.
     'densite/fichier_diffusion_2025.xlsx': 'https://www.insee.fr/fr/statistiques/fichier/8571524/fichier_diffusion_2025.xlsx',
@@ -83,7 +93,7 @@ def main():
                 f.write(chunk)
                 sha.update(chunk)
         os.replace(path + '.part', path)
-        if name in (DVF, DVF_MOIS):
+        if name in NOTES:
             info = {'url': url, 'telecharge_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
                     'last_modified': modifie, 'octets': os.path.getsize(path), 'sha256': sha.hexdigest()}
             with open(path + '.info.json', 'w') as f:
