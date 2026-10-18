@@ -11,6 +11,9 @@ Tâche 1 : faite — commits 4645405..40cc3f0 — preuve : captures/T1-gauche-14
 Tâche 2 : faite — commits ce3b487..0b9cac2 — preuve : captures/T2-depart-*, T2-choix-* (1440 × 900, 390 × 844), T2-sans-limite-gauche-*.png (Paris, Lyon, Marseille, Bordeaux, Nice), T2-reaction.txt, T2-npm-test.txt (20:00-20:30) — 33 min — agent : 219 k — rapport : taches/T2.md
   Vérif orchestrateur (20:53) : aucun test protégé modifié ; typecheck vert ; Vitest 307 / 307 ; Playwright 369 verts, 36 sautés, 1 rouge (AC-7 de cadre-de-vie l. 260, l'instable connu) vert 3 fois sur 3 seul ; build vert ; T2-choix-390x844 comparée à F-choix-390x844 : mêmes pastilles, même phrase. **Pour la démo** : réaction ≈ 148 ms (cocher « Centre ») / ≈ 233 ms (décocher), contre ≈ 130 / 215 ms acceptés en T0 ; la version de T1 mesurée le même soir donne les mêmes chiffres (la machine, pas T2) ; « Sans étiquette » ≈ le curseur du prix.
 
+Tâche 3 : faite — commits 93b4e89..afa383c — preuve : captures/T3-fiche-{bordeaux,nice,paris,lyon,marseille,val-cenis}-1440x900.png, T3-pied-de-page-*.png (21:02), T3-npm-test.txt (21:14) — 20 min — agent : 126 k — rapport : taches/T3.md
+  Vérif orchestrateur (21:32) : mention du pied de page = texte de H118 mot pour mot ; capture de la fiche de Paris relue (format de R40, liste longue sur 3 lignes) ; typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 36 sautés, 0 rouge ; build vert. Captures sur le fond de secours (IGN indisponible pendant la capture, déjà suivi dans STATE.md).
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
@@ -25,6 +28,9 @@ Tâche 2 : faite — commits ce3b487..0b9cac2 — preuve : captures/T2-depart-*,
 - T2 : décocher la dernière case retire le champ `mairies` (pas de liste vide). Coût : aucun visible.
 - T2 : résumé replié « 1 choix », « 2 choix » avec espace insécable, comme « 2 tailles ». Coût : aucun.
 - T2 : dans les tests, une deuxième fiche ouverte depuis la carte = rouvrir la même adresse (choisir une commune zoome, D14). Coût : aucun.
+- T3 : guillemets français tenus au nom de liste par des espaces insécables ; espace insécable aussi dans « 3 500 habitants ». Coût : aucun.
+- T3 : pas de parenthèse quand l'étiquette s'écrit à la lettre comme le bloc (« Extrême gauche », « Divers », « Extrême droite » sur les vraies données). Coût si faux : une parenthèse en trop ou en moins sur ces trois étiquettes.
+- T3 : bloc sans nom de liste (cas absent) → la ligne s'arrête au bloc. Coût : aucun.
 
 ## Preuves
 

@@ -179,7 +179,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit tour à tour Portmer (17), Grandeville (33), Montcher (75), Terrebasse (23), Quaibleu (13) et Rhinval (67)",
       "then": "les fiches affichent, sous la ligne de la montagne : Portmer « Mairie : Droite (Divers droite) · « Portmer Avance » » ; Grandeville « Mairie : Gauche (Union de la gauche) · « Grandeville en commun » » ; Montcher « Mairie : Divers · « Montcher demain » » ; Terrebasse « Mairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse » » ; Quaibleu « Mairie : Extrême droite (Rassemblement national) · « Quaibleu d'abord » » ; Rhinval « Mairie : aucun résultat en 2026 » ; aucune n'affiche de raison commençant par « Mairie : »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -219,7 +219,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "le pied de page contient « Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026 » (H118), à côté des mentions des tranches précédentes",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
