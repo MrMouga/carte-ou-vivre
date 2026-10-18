@@ -147,7 +147,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /, puis replie « Vie locale »",
       "then": "l'adresse devient /?loyer=1200 ; une catégorie « Vie locale », ouverte, suit « Cadre de vie » ; elle contient le groupe « Mairie élue en 2026 » et ses pastilles, dans l'ordre, « Extrême gauche », « Gauche », « Divers », « Centre », « Droite », « Extrême droite », « Sans étiquette », aucune cochée ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9. Repliée, la catégorie montre « Peu importe » et les pastilles sont cachées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -155,7 +155,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Droite », puis décoche « Droite » et coche « Centre »",
       "then": "avec « Droite » : l'adresse devient /?loyer=1200&mairie=droite ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 46 · 650 € · moins d'1 km » ; Grandeville (33), Terrebasse (23), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la fiche de Grandeville affiche « Mairie : gauche, hors des mairies choisies » et celle de Terrebasse « Mairie : sans étiquette, hors des mairies choisies ». Avec « Centre » seul : l'adresse devient /?loyer=1200&mairie=centre ; aucune commune n'est colorée ; la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -163,7 +163,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Gauche », puis aussi « Sans étiquette »",
       "then": "après le premier : la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km ». Après le second : l'adresse devient /?loyer=1200&mairie=gauche,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31 ; sous « Ne passe pas tes critères », la fiche de Rhinval (67) donne la raison « Mairie : aucun résultat en 2026, hors des mairies choisies » et celle de Portmer (17) « Mairie : droite, hors des mairies choisies »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -171,7 +171,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mairie=droite",
       "when": "l'utilisateur décoche « Droite »",
       "then": "aucune pastille de mairie n'est cochée ; l'adresse devient /?loyer=1200 ; la liste montre « 5 communes passent tes critères » avec Rhinval (67) 52 (une commune sans résultat passe quand rien n'est coché)",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -195,7 +195,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?mairie=sans-etiquette,droite,droite,rouge&env=ville-et-peripherie,bourg-et-village",
       "then": "seules « Droite » et « Sans étiquette » sont cochées ; l'adresse devient /?loyer=1200&env=ville-et-peripherie,bourg-et-village&mairie=droite,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Portmer (17) 46 ; la fiche de Grandeville (33) donne, dans cet ordre, « Environnement : ville dense, hors des types choisis » puis « Mairie : gauche, hors des mairies choisies »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -203,7 +203,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mairie=gauche,sans-etiquette",
       "when": "l'utilisateur replie « Vie locale », puis la déplie",
       "then": "repliée, elle montre « 2 choix » et ses pastilles sont cachées ; dépliée, « Gauche » et « Sans étiquette » sont toujours cochées et la liste montre toujours « 2 communes passent tes critères »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
