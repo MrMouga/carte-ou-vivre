@@ -1,0 +1,241 @@
+{
+  "slice": "mairies",
+  "fixture": {
+    "description": "Fixture inventée « 6 communes » de cadre-de-vie, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix, mer, type d'environnement et montagne ; chaque commune gagne sa mairie : mairie_bloc (nom de H108, ou null), mairie_etiquette (texte en clair, ou null), mairie_liste (nom de la liste, ou null) ; sans_resultat vrai pour Rhinval. Au départ (/ : prix 1 200 € pour 52 m², rien de coché), la liste est celle d'AC-1 de cadre-de-vie : Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; Montcher (75) ne passe pas (loyer 1 560 €). L'« extrait du ministère » sert seulement à AC-11 : des lignes inventées au format des fichiers de résultats par commune des deux tours. La précision « (moins de 3 500 habitants) » de D8 est un texte fixe : elle s'affiche pour Terrebasse (4 200 habitants dans la fixture) comme pour toute mairie sans étiquette.",
+    "items": [
+      {
+        "id": "A",
+        "code_insee": "99001",
+        "nom": "Portmer",
+        "mairie_bloc": "droite",
+        "mairie_etiquette": "Divers droite",
+        "mairie_liste": "Portmer Avance",
+        "sans_resultat": false
+      },
+      {
+        "id": "B",
+        "code_insee": "99002",
+        "nom": "Grandeville",
+        "mairie_bloc": "gauche",
+        "mairie_etiquette": "Union de la gauche",
+        "mairie_liste": "Grandeville en commun",
+        "sans_resultat": false
+      },
+      {
+        "id": "C",
+        "code_insee": "99003",
+        "nom": "Montcher",
+        "mairie_bloc": "divers",
+        "mairie_etiquette": "Divers",
+        "mairie_liste": "Montcher demain",
+        "sans_resultat": false
+      },
+      {
+        "id": "D",
+        "code_insee": "99004",
+        "nom": "Terrebasse",
+        "mairie_bloc": null,
+        "mairie_etiquette": null,
+        "mairie_liste": "Vivre à Terrebasse",
+        "sans_resultat": false
+      },
+      {
+        "id": "E",
+        "code_insee": "99005",
+        "nom": "Quaibleu",
+        "mairie_bloc": "extreme-droite",
+        "mairie_etiquette": "Rassemblement national",
+        "mairie_liste": "Quaibleu d'abord",
+        "sans_resultat": false
+      },
+      {
+        "id": "F",
+        "code_insee": "99006",
+        "nom": "Rhinval",
+        "mairie_bloc": null,
+        "mairie_etiquette": null,
+        "mairie_liste": null,
+        "sans_resultat": true
+      }
+    ],
+    "extrait_ministere": {
+      "premier_tour": [
+        {
+          "code_commune": "99101",
+          "listes": [
+            {
+              "liste": "Liste A",
+              "nuance": "LDVD",
+              "voix": 812,
+              "sieges_cm": 11
+            },
+            {
+              "liste": "Liste B",
+              "nuance": "LDVG",
+              "voix": 640,
+              "sieges_cm": 4
+            }
+          ]
+        },
+        {
+          "code_commune": "99102",
+          "listes": [
+            {
+              "liste": "Liste C",
+              "nuance": "LRN",
+              "voix": 2100,
+              "sieges_cm": 0
+            },
+            {
+              "liste": "Liste D",
+              "nuance": "LUG",
+              "voix": 1900,
+              "sieges_cm": 0
+            }
+          ]
+        },
+        {
+          "code_commune": "99103",
+          "listes": [
+            {
+              "liste": "Liste E",
+              "nuance": "",
+              "voix": 230,
+              "sieges_cm": 15
+            }
+          ]
+        }
+      ],
+      "second_tour": [
+        {
+          "code_commune": "99102",
+          "listes": [
+            {
+              "liste": "Liste D",
+              "nuance": "LUG",
+              "voix": 2600,
+              "sieges_cm": 20
+            },
+            {
+              "liste": "Liste C",
+              "nuance": "LRN",
+              "voix": 2300,
+              "sieges_cm": 9
+            }
+          ]
+        }
+      ],
+      "communes_attendues": [
+        "99101",
+        "99102",
+        "99103",
+        "99104"
+      ]
+    },
+    "services": {
+      "fond IGN (Géoplateforme)": {
+        "normal": {
+          "réponse": "tuiles servies"
+        }
+      }
+    }
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R42",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /, puis replie « Vie locale »",
+      "then": "l'adresse devient /?loyer=1200 ; une catégorie « Vie locale », ouverte, suit « Cadre de vie » ; elle contient le groupe « Mairie élue en 2026 » et ses pastilles, dans l'ordre, « Extrême gauche », « Gauche », « Divers », « Centre », « Droite », « Extrême droite », « Sans étiquette », aucune cochée ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9. Repliée, la catégorie montre « Peu importe » et les pastilles sont cachées",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R38",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur coche « Droite », puis décoche « Droite » et coche « Centre »",
+      "then": "avec « Droite » : l'adresse devient /?loyer=1200&mairie=droite ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 46 · 650 € · moins d'1 km » ; Grandeville (33), Terrebasse (23), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la fiche de Grandeville affiche « Mairie : gauche, hors des mairies choisies » et celle de Terrebasse « Mairie : sans étiquette, hors des mairies choisies ». Avec « Centre » seul : l'adresse devient /?loyer=1200&mairie=centre ; aucune commune n'est colorée ; la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R38",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur coche « Gauche », puis aussi « Sans étiquette »",
+      "then": "après le premier : la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km ». Après le second : l'adresse devient /?loyer=1200&mairie=gauche,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31 ; sous « Ne passe pas tes critères », la fiche de Rhinval (67) donne la raison « Mairie : aucun résultat en 2026, hors des mairies choisies » et celle de Portmer (17) « Mairie : droite, hors des mairies choisies »",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R38",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mairie=droite",
+      "when": "l'utilisateur décoche « Droite »",
+      "then": "aucune pastille de mairie n'est cochée ; l'adresse devient /?loyer=1200 ; la liste montre « 5 communes passent tes critères » avec Rhinval (67) 52 (une commune sans résultat passe quand rien n'est coché)",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R40",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur choisit tour à tour Portmer (17), Grandeville (33), Montcher (75), Terrebasse (23), Quaibleu (13) et Rhinval (67)",
+      "then": "les fiches affichent, sous la ligne de la montagne : Portmer « Mairie : Droite (Divers droite) · « Portmer Avance » » ; Grandeville « Mairie : Gauche (Union de la gauche) · « Grandeville en commun » » ; Montcher « Mairie : Divers · « Montcher demain » » ; Terrebasse « Mairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse » » ; Quaibleu « Mairie : Extrême droite (Rassemblement national) · « Quaibleu d'abord » » ; Rhinval « Mairie : aucun résultat en 2026 » ; aucune n'affiche de raison commençant par « Mairie : »",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R38",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?loyer=aucun&mairie=extreme-droite",
+      "then": "Quaibleu (13) a la couleur neutre « sans plafond » de la légende, sans score ; Portmer (17), Grandeville (33), Montcher (75), Terrebasse (23) et Rhinval (67) ne sont pas colorées ; la liste affiche « Fixe un loyer ou une distance à la mer pour classer les communes. » ; la fiche de Portmer affiche « Mairie : droite, hors des mairies choisies »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R41",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /?mairie=sans-etiquette,droite,droite,rouge&env=ville-et-peripherie,bourg-et-village",
+      "then": "seules « Droite » et « Sans étiquette » sont cochées ; l'adresse devient /?loyer=1200&env=ville-et-peripherie,bourg-et-village&mairie=droite,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Portmer (17) 46 ; la fiche de Grandeville (33) donne, dans cet ordre, « Environnement : ville dense, hors des types choisis » puis « Mairie : gauche, hors des mairies choisies »",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R42",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mairie=gauche,sans-etiquette",
+      "when": "l'utilisateur replie « Vie locale », puis la déplie",
+      "then": "repliée, elle montre « 2 choix » et ses pastilles sont cachées ; dépliée, « Gauche » et « Sans étiquette » sont toujours cochées et la liste montre toujours « 2 communes passent tes critères »",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R42",
+      "given": "Fixture « 6 communes », téléphone 390 × 844, page ouverte sur /",
+      "when": "dans l'onglet « Critères », l'utilisateur va à « Vie locale » et coche « Droite », puis ouvre l'onglet « Les 10 premières »",
+      "then": "« Vie locale » suit « Cadre de vie » dans l'onglet « Critères » ; chacune des 7 pastilles devient visible en faisant défiler l'onglet (ou sa rangée, selon /ui) et se coche d'un toucher ; l'onglet « Les 10 premières » montre « 1 commune passe tes critères » puis Portmer (17) 46 ; l'adresse contient mairie=droite",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R43",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /",
+      "then": "le pied de page contient « Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026 » (H118), à côté des mentions des tranches précédentes",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R39",
+      "given": "L'« extrait du ministère » de la fixture, avec les blocs de la circulaire (LDVD et LDVG : Divers droite et Divers gauche ; LUG : Union de la gauche, bloc Gauche ; LRN : Rassemblement national, bloc Extrême droite)",
+      "when": "le calcul des mairies est lancé sur cet extrait, pour les communes 99101 à 99104",
+      "then": "99101 : bloc droite, étiquette « Divers droite », liste « Liste A » (premier tour seul, 11 sièges contre 4) ; 99102 : bloc gauche, étiquette « Union de la gauche », liste « Liste D » (second tour, 20 sièges contre 9, alors que « Liste C » menait au premier tour en voix) ; 99103 : sans étiquette, liste « Liste E » ; 99104 : sans résultat",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R39",
+      "given": "Les fichiers de résultats du ministère (H116) et les blocs de la circulaire (H117) ; valeurs attendues mesurées par Claude le 2026-10-18 sur les fichiers mis à jour le 20/03/2026 et le 23/03/2026",
+      "when": "les mairies des communes de métropole sont calculées et le fichier des mairies servi par le site est lu",
+      "then": "Paris (75056), Lyon (69123) et Marseille (13055) : bloc gauche, avec les listes « Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes », « POUR VIVRE LYON, L'UNION DE LA GAUCHE ET DES ECOLOGISTES AVEC GREGORY DOUCET » et « POUR MARSEILLE, LA GAUCHE, LES ECOLOGISTES ET LES CITOYENS RASSEMBLES » ; Bordeaux (33063) : bloc centre, « Faire Gagner Bordeaux » ; Nice (06088) : bloc extrême droite, « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI » ; 34 672 communes ont une mairie et 74 sont sans résultat, aucune à cause d'un code non relié ; 3 164 mairies ont une étiquette et les 31 508 autres sont toutes dans des communes de moins de 3 500 habitants",
+      "passes": false
+    }
+  ]
+}
