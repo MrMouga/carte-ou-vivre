@@ -227,7 +227,7 @@
       "given": "L'« extrait du ministère » de la fixture, avec les blocs de la circulaire (LDVD et LDVG : Divers droite et Divers gauche ; LUG : Union de la gauche, bloc Gauche ; LRN : Rassemblement national, bloc Extrême droite)",
       "when": "le calcul des mairies est lancé sur cet extrait, pour les communes 99101 à 99104",
       "then": "99101 : bloc droite, étiquette « Divers droite », liste « Liste A » (premier tour seul, 11 sièges contre 4) ; 99102 : bloc gauche, étiquette « Union de la gauche », liste « Liste D » (second tour, 20 sièges contre 9, alors que « Liste C » menait au premier tour en voix) ; 99103 : sans étiquette, liste « Liste E » ; 99104 : sans résultat",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -235,7 +235,7 @@
       "given": "Les fichiers de résultats du ministère (H116) et les blocs de la circulaire (H117) ; valeurs attendues mesurées par Claude le 2026-10-18 sur les fichiers mis à jour le 20/03/2026 et le 23/03/2026",
       "when": "les mairies des communes de métropole sont calculées et le fichier des mairies servi par le site est lu",
       "then": "Paris (75056), Lyon (69123) et Marseille (13055) : bloc gauche, avec les listes « Paris est à vous! avec Emmanuel Grégoire L'union de la gauche et des écologistes », « POUR VIVRE LYON, L'UNION DE LA GAUCHE ET DES ECOLOGISTES AVEC GREGORY DOUCET » et « POUR MARSEILLE, LA GAUCHE, LES ECOLOGISTES ET LES CITOYENS RASSEMBLES » ; Bordeaux (33063) : bloc centre, « Faire Gagner Bordeaux » ; Nice (06088) : bloc extrême droite, « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI » ; 34 672 communes ont une mairie et 74 sont sans résultat, aucune à cause d'un code non relié ; 3 164 mairies ont une étiquette et les 31 508 autres sont toutes dans des communes de moins de 3 500 habitants",
-      "passes": false
+      "passes": true
     }
   ]
 }
