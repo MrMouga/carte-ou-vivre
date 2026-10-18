@@ -145,6 +145,9 @@ export function resumeCadre(r: Reglages): string {
   return parts.length ? parts.join(' · ') : 'Peu importe';
 }
 
+/** Résumé de la catégorie « Vie locale » repliée (H110 de mairies) : « Peu importe », sinon « 1 choix », « 2 choix »… */
+export const resumeVieLocale = (r: Reglages) => (r.mairies?.length ? `${r.mairies.length}${NBSP}choix` : 'Peu importe');
+
 export const loyerTexte = (m2: number | null) =>
   m2 == null ? 'Loyer inconnu' : `${euros(loyerPour(m2))} par mois pour ${SURFACE_M2}${NBSP}m² (${eurosM2(m2)})`;
 

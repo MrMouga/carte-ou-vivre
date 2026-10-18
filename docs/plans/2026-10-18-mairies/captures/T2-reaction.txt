@@ -1,0 +1,35 @@
+18/10/2026 20:33:23 ; 15 essais par sens
+curseur du prix, un cran : médiane 161 ms ; min 159 max 191 ; essais 191 161 161 161 159 161 160 162 176 160 160 161 160 159 160
+« Ville dense » cochée (substitut de T0, 34 031 communes décolorées) : médiane 193 ms ; min 176 max 210 ; essais 196 177 178 191 208 194 198 210 193 176 194 193 194 193 193
+« Ville dense » décochée : médiane 292 ms ; min 270 max 625 ; essais 293 276 293 625 293 276 292 278 276 277 325 270 293 277 292
+« Centre » cochée (de 34 674 communes colorées à celles du centre) : médiane 194 ms ; min 192 max 233 ; essais 233 193 194 193 192 211 206 210 192 194 209 192 227 194 193
+« Centre » décochée : médiane 292 ms ; min 275 max 294 ; essais 292 293 292 276 293 277 275 294 276 276 275 293 292 293 293
+« Sans étiquette » cochée (de 34 674 communes colorées à celles sans étiquette) : médiane 160 ms ; min 143 max 227 ; essais 159 159 160 160 168 160 161 160 160 160 160 159 227 160 143
+« Sans étiquette » décochée : médiane 160 ms ; min 156 max 177 ; essais 159 161 160 156 165 159 160 159 160 161 177 159 174 161 173
+== 2e passage
+18/10/2026 20:34:40 ; 15 essais par sens
+curseur du prix, un cran : médiane 161 ms ; min 143 max 181 ; essais 181 159 162 160 161 177 178 160 160 178 160 161 160 162 143
+« Ville dense » cochée (substitut de T0, 34 031 communes décolorées) : médiane 194 ms ; min 192 max 274 ; essais 206 194 195 194 195 194 193 193 192 274 211 193 210 193 194
+« Ville dense » décochée : médiane 277 ms ; min 259 max 342 ; essais 277 259 275 276 277 278 277 278 342 290 276 287 275 310 276
+« Centre » cochée (de 34 674 communes colorées à celles du centre) : médiane 193 ms ; min 178 max 291 ; essais 192 193 194 192 291 193 195 206 209 191 192 225 193 193 178
+« Centre » décochée : médiane 279 ms ; min 273 max 345 ; essais 275 275 276 327 292 273 279 293 341 292 345 275 310 275 277
+« Sans étiquette » cochée (de 34 674 communes colorées à celles sans étiquette) : médiane 161 ms ; min 158 max 275 ; essais 158 178 160 176 191 275 175 159 159 173 159 159 161 161 174
+« Sans étiquette » décochée : médiane 176 ms ; min 159 max 426 ; essais 160 177 160 426 192 325 176 177 174 176 177 159 160 177 161
+== port 4181, version de la tâche 1 (c07cd4b), sans la catégorie : témoin et « Ville dense » seulement (le script s'arrête faute de pastille « Centre »)
+18/10/2026 20:36:13 ; 15 essais par sens
+curseur du prix, un cran : médiane 161 ms ; min 160 max 178 ; essais 178 160 160 160 161 161 162 175 160 160 162 162 161 176 177
+« Ville dense » cochée (substitut de T0, 34 031 communes décolorées) : médiane 193 ms ; min 192 max 209 ; essais 195 209 194 192 193 195 193 192 209 193 193 193 194 194 193
+« Ville dense » décochée : médiane 291 ms ; min 276 max 409 ; essais 409 278 276 276 276 277 276 293 292 292 293 294 291 293 278
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+== port 4180, cette tâche, 3e passage
+18/10/2026 20:37:16 ; 15 essais par sens
+curseur du prix, un cran : médiane 161 ms ; min 160 max 194 ; essais 190 176 161 160 160 194 161 161 161 175 162 162 160 161 161
+« Ville dense » cochée (substitut de T0, 34 031 communes décolorées) : médiane 194 ms ; min 188 max 228 ; essais 188 194 194 193 209 193 194 193 193 194 193 194 228 192 210
+« Ville dense » décochée : médiane 278 ms ; min 275 max 310 ; essais 277 276 310 277 278 293 275 278 275 276 277 278 290 309 293
+« Centre » cochée (de 34 674 communes colorées à celles du centre) : médiane 193 ms ; min 192 max 225 ; essais 200 192 194 193 193 193 193 193 194 194 193 192 225 192 194
+« Centre » décochée : médiane 277 ms ; min 275 max 378 ; essais 311 293 328 277 275 276 292 276 276 277 276 276 293 378 293
+« Sans étiquette » cochée (de 34 674 communes colorées à celles sans étiquette) : médiane 160 ms ; min 157 max 176 ; essais 160 160 176 159 159 162 158 162 161 157 162 161 159 160 160
+« Sans étiquette » décochée : médiane 160 ms ; min 159 max 278 ; essais 160 278 161 160 160 160 162 160 160 161 159 159 159 176 159

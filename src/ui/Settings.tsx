@@ -2,6 +2,7 @@ import type { Changement, ReglagePrix as Reglage } from '@/domain/prix';
 import type { Reglages } from '@/domain/score';
 import { CadreDeVie } from './CadreDeVie';
 import { ReglagePrix } from './ReglagePrix';
+import { VieLocale } from './VieLocale';
 
 /**
  * `prix` : réglage du prix (spec immobilier) ; son plafond est `reglages.loyer`. `onPrix` reçoit le réglage et le plafond
@@ -18,7 +19,8 @@ type Props = {
 };
 
 // Panneau de réglages (frame Figma 5:2, « Réglages ») : marque, réglage du prix (design F d'immobilier), cadre de vie
-// (design F de cadre-de-vie : taille, type d'environnement, mer et montagne), en catégories repliables. Sous 1 024 px, le titre n'est pas affiché,
+// (design F de cadre-de-vie : taille, type d'environnement, mer et montagne), vie locale (design F de mairies : la mairie
+// élue en 2026, H111 : avant « Tes proches », passé en `children`), en catégories repliables. Sous 1 024 px, le titre n'est pas affiché,
 // seulement lu (D11 d'interface-telephone : la place gagnée garde le curseur du prix visible à 375 × 548).
 export function Settings({ reglages, onChange, prix, onPrix, inactif = false, children }: Props) {
   return (
@@ -26,6 +28,7 @@ export function Settings({ reglages, onChange, prix, onPrix, inactif = false, ch
       <h1 className="font-serif text-marque max-bureau:sr-only">Où vivre en France</h1>
       <ReglagePrix prix={prix} plafond={reglages.loyer} onChange={onPrix} disabled={inactif} />
       <CadreDeVie reglages={reglages} onChange={onChange} disabled={inactif} />
+      <VieLocale reglages={reglages} onChange={onChange} disabled={inactif} />
       {children}
     </section>
   );

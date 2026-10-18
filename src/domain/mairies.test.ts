@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import mairies from '../../docs/specs/2026-10-18-mairies/acceptance.json';
-import { raisonTexte } from './format';
+import { raisonTexte, resumeVieLocale } from './format';
 import { evaluer, joindreBords, type Bord, type Commune, type MairiesJson, type NuancesJson, type Reglages } from './score';
 import { ecrireAdresse, lireAdresse, ORDRE_BORDS } from './url';
 
@@ -164,5 +164,14 @@ describe('R38 — textes des raisons', () => {
     expect(raisonTexte({ critere: 'bord', bord: 'centre' })).toBe('Mairie : centre, hors des mairies choisies');
     expect(raisonTexte({ critere: 'bord', bord: 'sans-etiquette' })).toBe('Mairie : sans étiquette, hors des mairies choisies');
     expect(raisonTexte({ critere: 'bord', bord: null })).toBe('Mairie : aucun résultat en 2026, hors des mairies choisies');
+  });
+});
+
+describe('H110 — résumé de « Vie locale » repliée', () => {
+  it('« Peu importe » sans pastille cochée (champ absent ou vide) ; sinon « 1 choix », « 2 choix », avec espace insécable', () => {
+    expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [] })).toBe('Peu importe');
+    expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: [] })).toBe('Peu importe');
+    expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: ['droite'] })).toBe('1\u00a0choix');
+    expect(resumeVieLocale({ loyer: 1200, mer: null, tailles: [], mairies: ['gauche', 'sans-etiquette'] })).toBe('2\u00a0choix');
   });
 });
