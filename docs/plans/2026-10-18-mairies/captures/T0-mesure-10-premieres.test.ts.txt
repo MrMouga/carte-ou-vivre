@@ -1,0 +1,35 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { it } from 'vitest';
+import { communeDeLigne, evaluer, REGLAGES_DEPART } from '/Users/mouga/git-repository/carte-ou-vivre/src/domain/score';
+import { joindreAchats } from '/Users/mouga/git-repository/carte-ou-vivre/src/domain/prix';
+import { PRIX_DEPART } from '/Users/mouga/git-repository/carte-ou-vivre/src/domain/prix';
+
+const D = '/Users/mouga/git-repository/carte-ou-vivre/public/data/';
+const lire = (f: string) => JSON.parse(readFileSync(D + f, 'utf8'));
+it('mesure', () => {
+  const communes = joindreAchats(lire('communes.json').communes.map(communeDeLigne), lire('achat.json'));
+  const mairies = new Map((lire('mairies.json').communes as [string, string | null, string | null][]).map((l) => [l[0], l]));
+  const nuances = lire('nuances.json') as Record<string, { etiquette: string; bloc: string }>;
+  const bord = (code: string) => {
+    const [, n] = mairies.get(code)!;
+    return n == null ? 'sans-resultat' : n === '' ? 'sans-etiquette' : nuances[n].bloc;
+  };
+  // /?loyer=1200 : réglages de départ (R32 de cadre-de-vie), prix de départ ; le filtre de mairie écarte sans noter (R38),
+  // donc la liste de /?loyer=1200&mairie=<bloc> = le classement de départ, réduit aux communes de ce bloc, rangs refaits.
+  const res = evaluer(communes, REGLAGES_DEPART, [], PRIX_DEPART);
+  const out: string[] = [];
+  out.push(`classement de départ (/?loyer=1200) : ${res.classement.length} communes classées`);
+  const dense = evaluer(communes, { ...REGLAGES_DEPART, types: ['ville-dense'] }, [], PRIX_DEPART);
+  const colorees = (r: typeof res) => [...r.parCode.values()].filter((e) => e.passe).length;
+  out.push(`communes colorées : départ ${colorees(res)} ; avec « Ville dense » ${colorees(dense)} ; décolorées d'un coup ${colorees(res) - colorees(dense)}`);
+  for (const b of ['extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette']) {
+    const liste = res.classement.filter((e) => bord(e.commune.code) === b);
+    const passent = [...res.parCode.values()].filter((e) => e.passe && bord(e.commune.code) === b).length;
+    out.push(`\n### ${b} — ${liste.length} communes classées (${passent} passent)`);
+    liste.slice(0, 10).forEach((e, i) => {
+      const [, n, l] = mairies.get(e.commune.code)!;
+      out.push(`${i + 1}. ${e.commune.nom} (${e.commune.dep}, ${e.commune.code}) · ${e.score} · ${e.valeurPrix} € · ${e.commune.population} hab. · ${n ? nuances[n].etiquette + ' (' + n + ')' : 'sans étiquette'} · « ${l} »`);
+    });
+  }
+  writeFileSync('/private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/da52af0c-2c06-4648-af42-8b3a63109472/scratchpad/mesure/tetes.txt', out.join('\n') + '\n');
+});

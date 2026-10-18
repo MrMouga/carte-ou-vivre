@@ -1,0 +1,59 @@
+18/10/2026 18:40:51 ; 15 essais par sens
+tour 1, curseur du prix, un cran : médiane 160 ms ; min 144 max 178 ; essais 147 160 161 161 160 160 158 163 159 178 158 144 145 160 160
+tour 1, « Ville dense » cochée (34 031 communes décolorées) : médiane 177 ms ; min 175 max 198 ; essais 198 179 177 176 177 175 177 190 176 177 177 178 177 178 177
+tour 1, « Ville dense » décochée (34 031 communes recolorées) : médiane 260 ms ; min 257 max 275 ; essais 257 258 261 261 259 259 261 260 259 261 257 275 260 261 260
+tour 2, curseur du prix, un cran : médiane 160 ms ; min 144 max 208 ; essais 144 208 159 161 161 160 162 160 162 159 144 161 161 146 145
+tour 2, « Ville dense » cochée (34 031 communes décolorées) : médiane 177 ms ; min 176 max 193 ; essais 193 193 176 193 177 176 177 177 177 176 176 178 177 192 178
+tour 2, « Ville dense » décochée (34 031 communes recolorées) : médiane 260 ms ; min 259 max 277 ; essais 275 260 260 277 260 262 259 259 261 261 261 259 261 260 260
+== port 4181 d8784dd
+18/10/2026 18:45:22 ; 15 essais par sens
+tour 1, curseur du prix, un cran : médiane 161 ms ; min 160 max 179 ; essais 165 161 160 161 160 162 179 160 161 162 160 161 161 160 162
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.focus: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '100 km', exact: true })
+
+    at geste (/private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/da52af0c-2c06-4648-af42-8b3a63109472/scratchpad/mesure/reaction.mjs:19:15)
+    at /private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/da52af0c-2c06-4648-af42-8b3a63109472/scratchpad/mesure/reaction.mjs:64:45 {
+  log: [
+    "  - waiting for getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '100 km', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0
+== port 4180 fab197e
+18/10/2026 18:46:09 ; 15 essais par sens
+tour 1, curseur du prix, un cran : médiane 160 ms ; min 144 max 174 ; essais 174 159 161 160 144 160 161 146 160 160 161 161 161 161 146
+tour 1, « Ville dense » cochée (34 031 communes décolorées) : médiane 177 ms ; min 176 max 185 ; essais 185 176 177 179 177 177 177 180 176 176 176 184 176 176 177
+tour 1, « Ville dense » décochée (34 031 communes recolorées) : médiane 261 ms ; min 255 max 293 ; essais 276 261 260 260 261 260 260 261 293 261 255 261 259 262 262
+tour 1, cases de la mer 50 ↔ 100 km (H90) : médiane 159 ms ; min 141 max 172 ; essais 172 141 160 144 161 144 160 143 160 143 160 144 161 142 159
+== port 4181 d8784dd
+18/10/2026 18:46:53 ; 15 essais par sens
+tour 1, curseur du prix, un cran : médiane 161 ms ; min 145 max 174 ; essais 174 160 161 161 161 161 161 162 160 145 162 161 160 160 160
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.focus: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '100 km', exact: true })
+
+    at geste (/private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/da52af0c-2c06-4648-af42-8b3a63109472/scratchpad/mesure/reaction.mjs:19:15)
+    at /private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/da52af0c-2c06-4648-af42-8b3a63109472/scratchpad/mesure/reaction.mjs:64:45 {
+  log: [
+    "  - waiting for getByRole('group', { name: 'Mer à moins de' }).getByRole('button', { name: '100 km', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0
+== port 4180 fab197e
+18/10/2026 18:47:40 ; 15 essais par sens
+tour 1, curseur du prix, un cran : médiane 160 ms ; min 142 max 178 ; essais 178 160 163 160 159 163 142 158 158 161 160 160 163 159 161
+tour 1, « Ville dense » cochée (34 031 communes décolorées) : médiane 178 ms ; min 175 max 207 ; essais 188 177 176 178 194 192 193 177 176 207 178 194 179 175 176
+tour 1, « Ville dense » décochée (34 031 communes recolorées) : médiane 261 ms ; min 258 max 410 ; essais 275 258 260 261 259 260 276 261 410 291 275 259 277 260 262
+tour 1, cases de la mer 50 ↔ 100 km (H90) : médiane 159 ms ; min 142 max 168 ; essais 168 143 159 142 161 142 161 159 161 144 160 142 161 144 160

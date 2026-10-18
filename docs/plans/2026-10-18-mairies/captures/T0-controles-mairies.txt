@@ -1,0 +1,30 @@
+  ok   table des nuances : 25 nuances de listes (annexe 2), chacune dans un des 6 blocs (annexe 3)
+premier tour : municipales-2026-resultats-communes-2026-03-20.csv, Last-Modified Thu, 02 Jul 2026 16:44:15 GMT, téléchargé le 2026-10-18T18:32:42+02:00, 14423228 octets, sha256 bc17b6186012da734d5073f3fe95cdcac4cef1c26fe512d50b578cea85b61275
+  ok   premier tour : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+  ok   municipales-2026-resultats-communes-2026-03-20.csv : colonnes attendues
+second tour : municipales-2026-resultats-communes-2026-03-23-16h14.csv, Last-Modified Thu, 02 Jul 2026 16:44:12 GMT, téléchargé le 2026-10-18T18:32:43+02:00, 893849 octets, sha256 f83bc07995a75b1602186c0159aace3f3520e72ce6d9bf6f8aac0b4b8a25b69a
+  ok   second tour : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+  ok   municipales-2026-resultats-communes-2026-03-23-16h14.csv : colonnes attendues
+  ok   34746 communes sur la carte
+premier tour : 34672 communes de métropole ; second tour : 1445
+codes de métropole des fichiers absents de communes.json : 0 []
+  ok   H121 : tout code de métropole des fichiers existe dans communes.json
+  ok   toute commune du second tour est aussi au premier
+communes du second tour qui ont des sièges au premier : 0 []
+communes de la carte absentes des deux fichiers : 74 (attendu 74)
+nuances des fichiers : (vide), LCOM, LDIV, LDSV, LDVC, LDVD, LDVG, LECO, LEXD, LEXG, LFI, LHOR, LLR, LMDM, LREC, LREG, LREN, LRN, LSOC, LUC, LUD, LUDI, LUDR, LUG, LUXD, LVEC
+  ok   toute nuance non vide des fichiers est dans la table (hors table : [])
+communes présentes mais sans liste avec un siège : 0 []
+égalités de sièges, départagées par les voix (H115) : 4 [('02779', 'Vénérolles'), ('55104', 'Chassey-Beaupré'), ('55414', 'Rancourt-sur-Ornain'), ('89255', 'Michery')]
+mairies avec étiquette dans une commune de moins de 3500 habitants (chefs-lieux attendus) : 15
+  ok   D8 : toute mairie sans étiquette est dans une commune de moins de 3500 habitants ([])
+  ok   AC-12 : communes 34746 (attendu 34746)
+  ok   AC-12 : avec mairie 34672 (attendu 34672)
+  ok   AC-12 : sans résultat 74 (attendu 74)
+  ok   AC-12 : avec étiquette 3164 (attendu 3164)
+  ok   AC-12 : sans étiquette 31508 (attendu 31508)
+  ok   AC-12 : codes non reliés 0 (attendu 0)
+  ok   AC-12 : égalités de sièges 4 (attendu 4)
+mairies par bloc : extreme-gauche 7, gauche 753, divers 561, centre 571, droite 1212, extreme-droite 60, sans étiquette 31508
+écrit : public/data/mairies.json (1526497 octets)
+écrit : public/data/nuances.json (1475 octets)
