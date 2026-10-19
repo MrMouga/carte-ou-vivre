@@ -34,6 +34,8 @@ const six: Commune[] = joindreBords(
   nuancesJson,
 );
 const code = Object.fromEntries(items.map((it) => [it.id, it.code_insee])) as Record<Id, string>;
+const IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
+const commune = (id: Id) => six.find((c) => c.code === code[id])!;
 const ev = (mairiesCochees?: Bord[], r: Partial<Reglages> = {}) => {
   const res = evaluer(six, { loyer: 1200, mer: null, tailles: [], ...(mairiesCochees && { mairies: mairiesCochees }), ...r });
   return { res, by: (id: Id) => res.parCode.get(code[id])!, classement: res.classement.map((e) => [e.commune.nom, e.score]) };
@@ -42,8 +44,7 @@ const textes = (id: Id, v: ReturnType<typeof ev>) => v.by(id).raisons.map(raison
 
 describe('R39, H122 — chaque commune a son bord, son étiquette et sa liste, joints par code INSEE', () => {
   it('fixture « 6 communes » : A droite « Divers droite », B gauche, C divers, D sans étiquette, E extrême droite, F sans résultat', () => {
-    const par = (id: Id) => six.find((c) => c.code === code[id])!;
-    expect((['A', 'B', 'C', 'D', 'E', 'F'] as const).map((id) => [par(id).bord, par(id).nuance, par(id).liste])).toEqual([
+    expect(IDS.map((id) => [commune(id).bord, commune(id).nuance, commune(id).liste])).toEqual([
       ['droite', 'Divers droite', 'Portmer Avance'],
       ['gauche', 'Union de la gauche', 'Grandeville en commun'],
       ['divers', 'Divers', 'Montcher demain'],
@@ -82,7 +83,7 @@ describe('R38 — le filtre de mairie (fixture « 6 communes », /?loyer=1200)',
     const v = ev(['centre']);
     expect(v.classement).toEqual([]);
     expect(v.res.actif).toBe(true);
-    expect((['A', 'B', 'C', 'D', 'E', 'F'] as const).filter((id) => v.by(id).passe)).toEqual([]);
+    expect(IDS.filter((id) => v.by(id).passe)).toEqual([]);
   });
 
   it('AC-3 (calcul) « Gauche » : Grandeville 31 ; avec « Sans étiquette » : Terrebasse 65, Grandeville 31 ; Rhinval sans résultat et Portmer droite écartées', () => {
@@ -182,7 +183,7 @@ const sp = (t: string) => t.replace(/\u00a0/g, ' ');
 
 describe('R40 — ligne « Mairie » de la fiche', () => {
   it('AC-5 (calcul) les 6 communes de la fixture', () => {
-    expect((['A', 'B', 'C', 'D', 'E', 'F'] as const).map((id) => sp(mairieFiche(six.find((c) => c.code === code[id])!)))).toEqual([
+    expect(IDS.map((id) => sp(mairieFiche(commune(id))))).toEqual([
       'Mairie : Droite (Divers droite) · « Portmer Avance »',
       'Mairie : Gauche (Union de la gauche) · « Grandeville en commun »',
       'Mairie : Divers · « Montcher demain »',
