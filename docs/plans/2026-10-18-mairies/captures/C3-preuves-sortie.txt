@@ -1,0 +1,22 @@
+14:05:17 ===== 1440x900
+14:05:22 adresse /?loyer=1200 · pastilles ["Gauche","Divers","Centre","Droite","Extrême droite","Sans étiquette"] · cochées [] OK
+14:05:22 grille Gauche x33 y374 97×44 | Divers x138 y374 97×44 | Centre x242 y374 97×44 | Droite x33 y426 97×44 | Extrême droite x138 y426 97×44 | Sans étiquette x242 y426 97×44
+14:05:22 Gauche · Divers · Centre / Droite · Extrême droite · Sans étiquette, cases ≥ 44 px OK
+14:05:22 phrase x33 y474 306×16 « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille, toute la largeur OK
+14:05:22 grille et phrase dans la fenêtre OK
+14:05:22 description du groupe « Moins de 3 500 habitants : le ministère ne classe pas les listes. » · aria-describedby de « Sans étiquette » : null OK
+14:05:22 Tab depuis « Gauche » : Gauche → Divers → Centre → Droite → Extrême droite → Sans étiquette → puis BUTTON « Tes proches » OK
+14:05:22 Maj+Tab depuis « Gauche » : BUTTON « Vie locale »
+14:05:27 adresse /?loyer=1200&mairie=gauche,sans-etiquette · cochées ["Gauche","Sans étiquette"] OK
+14:05:27 liste d'onglets y null → null · main.scrollTop 0 → 0 OK
+14:05:27 ===== 390x844
+14:05:31 adresse /?loyer=1200 · pastilles ["Gauche","Divers","Centre","Droite","Extrême droite","Sans étiquette"] · cochées [] OK
+14:05:31 grille Gauche x16 y656 114×44 | Divers x138 y656 114×44 | Centre x260 y656 114×44 | Droite x16 y708 114×44 | Extrême droite x138 y708 114×44 | Sans étiquette x260 y708 114×44
+14:05:31 Gauche · Divers · Centre / Droite · Extrême droite · Sans étiquette, cases ≥ 44 px OK
+14:05:31 phrase x16 y756 358×16 « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille, toute la largeur OK
+14:05:31 grille et phrase dans la fenêtre OK
+14:05:31 description du groupe « Moins de 3 500 habitants : le ministère ne classe pas les listes. » · aria-describedby de « Sans étiquette » : null OK
+14:05:31 Tab depuis « Gauche » : Gauche → Divers → Centre → Droite → Extrême droite → Sans étiquette → puis BUTTON « Tes proches » OK
+14:05:31 Maj+Tab depuis « Gauche » : BUTTON « Vie locale »
+14:05:36 adresse /?loyer=1200&mairie=gauche,sans-etiquette · cochées ["Gauche","Sans étiquette"] OK
+14:05:36 liste d'onglets y 511 → 511 · main.scrollTop 0 → 0 OK
