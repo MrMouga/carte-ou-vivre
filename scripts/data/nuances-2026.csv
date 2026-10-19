@@ -1,26 +1,26 @@
-code,etiquette,bloc,page_etiquette,page_bloc
-LEXG,Extrême gauche,extreme-gauche,9,12
-LFI,La France insoumise,extreme-gauche,9,12
-LCOM,Parti communiste français,gauche,9,12
-LSOC,Parti socialiste,gauche,9,12
-LVEC,Les Écologistes,gauche,9,12
-LUG,Union de la gauche,gauche,9,12
-LDVG,Divers gauche,gauche,9,12
-LECO,Ecologiste,divers,9,12
-LREG,Régionalistes,divers,9,12
-LDIV,Divers,divers,9,12
-LREN,Renaissance,centre,9,12
-LMDM,Modem,centre,9,12
-LHOR,Horizons,centre,9,12
-LUDI,Union des Démocrates et Indépendants,centre,9,12
-LUC,Union du centre,centre,9,12
-LDVC,Divers centre,centre,9,12
-LLR,Les Républicains,droite,10,12
-LUD,Union de la droite,droite,10,12
-LDVD,Divers droite,droite,10,12
-LDSV,Droite souverainiste,droite,10,12
-LUDR,Union des droites pour la République,extreme-droite,10,12
-LRN,Rassemblement National,extreme-droite,10,12
-LREC,Reconquête,extreme-droite,10,12
-LUXD,Union de l’extrême droite,extreme-droite,10,12
-LEXD,Extrême droite,extreme-droite,10,12
+code,etiquette,bloc,page_etiquette,page_bloc,bloc_annexe,ecart
+LEXG,Extrême gauche,gauche,9,12,extreme-gauche,rangée à gauche par Vincent le 2026-10-19 (D2 amendée)
+LFI,La France insoumise,gauche,9,12,extreme-gauche,rangée à gauche par Vincent le 2026-10-19 (D2 amendée)
+LCOM,Parti communiste français,gauche,9,12,gauche,
+LSOC,Parti socialiste,gauche,9,12,gauche,
+LVEC,Les Écologistes,gauche,9,12,gauche,
+LUG,Union de la gauche,gauche,9,12,gauche,
+LDVG,Divers gauche,gauche,9,12,gauche,
+LECO,Ecologiste,divers,9,12,divers,
+LREG,Régionalistes,divers,9,12,divers,
+LDIV,Divers,divers,9,12,divers,
+LREN,Renaissance,centre,9,12,centre,
+LMDM,Modem,centre,9,12,centre,
+LHOR,Horizons,centre,9,12,centre,
+LUDI,Union des Démocrates et Indépendants,centre,9,12,centre,
+LUC,Union du centre,centre,9,12,centre,
+LDVC,Divers centre,centre,9,12,centre,
+LLR,Les Républicains,droite,10,12,droite,
+LUD,Union de la droite,droite,10,12,droite,
+LDVD,Divers droite,droite,10,12,droite,
+LDSV,Droite souverainiste,droite,10,12,droite,
+LUDR,Union des droites pour la République,extreme-droite,10,12,extreme-droite,
+LRN,Rassemblement National,extreme-droite,10,12,extreme-droite,
+LREC,Reconquête,extreme-droite,10,12,extreme-droite,
+LUXD,Union de l’extrême droite,extreme-droite,10,12,extreme-droite,
+LEXD,Extrême droite,extreme-droite,10,12,extreme-droite,

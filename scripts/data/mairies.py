@@ -5,7 +5,8 @@ Résultats (H116) : ressource « Résultats - Communes » des jeux « Elections 
 et « … du second tour » du ministère de l'Intérieur (data.gouv.fr, Licence Ouverte), téléchargés par sources.py ; une
 ligne par commune, ses listes à la suite (nuance, libellé, voix, sièges au conseil municipal). Blocs (H117) : annexes 2 et 3
 de la circulaire du 2 février 2026 relative à l'attribution des nuances (n° 45645), lues dans le PDF et recopiées dans
-scripts/data/nuances-2026.csv.
+scripts/data/nuances-2026.csv (colonne `bloc_annexe`) ; sauf LFI et LEXG, rangées en « gauche » par Vincent le 2026-10-19
+(D2 amendée, colonnes `bloc` et `ecart`) : le bloc « extrême gauche » n'existe plus sur le site.
 
 Règle (R39) : la mairie est la liste qui a le plus de sièges au conseil municipal, au second tour si la commune en a eu un,
 sinon au premier ; à égalité de sièges, celle qui a le plus de voix (H115) ; au moins un siège, sinon « sans résultat ».
@@ -40,7 +41,7 @@ FICHIERS = {
     'second tour': ('municipales-2026-resultats-communes-2026-03-23-16h14.csv',
                     'f83bc07995a75b1602186c0159aace3f3520e72ce6d9bf6f8aac0b4b8a25b69a'),
 }
-BLOCS = ('extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite')  # H108, ordre de R38
+BLOCS = ('gauche', 'divers', 'centre', 'droite', 'extreme-droite')  # H108, ordre de R38 (D2 amendée le 2026-10-19)
 SEUIL_NUANCE = 3500  # D8 : seuil de population sous lequel le ministère ne nuance pas (hors chefs-lieux d'arrondissement)
 # Comptes d'AC-12, mesurés le 2026-10-18 sur ces fichiers ; tout écart arrête le script (condition d'arrêt de la tâche 0).
 ATTENDU = {'communes': 34746, 'avec mairie': 34672, 'sans résultat': 74, 'avec étiquette': 3164, 'sans étiquette': 31508,
@@ -78,9 +79,14 @@ def choisir_mairie(premier, second):
 
 def table_nuances():
     with open(NUANCES, encoding='utf-8', newline='') as f:
-        table = {r['code']: {'etiquette': r['etiquette'], 'bloc': r['bloc']} for r in csv.DictReader(f)}
+        lignes = list(csv.DictReader(f))
+    table = {r['code']: {'etiquette': r['etiquette'], 'bloc': r['bloc']} for r in lignes}
     check(len(table) == 25 and all(n['bloc'] in BLOCS for n in table.values()),
-          f'table des nuances : {len(table)} nuances de listes (annexe 2), chacune dans un des 6 blocs (annexe 3)')
+          f'table des nuances : {len(table)} nuances de listes (annexe 2), chacune dans un des {len(BLOCS)} blocs du site')
+    ecarts = sorted(r['code'] for r in lignes if r['bloc'] != r['bloc_annexe'])
+    check(ecarts == sorted(r['code'] for r in lignes if r['ecart']) == ['LEXG', 'LFI']
+          and all((r['bloc_annexe'], r['bloc']) == ('extreme-gauche', 'gauche') for r in lignes if r['ecart']),
+          f"D2 amendée : seules LEXG et LFI quittent le bloc de l'annexe 3 (extreme-gauche → gauche), écart noté ({ecarts})")
     return table
 
 
