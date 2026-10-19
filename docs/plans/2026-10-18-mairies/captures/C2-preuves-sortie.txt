@@ -1,0 +1,37 @@
+12:50:53 ===== 1440x900
+12:50:59 adresse /?loyer=1200 · pastilles ["Gauche","Divers","Centre","Droite","Extrême droite","Sans étiquette"] · cochées [] OK
+12:50:59 grille Gauche x33 y341 97×44 | Divers x138 y341 97×44 | Centre x242 y341 97×44 | Droite x33 y393 97×44 | Extrême droite x138 y393 97×44 | Sans étiquette x33 y445 97×44
+12:50:59 Gauche · Divers · Centre / Droite · Extrême droite · (vide) / Sans étiquette OK
+12:51:02 /?loyer=1200&mairie=gauche · 748 communes passent tes critères OK
+12:51:02   1 · Clamecy (58) · 69 OK
+12:51:02   2 · Nouzonville (08) · 69 OK
+12:51:02   3 · Bogny-sur-Meuse (08) · 68 OK
+12:51:02   4 · Saint-Germain-du-Corbéis (61) · 66 OK
+12:51:02   5 · Revin (08) · 66 OK
+12:51:02   6 · Courpière (63) · 65 OK
+12:51:02   7 · Aubusson (23) · 64 OK
+12:51:02   8 · Champagney (70) · 64 OK
+12:51:02   9 · Sanvignes-les-Mines (71) · 64 OK
+12:51:02   10 · Ambert (63) · 64 OK
+12:51:06 /?mairie=extreme-gauche → /?loyer=1200 · cochées [] OK
+12:51:06 ===== 390x844
+12:51:11 adresse /?loyer=1200 · pastilles ["Gauche","Divers","Centre","Droite","Extrême droite","Sans étiquette"] · cochées [] OK
+12:51:11 grille Gauche x16 y630 114×44 | Divers x138 y630 114×44 | Centre x260 y630 114×44 | Droite x16 y682 114×44 | Extrême droite x138 y682 114×44 | Sans étiquette x16 y734 114×44
+12:51:11 Gauche · Divers · Centre / Droite · Extrême droite · (vide) / Sans étiquette OK
+12:51:15 /?loyer=1200&mairie=gauche · 748 communes passent tes critères OK
+12:51:15   1 · Clamecy (58) · 69 OK
+12:51:15   2 · Nouzonville (08) · 69 OK
+12:51:15   3 · Bogny-sur-Meuse (08) · 68 OK
+12:51:15   4 · Saint-Germain-du-Corbéis (61) · 66 OK
+12:51:15   5 · Revin (08) · 66 OK
+12:51:15   6 · Courpière (63) · 65 OK
+12:51:15   7 · Aubusson (23) · 64 OK
+12:51:15   8 · Champagney (70) · 64 OK
+12:51:15   9 · Sanvignes-les-Mines (71) · 64 OK
+12:51:15   10 · Ambert (63) · 64 OK
+12:51:18 /?mairie=extreme-gauche → /?loyer=1200 · cochées [] OK
+12:51:26   essai raté pour 59512 → Croix (59)
+12:51:36 /?loyer=1200 · fiche Roubaix (59) · ["Mairie : Gauche (La France insoumise) · « FIERS DE ROUBAIX »"] · ne passe pas : false OK
+12:51:44   essai raté pour 59512 → Croix (59)
+12:51:54 /?loyer=1200&mairie=gauche · fiche Roubaix (59) · ["Mairie : Gauche (La France insoumise) · « FIERS DE ROUBAIX »"] · ne passe pas : false OK
+12:51:57 pied de page contient la mention amendée OK
