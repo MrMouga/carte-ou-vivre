@@ -24,6 +24,10 @@ Relectures : review-spec.md (0 bloquant, 1 majeur, 3 mineurs), qa.md (0 bloquant
 Corrections 1 : faites — commits 899aa91..acd5b52 — Majeur (test d'AC-7 de cadre-de-vie qui cliquait pendant le zoom : `ficheDeCarte` rouvre l'adresse, 1 ligne + commentaire, décision de Vincent du 2026-10-19 « Corriger maintenant ») et Mineur CLAUDE.md ; Mineur heure de T4 corrigé par l'orchestrateur (178e46a) ; Mineur garde-fou de `carte.ts` laissé (outil studio, pour /retro) — preuve : captures/C1-avant-*.txt (8 rouges sur 40), C1-apres-*.txt (40 / 40, puis 180 / 180) — 26 min — agent : 82 k — rapport : taches/corrections-1.md
   Vérif orchestrateur (11:48) : diff du test = 1 ligne de code + commentaire, aucune valeur attendue changée ; typecheck vert ; Vitest 312 / 312 ; Playwright 379 verts, 38 sautés, 0 rouge ; build vert.
 
+Démo 1 (2026-10-19) : Vincent demande « place la France Insoumise dans la gauche », puis choisit : pastille « Extrême gauche » retirée (6 pastilles), UDR en extrême droite. Chemin court : spec amendée sur place par l'orchestrateur (D2, R38, H108, H117, H118, AC-1, AC-9, AC-10 ; commits 8903ae3..0077356), un builder.
+Corrections 2 : faites — commits 8325265..9bb4c44 — LFI et LEXG à gauche (`nuances-2026.csv` avec bloc d'origine et note ; `nuances.json` régénéré ; `mairies.json` identique octet pour octet) ; 6 pastilles ; mention amendée ; CLAUDE.md et mesure-tache-0.md (gauche 760 mairies, 748 classées à /?loyer=1200, 10 premières inchangées, Roubaix 507e) ; note de LEXG corrigée (décision de Claude, pas de Vincent) après relecture de l'orchestrateur — preuve : captures/C2-*.jpg, C2-preuves-sortie.txt, C2-npm-test.txt (12:40) — 21 min — agent : 171 k + 7 k — rapport : taches/corrections-2.md
+  Vérif orchestrateur (13:06) : `mairies.json` inchangé (`git diff --quiet`) ; captures C2-vie-locale-390x844 et C2-fiche-roubaix-gauche relues ; typecheck vert ; Vitest 315 / 315 ; Playwright 381 verts, 38 sautés, 0 rouge ; build vert.
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
@@ -45,6 +49,9 @@ Corrections 1 : faites — commits 899aa91..acd5b52 — Majeur (test d'AC-7 de c
 - T4 : étape 1, « la liste d'avant la tranche » = celle de la version en ligne (commit d'avant la tranche, lue seulement). Coût si faux : aucun, version vérifiée par `version.txt`.
 - T4 : captures en JPEG 1 200 px, qualité 80 (8,2 Mo au lieu de 18). Coût : image un peu moins nette.
 - C1 : la page est rouverte avant chaque clic sur la carte dans `cadre-de-vie.spec.ts`, sans condition. Coût : quelques secondes de suite en plus.
+- Démo 1 (orchestrateur) : LEXG suit LFI en « Gauche » (son bloc disparaît) ; mention « …circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche ». Coût si faux : une note du CSV et une phrase du pied de page.
+- C2 : `nuances-2026.csv` garde le bloc d'origine de l'annexe et une note par écart ; `mairies.py` vérifie que seules LFI et LEXG s'en écartent. Coût : aucun.
+- C2 : grille de 3 colonnes, 5 blocs sur 2 lignes, « Sans étiquette » en 1re colonne de la 3e ligne. Coût : aucun.
 
 ## Preuves
 

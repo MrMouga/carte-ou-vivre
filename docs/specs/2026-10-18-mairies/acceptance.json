@@ -147,7 +147,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /, puis replie « Vie locale »",
       "then": "l'adresse devient /?loyer=1200 ; une catégorie « Vie locale », ouverte, suit « Cadre de vie » ; elle contient le groupe « Mairie élue en 2026 » et ses pastilles, dans l'ordre, « Gauche », « Divers », « Centre », « Droite », « Extrême droite », « Sans étiquette », aucune cochée ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9. Repliée, la catégorie montre « Peu importe » et les pastilles sont cachées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -211,7 +211,7 @@
       "given": "Fixture « 6 communes », téléphone 390 × 844, page ouverte sur /",
       "when": "dans l'onglet « Critères », l'utilisateur va à « Vie locale » et coche « Droite », puis ouvre l'onglet « Les 10 premières »",
       "then": "« Vie locale » suit « Cadre de vie » dans l'onglet « Critères » ; chacune des 6 pastilles devient visible en faisant défiler l'onglet (ou sa rangée, selon /ui) et se coche d'un toucher ; l'onglet « Les 10 premières » montre « 1 commune passe tes critères » puis Portmer (17) 46 ; l'adresse contient mairie=droite",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -219,7 +219,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "le pied de page contient « Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche » (H118, amendée le 2026-10-19 avec D2), à côté des mentions des tranches précédentes",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
