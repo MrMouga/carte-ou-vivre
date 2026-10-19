@@ -20,6 +20,10 @@ Tâche 4 : faite — commits c6f4e5f..af34f5d — preuve : captures/T4-etape{1..
 Simplification : faite — commits 126835b..b668320 — code du site inchangé ; aides de test factorisées dans `tests/e2e/mairies.spec.ts` et `src/domain/mairies.test.ts` (mêmes 14 + 22 tests, mêmes 93 + 63 `expect`) — 19 min — agent : 93 k — rapport : taches/simplification.md
   Vérif orchestrateur (2026-10-19 09:40) : typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 38 sautés, 1 rouge (l'instable connu, vert 3 fois sur 3 seul) ; build vert.
 
+Relectures : review-spec.md (0 bloquant, 1 majeur, 3 mineurs), qa.md (0 bloquant, 0 majeur, 0 mineur ; agent relancé une fois après sa limite de tours).
+Corrections 1 : faites — commits 899aa91..acd5b52 — Majeur (test d'AC-7 de cadre-de-vie qui cliquait pendant le zoom : `ficheDeCarte` rouvre l'adresse, 1 ligne + commentaire, décision de Vincent du 2026-10-19 « Corriger maintenant ») et Mineur CLAUDE.md ; Mineur heure de T4 corrigé par l'orchestrateur (178e46a) ; Mineur garde-fou de `carte.ts` laissé (outil studio, pour /retro) — preuve : captures/C1-avant-*.txt (8 rouges sur 40), C1-apres-*.txt (40 / 40, puis 180 / 180) — 26 min — agent : 82 k — rapport : taches/corrections-1.md
+  Vérif orchestrateur (11:48) : diff du test = 1 ligne de code + commentaire, aucune valeur attendue changée ; typecheck vert ; Vitest 312 / 312 ; Playwright 379 verts, 38 sautés, 0 rouge ; build vert.
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
@@ -40,6 +44,7 @@ Simplification : faite — commits 126835b..b668320 — code du site inchangé ;
 - T4 : AC-9 coche puis décoche chaque case d'un toucher, « Droite » seule à la fin ; toucher au centre de la case après avoir vérifié qu'elle est entière à l'écran. Coût : aucun (test plus strict).
 - T4 : étape 1, « la liste d'avant la tranche » = celle de la version en ligne (commit d'avant la tranche, lue seulement). Coût si faux : aucun, version vérifiée par `version.txt`.
 - T4 : captures en JPEG 1 200 px, qualité 80 (8,2 Mo au lieu de 18). Coût : image un peu moins nette.
+- C1 : la page est rouverte avant chaque clic sur la carte dans `cadre-de-vie.spec.ts`, sans condition. Coût : quelques secondes de suite en plus.
 
 ## Preuves
 
