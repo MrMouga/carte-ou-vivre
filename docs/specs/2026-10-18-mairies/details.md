@@ -92,6 +92,11 @@ Sur une page sans pastille de mairie cochée : loyer-mer AC-1 à AC-15 ; interfa
 
 - **H121** — Jointure par code INSEE : le code commune des fichiers en est un (Corse en 2A/2B comprise) ; seules les lignes des communes comptent, pas les fichiers des conseils d'arrondissement. Au 2026-10-18, tous les codes de métropole des deux fichiers existent dans les communes de la carte (COG 2025) ; un code inconnu arrête la tâche 0 (recalage comme H86 de cadre-de-vie, avec l'accord de Vincent).
 - **H122** — Les mairies se chargent avec les données des communes : même chargement et même erreur (comme H68 d'immobilier) ; poids ajouté mesuré en tâche 0.
+- **H123** — Table des nuances lue sur l'image des pages 9, 10 et 12 de la circulaire (pages scannées) ; étiquettes écrites comme dans l'annexe (« Ecologiste », « Rassemblement National », « Union de l’extrême droite ») ; nom de liste = colonne « Libellé de liste ». *Décidé par Claude en tâche 0, gardé par Vincent à la démo du 2026-10-19.*
+- **H124** — Fiche : pas de parenthèse quand l'étiquette s'écrit comme le bloc (« Mairie : Divers · « … » ») ; guillemets et « 3 500 habitants » tenus par des espaces insécables. *Décidé par Claude en tâche 3, gardé à la démo.*
+- **H125** — Une nuance absente de la table met la page en erreur (aucun bloc deviné, H117) ; une égalité de sièges **et** de voix arrête le calcul des mairies (cas absent au 2026-10-19). *Décidé par Claude en tâches 0 et 1, gardé à la démo.*
+- **H126** — La table des nuances garde le bloc de l'annexe et une note pour chaque écart (LFI : Vincent ; LEXG : Claude, avec LFI), et le calcul vérifie que seules ces deux nuances s'en écartent. Décocher la dernière pastille retire le réglage `mairies`. *Décidé par Claude (démo 1 et tâche 2), gardé à la démo.*
+- **H127** — Groupe « Mairie élue en 2026 » : 6 cases sur 2 lignes de 3 (Gauche · Divers · Centre / Droite · Extrême droite · Sans étiquette) ; sous la grille, la phrase « Moins de 3 500 habitants : le ministère ne classe pas les listes. » explique le groupe et lui est reliée par `aria-describedby`. *Vincent, démo 2 du 2026-10-19 ; texte et lien au groupe décidés par Claude.*
 
 ## Exceptions
 Aucune.

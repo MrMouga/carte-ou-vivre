@@ -62,3 +62,6 @@ Corrections 3 : faites — commits 05f37cc..dadeee7 — « Sans étiquette » en
 ## Preuves
 
 ## Coût
+
+Démo acceptée par Vincent le 2026-10-19 (« j'accepte »), après les demandes des démos 1 (LFI à gauche) et 2 (grille). Décisions gardées : H123 à H127 de details.md.
+Terminé 2026-10-19

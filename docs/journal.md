@@ -4,6 +4,61 @@ Généré par studio (`scripts/journal.sh`) depuis l'historique git et le log de
 ## Commandes (depuis git)
 | Date | Commande | Objet | Commit |
 |---|---|---|---|
+| 2026-10-18 17:49 | /breakdown | mairies — 5 tâches | 70342da |
+| 2026-10-18 17:35 | /ui | mairies — design validé | 8dd6dea |
+| 2026-10-18 13:44 | /compound | case vide d'une donnée officielle — chercher la règle avant de l'appeler « sans » | 5708e6c |
+| 2026-10-18 13:43 | /spec | mairies — validée | 7c32dd9 |
+| 2026-10-18 13:43 | /spec | mairies | c2a9b62 |
+| 2026-10-16 22:22 | /ship | proches-fiables — https://ou-vivre-en-france.narnia-assistant.workers.dev/ | 3f9f616 |
+| 2026-10-16 22:09 | /build | proches-fiables — démo acceptée | b29757b |
+| 2026-10-16 20:50 | /build | corrections 1 — vérification de bout en bout sur le code final (vrai IGN : partiel en 45 s | 011628c |
+| 2026-10-16 20:41 | /build | corrections 1 — à la réouverture, les calculs partent dans l'ordre d'ajout, proches gardés | 9e6d03d |
+| 2026-10-16 17:05 | /build | tâche 5b — rapport et preuves (vérification de bout en bout sur le vrai IGN : partiel en 4 | e065a71 |
+| 2026-10-16 17:04 | /build | tâche 5b — un ajout ou « Recalculer avec l'IGN » passe devant les recalculs automatiques p | 5fdceaf |
+| 2026-10-16 13:16 | /build | tâche 5a — rapport : plage de commits | 450ea08 |
+| 2026-10-16 13:16 | /build | tâche 5a — rapport et preuves (proche à vol d'oiseau gardé, recalculé à la réouverture ave | e172edf |
+| 2026-10-16 13:13 | /build | tâche 5a — un proche approximatif est recalculé avec l'IGN à la réouverture (au plus une f | 3f783f7 |
+| 2026-10-16 12:16 | /build | tâche 4 — rapport : plage de commits | 5f85419 |
+| 2026-10-16 12:16 | /build | tâche 4 — rapport et preuves (entrées du site en ligne relues et calculées par la version  | 38ec41f |
+| 2026-10-16 12:14 | /build | tâche 4 — un proche partiel ou à vol d'oiseau est retrouvé tel quel à la réouverture ; un  | f51e027 |
+| 2026-10-16 11:25 | /build | tâche 3b — rapport et preuves (pastille en km sur les vraies données, Nantes et La Rochell | fb5b48f |
+| 2026-10-16 11:24 | /build | tâche 3b — la pastille d'un proche à vol d'oiseau parle km (« 90 km au plus », « 118 km ·  | 7e282ba |
+| 2026-10-16 10:30 | /build | tâche 3a — rapport et preuves (proche à vol d'oiseau, La Rochelle à 121 km, bureau et 390  | 8a63dd5 |
+| 2026-10-16 10:29 | /build | tâche 3a — quand l'IGN ne couvre pas le plafond, le proche compte à vol d'oiseau, en km, a | ff5097a |
+| 2026-10-16 09:03 | /build | tâche 2 — rapport et preuves (bureau et 390 px) | 0ad144a |
+| 2026-10-16 09:02 | /build | tâche 2 — un proche partiel s'affiche « jusqu'à » et « plus de », son curseur s'arrête à l | a82595d |
+| 2026-10-16 07:56 | /build | tâche 1 — rapport : faite, suite verte après le retrait d'AC-10 de proches | 57546e0 |
+| 2026-10-16 07:55 | /build | tâche 1 — retrait du test d'AC-10 de proches (D18) | ef6713a |
+| 2026-10-16 07:42 | /build | tâche 1 — rapport, preuves et leçon (question : test d'AC-10 de proches) | 20709b2 |
+| 2026-10-16 07:42 | /build | tâche 1 — une zone ratée est redemandée, le calcul garde ses zones et finit à 45 s | 5d1eb0c |
+| 2026-10-16 01:43 | /breakdown | proches-fiables — 8 tâches | 45f5912 |
+| 2026-10-16 01:33 | /spec | proches-fiables — validée | be0fac5 |
+| 2026-10-16 01:33 | /spec | proches-fiables | 1109ef2 |
+| 2026-10-16 00:22 | /retro | 2026-10-16 — 5 leçons, 3 contrôles | 656fd86 |
+| 2026-10-16 00:05 | /ship | cadre-de-vie — https://ou-vivre-en-france.narnia-assistant.workers.dev/ | b26b92b |
+| 2026-10-15 23:59 | /ship | cadre-de-vie — liste de contrôle (clone neuf, secrets, version), site = Worker Cloudflare | 56ac3d6 |
+| 2026-10-15 23:55 | /build | cadre-de-vie — démo acceptée | 5b132e6 |
+| 2026-10-15 23:42 | /build | distance à la mer affichée et comparée au bon km — plus de double arrondi | 29d59b4 |
+| 2026-10-15 23:35 | /build | mer et montagne sans « Peu importe » — la distance cochée se décoche d'un toucher (D12) | 7b2ed46 |
+| 2026-10-15 23:23 | /spec | cadre-de-vie — D12, mer et montagne sans « Peu importe » (décision de Vincent à la démo) ; | 51839f4 |
+| 2026-10-15 22:57 | /build | distance à la montagne affichée et comparée au bon km — plus de double arrondi | 9f52914 |
+| 2026-10-15 20:48 | /build | tâche 5 — le type d'environnement : cocher Ville dense, Ville et périphérie, Bourg et vill | 9f5f0c3 |
+| 2026-10-15 19:59 | /build | tâche 4 — la montagne : choisir une distance (Peu importe, 10, 30, 50, 100 km), qui filtre | d8784dd |
+| 2026-10-15 17:03 | /build | tâche 3 — la catégorie « Cadre de vie » (taille en chiffres, mer en cinq choix), départ su | 6431afd |
+| 2026-10-15 15:56 | /build | tâche 2 — critères recalés à adresse explicite (mer=50) testés sur le code d'aujourd'hui | 7da7233 |
+| 2026-10-15 15:56 | /build | tâche 2 — le site lit le type d'environnement et la distance à la montagne ; en Acheter, l | 2062da7 |
+| 2026-10-15 15:16 | /build | tâche 1 — chaque commune a son type d'environnement, sa distance à la montagne et un prix  | f924641 |
+| 2026-10-15 14:25 | /build | tâche 0 — mesure de la zone de montagne et du prix tous biens | 2fef378 |
+| 2026-10-15 13:21 | /breakdown | cadre-de-vie — 6 tâches | 8e43285 |
+| 2026-10-15 12:32 | /breakdown | cadre-de-vie — plan révisé après relecture (1 Bloquant, 5 Majeurs corrigés) | 29979bd |
+| 2026-10-15 12:24 | /breakdown | cadre-de-vie — brouillon du plan (6 tâches) ; Pourquoi de D10 corrigé | 94f540d |
+| 2026-10-15 10:25 | /spec | immobilier — révision D12 (prix tous biens en dernier repli) | aac426c |
+| 2026-10-15 10:17 | /compound | cadre-de-vie — variante de prototype et libellés sur deux lignes | f24ad4b |
+| 2026-10-15 10:17 | /ui | cadre-de-vie — design validé | fc67f12 |
+| 2026-10-15 10:15 | /spec | cadre-de-vie — révision D10, D11 (4 niveaux d'environnement, montagne en 5 choix) | 4c0f78c |
+| 2026-10-14 23:55 | /spec | cadre-de-vie — validée | 20dc854 |
+| 2026-10-14 23:55 | /spec | cadre-de-vie — révision D9 (source de la montagne en tâche 0) | ff76c59 |
+| 2026-10-14 23:26 | /spec | cadre-de-vie | acab27d |
 | 2026-10-14 21:15 | /build | immobilier — démo acceptée | 2e828e3 |
 | 2026-10-14 20:53 | /compound | immobilier — test du risque sur les extrêmes ; valeur d'un jeton écrite en dur dans un tes | 2cb4e39 |
 | 2026-10-14 20:14 | /build | tâche 5 — design F complet : panneau de réglages de 340 px, valeurs des curseurs de la mer | 55f680d |
@@ -153,6 +208,42 @@ Généré par studio (`scripts/journal.sh`) depuis l'historique git et le log de
 ## Agents (depuis le log, machine locale)
 | Date | Agent | Durée | Résumé |
 |---|---|---|---|
+| 2026-10-18 17:46:41 | studio:spec-reviewer | 358 s | rapport non vérifié (message final indisponible) |
+| 2026-10-18 17:09:14 | studio:design-reviewer | 200 s | rapport non vérifié (message final indisponible) |
+| 2026-10-18 13:22:25 | studio:spec-reviewer | 396 s | rapport non vérifié (message final indisponible) |
+| 2026-10-16 20:50:47 | studio:builder | 2520 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 20:08:17 | studio:code-reviewer | 4755 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 18:57:04 | studio:qa-tester | 124 s | Rapport : `/Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proc |
+| 2026-10-16 18:32:29 | studio:builder | 834 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 17:05:35 | studio:builder | 11058 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 13:17:12 | studio:builder | 3043 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 12:16:30 | studio:builder | 2328 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 11:25:52 | studio:builder | 882 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 10:31:01 | studio:builder | 4475 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 09:03:20 | studio:builder | 2200 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 07:56:16 | studio:builder | 708 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 07:43:59 | studio:builder | 20455 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 07:43:50 | studio:builder | 20446 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 07:43:31 | studio:builder | 20427 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 07:43:03 | studio:builder | 20399 s | /Users/mouga/git-repository/carte-ou-vivre/docs/plans/2026-10-16-proches-fiables |
+| 2026-10-16 02:01:50 | studio:builder | 1042 s | RELANCE : rapport introuvable — « Confirmed. Committing now. » |
+| 2026-10-16 01:42:21 | studio:spec-reviewer | 400 s | rapport non vérifié (message final indisponible) |
+| 2026-10-16 01:32:53 | studio:spec-reviewer | 420 s | RELANCE : rapport introuvable — « Tous les chiffres sont confirmés. Je cherche l |
+| 2026-10-16 00:50:45 | studio:spec-reviewer | 361 s | /Users/mouga/git-repository/carte-ou-vivre/docs/specs/2026-10-16-proches-fiables |
+| 2026-10-15 23:45:17 | studio:builder | 1286 s | RELANCE : rapport introuvable — « Now regenerate the data with the script (keepi |
+| 2026-10-15 23:00:57 | studio:builder | 921 s | RELANCE : rapport introuvable — « Claim confirmed. Committing the report, the ri |
+| 2026-10-15 22:40:23 | studio:code-reviewer | 85 s | RELANCE : rapport introuvable — « Je commence par vérifier le port et lancer la  |
+| 2026-10-15 22:35:28 | studio:qa-tester | 55 s | RELANCE : rapport introuvable — « Start headed, desktop. » |
+| 2026-10-15 22:22:15 | studio:builder | 544 s | RELANCE : rapport introuvable — « Now CadreDeVie.tsx. » |
+| 2026-10-15 20:58:30 | studio:builder | 1943 s |  |
+| 2026-10-15 20:07:55 | studio:builder | 2865 s | RELANCE : rapport introuvable — « Suite green. Committing code and tests. » |
+| 2026-10-15 17:03:43 | studio:builder | 3058 s | RELANCE : rapport introuvable — « Commit the code and tests. » |
+| 2026-10-15 15:58:16 | studio:builder | 2021 s | RELANCE : rapport introuvable — « Meanwhile, Ill write the capture scripts Desvr |
+| 2026-10-15 15:17:55 | studio:builder | 1043 s | RELANCE : rapport introuvable — « Now update the rule-count line, add D12 checks |
+| 2026-10-15 14:25:58 | studio:builder | 1722 s | RELANCE : rapport introuvable — « Now the report, then the commit. » |
+| 2026-10-15 12:31:05 | studio:spec-reviewer | 133 s | rapport non vérifié (message final indisponible) |
+| 2026-10-15 01:02:37 | studio:design-reviewer | 315 s | rapport non vérifié (message final indisponible) |
+| 2026-10-14 22:49:15 | studio:spec-reviewer | 500 s | rapport non vérifié (message final indisponible) |
 | 2026-10-14 20:55:33 | studio:qa-tester | 281 s | rapport non vérifié (message final indisponible) |
 | 2026-10-14 20:50:28 | studio:code-reviewer | 84 s |  |
 | 2026-10-14 20:50:02 | studio:qa-tester | 58 s | rapport non vérifié (message final indisponible) |
@@ -218,4 +309,4 @@ Généré par studio (`scripts/journal.sh`) depuis l'historique git et le log de
 | 2026-10-12 18:35:02 | studio:design-reviewer | 335 s | rapport non vérifié (message final indisponible) |
 | 2026-10-12 16:34:51 | studio:spec-reviewer | 232 s | rapport non vérifié (message final indisponible) |
 
-Tokens connus pour 32 run(s) : 5366719 au total (détail dans /Users/mouga/.claude/studio/agents/carte-ou-vivre.log).
+Tokens connus pour 58 run(s) : 10134251 au total (détail dans /Users/mouga/.claude/studio/agents/carte-ou-vivre.log).
