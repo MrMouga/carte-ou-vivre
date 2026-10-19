@@ -17,6 +17,9 @@ Tâche 3 : faite — commits 93b4e89..afa383c — preuve : captures/T3-fiche-{bo
 Tâche 4 : faite — commits c6f4e5f..af34f5d — preuve : captures/T4-etape{1..5}-*.jpg (bureau et 390 × 844, fond IGN), T4-ville-*.jpg (10 villes), T4-ouverture-375x548.jpg, T4-bout-en-bout-sortie.txt, T4-npm-test.txt (2026-10-18 21:40 – 2026-10-19 00:30) — 60 min — agent : 164 k — rapport : taches/T4.md
   Vérif orchestrateur (2026-10-19 01:50) : aucun fichier `src/` touché ; 2 tests sautés de plus = AC-9 et 375 × 548, téléphone seulement ; capture de l'étape 4 à 390 px relue ; typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 38 sautés, 1 rouge (AC-7 de cadre-de-vie l. 260, l'instable connu) vert 3 fois sur 3 seul ; build vert. Signalé par T4, hors tranche : le rang de la fiche s'écrit « 33648e » sans espace des milliers.
 
+Simplification : faite — commits 126835b..b668320 — code du site inchangé ; aides de test factorisées dans `tests/e2e/mairies.spec.ts` et `src/domain/mairies.test.ts` (mêmes 14 + 22 tests, mêmes 93 + 63 `expect`) — 19 min — agent : 93 k — rapport : taches/simplification.md
+  Vérif orchestrateur (2026-10-19 09:40) : typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 38 sautés, 1 rouge (l'instable connu, vert 3 fois sur 3 seul) ; build vert.
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
