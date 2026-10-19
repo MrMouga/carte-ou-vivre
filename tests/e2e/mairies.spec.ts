@@ -46,7 +46,7 @@ test('AC-6 /?loyer=aucun&mairie=extreme-droite : Quaibleu en couleur neutre « s
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Tâche 2 : la catégorie « Vie locale » (R42, H109 à H111, design F) et ses 7 pastilles, en bureau et à 390 px (onglet
+// Tâche 2 : la catégorie « Vie locale » (R42, H109 à H111, design F) et ses 6 pastilles (D2 amendée le 2026-10-19), en bureau et à 390 px (onglet
 // « Critères ») ; carte, liste, fiche et adresse suivent (R38, R41).
 
 const lignes = async (page: Page) => (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
@@ -57,7 +57,7 @@ const mairie = (page: Page) => page.getByRole('group', { name: 'Mairie élue en 
 const pastilles = (page: Page) => mairie(page).getByRole('button');
 const pastille = (page: Page, nom: string) => mairie(page).getByRole('button', { name: nom, exact: true });
 const cochees = (page: Page) => mairie(page).getByRole('button', { pressed: true }).allInnerTexts();
-/** Libellés des 7 pastilles, dans l'ordre de la page. */
+/** Libellés des 6 pastilles, dans l'ordre de la page. */
 const libelles = async (page: Page) => (await pastilles(page).allInnerTexts()).map((t) => nbsp(t).trim());
 /** Titres des catégories de `zone` (textContent : le titre est en capitales par le style seulement). */
 const titresCategories = async (zone: Locator) => (await zone.getByRole('heading', { level: 2 }).allTextContents()).map((t) => nbsp(t).trim());
@@ -70,7 +70,7 @@ async function rouvrir(page: Page) {
   await ouvrirSix(page, adresse(page));
 }
 
-test('AC-1 ouverture de / : /?loyer=1200 ; « Vie locale » ouverte suit « Cadre de vie », groupe « Mairie élue en 2026 » et ses 7 pastilles dans l’ordre, aucune cochée ; 5 communes ; repliée, « Peu importe » et pastilles cachées', async ({ page }) => {
+test('AC-1 ouverture de / : /?loyer=1200 ; « Vie locale » ouverte suit « Cadre de vie », groupe « Mairie élue en 2026 » et ses 6 pastilles dans l’ordre, aucune cochée ; 5 communes ; repliée, « Peu importe » et pastilles cachées', async ({ page }) => {
   await ouvrirSix(page);
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   const titres = await titresCategories(page.getByRole('region', { name: 'Réglages' }));
@@ -78,7 +78,7 @@ test('AC-1 ouverture de / : /?loyer=1200 ; « Vie locale » ouverte suit « Cadr
   expect(titres.indexOf('Tes proches')).toBe(titres.indexOf('Vie locale') + 1); // H111
   await expect(titreVieLocale(page)).toHaveAttribute('aria-expanded', 'true');
   expect(await libelles(page)).toEqual([
-    'Extrême gauche', 'Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette',
+    'Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette',
   ]);
   for (const b of await pastilles(page).all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await voirListe(page);
@@ -171,6 +171,19 @@ test('AC-7 /?mairie=sans-etiquette,droite,droite,rouge&env=ville-et-peripherie,b
   expect(bord).toBeGreaterThan(env);
 });
 
+// Hors AC (H117 amendée, D2 du 2026-10-19 ; R41) : `extreme-gauche` n'est plus un nom de pastille, il est ignoré.
+test('H117 amendée : /?mairie=extreme-gauche devient /?loyer=1200, aucune pastille cochée, 5 communes ; /?mairie=extreme-gauche,gauche ne coche que « Gauche »', async ({ page }) => {
+  await ouvrirSix(page, '/?mairie=extreme-gauche');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await expect.poll(() => cochees(page)).toEqual([]);
+  await voirListe(page);
+  await expect(liste(page)).toContainText('5 communes passent tes critères');
+
+  await ouvrirSix(page, '/?mairie=extreme-gauche,gauche');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mairie=gauche');
+  await expect.poll(() => cochees(page)).toEqual(['Gauche']);
+});
+
 test('AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée dit « 2 choix », pastilles cachées ; dépliée, « Gauche » et « Sans étiquette » toujours cochées, 2 communes', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&mairie=gauche,sans-etiquette');
   await titreVieLocale(page).click();
@@ -188,24 +201,25 @@ test('AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée
 // moins en 3 colonnes ; désactivées pendant le chargement, comme les autres réglages.
 test('design F : 3 colonnes, cases de 44 px au moins, « Sans étiquette » décrite par « Moins de 3 500 habitants : le ministère ne classe pas les listes. »', async ({ page }) => {
   await ouvrirSix(page);
-  await expect(pastilles(page)).toHaveCount(7);
+  await expect(pastilles(page)).toHaveCount(6);
   await expect(pastille(page, 'Sans étiquette')).toHaveAccessibleDescription('Moins de 3 500 habitants : le ministère ne classe pas les listes.');
   const boites = await Promise.all((await pastilles(page).all()).map(boite));
   for (const b of boites) expect(b.height).toBeGreaterThanOrEqual(44);
   expect(new Set(boites.slice(0, 3).map((b) => Math.round(b.y))).size).toBe(1); // une ligne de 3
-  expect(Math.round(boites[3].x)).toBe(Math.round(boites[0].x)); // « Centre » sous « Extrême gauche »
-  expect(Math.round(boites[6].x)).toBe(Math.round(boites[0].x)); // « Sans étiquette » en 1re colonne
-  expect(boites[6].y).toBeGreaterThan(boites[3].y);
+  expect(Math.round(boites[3].x)).toBe(Math.round(boites[0].x)); // « Droite » sous « Gauche »
+  expect(Math.round(boites[4].y)).toBe(Math.round(boites[3].y)); // « Extrême droite » à côté ; la 6e case reste vide
+  expect(Math.round(boites[5].x)).toBe(Math.round(boites[0].x)); // « Sans étiquette » en 1re colonne
+  expect(boites[5].y).toBeGreaterThan(boites[3].y);
 });
 
-test('H122 : pendant le chargement, les 7 pastilles sont désactivées', async ({ page }) => {
+test('H122 : pendant le chargement, les 6 pastilles sont désactivées', async ({ page }) => {
   await servirFixture(page, { jeu: SIX });
   await page.route('**/data/mairies.json', async (r) => {
     await new Promise((f) => setTimeout(f, 1500));
     await r.fallback();
   });
   await page.goto('/');
-  await expect(pastilles(page)).toHaveCount(7);
+  await expect(pastilles(page)).toHaveCount(6);
   for (const b of await pastilles(page).all()) await expect(b).toBeDisabled();
   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
   for (const b of await pastilles(page).all()) await expect(b).toBeEnabled();
@@ -252,12 +266,12 @@ test('H112 : la ligne « Mairie » a le style de la ligne de la montagne ; « 3 
   expect(await style(ligne)).toEqual(await style(montagne));
 });
 
-test('AC-10 ouverture de / : le pied de page cite les résultats des municipales 2026 et la circulaire du 2 février 2026 (H118), à côté des mentions précédentes', async ({ page }) => {
+test('AC-10 ouverture de / : le pied de page cite les résultats des municipales 2026 et la circulaire du 2 février 2026, sauf l’extrême gauche rangée à gauche (H118 amendée), à côté des mentions précédentes', async ({ page }) => {
   await ouvrirSix(page);
   if (mobile(page)) await voirCriteres(page);
   const mentions = page.getByRole('contentinfo').filter({ visible: true }).first();
   await expect(mentions).toContainText(
-    "Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026",
+    "Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche",
   );
   for (const t of [
     'Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin',
@@ -292,7 +306,7 @@ test.describe('téléphone, au toucher', () => {
 
     // Chaque pastille : l'onglet défile jusqu'à elle, elle est entière dans l'onglet et à l'écran, un toucher à son
     // centre la coche (et un second la décoche, pour tester la suivante seule).
-    const noms = ['Extrême gauche', 'Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette'];
+    const noms = ['Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette'];
     expect(await libelles(page)).toEqual(noms);
     for (const nom of noms) {
       const b = pastille(page, nom);
@@ -329,7 +343,7 @@ test.describe('téléphone, au toucher', () => {
     const curseur = await boite(page.getByRole('slider', { name: 'Loyer maximum' }));
     expect(curseur.y).toBeGreaterThanOrEqual(f.y);
     expect(curseur.y + curseur.height).toBeLessThanOrEqual(548);
-    await expect(pastilles(page)).toHaveCount(7);
+    await expect(pastilles(page)).toHaveCount(6);
     expect((await boite(titreVieLocale(page))).y).toBeGreaterThan(curseur.y);
   });
 });

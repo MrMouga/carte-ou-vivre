@@ -38,12 +38,19 @@ describe('public/data/mairies.json et nuances.json (R39, H117, D8)', () => {
     return { bloc: nuance ? nuances[nuance].bloc : null, liste };
   };
 
-  it('une ligne par commune de la carte, dans l’ordre de communes.json ; les 25 nuances de listes de la circulaire, chacune dans un des 6 blocs', () => {
+  it('une ligne par commune de la carte, dans l’ordre de communes.json ; les 25 nuances de listes de la circulaire, chacune dans un des 5 blocs du site (D2 amendée)', () => {
     expect(champs).toEqual(['code', 'nuance', 'liste']);
     expect(lignes.map((l) => l[0])).toEqual(carte.communes.map((r) => r[0]));
     expect(Object.keys(nuances)).toHaveLength(25);
-    const blocs = new Set(['extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite']);
+    const blocs = new Set(['gauche', 'divers', 'centre', 'droite', 'extreme-droite']);
     expect(Object.values(nuances).filter((n) => !blocs.has(n.bloc))).toEqual([]);
+  });
+
+  it('D2 amendée (Vincent, 2026-10-19) : LFI et LEXG rangées en gauche, étiquettes de l’annexe ; Roubaix (59512), mairie LFI, bloc gauche « FIERS DE ROUBAIX »', () => {
+    expect(nuances.LFI).toEqual({ etiquette: 'La France insoumise', bloc: 'gauche' });
+    expect(nuances.LEXG).toEqual({ etiquette: 'Extrême gauche', bloc: 'gauche' });
+    expect(parCode.get('59512')![1]).toBe('LFI');
+    expect(mairie('59512')).toEqual({ bloc: 'gauche', liste: 'FIERS DE ROUBAIX' });
   });
 
   it('AC-12 : Paris, Lyon et Marseille bloc gauche avec leurs listes ; Bordeaux centre « Faire Gagner Bordeaux » ; Nice extrême droite « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI »', () => {

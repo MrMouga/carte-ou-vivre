@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import mairies from '../../docs/specs/2026-10-18-mairies/acceptance.json';
+import vraiesNuances from '../../public/data/nuances.json';
 import { mairieFiche, raisonTexte, resumeVieLocale } from './format';
 import { evaluer, joindreBords, type Bord, type Commune, type MairiesJson, type NuancesJson, type Reglages } from './score';
 import { ecrireAdresse, lireAdresse, ORDRE_BORDS } from './url';
@@ -94,8 +95,7 @@ describe('R38 — le filtre de mairie (fixture « 6 communes », /?loyer=1200)',
     expect(textes('A', v)).toEqual(['Mairie : droite, hors des mairies choisies']);
   });
 
-  it('chaque bloc seul : extrême gauche aucune, divers aucune (Montcher dépasse le prix, sans raison de mairie), extrême droite Quaibleu 9', () => {
-    expect(ev(['extreme-gauche']).classement).toEqual([]);
+  it('chaque bloc seul : divers aucune (Montcher dépasse le prix, sans raison de mairie), extrême droite Quaibleu 9', () => {
     const divers = ev(['divers']);
     expect(divers.classement).toEqual([]);
     expect(divers.by('C').raisons.map((r) => r.critere)).toEqual(['loyer']);
@@ -108,7 +108,7 @@ describe('R38 — le filtre de mairie (fixture « 6 communes », /?loyer=1200)',
     expect(v.by('F').passe).toBe(false);
   });
 
-  it('le filtre ne note pas : les 7 cochées donnent les scores de départ, sauf Rhinval écartée', () => {
+  it('le filtre ne note pas : les 6 cochées donnent les scores de départ, sauf Rhinval écartée', () => {
     expect(ev([...ORDRE_BORDS]).classement).toEqual([['Terrebasse', 65], ['Portmer', 46], ['Grandeville', 31], ['Quaibleu', 9]]);
   });
 
@@ -149,19 +149,25 @@ describe('R41 — `mairie` dans l’adresse', () => {
   });
 
   it('noms de H108, dans l’ordre de R38 ; `mairie` après `env`, avant `bien`, `unite`, `surface`', () => {
-    expect(ORDRE_BORDS).toEqual(['extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette']);
-    const r = lireAdresse('?achat=5000&bien=maison&unite=total&surface=80&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=sans-etiquette,extreme-droite,centre,divers,extreme-gauche,gauche,droite');
+    expect(ORDRE_BORDS).toEqual(['gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette']);
+    const r = lireAdresse('?achat=5000&bien=maison&unite=total&surface=80&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=sans-etiquette,extreme-droite,centre,divers,gauche,droite');
     expect(r.mairies).toEqual(ORDRE_BORDS);
     expect(ecrireAdresse(r, { mode: 'acheter', bien: 'maison', unite: 'total', surface: 80 })).toMatch(
-      /^\/\?achat=\d+&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=extreme-gauche,gauche,divers,centre,droite,extreme-droite,sans-etiquette&bien=maison&unite=total&surface=80$/,
+      /^\/\?achat=\d+&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=gauche,divers,centre,droite,extreme-droite,sans-etiquette&bien=maison&unite=total&surface=80$/,
     );
+  });
+
+  it('H117 amendée (D2, 2026-10-19) : `extreme-gauche` est un nom inconnu, ignoré ; /?mairie=extreme-gauche → /?loyer=1200', () => {
+    expect('mairies' in lireAdresse('?mairie=extreme-gauche')).toBe(false);
+    expect(ecrireAdresse(lireAdresse('?mairie=extreme-gauche'))).toBe('/?loyer=1200');
+    expect(lireAdresse('?loyer=1200&mairie=extreme-gauche,droite').mairies).toEqual(['droite']);
   });
 });
 
 describe('R38 — textes des raisons', () => {
   it('le bloc en minuscules ; sans étiquette ; aucun résultat en 2026', () => {
     expect(raisonTexte({ critere: 'bord', bord: 'droite' })).toBe('Mairie : droite, hors des mairies choisies');
-    expect(raisonTexte({ critere: 'bord', bord: 'extreme-gauche' })).toBe('Mairie : extrême gauche, hors des mairies choisies');
+    expect(raisonTexte({ critere: 'bord', bord: 'gauche' })).toBe('Mairie : gauche, hors des mairies choisies');
     expect(raisonTexte({ critere: 'bord', bord: 'centre' })).toBe('Mairie : centre, hors des mairies choisies');
     expect(raisonTexte({ critere: 'bord', bord: 'sans-etiquette' })).toBe('Mairie : sans étiquette, hors des mairies choisies');
     expect(raisonTexte({ critere: 'bord', bord: null })).toBe('Mairie : aucun résultat en 2026, hors des mairies choisies');
@@ -199,8 +205,8 @@ describe('R40 — ligne « Mairie » de la fiche', () => {
     expect(sp(mairieFiche({ bord: 'sans-etiquette', nuance: null, liste: 'X' }))).toBe('Mairie : sans étiquette (moins de 3 500 habitants) · « X »');
   });
 
-  it('étiquettes de la circulaire écrites comme le bloc : pas de parenthèse (Extrême gauche, Divers, Extrême droite)', () => {
-    expect(sp(mairieFiche({ bord: 'extreme-gauche', nuance: 'Extrême gauche', liste: 'L' }))).toBe('Mairie : Extrême gauche · « L »');
+  it('étiquettes de la circulaire écrites comme le bloc : pas de parenthèse (Divers, Extrême droite) ; LEXG, rangée en Gauche (D2 amendée), garde son étiquette', () => {
+    expect(sp(mairieFiche({ bord: 'gauche', nuance: 'Extrême gauche', liste: 'L' }))).toBe('Mairie : Gauche (Extrême gauche) · « L »');
     expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Extrême droite', liste: 'L' }))).toBe('Mairie : Extrême droite · « L »');
     expect(sp(mairieFiche({ bord: 'centre', nuance: 'Union du centre', liste: 'Faire Gagner Bordeaux' }))).toBe('Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux »');
     expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Union de l’extrême droite', liste: 'L' }))).toBe('Mairie : Extrême droite (Union de l’extrême droite) · « L »');
@@ -212,6 +218,13 @@ describe('R40 — ligne « Mairie » de la fiche', () => {
     expect(sp(mairieFiche({ bord: 'extreme-droite', nuance: 'Union de l’extrême droite', liste: 'LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI' }))).toBe(
       'Mairie : Extrême droite (Union de l’extrême droite) · « LE MEILLEUR EST A VENIR AVEC ERIC CIOTTI »',
     );
+  });
+
+  it('D2 amendée (Vincent, 2026-10-19) : avec la vraie table des nuances, une mairie LFI (Roubaix, 59512) a le bord gauche ; fiche « Mairie : Gauche (La France insoumise) · « FIERS DE ROUBAIX » »', () => {
+    const roubaix = joindreBords([{ ...six[0], code: '59512', nom: 'Roubaix', dep: '59' }], { champs: ['code', 'nuance', 'liste'], communes: [['59512', 'LFI', 'FIERS DE ROUBAIX']] }, vraiesNuances as NuancesJson)[0];
+    expect([roubaix.bord, roubaix.nuance, roubaix.liste]).toEqual(['gauche', 'La France insoumise', 'FIERS DE ROUBAIX']);
+    expect(sp(mairieFiche(roubaix))).toBe('Mairie : Gauche (La France insoumise) · « FIERS DE ROUBAIX »');
+    expect(evaluer([roubaix], { loyer: null, mer: null, tailles: [], mairies: ['gauche'] }).parCode.get('59512')!.passe).toBe(true);
   });
 
   it('sans résultat : champ absent ou null, sans nom de liste', () => {
