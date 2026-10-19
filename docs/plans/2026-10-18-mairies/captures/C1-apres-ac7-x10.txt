@@ -1,0 +1,15 @@
+
+Running 10 tests using 4 workers
+
+  ✓   3 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.7s)
+  ✓   1 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.7s)
+  ✓   4 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.8s)
+  ✓   2 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (8.1s)
+  ✓   6 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (6.1s)
+  ✓   7 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (6.1s)
+  ✓   5 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (6.8s)
+  ✓   8 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (6.5s)
+  ✓   9 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.9s)
+  ✓  10 [bureau] › tests/e2e/cadre-de-vie.spec.ts:265:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.9s)
+
+  10 passed (21.5s)

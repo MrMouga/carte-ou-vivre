@@ -1,0 +1,11 @@
+
+Running 6 tests using 2 workers
+
+  ✓  2 [bureau] › tests/e2e/cadre-de-vie.spec.ts:120:1 › R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200 (5.1s)
+  ✓  1 [bureau] › tests/e2e/cadre-de-vie.spec.ts:249:1 › AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km » (5.2s)
+  ✓  3 [bureau] › tests/e2e/cadre-de-vie.spec.ts:120:1 › R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200 (5.1s)
+  ✓  4 [bureau] › tests/e2e/cadre-de-vie.spec.ts:249:1 › AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km » (5.2s)
+  ✓  5 [bureau] › tests/e2e/cadre-de-vie.spec.ts:120:1 › R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200 (5.2s)
+  ✓  6 [bureau] › tests/e2e/cadre-de-vie.spec.ts:249:1 › AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 communes, Terrebasse 83, Rhinval 75, Grandeville 15 ; fiche de Portmer « Montagne 140 km : au-dessus de ton plafond de 50 km » (5.5s)
+
+  6 passed (20.3s)

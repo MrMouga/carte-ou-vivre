@@ -27,8 +27,13 @@ const titreCadre = (page: Page) => page.getByRole('heading', { level: 2, name: /
 async function ouvrirSix(page: Page, chemin = '/') {
   await ouvrir(page, chemin, { jeu: SIX });
 }
-/** Ouvre la fiche d'une commune sur la carte, à l'ouverture (vue de départ de la fixture). */
+/**
+ * Ouvre la fiche d'une commune sur la carte, à l'ouverture (vue de départ de la fixture). Choisir une commune zoome la
+ * carte sur elle (D14 de loyer-mer) : on rouvre d'abord la même adresse (les réglages y sont tous), comme `rouvrir()` de
+ * mairies, pour cliquer la commune à sa place d'ouverture et non pendant le zoom.
+ */
 async function ficheDeCarte(page: Page, id: Six, nom: string) {
+  await ouvrirSix(page, adresse(page));
   const { centre } = vue(page, SIX);
   await page.mouse.click(centre(id).x, centre(id).y);
   await expect(fiche(page)).toContainText(nom);

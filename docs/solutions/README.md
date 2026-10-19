@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-10-19 | Un test qui clique une commune à sa place d'ouverture : rouvrir l'adresse avant chaque clic, car choisir une commune zoome la carte | tests, outil | — | [2026-10-19-clic-sur-la-carte-apres-un-choix-de-commune.md](2026-10-19-clic-sur-la-carte-apres-un-choix-de-commune.md) |
 | 2026-10-18 | Une case vide dans une donnée officielle : chercher la règle qui l'a laissée vide avant de l'appeler « sans » | data, spec | — | [2026-10-18-case-vide-veut-dire-non-classe.md](2026-10-18-case-vide-veut-dire-non-classe.md) |
 | 2026-10-16 | Poser le stockage avant l'ouverture : garder la pose « une seule fois » dans localStorage, pas dans sessionStorage, si le test rouvre une page | tests, outil | — | [2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md](2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md) |
 | 2026-10-16 | Ajouter un nouvel essai à une file limitée allonge chaque panne simulée : compter la durée d'une panne totale avant de promettre « aucun test ne change » | tests, spec, process | — | [2026-10-16-nouvel-essai-allonge-les-pannes-attendues-par-les-tests.md](2026-10-16-nouvel-essai-allonge-les-pannes-attendues-par-les-tests.md) |

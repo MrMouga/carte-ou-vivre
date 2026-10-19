@@ -1,0 +1,279 @@
+
+Running 40 tests using 4 workers
+
+  ✓   1 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.5s)
+  ✓   4 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.5s)
+  ✓   5 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (2.3s)
+  ✓   6 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.2s)
+  ✘   2 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (8.6s)
+  ✘   3 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (8.7s)
+  ✓   8 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.2s)
+  ✓   7 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (2.3s)
+  ✓   9 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.1s)
+  ✓  10 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.4s)
+  ✓  12 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.0s)
+  ✓  11 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.1s)
+  ✓  13 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.3s)
+  ✓  14 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.6s)
+  ✓  16 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.2s)
+  ✓  15 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.4s)
+  ✓  17 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.0s)
+  ✓  18 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.2s)
+  ✓  19 [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.2s)
+  ✓  20 [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.1s)
+  ✓  21 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.4s)
+  ✓  22 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.3s)
+  ✓  25 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (2.4s)
+  ✓  26 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.2s)
+  ✘  24 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (8.3s)
+  ✘  23 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (8.4s)
+  ✓  28 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.1s)
+  ✓  29 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.2s)
+  ✓  30 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.2s)
+  ✘  27 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.6s)
+  ✓  32 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.8s)
+  ✓  34 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.6s)
+  ✘  31 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.9s)
+  ✓  35 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (2.3s)
+  ✓  36 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (2.5s)
+  ✘  33 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (7.7s)
+  ✓  38 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.6s)
+  ✓  39 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (3.5s)
+  ✓  40 [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » (3.1s)
+  ✘  37 [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) (8.5s)
+
+
+  1) [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Rhinval (67)"
+    Received string:    "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:276:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--bureau/error-context.md
+
+  2) [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Quaibleu (13)"
+    Received string:    "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants30/ 1001re sur 1 commune qui passe832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants30/ 1001re sur 1 commune qui passe832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:291:3
+
+    Error Context: test-results/cadre-de-vie-AC-11-loyer-1-139b4-s-de-ton-plafond-de-50-km-»-bureau/error-context.md
+
+  3) [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Rhinval (67)"
+    Received string:    "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:276:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--mobile-repeat1/error-context.md
+
+  4) [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Quaibleu (13)"
+    Received string:    "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants30/ 1001re sur 1 commune qui passe832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants30/ 1001re sur 1 commune qui passe832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:291:3
+
+    Error Context: test-results/cadre-de-vie-AC-11-loyer-1-139b4-s-de-ton-plafond-de-50-km-»-mobile-repeat1/error-context.md
+
+  5) [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Rhinval (67)"
+    Received string:    "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:276:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--mobile-repeat3/error-context.md
+
+  6) [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Rhinval (67)"
+    Received string:    "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresTerrebasse (23)Bourg et village · 4 200 habitantsNe passe pas tes critèresMer 180 km : au-dessus de ton plafond de 50 km416 € par mois pour 52 m² (8,0 €/m²)Estimation du secteur (communes voisines)180 km de la mer à vol d'oiseauCommune de montagneMairie : sans étiquette (moins de 3 500 habitants) · « Vivre à Terrebasse »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:276:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--mobile-repeat5/error-context.md
+
+  7) [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Terrebasse (23)"
+    Received string:    "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants25/ 1003e sur 3 communes qui passent832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants25/ 1003e sur 3 communes qui passent832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:270:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--mobile-repeat6/error-context.md
+
+  8) [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: /\(\d+\)$/ })
+    Expected substring: "Terrebasse (23)"
+    Received string:    "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants25/ 1003e sur 3 communes qui passent832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: /\(\d+\)$/ }) with timeout 5000ms
+      - waiting for getByRole('region', { name: /\(\d+\)$/ })
+        14 × locator resolved to <section aria-labelledby="titre-fiche" class="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">…</section>
+           - unexpected value "← Les 10 premièresGrandeville (33)Ville dense · 260 000 habitants25/ 1003e sur 3 communes qui passent832 € par mois pour 52 m² (16,0 €/m²)40 km de la mer à vol d'oiseau50 km de la montagne à vol d'oiseauMairie : Gauche (Union de la gauche) · « Grandeville en commun »"
+
+
+      32 |   const { centre } = vue(page, SIX);
+      33 |   await page.mouse.click(centre(id).x, centre(id).y);
+    > 34 |   await expect(fiche(page)).toContainText(nom);
+         |                             ^
+      35 | }
+      36 | /** Ouvre la fiche d'une commune de la liste. */
+      37 | async function ficheDeListe(page: Page, nom: string) {
+        at ficheDeCarte (/Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:34:29)
+        at /Users/mouga/git-repository/carte-ou-vivre/tests/e2e/cadre-de-vie.spec.ts:270:3
+
+    Error Context: test-results/cadre-de-vie-AC-7-depuis-l-77f88-montagne-dans-la-fiche-R30--mobile-repeat8/error-context.md
+
+  8 failed
+    [bureau] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+    [bureau] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:282:1 › AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km » 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+    [mobile] › tests/e2e/cadre-de-vie.spec.ts:260:1 › AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30) 
+  32 passed (52.3s)
