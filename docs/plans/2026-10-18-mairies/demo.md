@@ -1,5 +1,5 @@
 # Démo — mairies
-2026-10-19 · construite du 2026-10-18 17:57 au 2026-10-19 13:06 · commits `fab197e..9bb4c44` sur `main`, rien de poussé · **mise à jour après ta demande de la démo 1 : LFI à gauche**
+2026-10-19 · construite du 2026-10-18 17:57 au 2026-10-19 13:06 · commits `fab197e..dadeee7` sur `main`, rien de poussé · **mise à jour après ta demande de la démo 1 : LFI à gauche**
 
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf ; une preuve = capture ou sortie de commande, datée.
 
@@ -51,6 +51,9 @@ Tu as dit « place la France Insoumise dans la gauche », puis choisi : retirer 
 - **Décidé par moi, contestable** : LEXG suit LFI (son bloc disparaît ; aucune mairie aujourd'hui) ; le texte de la mention.
 - Captures : `captures/C2-vie-locale-*.jpg`, `C2-fiche-roubaix-*.jpg`, `C2-pied-de-page-1440x900.png`.
 
+## Ta demande de la démo 2 — la grille
+« Sans étiquette » est sur la ligne de « Droite » et « Extrême droite » (la 6e case) ; la phrase « Moins de 3 500 habitants : le ministère ne classe pas les listes. » est sous la grille, sur toute sa largeur, et explique tout le groupe (un lecteur d'écran la lit en entrant dans le groupe, plus avec « Sans étiquette »). Le groupe perd environ 52 px de haut. Texte inchangé (décidé par moi, contestable). Captures : `captures/C3-*.jpg`. Suite : Vitest 315 / 315 ; Playwright 381 verts, 0 rouge (14:30).
+
 ## Décisions prises à ta place
 Toutes dans [progress.md](progress.md). Celles qui comptent :
 - **Table des nuances lue sur l'image des pages scannées** : le texte extrait du PDF avait des fautes. *Coût si faux* : une faute de recopie d'étiquette, visible dans la fiche ; aucun effet sur les blocs, que le relecteur et moi avons relus sur la page 12.
@@ -92,6 +95,7 @@ Toutes dans [progress.md](progress.md). Celles qui comptent :
   | Relecture navigateur (2 passages) | 14 min | ≈ 107 k |
   | Corrections 1 | 26 min | 82 k |
   | Corrections 2 (ta demande) | 22 min | 178 k |
-  | **Total** | **≈ 4 h 30 d'agents** | **≈ 1,55 M** |
+  | Corrections 3 (ta demande) | 16 min | 73 k |
+  | **Total** | **≈ 4 h 45 d'agents** | **≈ 1,62 M** |
 
 - **Détours** : aucun revert ; un builder a d'abord écrit `carte.ts` par un script (ce qui contournait le garde-fou), puis l'a refait à l'outil d'édition ; la relecture navigateur a dû être relancée une fois ; le test instable de cadre-de-vie a fait rougir 4 suites complètes sur 6, chaque fois vert relancé seul, jusqu'à sa correction.

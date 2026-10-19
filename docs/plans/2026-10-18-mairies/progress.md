@@ -28,6 +28,10 @@ Démo 1 (2026-10-19) : Vincent demande « place la France Insoumise dans la gauc
 Corrections 2 : faites — commits 8325265..9bb4c44 — LFI et LEXG à gauche (`nuances-2026.csv` avec bloc d'origine et note ; `nuances.json` régénéré ; `mairies.json` identique octet pour octet) ; 6 pastilles ; mention amendée ; CLAUDE.md et mesure-tache-0.md (gauche 760 mairies, 748 classées à /?loyer=1200, 10 premières inchangées, Roubaix 507e) ; note de LEXG corrigée (décision de Claude, pas de Vincent) après relecture de l'orchestrateur — preuve : captures/C2-*.jpg, C2-preuves-sortie.txt, C2-npm-test.txt (12:40) — 21 min — agent : 171 k + 7 k — rapport : taches/corrections-2.md
   Vérif orchestrateur (13:06) : `mairies.json` inchangé (`git diff --quiet`) ; captures C2-vie-locale-390x844 et C2-fiche-roubaix-gauche relues ; typecheck vert ; Vitest 315 / 315 ; Playwright 381 verts, 38 sautés, 0 rouge ; build vert.
 
+Démo 2 (2026-10-19) : Vincent demande « Sans étiquette » sur la ligne des blocs et la phrase « moins de 3 500 habitants » sous la grille, en explication générale non adossée à « Sans étiquette ». Chemin court : design amendé sur place (decisions.md, README de mairies, contrat du système ; commit 073b2d7), un builder.
+Corrections 3 : faites — commits 05f37cc..dadeee7 — « Sans étiquette » en 6e case (ligne de « Droite »), phrase sous la grille reliée au groupe par `aria-describedby` ; test hors AC « design F » aligné (aucun test d'AC changé) — preuve : captures/C3-*.jpg, C3-preuves-sortie.txt (Tab dans l'ordre, onglet « Critères » qui ne glisse pas), C3-npm-test.txt — 16 min — agent : 73 k — rapport : taches/corrections-3.md
+  Vérif orchestrateur (14:30) : capture C3-gauche-sans-etiquette-390x844 relue ; typecheck vert ; Vitest 315 / 315 ; Playwright 381 verts, 38 sautés, 0 rouge ; build vert.
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
@@ -51,7 +55,9 @@ Corrections 2 : faites — commits 8325265..9bb4c44 — LFI et LEXG à gauche (`
 - C1 : la page est rouverte avant chaque clic sur la carte dans `cadre-de-vie.spec.ts`, sans condition. Coût : quelques secondes de suite en plus.
 - Démo 1 (orchestrateur) : LEXG suit LFI en « Gauche » (son bloc disparaît) ; mention « …circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche ». Coût si faux : une note du CSV et une phrase du pied de page.
 - C2 : `nuances-2026.csv` garde le bloc d'origine de l'annexe et une note par écart ; `mairies.py` vérifie que seules LFI et LEXG s'en écartent. Coût : aucun.
-- C2 : grille de 3 colonnes, 5 blocs sur 2 lignes, « Sans étiquette » en 1re colonne de la 3e ligne. Coût : aucun.
+- C2 : grille de 3 colonnes, 5 blocs sur 2 lignes, « Sans étiquette » en 1re colonne de la 3e ligne. Coût : aucun. *Remplacée par la démo 2.*
+- Démo 2 (orchestrateur) : texte de la phrase inchangé ; phrase reliée au groupe (lue à l'entrée dans le groupe). Coût si faux : une ligne.
+- C3 : écart grille → phrase = écart titre → grille ; phrase juste après le groupe, hors de lui. Coût : aucun.
 
 ## Preuves
 
