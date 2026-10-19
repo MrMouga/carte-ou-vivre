@@ -8,6 +8,7 @@ import { Categorie } from './Categorie';
 // « Tes proches » (H111). Groupe « Mairie élue en 2026 » (H109) : Cases séparées en 3 colonnes, boutons à bascule
 // cumulables (aria-pressed), dans l'ordre de R38 ; au clavier, Tab de case en case. « Sans étiquette » au format d'une
 // case, 1re colonne de la 3e ligne, décrite par la phrase de D8 sur les deux colonnes voisines (aria-describedby).
+// D2 amendée le 2026-10-19 : 5 blocs, Gauche · Divers · Centre / Droite · Extrême droite ; la 6e case de la grille reste vide.
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -45,7 +46,7 @@ export function VieLocale({ reglages, onChange, disabled = false }: Props) {
               aria-describedby={b === 'sans-etiquette' ? idPhrase : undefined}
               disabled={disabled}
               onClick={() => onChange(basculer(reglages, b))}
-              className={CASE}
+              className={b === 'sans-etiquette' ? `${CASE} col-start-1` : CASE}
             >
               {LIBELLE_BORD[b]}
             </button>

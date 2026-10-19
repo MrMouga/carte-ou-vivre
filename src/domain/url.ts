@@ -40,7 +40,7 @@ export const ORDRE_TAILLES: Taille[] = ['petite-commune', 'petite-ville', 'ville
 /** Ordre de R27 (noms de H71), celui des pastilles et de l'adresse. */
 export const ORDRE_TYPES: TypeEnv[] = ['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee'];
 /** Ordre de R38 de mairies (noms de H108), celui des pastilles et de l'adresse. */
-export const ORDRE_BORDS: Bord[] = ['extreme-gauche', 'gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette'];
+export const ORDRE_BORDS: Bord[] = ['gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette'];
 
 /** `taille`, `env`, `mairie` (R7, R31, R41) : noms séparés par des virgules ; inconnus ignorés, rendus dans `ordre`, sans doublon. */
 function lireListe<T extends string>(v: string | null, ordre: T[]): T[] {

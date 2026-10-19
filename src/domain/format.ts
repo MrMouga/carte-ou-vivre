@@ -118,7 +118,6 @@ export const LIBELLE_TYPE: Record<TypeEnv, string> = {
 
 /** Pastilles de mairie (R38 de mairies), noms de H108. */
 export const LIBELLE_BORD: Record<Bord, string> = {
-  'extreme-gauche': 'Extrême gauche',
   gauche: 'Gauche',
   divers: 'Divers',
   centre: 'Centre',

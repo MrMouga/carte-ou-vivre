@@ -37,8 +37,11 @@ export type Commune = {
   liste?: string | null;
 };
 
-/** H108 : les 6 blocs de la circulaire du 2 février 2026 et « sans étiquette » (D2, D8), noms de l'adresse. */
-export type Bord = 'extreme-gauche' | 'gauche' | 'divers' | 'centre' | 'droite' | 'extreme-droite' | 'sans-etiquette';
+/**
+ * H108 : les blocs de la circulaire du 2 février 2026 et « sans étiquette » (D2, D8), noms de l'adresse ; sans « extrême
+ * gauche » depuis D2 amendée le 2026-10-19 (LFI et LEXG rangées en gauche, H117).
+ */
+export type Bord = 'gauche' | 'divers' | 'centre' | 'droite' | 'extreme-droite' | 'sans-etiquette';
 
 /**
  * `public/data/mairies.json` (tâche 0) : une ligne `[code, nuance, liste]` par commune ; nuance vide = sans étiquette,

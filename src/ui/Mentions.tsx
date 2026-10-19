@@ -30,7 +30,7 @@ export function Mentions({ className }: { className?: string }) {
       Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type
       d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema,
       communes soumises à la loi Montagne (2019) · Résultats des élections municipales 2026 : ministère de l'Intérieur ;
-      blocs politiques : circulaire du 2 février 2026
+      blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche
     </footer>
   );
 }
