@@ -255,3 +255,24 @@ Substitut du plan : le filtre existant « Ville dense » sur `/?loyer=1200` : de
 Le témoin est plus haut que dans cadre-de-vie (114-116 ms) : **c'est la méthode, pas le site.** Le même script sur la version mesurée alors (d8784dd, tâche 4 de cadre-de-vie, servie à côté sur le port 4181) donne aussi 160-161 ms au curseur (3 passages ; sa mer et son type ne se mesurent pas avec ce script, leurs boutons ont changé depuis). Ramené à l'échelle de H90 (témoin à 115 ms, soit ≈ 45 ms de moins) : **≈ 130 ms pour décolorer, ≈ 215 ms pour recolorer.** Pour comparer : H90 accepté à 149-164 ms.
 
 **Au-delà de 100 ms dans les deux sens : retour à Vincent (H120).** Ce que la mairie fera : cocher un premier bloc décolore 30 000 à 34 000 communes (≈ le cas « cochée ») ; décocher la dernière pastille, ou cocher « Sans étiquette » en plus d'un bloc, en recolore autant (≈ le cas « décochée », le plus lent). La tâche 2 refera la mesure avec le vrai filtre et ce script.
+
+## Amendement du 2026-10-19 (D2)
+À la démo, Vincent a rangé La France insoumise en « Gauche » ; LEXG suit (D2 amendée, H117). Le bloc « Extrême gauche » n'a plus aucune mairie : sa pastille est retirée. Les sections ci-dessus restent celles de la tâche 0 (bloc de l'annexe).
+
+Table : `scripts/data/nuances-2026.csv` garde les étiquettes de l'annexe ; LFI et LEXG ont `bloc` = `gauche`, `bloc_annexe` = `extreme-gauche` et la note `ecart` « rangée à gauche par Vincent le 2026-10-19 (D2 amendée) » ; `mairies.py` contrôle que seules ces deux nuances s'écartent de l'annexe. `public/data/mairies.json` est identique octet pour octet (`cmp`) ; `nuances.json` change pour ces deux nuances. Sortie des contrôles : `captures/C2-controles-mairies.txt` (2026-10-19 12:35, tous « ok »).
+
+**Mairies par bloc** (mesuré par `python3 -I scripts/data/mairies.py`, 2026-10-19 12:35) : gauche 760, divers 561, centre 571, droite 1 212, extrême droite 60, sans étiquette 31 508 ; sans résultat 74. Gauche = 753 de la tâche 0 + les 7 mairies LFI (LDVG 556, LUG 138, LSOC 37, LCOM 19, LFI 7, LVEC 3) ; les autres blocs sont inchangés.
+
+**Les 10 premières de « Gauche » à `/?loyer=1200&mairie=gauche`** (même calcul que la tâche 0, avec `evaluer` du site ; script : `captures/C2-mesure-10-premieres.test.ts.txt` ; sortie : `captures/C2-10-premieres-par-bloc.txt`) : **748 communes classées** (741 + les 7 LFI). Les 10 premières sont les mêmes qu'à la tâche 0 :
+1. Clamecy (58, 58079) · 69 · 378 € · 3 544 hab. · Divers gauche · « Clamecy tous unis pour l'avenir »
+2. Nouzonville (08, 08328) · 69 · 378 € · 5 523 hab. · Divers gauche · « 100% NOUZON »
+3. Bogny-sur-Meuse (08, 08081) · 68 · 381 € · 4 889 hab. · Divers gauche · « BOGNY 2026 »
+4. Saint-Germain-du-Corbéis (61, 61397) · 66 · 404 € · 3 636 hab. · Divers gauche · « COLLECTIF CITOYEN POUR LES CORBENOIS »
+5. Revin (08, 08363) · 66 · 414 € · 5 716 hab. · Divers gauche · « REVIN, Dynamique Engagée »
+6. Courpière (63, 63125) · 65 · 423 € · 4 166 hab. · Divers gauche · « Avec vous pour Courpière »
+7. Aubusson (23, 23008) · 64 · 428 € · 3 018 hab. · Divers gauche · « AUBUSSON, UNE ÉQUIPE, UN AVENIR »
+8. Champagney (70, 70120) · 64 · 429 € · 3 647 hab. · Divers gauche · « Agir ensemble pour l'avenir de Champagney »
+9. Sanvignes-les-Mines (71, 71499) · 64 · 430 € · 4 235 hab. · Divers gauche · « SANVIGNES AU COEUR DE NOS VIES »
+10. Ambert (63, 63003) · 64 · 432 € · 6 517 hab. · Divers gauche · « Ambert 2026 : faire équipe pour changer »
+
+Les 7 mairies LFI y sont loin : Roubaix 507ᵉ (43), Saint-Fons 557ᵉ (40), Creil 602ᵉ (36), Vénissieux 605ᵉ (36), Vaulx-en-Velin 638ᵉ (32), La Courneuve 722ᵉ (17), Saint-Denis 738ᵉ (9). Les listes de « Divers », « Centre », « Droite », « Extrême droite » et « Sans étiquette » sont identiques à celles de la tâche 0 (`diff` des sorties).

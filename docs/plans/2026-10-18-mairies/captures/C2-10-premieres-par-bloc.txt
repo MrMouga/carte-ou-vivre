@@ -1,0 +1,75 @@
+classement de départ (/?loyer=1200) : 34674 communes classées
+communes colorées : départ 34674 ; avec « Ville dense » 643 ; décolorées d'un coup 34031
+
+### gauche — 748 communes classées (748 passent)
+mairies LFI dans cette liste : 507. Roubaix (59512) 43 ; 557. Saint-Fons (69199) 40 ; 602. Creil (60175) 36 ; 605. Vénissieux (69259) 36 ; 638. Vaulx-en-Velin (69256) 32 ; 722. La Courneuve (93027) 17 ; 738. Saint-Denis (93066) 9
+1. Clamecy (58, 58079) · 69 · 378 € · 3544 hab. · Divers gauche (LDVG) · « Clamecy tous unis pour l'avenir »
+2. Nouzonville (08, 08328) · 69 · 378 € · 5523 hab. · Divers gauche (LDVG) · « 100% NOUZON »
+3. Bogny-sur-Meuse (08, 08081) · 68 · 381 € · 4889 hab. · Divers gauche (LDVG) · « BOGNY 2026 »
+4. Saint-Germain-du-Corbéis (61, 61397) · 66 · 404 € · 3636 hab. · Divers gauche (LDVG) · « COLLECTIF CITOYEN POUR LES CORBENOIS »
+5. Revin (08, 08363) · 66 · 414 € · 5716 hab. · Divers gauche (LDVG) · « REVIN, Dynamique Engagée »
+6. Courpière (63, 63125) · 65 · 423 € · 4166 hab. · Divers gauche (LDVG) · « Avec vous pour Courpière »
+7. Aubusson (23, 23008) · 64 · 428 € · 3018 hab. · Divers gauche (LDVG) · « AUBUSSON, UNE ÉQUIPE, UN AVENIR »
+8. Champagney (70, 70120) · 64 · 429 € · 3647 hab. · Divers gauche (LDVG) · « Agir ensemble pour l'avenir de Champagney »
+9. Sanvignes-les-Mines (71, 71499) · 64 · 430 € · 4235 hab. · Divers gauche (LDVG) · « SANVIGNES AU COEUR DE NOS VIES »
+10. Ambert (63, 63003) · 64 · 432 € · 6517 hab. · Divers gauche (LDVG) · « Ambert 2026 : faire équipe pour changer »
+
+### divers — 560 communes classées (560 passent)
+1. Saint-Mihiel (55, 55463) · 66 · 408 € · 3772 hab. · Divers (LDIV) · « SAINT-MIHIEL, FIERTE PARTAGEE »
+2. Digoin (71, 71176) · 66 · 410 € · 7353 hab. · Divers (LDIV) · « Génération DIGOIN »
+3. Chauffailles (71, 71120) · 66 · 414 € · 3638 hab. · Divers (LDIV) · « CHAUFFAILLES, UN PROJET POUR TOUS »
+4. Bellac (87, 87011) · 65 · 417 € · 3537 hab. · Divers (LDIV) · « BELLAC AU COEUR »
+5. Mauriac (15, 15120) · 65 · 420 € · 3449 hab. · Divers (LDIV) · « ENSEMBLE AGIR POUR MAURIAC »
+6. Vouziers (08, 08490) · 65 · 420 € · 3825 hab. · Divers (LDIV) · « VISIONS POUR L'ESSENTIEL »
+7. Montreuil-Bellay (49, 49215) · 65 · 423 € · 3746 hab. · Divers (LDIV) · « Avec vous, Naturellement »
+8. Domfront en Poiraie (61, 61145) · 65 · 424 € · 4113 hab. · Divers (LDIV) · « Bien vivre ensemble à Domfront en Poiraie »
+9. Châtillon-sur-Seine (21, 21154) · 64 · 427 € · 5443 hab. · Divers (LDIV) · « CHATILLON, UNE NOUVELLE ENERGIE »
+10. Commercy (55, 55122) · 64 · 428 € · 5350 hab. · Divers (LDIV) · « Une Nouvelle Energie Pour Commercy »
+
+### centre — 561 communes classées (561 passent)
+1. Le Blanc (36, 36018) · 66 · 409 € · 6164 hab. · Divers centre (LDVC) · « le Blanc Ville d'Avenir »
+2. Charlieu (42, 42052) · 64 · 429 € · 3766 hab. · Renaissance (LREN) · « AVEC VOUS POUR CHARLIEU »
+3. Decazeville (12, 12089) · 64 · 430 € · 5020 hab. · Divers centre (LDVC) · « POUR DECAZEVILLE, PLUS LOIN ENSEMBLE »
+4. Sévérac d'Aveyron (12, 12270) · 64 · 434 € · 4026 hab. · Divers centre (LDVC) · « AVENIR SEVERAC »
+5. Melle (79, 79174) · 63 · 440 € · 5752 hab. · Divers centre (LDVC) · « MELLE EN COMMUN »
+6. Folschviller (57, 57224) · 63 · 441 € · 3916 hab. · Divers centre (LDVC) · « Ensemble pour Folschviller »
+7. Valdallière (14, 14726) · 63 · 447 € · 5696 hab. · Divers centre (LDVC) · « 14 communes écoutées, un avenir à partager »
+8. Amplepuis (69, 69006) · 63 · 448 € · 4876 hab. · Divers centre (LDVC) · « Amplepluis, cap sur l'avenir »
+9. Évron (53, 53097) · 63 · 449 € · 8252 hab. · Union des Démocrates et Indépendants (LUDI) · « EVRON, MODERNE PAR NATURE »
+10. Condé-en-Normandie (14, 14174) · 62 · 451 € · 5985 hab. · Divers centre (LDVC) · « Fiers d'Agir Pour Condé en Normandie »
+
+### droite — 1174 communes classées (1174 passent)
+1. Cours (69, 69066) · 69 · 374 € · 4306 hab. · Divers droite (LDVD) · « L'avenir de Cours, notre engagement ! »
+2. Tinchebray-Bocage (61, 61486) · 68 · 383 € · 4813 hab. · Divers droite (LDVD) · « TINCHEBRAY BOCAGE À CŒUR »
+3. Mirecourt (88, 88304) · 67 · 395 € · 4700 hab. · Divers droite (LDVD) · « Nathalie BABOUHOT - Mirecourt Ensemble »
+4. Rambervillers (88, 88367) · 67 · 397 € · 5018 hab. · Divers droite (LDVD) · « Rambervillers au coeur de l'action »
+5. Ytrac (15, 15267) · 66 · 404 € · 4339 hab. · Divers droite (LDVD) · « YTRAC AGIR ENSEMBLE »
+6. Bar-sur-Aube (10, 10033) · 66 · 406 € · 4665 hab. · Divers droite (LDVD) · « Bar-sur-Aube J'y crois réussir notre ville de demain »
+7. Saint-Florentin (89, 89345) · 66 · 411 € · 4164 hab. · Divers droite (LDVD) · « Force, Compétence, Envie au service de Saint-Florentin Avrolles »
+8. Buzançais (36, 36031) · 66 · 412 € · 4356 hab. · Divers droite (LDVD) · « UNIS PAR NOS VALEURS, ENGAGÉS POUR BUZANÇAIS »
+9. Ligny-en-Barrois (55, 55291) · 66 · 414 € · 3677 hab. · Divers droite (LDVD) · « CAP AVENIR LIGNY »
+10. Nogent (52, 52353) · 65 · 421 € · 3550 hab. · Divers droite (LDVD) · « Nogent Ensemble »
+
+### extreme-droite — 60 communes classées (60 passent)
+1. Thizy-les-Bourgs (69, 69248) · 67 · 395 € · 5771 hab. · Union de l’extrême droite (LUXD) · « Ensemble, Réveillons Thizy-les-Bourgs ! »
+2. Vierzon (18, 18279) · 61 · 467 € · 25068 hab. · Union de l’extrême droite (LUXD) · « Un souffle nouveau pour Vierzon : sécurité et mieux vivre ! »
+3. Houdain (62, 62457) · 57 · 517 € · 6945 hab. · Rassemblement National (LRN) · « UN NOUVEL ELAN POUR HOUDAIN »
+4. Saint-Avold (57, 57606) · 57 · 519 € · 14755 hab. · Rassemblement National (LRN) · « RASSEMBLEMENT POUR SAINT-AVOLD »
+5. Castres (81, 81065) · 57 · 520 € · 42505 hab. · Rassemblement National (LRN) · « POUR L'AVENIR DE CASTRES »
+6. La Flèche (72, 72154) · 56 · 530 € · 14947 hab. · Rassemblement National (LRN) · « Rassemblement pour La Flèche »
+7. Lillers (62, 62516) · 56 · 531 € · 10193 hab. · Rassemblement National (LRN) · « Un nouveau souffle pour Lillers ! »
+8. Bagnols-sur-Cèze (30, 30028) · 55 · 537 € · 18112 hab. · Rassemblement National (LRN) · « SÉCURITÉ ET VITALITÉ POUR BAGNOLS ! »
+9. Moissac (82, 82112) · 55 · 541 € · 13419 hab. · Rassemblement National (LRN) · « POUR MOISSAC GARDONS LE CAP »
+10. Aubignan (84, 84004) · 55 · 544 € · 5981 hab. · Rassemblement National (LRN) · « Aubignan avant tout »
+
+### sans-etiquette — 31497 communes classées (31497 passent)
+1. Allarmont (88, 88005) · 73 · 326 € · 214 hab. · sans étiquette · « Sylvie ROUGIER »
+2. Bréménil (54, 54097) · 73 · 326 € · 92 hab. · sans étiquette · « ENSEMBLE POUR BREMENIL »
+3. Celles-sur-Plaine (88, 88082) · 73 · 326 € · 737 hab. · sans étiquette · « Liste d'entente et d'intérêt communal »
+4. La Petite-Raon (88, 88346) · 73 · 326 € · 734 hab. · sans étiquette · « La Petite Raon, un village qui avance »
+5. Luvigny (88, 88277) · 73 · 326 € · 123 hab. · sans étiquette · « Luvigny 2032 »
+6. Moussey (88, 88317) · 73 · 326 € · 548 hab. · sans étiquette · « Ensemble pour l'avenir de MOUSSEY »
+7. Neufmaisons (54, 54396) · 73 · 326 € · 208 hab. · sans étiquette · « TOUS ENSEMBLE »
+8. Pexonne (54, 54423) · 73 · 326 € · 326 hab. · sans étiquette · « Pexonne tous unis »
+9. Raon-lès-Leau (54, 54443) · 73 · 326 € · 40 hab. · sans étiquette · « RAON LES LEAU AGIR ENSEMBLE »
+10. Raon-sur-Plaine (88, 88373) · 73 · 326 € · 135 hab. · sans étiquette · « UNIVERS RAON »
