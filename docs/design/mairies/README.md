@@ -26,6 +26,6 @@ Brief et grille : [brief.md](brief.md) · Choix : [decisions.md](decisions.md) �
 | Fiche | commune choisie | lignes de R40 ; raisons de R38 dans l'ordre de H113 | fiche |
 
 ## Pour /breakdown
-- Composant : Cases séparées en 3 colonnes, avec une case décrite par une phrase (contrat du système mis à jour).
+- Composant : Cases séparées en 3 colonnes, avec une phrase d'explication sous la grille, qui décrit le groupe (contrat du système mis à jour ; amendé le 2026-10-19, démo 2 : la phrase n'est plus adossée à « Sans étiquette »).
 - Tests à revérifier pour le focus et le défilement : tableau d'impact de la spec (« Tests hors critères »).
 - Non fait : relecture indépendante de F elle-même (seulement A, B, C à l'aveugle) ; les relectures design et navigateur de /build la couvrent.
