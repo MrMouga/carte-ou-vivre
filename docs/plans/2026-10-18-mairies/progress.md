@@ -14,6 +14,9 @@ Tâche 2 : faite — commits ce3b487..0b9cac2 — preuve : captures/T2-depart-*,
 Tâche 3 : faite — commits 93b4e89..afa383c — preuve : captures/T3-fiche-{bordeaux,nice,paris,lyon,marseille,val-cenis}-1440x900.png, T3-pied-de-page-*.png (21:02), T3-npm-test.txt (21:14) — 20 min — agent : 126 k — rapport : taches/T3.md
   Vérif orchestrateur (21:32) : mention du pied de page = texte de H118 mot pour mot ; capture de la fiche de Paris relue (format de R40, liste longue sur 3 lignes) ; typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 36 sautés, 0 rouge ; build vert. Captures sur le fond de secours (IGN indisponible pendant la capture, déjà suivi dans STATE.md).
 
+Tâche 4 : faite — commits c6f4e5f..af34f5d — preuve : captures/T4-etape{1..5}-*.jpg (bureau et 390 × 844, fond IGN), T4-ville-*.jpg (10 villes), T4-ouverture-375x548.jpg, T4-bout-en-bout-sortie.txt, T4-npm-test.txt (2026-10-18 21:40 – 2026-10-19 00:30) — 60 min — agent : 164 k — rapport : taches/T4.md
+  Vérif orchestrateur (2026-10-19 01:50) : aucun fichier `src/` touché ; 2 tests sautés de plus = AC-9 et 375 × 548, téléphone seulement ; capture de l'étape 4 à 390 px relue ; typecheck vert ; Vitest 312 / 312 ; Playwright 377 verts, 38 sautés, 1 rouge (AC-7 de cadre-de-vie l. 260, l'instable connu) vert 3 fois sur 3 seul ; build vert. Signalé par T4, hors tranche : le rang de la fiche s'écrit « 33648e » sans espace des milliers.
+
 ## Décisions prises à la place de Vincent
 - T0 : table des nuances lue sur l'image des pages 9, 10 et 12 (annexes scannées, texte de `pdftotext` fautif). Coût si faux : une faute de recopie d'étiquette, visible dans la fiche ; aucun sur les blocs.
 - T0 : étiquettes écrites comme dans l'annexe (« Ecologiste » sans accent, « Rassemblement National », apostrophe typographique). Coût si faux : trois textes à retoucher dans le CSV.
@@ -31,6 +34,9 @@ Tâche 3 : faite — commits 93b4e89..afa383c — preuve : captures/T3-fiche-{bo
 - T3 : guillemets français tenus au nom de liste par des espaces insécables ; espace insécable aussi dans « 3 500 habitants ». Coût : aucun.
 - T3 : pas de parenthèse quand l'étiquette s'écrit à la lettre comme le bloc (« Extrême gauche », « Divers », « Extrême droite » sur les vraies données). Coût si faux : une parenthèse en trop ou en moins sur ces trois étiquettes.
 - T3 : bloc sans nom de liste (cas absent) → la ligne s'arrête au bloc. Coût : aucun.
+- T4 : AC-9 coche puis décoche chaque case d'un toucher, « Droite » seule à la fin ; toucher au centre de la case après avoir vérifié qu'elle est entière à l'écran. Coût : aucun (test plus strict).
+- T4 : étape 1, « la liste d'avant la tranche » = celle de la version en ligne (commit d'avant la tranche, lue seulement). Coût si faux : aucun, version vérifiée par `version.txt`.
+- T4 : captures en JPEG 1 200 px, qualité 80 (8,2 Mo au lieu de 18). Coût : image un peu moins nette.
 
 ## Preuves
 
