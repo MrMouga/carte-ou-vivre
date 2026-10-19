@@ -197,19 +197,24 @@ test('AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée
   await expect(liste(page)).toContainText('2 communes passent tes critères');
 });
 
-// Hors AC (design F, H109, H122) : « Sans étiquette » décrite par la phrase de D8 (aria-describedby) ; cases de 44 px au
-// moins en 3 colonnes ; désactivées pendant le chargement, comme les autres réglages.
-test('design F : 3 colonnes, cases de 44 px au moins, « Sans étiquette » décrite par « Moins de 3 500 habitants : le ministère ne classe pas les listes. »', async ({ page }) => {
+// Hors AC (design F, H109, H122 ; amendé à la démo 2 du 2026-10-19) : 2 lignes de 3 cases de 44 px au moins, « Sans
+// étiquette » en 3e colonne de la ligne de « Droite » ; sous la grille, sur toute sa largeur, la phrase de D8 décrit le
+// groupe (aria-describedby), plus le bouton ; désactivées pendant le chargement, comme les autres réglages.
+test('design F : 2 lignes de 3 cases de 44 px au moins, « Sans étiquette » sur la ligne de « Droite », groupe décrit par « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille', async ({ page }) => {
   await ouvrirSix(page);
   await expect(pastilles(page)).toHaveCount(6);
-  await expect(pastille(page, 'Sans étiquette')).toHaveAccessibleDescription('Moins de 3 500 habitants : le ministère ne classe pas les listes.');
+  await expect(mairie(page)).toHaveAccessibleDescription('Moins de 3 500 habitants : le ministère ne classe pas les listes.');
+  await expect(pastille(page, 'Sans étiquette')).toHaveAccessibleDescription('');
   const boites = await Promise.all((await pastilles(page).all()).map(boite));
   for (const b of boites) expect(b.height).toBeGreaterThanOrEqual(44);
   expect(new Set(boites.slice(0, 3).map((b) => Math.round(b.y))).size).toBe(1); // une ligne de 3
-  expect(Math.round(boites[3].x)).toBe(Math.round(boites[0].x)); // « Droite » sous « Gauche »
-  expect(Math.round(boites[4].y)).toBe(Math.round(boites[3].y)); // « Extrême droite » à côté ; la 6e case reste vide
-  expect(Math.round(boites[5].x)).toBe(Math.round(boites[0].x)); // « Sans étiquette » en 1re colonne
-  expect(boites[5].y).toBeGreaterThan(boites[3].y);
+  expect(new Set(boites.slice(3).map((b) => Math.round(b.y))).size).toBe(1); // « Droite », « Extrême droite », « Sans étiquette »
+  expect(boites[3].y).toBeGreaterThan(boites[0].y);
+  for (const i of [0, 1, 2]) expect(Math.round(boites[i + 3].x)).toBe(Math.round(boites[i].x)); // mêmes colonnes
+  const phrase = await boite(page.getByText(/^Moins de 3\s500 habitants : le ministère ne classe pas les listes\.$/));
+  expect(phrase.y).toBeGreaterThanOrEqual(boites[5].y + boites[5].height); // sous la grille
+  expect(Math.round(phrase.x)).toBe(Math.round(boites[0].x));
+  expect(Math.round(phrase.x + phrase.width)).toBe(Math.round(boites[2].x + boites[2].width)); // toute la largeur
 });
 
 test('H122 : pendant le chargement, les 6 pastilles sont désactivées', async ({ page }) => {

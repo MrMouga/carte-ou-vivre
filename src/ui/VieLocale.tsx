@@ -6,9 +6,10 @@ import { Categorie } from './Categorie';
 
 // Catégorie « Vie locale » (spec mairies, R42, D7 ; design F : docs/design/mairies/README.md), entre « Cadre de vie » et
 // « Tes proches » (H111). Groupe « Mairie élue en 2026 » (H109) : Cases séparées en 3 colonnes, boutons à bascule
-// cumulables (aria-pressed), dans l'ordre de R38 ; au clavier, Tab de case en case. « Sans étiquette » au format d'une
-// case, 1re colonne de la 3e ligne, décrite par la phrase de D8 sur les deux colonnes voisines (aria-describedby).
-// D2 amendée le 2026-10-19 : 5 blocs, Gauche · Divers · Centre / Droite · Extrême droite ; la 6e case de la grille reste vide.
+// cumulables (aria-pressed), dans l'ordre de R38 ; au clavier, Tab de case en case. D2 amendée le 2026-10-19 : 5 blocs,
+// Gauche · Divers · Centre / Droite · Extrême droite · Sans étiquette (« Sans étiquette » au format d'une case, dans la
+// 6e case, 3e colonne de la 2e ligne ; démo 2 du 2026-10-19). Sous la grille, sur toute la largeur, la phrase de D8 :
+// explication générale du groupe, qui le décrit (aria-describedby sur le groupe, plus sur « Sans étiquette »).
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -37,25 +38,24 @@ export function VieLocale({ reglages, onChange, disabled = false }: Props) {
         <span id={idGroupe} className="text-secondaire text-muted-foreground">
           Mairie élue en 2026
         </span>
-        <div role="group" aria-labelledby={idGroupe} className="grid grid-cols-3 gap-2">
+        <div role="group" aria-labelledby={idGroupe} aria-describedby={idPhrase} className="grid grid-cols-3 gap-2">
           {ORDRE_BORDS.map((b) => (
             <button
               key={b}
               type="button"
               aria-pressed={cochees.includes(b)}
-              aria-describedby={b === 'sans-etiquette' ? idPhrase : undefined}
               disabled={disabled}
               onClick={() => onChange(basculer(reglages, b))}
-              className={b === 'sans-etiquette' ? `${CASE} col-start-1` : CASE}
+              className={CASE}
             >
               {LIBELLE_BORD[b]}
             </button>
           ))}
-          {/* D8 : espace insécable dans « 3 500 » (H3 de loyer-mer). */}
-          <p id={idPhrase} className="col-span-2 self-center text-secondaire text-muted-foreground">
-            Moins de 3{' '}500 habitants : le ministère ne classe pas les listes.
-          </p>
         </div>
+        {/* D8 : espace insécable dans « 3 500 » (H3 de loyer-mer). */}
+        <p id={idPhrase} className="text-secondaire text-muted-foreground">
+          Moins de 3{' '}500 habitants : le ministère ne classe pas les listes.
+        </p>
       </div>
     </Categorie>
   );
