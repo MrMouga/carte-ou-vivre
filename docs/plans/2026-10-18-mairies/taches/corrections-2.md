@@ -86,3 +86,4 @@ Port 4173 libre avant la suite ; charge 3 à 6 pendant la suite.
 
 ## Leçons écrites
 Aucune : pas de correctif qui ait demandé plus d'un essai (seul le script de preuve a été relancé deux fois, pour deux erreurs de copie dans ses fonctions), aucune mesure contraire au plan.
+- Correctif (12:54, demandé par l'orchestrateur) : la note de LEXG dans `nuances-2026.csv` attribuait la décision à Vincent ; elle dit maintenant « rangée à gauche avec LFI, bloc extrême gauche retiré (décidé par Claude le 2026-10-19, D2 amendée) », celle de LFI est inchangée ; même attribution corrigée dans CLAUDE.md, `mesure-tache-0.md` et la docstring de `mairies.py` ; `python3 -I scripts/data/mairies.py` relancé (contrôles ok, `git diff --quiet` sur `nuances.json` et `mairies.json` : inchangés), `npm run test:unit` : 315 passed (315).

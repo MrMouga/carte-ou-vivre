@@ -5,8 +5,8 @@ Résultats (H116) : ressource « Résultats - Communes » des jeux « Elections 
 et « … du second tour » du ministère de l'Intérieur (data.gouv.fr, Licence Ouverte), téléchargés par sources.py ; une
 ligne par commune, ses listes à la suite (nuance, libellé, voix, sièges au conseil municipal). Blocs (H117) : annexes 2 et 3
 de la circulaire du 2 février 2026 relative à l'attribution des nuances (n° 45645), lues dans le PDF et recopiées dans
-scripts/data/nuances-2026.csv (colonne `bloc_annexe`) ; sauf LFI et LEXG, rangées en « gauche » par Vincent le 2026-10-19
-(D2 amendée, colonnes `bloc` et `ecart`) : le bloc « extrême gauche » n'existe plus sur le site.
+scripts/data/nuances-2026.csv (colonne `bloc_annexe`) ; sauf LFI, rangée en « gauche » par Vincent le 2026-10-19, et LEXG,
+qui la suit (décidé par Claude, contestable) (D2 amendée, colonnes `bloc` et `ecart`) : le bloc « extrême gauche » n'existe plus sur le site.
 
 Règle (R39) : la mairie est la liste qui a le plus de sièges au conseil municipal, au second tour si la commune en a eu un,
 sinon au premier ; à égalité de sièges, celle qui a le plus de voix (H115) ; au moins un siège, sinon « sans résultat ».
