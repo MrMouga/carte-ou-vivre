@@ -12,7 +12,7 @@
 Pari de Vincent : « entre C et B » ; relecteur à l'aveugle : C ([review-directions.md](review-directions.md)).
 
 ## F — ce qui est décidé
-- Groupe « Mairie élue en 2026 » : **Cases séparées en 3 colonnes**, dans l'ordre de R38 : Extrême gauche · Gauche · Divers / Centre · Droite · Extrême droite ; libellés entiers sur une ligne (2 au plus), 44 px de haut au moins.
+- Groupe « Mairie élue en 2026 » : **Cases séparées en 3 colonnes**, dans l'ordre de R38 : Gauche · Divers · Centre / Droite · Extrême droite (amendé le 2026-10-19 avec D2 : « Extrême gauche » retirée ; la sixième case de la grille reste vide, « Sans étiquette » garde sa ligne avec sa phrase — décidé par Claude) ; libellés entiers sur une ligne (2 au plus), 44 px de haut au moins.
 - **« Sans étiquette » au format d'une case**, 1re colonne de la 3e ligne ; à sa droite, sur 2 colonnes, la phrase « Moins de 3 500 habitants : le ministère ne classe pas les listes. » en `secondaire` / `muted-foreground`, reliée au bouton par `aria-describedby` (lue avec lui ; WCAG 1.3.1).
 - Toutes les cases cochées en `primary`, aucune couleur par bloc (brief, « Pas voulu »).
 - Environ 210 px de haut à 390 px ; à 375 × 548, le curseur du prix reste visible (H48), capture `F-ouverture-375x548.png`.
