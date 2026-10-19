@@ -32,7 +32,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 ## Où on en est
 
-- Étape : tranche **mairies** construite et démo acceptée le 2026-10-19, pas encore en ligne (prochaine étape : /ship). En ligne : https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `b29757b` (six tranches, dont proches-fiables), prouvé le 2026-10-16 à 22:21 (docs/ship/2026-10-16-proches-fiables/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
+- Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `9664a3b` (sept tranches, dont mairies), prouvé le 2026-10-19 à 15:46 (docs/ship/2026-10-19-mairies/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
 
 ## Décisions
@@ -103,6 +103,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-18 | Design validé : mairies | Piste F (C resserrée) : Cases séparées en 3 × 2 dans l'ordre officiel, « Sans étiquette » au format d'une case avec « Moins de 3 500 habitants : le ministère ne classe pas les listes. » à côté ; aucune couleur par bloc ; sans Figma, prototype F sur `prototype/mairies`. A (rangée qui défile) et B (cases collées) écartées. |
 | 2026-10-18 | Plan validé : mairies | 5 tâches (0 mairies calculées et mesurées depuis les fichiers du ministère et l'annexe de la circulaire, 1 filtre par l'adresse, 2 catégorie « Vie locale » et tests décalés, 3 fiche et mentions, 4 téléphone et bout en bout) ; deux fichiers servis de plus (`mairies.json`, `nuances.json`) ; aucun paquet ; relu par un agent neuf (5 majeurs corrigés). Attend le PDF de la circulaire (Légifrance refuse le téléchargement automatique). |
 | 2026-10-19 | Tranche construite : mairies | Filtre « Mairie élue en 2026 » (catégorie « Vie locale », 6 pastilles : Gauche, Divers, Centre, Droite, Extrême droite, Sans étiquette) et ligne « Mairie » de la fiche ; LFI rangée à gauche et « Extrême gauche » retirée à la démo (D2 amendée, écart à la circulaire cité au pied de page) ; 12/12 critères ; test instable d'AC-7 de cadre-de-vie corrigé ; démo acceptée. Décisions gardées : H123 à H127. Pas encore en ligne. |
+| 2026-10-19 | Mise en ligne : mairies | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `9664a3b` ; vérification de bout en bout passée en ligne aux deux largeurs (35 vérifications, 10 villes et Roubaix, 10 premières des 6 blocs) ; check-live.sh vert. |
 
 ## Hypothèses à vérifier
 
@@ -155,6 +156,7 @@ Autres questions :
 
 ## Documents
 
+- [Mise en ligne « Mairies » — 2026-10-19](docs/ship/2026-10-19-mairies/ship.md)
 - [Plan « Mairies » — 2026-10-18](docs/plans/2026-10-18-mairies/plan.md) · [relecture](docs/plans/2026-10-18-mairies/review-plan.md) · [dossier du build](docs/plans/2026-10-18-mairies/) : [progression](docs/plans/2026-10-18-mairies/progress.md), [démo acceptée](docs/plans/2026-10-18-mairies/demo.md), [relecture spec](docs/plans/2026-10-18-mairies/review-spec.md), [QA](docs/plans/2026-10-18-mairies/qa.md)
 - [Design « Mairies » — 2026-10-18](docs/design/mairies/README.md)
 - [Spec « Mairies » — 2026-10-18](docs/specs/2026-10-18-mairies/spec.md) · [relecture](docs/specs/2026-10-18-mairies/relecture.md)
