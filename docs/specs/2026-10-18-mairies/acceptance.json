@@ -218,8 +218,8 @@
       "rule": "R43",
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
-      "then": "le pied de page contient « Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026 » (H118), à côté des mentions des tranches précédentes",
-      "passes": true
+      "then": "le pied de page contient « Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche » (H118, amendée le 2026-10-19 avec D2), à côté des mentions des tranches précédentes",
+      "passes": false
     },
     {
       "id": "AC-11",
