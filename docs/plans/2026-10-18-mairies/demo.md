@@ -1,13 +1,13 @@
 # Démo — mairies
-2026-10-19 · construite du 2026-10-18 17:57 au 2026-10-19 11:40 · commits `fab197e..acd5b52` sur `main`, rien de poussé
+2026-10-19 · construite du 2026-10-18 17:57 au 2026-10-19 13:06 · commits `fab197e..9bb4c44` sur `main`, rien de poussé · **mise à jour après ta demande de la démo 1 : LFI à gauche**
 
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf ; une preuve = capture ou sortie de commande, datée.
 
 ## Ce qui est construit
 - **Tâche 0 — les données.** Chaque commune de métropole a sa mairie élue en 2026 (`public/data/mairies.json`) : la liste qui a le plus de sièges, au second tour s'il y en a eu un. Son bloc vient de la circulaire du 2 février 2026 (`public/data/nuances.json`, 25 nuances, 6 blocs lus sur les pages scannées 9, 10 et 12). Tu as relu la table, les 10 villes et les 10 premières de chaque bloc : « Justes ».
 - **Tâche 1 — l'adresse.** `/?mairie=gauche` filtre la carte et la liste. `/?loyer=aucun&mairie=gauche` colore en neutre les communes de gauche, sans score.
-- **Tâche 2 — les pastilles.** Une catégorie « Vie locale » entre « Cadre de vie » et « Tes proches », avec 7 pastilles cumulables. Repliée, elle affiche « Peu importe », « 1 choix »… Au téléphone, elle est dans l'onglet « Critères ».
-- **Tâche 3 — la fiche et le pied de page.** Chaque fiche dit « Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » », « sans étiquette (moins de 3 500 habitants) » ou « aucun résultat en 2026 ». Une commune écartée par le filtre dit « Mairie : centre, hors des mairies choisies ». Le pied de page cite le ministère et la circulaire.
+- **Tâche 2 — les pastilles.** Une catégorie « Vie locale » entre « Cadre de vie » et « Tes proches », avec **6 pastilles** cumulables : Gauche, Divers, Centre, Droite, Extrême droite, Sans étiquette. Repliée, elle affiche « Peu importe », « 1 choix »… Au téléphone, elle est dans l'onglet « Critères ».
+- **Tâche 3 — la fiche et le pied de page.** Chaque fiche dit « Mairie : Centre (Union du centre) · « Faire Gagner Bordeaux » », « sans étiquette (moins de 3 500 habitants) » ou « aucun résultat en 2026 ». Une commune écartée par le filtre dit « Mairie : centre, hors des mairies choisies ». Le pied de page cite le ministère et la circulaire, en disant l'écart : « sauf l'extrême gauche (dont La France insoumise), rangée à gauche ».
 - **Tâche 4 — téléphone et bout en bout.** Chaque pastille se coche d'un toucher. À 375 × 548, le curseur du prix reste visible à l'ouverture. Les 5 étapes de la vérification de bout en bout passent sur les vraies données.
 
 **L'essayer** : `npm run dev`, puis http://localhost:5173/?loyer=aucun&mairie=gauche ; ou la version construite : `npm run build && npx vite preview`. Au téléphone sur le Wi-Fi : `npx vite --host`.
@@ -17,7 +17,7 @@
 
   | AC | Règle | Ce qu'il prouve | Tâche |
   |---|---|---|---|
-  | AC-1 | R42 | catégorie repliée « Peu importe », pastilles cachées | 2 |
+  | AC-1 | R42 | les 6 pastilles dans l'ordre ; repliée « Peu importe » | 2, recalé en C2 |
   | AC-2 | R38 | un bloc sans commune → « Relâche le loyer, la mer ou la taille. » | 2 |
   | AC-3 | R38 | un bloc garde ses communes, la fiche d'une autre dit pourquoi | 2 |
   | AC-4 | R38 | rien de coché = tout passe, même « sans résultat » | 2 |
@@ -25,22 +25,31 @@
   | AC-6 | R38 | « Sans limite » + un bloc : couleur neutre, les autres non colorées | 1 |
   | AC-7 | R41 | l'adresse `mairie=` (ordre, doublons, noms inconnus) | 2 |
   | AC-8 | R42 | clavier : cocher, décocher, `aria-pressed` | 2 |
-  | AC-9 | R42 | téléphone : chaque pastille d'un toucher, « Droite » → Portmer 46 | 4 |
-  | AC-10 | R43 | la mention du pied de page | 3 |
+  | AC-9 | R42 | téléphone : chacune des 6 pastilles d'un toucher, « Droite » → Portmer 46 | 4, recalé en C2 |
+  | AC-10 | R43 | la mention du pied de page (texte amendé) | 3, recalé en C2 |
   | AC-11 | R39 | le calcul de la mairie sur l'extrait (sièges, second tour) | 0 |
   | AC-12 | R39 | les vraies données : Paris, Lyon, Marseille, Bordeaux, Nice ; 34 672 / 74 ; 3 164 / 31 508 | 0 |
 
-- **Suite complète** (relancée par Claude après les corrections, 2026-10-19 11:48) : typecheck vert ; Vitest 312 / 312 ; Playwright 379 verts, 38 sautés (tests réservés à une autre largeur), **0 rouge** ; build vert ; aucune valeur de design en dur.
+- **Suite complète** (relancée par Claude après ta demande, 2026-10-19 13:06) : typecheck vert ; Vitest 315 / 315 ; Playwright 381 verts, 38 sautés (tests réservés à une autre largeur), **0 rouge** ; build vert ; aucune valeur de design en dur.
 - **Captures** (dossier `captures/`) : catégorie au départ et avec « Gauche » + « Sans étiquette », comparée au prototype F (`T2-depart-*`, `T2-choix-*`) ; les 5 étapes de bout en bout en bureau et à 390 px (`T4-etape*`) ; les 10 villes (`T4-ville-*`) ; les fiches (`T3-fiche-*`) ; la relecture navigateur (`captures/qa/`, 19 images).
 - **Données** : [mesure-tache-0.md](mesure-tache-0.md) (empreintes, contrôles, table, comptes, 10 villes, 10 premières par bloc, poids, chargement, réaction). Le relecteur a recalculé les 10 villes depuis les fichiers bruts du ministère : identiques.
 
 | Ville | Mairie |
 |---|---|
 | Paris, Lyon, Marseille, Nantes, Lille, Strasbourg | Gauche |
+| Roubaix, Saint-Denis, Vénissieux… (7 mairies LFI) | Gauche (La France insoumise) — Roubaix est 507e sur 748 à `/?loyer=1200&mairie=gauche` |
 | Bordeaux | Centre (Union du centre) |
 | Toulouse | Droite (Divers droite) |
 | Nice | Extrême droite (Union de l'extrême droite, liste Ciotti) |
 | Perpignan | Extrême droite (Rassemblement National) |
+
+## Ta demande de la démo 1 — LFI à gauche
+Tu as dit « place la France Insoumise dans la gauche », puis choisi : retirer la pastille « Extrême gauche » (elle n'avait plus de mairie), garder l'UDR en extrême droite.
+- **Spec amendée sur place** : D2, R38, H108, H117, H118 ; AC-1, AC-9 et AC-10 recalés, puis reprouvés.
+- **Données** : LFI et LEXG passent à « Gauche » dans la table des nuances, qui garde le bloc d'origine de l'annexe et une note par écart. « Gauche » passe de 753 à 760 mairies. Le fichier des mairies ne change pas d'un octet.
+- **À l'écran** : 6 pastilles ; la fiche de Roubaix dit « Mairie : Gauche (La France insoumise) · « FIERS DE ROUBAIX » » ; une ancienne adresse `mairie=extreme-gauche` est ignorée.
+- **Décidé par moi, contestable** : LEXG suit LFI (son bloc disparaît ; aucune mairie aujourd'hui) ; le texte de la mention.
+- Captures : `captures/C2-vie-locale-*.jpg`, `C2-fiche-roubaix-*.jpg`, `C2-pied-de-page-1440x900.png`.
 
 ## Décisions prises à ta place
 Toutes dans [progress.md](progress.md). Celles qui comptent :
@@ -82,6 +91,7 @@ Toutes dans [progress.md](progress.md). Celles qui comptent :
   | Relecture spec | 23 min | 170 k |
   | Relecture navigateur (2 passages) | 14 min | ≈ 107 k |
   | Corrections 1 | 26 min | 82 k |
-  | **Total** | **≈ 4 h d'agents** | **≈ 1,37 M** |
+  | Corrections 2 (ta demande) | 22 min | 178 k |
+  | **Total** | **≈ 4 h 30 d'agents** | **≈ 1,55 M** |
 
 - **Détours** : aucun revert ; un builder a d'abord écrit `carte.ts` par un script (ce qui contournait le garde-fou), puis l'a refait à l'outil d'édition ; la relecture navigateur a dû être relancée une fois ; le test instable de cadre-de-vie a fait rougir 4 suites complètes sur 6, chaque fois vert relancé seul, jusqu'à sa correction.
