@@ -34,6 +34,26 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 
 - Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `9664a3b` (sept tranches, dont mairies), prouvé le 2026-10-19 à 15:46 (docs/ship/2026-10-19-mairies/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
+- Usagers hors de l'équipe : 0
+
+## Échéances
+
+Chaque date à laquelle on a promis de regarder quelque chose : signal d'arrêt, test « avant le… », seuil « au… ». Affichées à chaque ouverture de session ; une échéance dépassée se tranche avant de travailler. On ne supprime pas une ligne : on change son statut. Déplacer une échéance demande une nouvelle date et une raison (ligne dans Décisions) ; le nombre de déplacements reste écrit.
+
+| Date | Ce qu'on regarde | Si c'est raté | Qui | Statut |
+|---|---|---|---|---|
+| 2026-10-25 | Tests avant de coder (5), heures notées | statut « en pause » | Vincent | tenue le 2026-10-11 |
+| 2026-10-25 | Test de demande : 5 personnes de la cible essaient une maquette ou la carte loyer + mer et répondent, dont « ChatGPT ou la carte ? » (/validate sauté : à mener à la main ou à reporter) | — | Vincent | à venir |
+| 2026-11-01 | Test de l'accroche sur 3 personnes | — | Vincent | à venir |
+| 2026-11-08 | Signal d'arrêt 1 : la carte est en ligne avec les 5 critères | on recoupe à 2 critères (proches + mer/montagne) ; si rien n'est en ligne, on met en pause | Vincent | à venir |
+| 2026-11-08 | 4 réponses utiles sur r/france et la liste de 10 à 30 personnes écrite | — | Vincent | à venir |
+| 2026-11-15 | Règles d'autopromotion de r/france lues et datées ; canal r/france confirmé | canal de secours : Indie Makers FR, puis les subs de villes | Vincent | à venir |
+| 2026-11-15 | 3 posts d'outils cartographiques français à plus de 100 votes trouvés sur r/france | — | Vincent | à venir |
+| 2026-12-06 | Première version montrable (Objectif) | — | Vincent | à venir |
+| 2026-12-20 | Signal d'arrêt 2 : 30 inconnus ont entré une adresse ; 1 write-up (seuils du plan de distribution) | on arrête ou on recoupe l'accroche ou le canal | Vincent | à venir |
+| 2026-12-20 | 5 cartes ouvertes par quelqu'un d'autre que leur auteur | — | Vincent | à venir |
+| 2026-12-20 | 3 inconnus reviennent une deuxième fois | — | Vincent | à venir |
+| 2026-12-20 | Sur les 30 premiers inconnus, part de ceux qui donnent un poids non nul à l'emploi | — | Vincent | à venir |
 
 ## Décisions
 
@@ -104,6 +124,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-18 | Plan validé : mairies | 5 tâches (0 mairies calculées et mesurées depuis les fichiers du ministère et l'annexe de la circulaire, 1 filtre par l'adresse, 2 catégorie « Vie locale » et tests décalés, 3 fiche et mentions, 4 téléphone et bout en bout) ; deux fichiers servis de plus (`mairies.json`, `nuances.json`) ; aucun paquet ; relu par un agent neuf (5 majeurs corrigés). Attend le PDF de la circulaire (Légifrance refuse le téléchargement automatique). |
 | 2026-10-19 | Tranche construite : mairies | Filtre « Mairie élue en 2026 » (catégorie « Vie locale », 6 pastilles : Gauche, Divers, Centre, Droite, Extrême droite, Sans étiquette) et ligne « Mairie » de la fiche ; LFI rangée à gauche et « Extrême gauche » retirée à la démo (D2 amendée, écart à la circulaire cité au pied de page) ; 12/12 critères ; test instable d'AC-7 de cadre-de-vie corrigé ; démo acceptée. Décisions gardées : H123 à H127. Pas encore en ligne. |
 | 2026-10-19 | Mise en ligne : mairies | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `9664a3b` ; vérification de bout en bout passée en ligne aux deux largeurs (35 vérifications, 10 villes et Roubaix, 10 premières des 6 blocs) ; check-live.sh vert. |
+| 2026-11-11 | Échéances reprises en tableau | Les dates déjà écrites dans ce document (signal d'arrêt, tests des hypothèses, questions ouvertes, plan de distribution) sont recopiées telles quelles dans « Échéances », pour être affichées à chaque ouverture de session. Aucune date ni aucun seuil changé ; aucune échéance jugée tenue ou ratée, sauf celle que ce document disait déjà faite. |
 
 ## Hypothèses à vérifier
 
