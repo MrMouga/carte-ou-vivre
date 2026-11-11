@@ -42,18 +42,24 @@ Chaque date à laquelle on a promis de regarder quelque chose : signal d'arrêt,
 
 | Date | Ce qu'on regarde | Si c'est raté | Qui | Statut |
 |---|---|---|---|---|
-| 2026-10-25 | Tests avant de coder (5), heures notées | statut « en pause » | Vincent | tenue le 2026-10-11 |
-| 2026-10-25 | Test de demande : 5 personnes de la cible essaient une maquette ou la carte loyer + mer et répondent, dont « ChatGPT ou la carte ? » (/validate sauté : à mener à la main ou à reporter) | — | Vincent | à venir |
-| 2026-11-01 | Test de l'accroche sur 3 personnes | — | Vincent | à venir |
-| 2026-11-08 | Signal d'arrêt 1 : la carte est en ligne avec les 5 critères | on recoupe à 2 critères (proches + mer/montagne) ; si rien n'est en ligne, on met en pause | Vincent | à venir |
-| 2026-11-08 | 4 réponses utiles sur r/france et la liste de 10 à 30 personnes écrite | — | Vincent | à venir |
-| 2026-11-15 | Règles d'autopromotion de r/france lues et datées ; canal r/france confirmé | canal de secours : Indie Makers FR, puis les subs de villes | Vincent | à venir |
-| 2026-11-15 | 3 posts d'outils cartographiques français à plus de 100 votes trouvés sur r/france | — | Vincent | à venir |
-| 2026-12-06 | Première version montrable (Objectif) | — | Vincent | à venir |
-| 2026-12-20 | Signal d'arrêt 2 : 30 inconnus ont entré une adresse ; 1 write-up (seuils du plan de distribution) | on arrête ou on recoupe l'accroche ou le canal | Vincent | à venir |
-| 2026-12-20 | 5 cartes ouvertes par quelqu'un d'autre que leur auteur | — | Vincent | à venir |
-| 2026-12-20 | 3 inconnus reviennent une deuxième fois | — | Vincent | à venir |
-| 2026-12-20 | Sur les 30 premiers inconnus, part de ceux qui donnent un poids non nul à l'emploi | — | Vincent | à venir |
+| 2026-10-25 | Tests avant de coder, heures notées | statut « en pause » | — | tenue le 2026-10-11 |
+| 2026-10-25 | Test de demande : 5 personnes de la cible (des amis) essaient une maquette ou la carte loyer + mer et répondent à 3 questions, dont « laquelle enverrais-tu à ton conjoint : la réponse ChatGPT ou la carte ? » ; seuil : 5 ont essayé et répondu (/validate sauté : à mener à la main ou à reporter) | si c'est raté, ou si la majorité préfère ChatGPT : on rouvre la Différence avant de coder la tranche 2 | — | à venir |
+| 2026-10-25 | 3 personnes de la cible choisissent entre la réponse ChatGPT et une maquette de la carte (laquelle elles enverraient à leur conjoint) | Différence à rouvrir si ChatGPT gagne | — | à venir |
+| 2026-11-01 | Test de l'accroche : 3 personnes hors projet la répètent de mémoire avec ses trois mots clés (carte, proches, grande ville) | si elles ne retiennent pas « proches », on reprend une des deux accroches écartées | — | à venir |
+| 2026-11-08 | Signal d'arrêt 1 : la carte est en ligne avec les 5 critères | on recoupe à 2 critères (proches + mer/montagne) ; si rien n'est en ligne, on met en pause | — | à venir |
+| 2026-11-08 | 4 réponses utiles sur r/france et la liste de 10 à 30 personnes à prévenir une par une écrite | pas de lancement avant la liste perso et 4 réponses r/france | Vincent (la liste) | à venir |
+| 2026-11-08 | À partir de cette date, la moitié du temps va à la distribution (1 h par semaine jusque-là), jusqu'au 6/12 | — | — | à venir |
+| 2026-11-15 | Règles d'autopromotion de r/france lues et datées | — | Vincent | à venir |
+| 2026-11-15 | Canal r/france à confirmer | canal de secours : Indie Makers FR, puis les subs de villes (r/paris) | — | à venir |
+| 2026-11-15 | 3 posts d'outils cartographiques français à plus de 100 votes trouvés sur r/france, et 1 réponse utile par semaine dans un fil « quitter Paris » ; seuil : les 3 posts sont trouvés et aucune réponse n'est retirée | — | — | à venir |
+| 2026-12-06 | Première version montrable (Objectif) | — | — | à venir |
+| 2026-12-06 | Prêts pour le lancement : une démo de 15 à 30 s, un README, le brouillon du write-up, une FAQ (vie privée des adresses, différence avec ChatGPT) ; post r/france vers cette date | — | — | à venir |
+| 2026-12-20 | Signal d'arrêt 2 : 30 inconnus ont entré une adresse (plan : inconnus qui ont joué — réglé un critère ou entré une adresse — ≥ 30 ; 10 à 29 : on itère) | on arrête ou on recoupe l'accroche ou le canal (plan : moins de 10 après 2 canaux bien menés : on arrête) | — | à venir |
+| 2026-12-20 | Write-up publié : 1 | — | — | à venir |
+| 2026-12-20 | Commentaires de fond (Reddit, Discord, messages) : au moins 3 | 1 ou 2 : on itère ; 0 : on arrête | — | à venir |
+| 2026-12-20 | Cartes ouvertes par quelqu'un d'autre que leur auteur : au moins 5 | 1 à 4 : on itère ; 0 : on arrête | — | à venir |
+| 2026-12-20 | 3 inconnus reviennent une deuxième fois | — | — | à venir |
+| 2026-12-20 | Sur les 30 premiers inconnus, part de ceux qui donnent un poids non nul à l'emploi | — | — | à venir |
 
 ## Décisions
 
@@ -125,6 +131,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-10-19 | Tranche construite : mairies | Filtre « Mairie élue en 2026 » (catégorie « Vie locale », 6 pastilles : Gauche, Divers, Centre, Droite, Extrême droite, Sans étiquette) et ligne « Mairie » de la fiche ; LFI rangée à gauche et « Extrême gauche » retirée à la démo (D2 amendée, écart à la circulaire cité au pied de page) ; 12/12 critères ; test instable d'AC-7 de cadre-de-vie corrigé ; démo acceptée. Décisions gardées : H123 à H127. Pas encore en ligne. |
 | 2026-10-19 | Mise en ligne : mairies | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `9664a3b` ; vérification de bout en bout passée en ligne aux deux largeurs (35 vérifications, 10 villes et Roubaix, 10 premières des 6 blocs) ; check-live.sh vert. |
 | 2026-11-11 | Échéances reprises en tableau | Les dates déjà écrites dans ce document (signal d'arrêt, tests des hypothèses, questions ouvertes, plan de distribution) sont recopiées telles quelles dans « Échéances », pour être affichées à chaque ouverture de session. Aucune date ni aucun seuil changé ; aucune échéance jugée tenue ou ratée, sauf celle que ce document disait déjà faite. |
+| 2026-11-11 | Échéances corrigées après relecture | Une relecture a comparé chaque ligne à sa source : les conséquences écrites dans le plan de distribution (« si c'est raté ») étaient restées à « — », des lignes étaient fusionnées, « Vincent » était mis partout sans que la source le dise, et trois engagements manquaient (test des 3 personnes ChatGPT contre maquette, commentaires de fond, livrables du 6/12). Corrigé ligne à ligne ; « Qui » vaut « — » quand la source ne nomme personne. « Usagers hors de l'équipe : 0 » est une ligne nouvelle, pas une recopie. |
 
 ## Hypothèses à vérifier
 
