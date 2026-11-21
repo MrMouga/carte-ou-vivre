@@ -165,7 +165,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80:25,V2X90",
       "when": "l'utilisateur ouvre les fiches de Quaibleu, Grandeville et Terrebasse",
       "then": "Quaibleu : sous la ligne « Mairie », dans l'ordre, « Infirmiers et sages-femmes : Grandeville, à 28 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 », puis « Médecins : bassin de Montcher, 410 recrutements prévus en 2026 », puis « Chômage : 6,8 % dans la zone d'emploi de Montcher (2e trimestre 2026) ». Grandeville : « Infirmiers et sages-femmes : Grandeville, sur place, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 » et « Chômage : 7,1 % dans la zone d'emploi de Grandeville (2e trimestre 2026) ». Terrebasse : « Infirmiers et sages-femmes : Montcher, à 29 km, parmi les 10 % de bassins qui recrutent le plus · 1 680 recrutements prévus en 2026 » et « Médecins : bassin de Grandeville, 120 recrutements prévus en 2026 »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",

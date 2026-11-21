@@ -17,6 +17,8 @@ Tâche 0c (Confolens) : faite — commits e859410..32f3805 — preuve : captures
   Vérif orchestrateur (17:56) : fichiers = liste autorisée ; `["7503","16192"]` dans `emploi.json` ; contrôle « seule 7503 diffère de la règle » ok ; AC-12 inchangé (M2X90 4 588) ; V1X80 à 10 % : 6 192 → 6 275 communes ; Vitest 316 / 316. Décision du builder : code 16192 écrit dans le script (arrêt si les populations changent).
 Tâche 1 : faite — commits 93f7fe7..86968c3 — preuve : captures/T1-fiche-la-rochelle-infirmiers-10-1440x900.png, T1-fiche-pau-*.png, T1-preuves-reel.txt, T1-mesure-distances.txt (174 ms au processeur ÷ 4, contre 168 en 0b), T1-npm-test.txt (18:00-18:14) — 24 min — agent : 235 k — rapport : taches/T1.md
   Vérif orchestrateur (18:28) : `tests/e2e/lib/carte.ts` +40 lignes, 0 changée (conforme au plan) — **le garde-fou des tests protégés n'a de nouveau pas demandé l'accord** (comme à mairies, pour /retro) ; aucun autre test existant modifié ; AC-12 dans `src/domain/emploi.test.ts` (4 tests) ; capture de la fiche de La Rochelle relue (raison exacte d'AC-12) ; Vitest 345 / 345 ; jetons ok ; Playwright 381 verts, 38 sautés, 0 rouge ; types et build verts. Non couvert par T1 : 390 px sur les vraies données, erreur de chargement d'`emploi.json` (à voir en QA). Captures PNG de ~1 Mo chacune, non réduites (mineur, leçon 2026-10-14).
+Tâche 2 : faite — commits 46e1de0..38d1350 — preuve : captures/T2-fiche-{bordeaux,la-rochelle,pau,saint-selve,allarmont}-1440x900.jpg, T2-fiche-premiere-390x844.jpg, T2-pied-de-page-1440x900.png, T2-preuves-reel.txt (18:40-19:00) — 36 min — agent : 191 k — rapport : taches/T2.md
+  Vérif orchestrateur (19:19) : fichiers de la liste + `App.tsx` (4 lignes) et `emploi.ts` (`ligneMetier`, `distanceBrute`), expliqués ; aucun test existant modifié (dans `emploi.test.ts`, créé en T1, seule la ligne d'import) ; AC-10 dans `tests/e2e/emploi.spec.ts` et `src/domain/emploi.test.ts` ; capture de Bordeaux relue (lignes de R47, chômage 8,0 %, mentions de H143 avec la date) ; Vitest 353 / 353 ; jetons ok ; Playwright 385 verts, 38 sautés, 0 rouge (la 2e suite du builder avait 6 rouges « carte pas prête » dans immobilier, charge ≈ 7 : verts chez moi) ; types et build verts. Signalé, hors tranche : « 5400e » sans espace des milliers (déjà suivi).
 
 ## Décisions prises à la place de Vincent
 - T0a — Monaco (bassin 9399) sans ville principale (`null`) : aucune commune de la carte dedans ; reste dans les 389 et compte dans le classement des niveaux. Coût si faux : un bassin de moins dans le classement décalerait des niveaux à la marge. **La tâche 1 l'ignore pour les distances et « le plus proche ».**
@@ -32,6 +34,10 @@ Tâche 1 : faite — commits 93f7fe7..86968c3 — preuve : captures/T1-fiche-la-
 - T1 — La raison d'un métier porte aussi son libellé ; sans « plus proche » (jeu sans bassin), elle s'écrit sans parenthèse. Coût : aucun sur les vraies données.
 - T1 — Dans `carte.ts`, la ville principale d'un bassin de la fixture est déduite de `distances_km` (la commune à 0 km d'elle-même) ; un bassin dont la ville n'est pas dans le jeu n'est pas servi. Coût : tests seulement.
 - T1 — `performance.measure('emploi : villes principales à 30 km')` laissé dans la page. Coût : aucun.
+- T2 — « à moins d'1 km » / « à n km » calculés sur la distance avant arrondi, comme la mer ; une seule source (`distanceBrute`) pour le filtre et l'affichage. Coût : aucun.
+- T2 — Pendant le chargement, la mention du chômage au pied de page s'affiche sans trimestre. Coût : une fraction de seconde sans trimestre.
+- T2 — Espace insécable entre le libellé du métier et « : » (sinon les deux-points tombent seuls en début de ligne). Coût : aucun.
+- T2 — Chômage toujours à une décimale (« 8,0 % »). Coût : aucun.
 
 ## Retours à traiter à la démo
 
