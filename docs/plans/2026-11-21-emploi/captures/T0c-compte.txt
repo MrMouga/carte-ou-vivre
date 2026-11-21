@@ -1,0 +1,10 @@
+T0c-compte.mjs — 21/11/2026 17:49:36
+villes principales : 389 bassins, 1 différence(s)
+  bassin 7503 : Castelnau-de-Médoc (33104) → Terres-de-Haute-Charente (16192)
+champs : identique
+trimestre_chomage : identique
+zones : identique
+metiers : identique
+communes : identique
+V1X80 à « 10 % » : 6192 communes avant, 6275 après
+M2X90 à « 10 % » : 4588 communes avant, 4588 après

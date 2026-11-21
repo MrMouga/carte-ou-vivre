@@ -19,7 +19,10 @@ Règles :
   la table est sur une géographie plus ancienne que 2025 pour quelques codes : une commune de la carte absente de la
   table prend le bassin de son ancien code ou de la commune dont elle est sortie (mouvements du COG 2026, `recalage`).
 - H135 : ville principale d'un bassin = sa commune de la carte la plus peuplée, égalité au plus petit code ; le bassin
-  de Monaco (9399) n'a aucune commune de la carte : pas de ville principale (null).
+  de Monaco (9399) n'a aucune commune de la carte : pas de ville principale (null). Exception (H135 amendée, Vincent,
+  2026-11-21) : le bassin 7503 « CONFOLENS », que la table compose de communes de Charente et du Médoc, prend la plus
+  peuplée de ses communes de Charente (16), même règle d'égalité ; le script s'arrête si le bassin n'est plus sur deux
+  départements, et si une autre ville principale que la sienne change.
 - H138 : commune → zone d'emploi → taux du dernier trimestre ; nom de la zone tel que l'écrit l'Insee.
 - H134 : noms courants de scripts/data/noms-metiers.csv (liste écrite à la main : pas de table ouverte de la Dares).
 
@@ -65,6 +68,8 @@ MIN_BASSINS = 6  # H146
 PLM = {'75056': [f'751{i:02d}' for i in range(1, 21)], '69123': [f'6938{i}' for i in range(1, 10)],
        '13055': [f'132{i:02d}' for i in range(1, 17)]}
 BASSIN_PLM = {'75056': '1107', '69123': '8428', '13055': '9306'}  # H142
+# H135 amendée (Vincent, 2026-11-21, tâche 0c) : bassin → (département dont il prend la commune la plus peuplée, ville attendue).
+VILLE_PAR_DEPARTEMENT = {'7503': ('16', '16192')}  # CONFOLENS : Terres-de-Haute-Charente, et non Castelnau-de-Médoc (33104)
 ABSENTES = ['12218', '14581', '15031', '15035', '15047', '15171', '49126', '60694', '69114', '80832', '85165', '85212']  # H142
 NOMS_IMPOSES = {'développeur': 'M2X90', 'data scientist': 'M2X90', 'UX designer': 'U1X82', 'sage-femme': 'V1X80',
                 'business developer': 'R4X90', 'prospecteur': 'R4X90', "chargé d'affaires": 'R4X90'}
@@ -344,7 +349,22 @@ def main():
     membres = collections.defaultdict(list)
     for c, b in commune_bassin.items():
         membres[b].append(c)
-    ville = {b: (min(membres[b], key=lambda c: (-pop[c], c)) if b in membres else None) for b in bassins}
+    plus_peuplee = lambda codes: min(codes, key=lambda c: (-pop[c], c))  # noqa: E731
+    regle = {b: (plus_peuplee(membres[b]) if b in membres else None) for b in bassins}
+    ville = dict(regle)
+    dep = {r[0]: r[carte['champs'].index('dep')] for r in carte['communes']}
+    for b, (d, attendue) in VILLE_PAR_DEPARTEMENT.items():
+        deps = collections.Counter(dep[c] for c in membres[b])
+        check(len(deps) == 2 and d in deps,
+              f'H135 : bassin {b} ({noms_bassins[b]}) sur deux départements dont le {d} ({dict(sorted(deps.items()))}) ;'
+              f' sinon l\'exception est à revoir')
+        ville[b] = plus_peuplee([c for c in membres[b] if dep[c] == d])
+        print(f'  exception H135 : bassin {b} ({noms_bassins[b]}) → {nom[ville[b]]} ({ville[b]}, {pop[ville[b]]} hab.),'
+              f' plus peuplée de ses {deps[d]} communes du {d} ; par la règle : {nom[regle[b]]} ({regle[b]}, {pop[regle[b]]} hab.)')
+        check(ville[b] == attendue, f'H135 : ville principale du bassin {b} = {attendue} (choix de Vincent du 2026-11-21)')
+    changees = sorted(b for b in bassins if ville[b] != regle[b])
+    check(changees == sorted(VILLE_PAR_DEPARTEMENT),
+          f'H135 : sur les {len(bassins)} villes principales, seule celle de {sorted(VILLE_PAR_DEPARTEMENT)} diffère de la règle ({changees})')
     for c, b in BASSIN_PLM.items():
         check(ville[b] == c, f'H142 : {nom[c]} ville principale du bassin {b}')
 
