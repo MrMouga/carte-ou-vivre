@@ -32,21 +32,20 @@ Téléchargées par `python3 scripts/data/sources.py` le 2026-11-21 à 16:14, da
 - **La table des bassins « 2026 » est sur une géographie plus ancienne que 2025** pour ses codes absents (le plan supposait des fusions de 2026 ; aucune des 12 n'a de mouvement en 2026). D'après les mouvements du COG 2026, 11 des 12 communes de H142 prennent le bassin de leur ancien code ou de la commune dont elles sont sorties :
   - changements de code (MOD 50) : Conques-en-Rouergue 12218 ← 12076 (2024-03-04), bassin 7614 ; Aurseulles 14581 ← 14011 (2024-04-24), 2818 ; Orée d'Anjou 49126 ← 49069 (2025-01-01), 5229 ; Porte des Pierres Dorées 69114 ← 69159 (2024-03-15), 8444 ;
   - rétablissements (MOD 21) : Celles 15031, Chalinargues 15035, Chavagnac 15047, Sainte-Anastasie 15171 ← Neussargues en Pinatelle 15141 (2025-01-01), 8451 ; Les Hauts-Talican 60694 ← 60054 (2024-01-01), 3213 ; L'Oie 85165 et Sainte-Florence 85212 ← Essarts en Bocage 85084 (2024-01-01), 5214.
-- **Yvrench (80832, 296 habitants)** : aucun mouvement dans le COG, absente de la table (ses voisines 80833 à 80836 y sont). Non recalée → **arrêt, question à Vincent** (condition d'arrêt du plan). Ses 7 voisines les plus proches (mairie à mairie, 0,8 à 5,0 km) sont toutes dans le bassin 3201 (Abbeville Ponthieu), la 8e (5,2 km) dans 3202 ; sa zone d'emploi est 3201 (Abbeville).
+- **Yvrench (80832, 296 habitants)** : aucun mouvement dans le COG, absente de la table (ses voisines 80833 à 80836 y sont). Non recalée → arrêt, question à Vincent (condition d'arrêt du plan). Ses 7 voisines les plus proches (mairie à mairie, 0,8 à 5,0 km) sont toutes dans le bassin 3201 (Abbeville Ponthieu), la 8e (5,2 km) dans 3202 ; sa zone d'emploi est 3201 (Abbeville). **Règle de Vincent (2026-11-21 16:50, H142 amendée)** : une commune absente de la table sans aucun mouvement prend le bassin de la commune de la table la plus proche, de mairie à mairie (`reperes.json`, sphère de 6 371 km) ; seule une commune sans mouvement ni voisine arrête le script. → Yvrench → Yvrencheux (80833) à 0,80 km, bassin 3201. Aucune commune ne manquait aux zones d'emploi : la règle ne s'y applique pas.
 
 ## Part 0a — sortie des contrôles
 
-Le vrai lancement (`python3 -I scripts/data/emploi.py`, 2026-11-21) s'arrête sur Yvrench : `captures/T0a-controles-emploi.txt`. `public/data/emploi.json` n'est donc pas écrit.
-
-Pour connaître tout le reste avant la réponse, une sonde a lancé le même script avec Yvrench rattachée **provisoirement** au bassin de sa voisine la plus proche (Yvrencheux, 3201), sortie écrite hors du dépôt (`captures/T0a-sonde-yvrench.py`, `captures/T0a-controles-sonde-yvrench.txt`). Tous les autres contrôles passent :
+Vrai lancement (`python3 -I scripts/data/emploi.py`, 2026-11-21 16:55, après la règle de Vincent pour Yvrench) : **35 contrôles ok, aucun échec**, `public/data/emploi.json` écrit (1 496 506 octets) ; sortie complète : `captures/T0a-controles-emploi.txt`. Le fichier écrit est identique, octet pour octet, à celui de la sonde d'avant la réponse (`captures/T0a-sonde-yvrench.py`, `captures/T0a-controles-sonde-yvrench.txt`), qui avait rattaché Yvrench de la même façon. Relu : Paris, Lyon, Marseille villes principales de 1107, 8428, 9306 ; Bordeaux bassin 7532, zone « Bordeaux » 8,0 % ; Yvrench bassin 3201 (ville principale Abbeville, 80001) ; infirmiers (V1X80) à Bordeaux : 626 projets, niveau « 10 » (la valeur de la vérification de bout en bout) ; aucune distance dans le fichier. Contrôles :
 
 ```
+  sans mouvement, rattachée à la plus proche : Yvrench (80832) → Yvrencheux (80833) à 0.80 km, bassin 3201
+  ok   H142 : les 12 communes absentes de la table, et elles seules : 11 recalées par le COG, 1 par la plus proche (Yvrench)
   ok   389 bassins en métropole
   ok   217 métiers en métropole
   ok   Marseille : ses 16 arrondissements dans le seul bassin 9306 (['9306'])
   ok   Lyon : ses 9 arrondissements dans le seul bassin 8428 (['8428'])
   ok   Paris : ses 20 arrondissements dans le seul bassin 1107 (['1107'])
-  ok   H142 : les 12 communes absentes de la table recalées, et elles seules (12)
   ok   tout bassin des communes est un bassin du BMO ([])
   ok   seul le bassin de Monaco (9399) n'a aucune commune de la carte
   ok   H142 : Paris ville principale du bassin 1107
@@ -68,5 +67,5 @@ R50 : 96 métiers peu chiffrés (moins de 130 bassins) sur 217
 ```
 
 - **Métiers peu chiffrés (R50)** : **96 sur 217**, comme la mesure de /breakdown. Les moins chiffrés : U1X92 écrivains (6 bassins), J5X60 contrôleurs des transports et W0X91 directeurs d'établissements (9).
-- Poids de la sortie de la sonde (même contenu que le vrai fichier à Yvrench près) : 1 496 506 octets bruts, **233 960 octets compressés** (`gzip -9`), sous les 300 Ko de H140. La mesure complète (brotli, chargement) est en 0b.
+- Poids de `public/data/emploi.json` : 1 496 506 octets bruts, **233 960 octets compressés** (`gzip -9`), sous les 300 Ko de H140. La mesure complète (brotli, chargement) est en 0b.
 - Ville principale : le bassin de Monaco (9399) n'en a pas (`null`) : aucune commune de la carte (décidé par Claude, voir le rapport T0a).

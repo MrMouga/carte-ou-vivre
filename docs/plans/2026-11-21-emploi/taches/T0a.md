@@ -1,59 +1,84 @@
 # Tâche 0a — Les données de l'emploi, servies
-Statut : question · Début 16:08 · Fin 16:40 · Commits : 7015a9f, fb9cda9 (1re question : licence), puis 3c865ed (reprise après la réponse de Vincent)
+Statut : faite · Début 16:08 · Fin 17:06 · Commits : 7015a9f, fb9cda9 (1re question : licence) ; 3c865ed, f5606f1 (2e question : Yvrench) ; COMMIT_FIN (fin)
 
-Historique : 1re question à 16:13 (licence de la table des bassins introuvable) ; réponse de Vincent à 16:20 (s'en servir, mention datée, H143 amendée en 9c95b57) ; reprise ; **2e arrêt** sur une autre condition d'arrêt du plan : un code de commune non recalé (Yvrench, 80832).
+Historique :
+- 16:13, 1re question : la licence de la table des bassins est introuvable. Réponse de Vincent à 16:20 : s'en servir, avec la mention datée (H143 amendée, 9c95b57).
+- 16:33, 2e question : Yvrench (80832) est absente de la table, sans aucun changement de commune dans l'historique de l'Insee. Réponse de Vincent à 16:50 : la règle de la commune la plus proche (H142 amendée, 9830cf3).
+- Fin de la tâche.
 
 ## Ce que l'utilisateur peut faire maintenant
-Rien de neuf à l'écran. Tout est prêt pour écrire `public/data/emploi.json`. Les sources sont téléchargées et figées, le calcul des niveaux est testé (AC-8), et les autres contrôles passent tous (sonde ci-dessous). Il reste une commune de 296 habitants, Yvrench (Somme), que la table de France Travail oublie. Le script s'arrête dessus, comme le plan le demande, et `emploi.json` n'est pas encore écrit.
+Rien de neuf à l'écran (tâche de données). Le site sert désormais `public/data/emploi.json`, juste et vérifié :
+- les 389 bassins de métropole, chacun avec sa ville principale ;
+- les 217 métiers, avec leurs noms courants, le drapeau « peu chiffré » (96 métiers) et, pour chaque bassin chiffré, les projets et le niveau le plus étroit ;
+- les 287 zones d'emploi des communes, avec leur taux au 2e trimestre 2026 ;
+- une ligne par commune de la carte : son bassin et sa zone.
+
+Les tâches 0b et 1 peuvent s'en servir.
 
 ## Critères
 | AC | Test (fichier · nom) | Résultat |
 |---|---|---|
-| AC-8 | `scripts/data/emploi.test.ts` · « AC-8 : b01 500, b02 300, b03 300 au niveau « 10 » ; b04 120, b05 80, b06 80 au « 25 » ; b07 40, b08 12, b09 5, b10 5 « tous » ; b11 à b20 sans chiffre » | vert (rouge d'abord : script absent, 16:16 ; vert à 16:17) |
-| AC-12 (part données, contrôlée dans `emploi.py`) | contrôles de `emploi.py` | 389 bassins, 217 métiers, au moins 6 bassins chacun ; M2X90 : 39 / 98 / 120, Bordeaux « 10 » avec 742, La Rochelle sans chiffre : **ok dans la sonde** ; « les 34 746 communes ont un bassin » : **arrêt sur Yvrench** dans le vrai lancement |
+| AC-8 | `scripts/data/emploi.test.ts` · « AC-8 : b01 500, b02 300, b03 300 au niveau « 10 » ; b04 120, b05 80, b06 80 au « 25 » ; b07 40, b08 12, b09 5, b10 5 « tous » ; b11 à b20 sans chiffre » | vert (rouge d'abord à 16:16, script absent ; vert à 16:17 et dans la suite finale) |
+| AC-12 (part données, son test est en tâche 1) | contrôles d'`emploi.py` | ok :<br>- 389 bassins et 217 métiers ; chaque métier chiffré dans au moins 6 bassins ;<br>- les 34 746 communes ont un bassin ;<br>- M2X90 : 39 bassins au niveau « 10 », 98 aux niveaux « 10 » ou « 25 », 120 chiffrés ;<br>- bassin de Bordeaux au niveau « 10 » avec 742 projets ; bassin de La Rochelle sans chiffre |
 
 ## Preuves
-- `docs/plans/2026-11-21-emploi/captures/T0a-controles-emploi.txt` — le vrai lancement d'`emploi.py`. Empreintes ok, puis arrêt « ÉCHEC 80832 (Yvrench) recalé sur un code de la table, un seul bassin ([]) » (2026-11-21 16:33)
-- `docs/plans/2026-11-21-emploi/captures/T0a-controles-sonde-yvrench.txt` — le même script avec Yvrench rattachée **provisoirement** au bassin de sa voisine. Le fichier est écrit hors du dépôt. On y voit tous les autres contrôles verts, les 12 recalages, 96 métiers peu chiffrés, les voisines d'Yvrench et leurs bassins (2026-11-21 16:20)
-- `docs/plans/2026-11-21-emploi/captures/T0a-sonde-yvrench.py` — la sonde
+- `docs/plans/2026-11-21-emploi/captures/T0a-controles-emploi.txt` — le vrai lancement d'`emploi.py` : 35 contrôles ok, aucun échec. On y voit les 12 rattachements, dont « Yvrench (80832) → Yvrencheux (80833) à 0.80 km, bassin 3201 », 96 métiers peu chiffrés, et la ligne « écrit : public/data/emploi.json (1496506 octets) » (2026-11-21 16:50)
+- `public/data/emploi.json`, relu (16:51) :
+  - Paris, Lyon et Marseille sont villes principales de 1107, 8428 et 9306 ;
+  - Bordeaux est dans le bassin 7532, zone « Bordeaux », 8,0 % ;
+  - les infirmiers (V1X80) à Bordeaux : 626 projets, niveau « 10 » ;
+  - Yvrench est dans le bassin 3201 (ville principale Abbeville) ;
+  - le fichier ne contient aucune distance ;
+  - 233 960 octets compressés (`gzip -9`), sous la limite de 300 Ko ;
+  - il est identique, octet pour octet, à celui de la sonde d'avant la réponse.
+- `docs/plans/2026-11-21-emploi/mesure-tache-0.md` — part 0a : empreintes, licences (avec la décision de Vincent), ce que le fichier BMO a montré, recalages, règle d'Yvrench, sortie des contrôles, 96 métiers peu chiffrés
+- `docs/plans/2026-11-21-emploi/captures/T0a-controles-sonde-yvrench.txt`, `T0a-sonde-yvrench.py` — la sonde d'avant la 2e réponse : les voisines d'Yvrench et leurs bassins
 - `docs/plans/2026-11-21-emploi/captures/T0a-licence-bassins.txt`, `T0a-sonde-clpe.py` — la recherche de licence (1re question)
-- `docs/plans/2026-11-21-emploi/mesure-tache-0.md` — part 0a : empreintes, licences, décision de Vincent, ce que le fichier a montré, sortie des contrôles, 96 métiers peu chiffrés
-- Poids (sortie de la sonde) : 1 496 506 octets bruts, 233 960 compressés (`gzip -9`), sous les 300 Ko
+- `dist/data/emploi.json` présent après `npm run build` (16:52)
 
 ## Suite de tests
-- unit (dans `npm test`, 16:21) : `Test Files  21 passed (21)` · `Tests  316 passed (316)` ; relancé à 16:34 après les dernières retouches du script (messages affichés) : `Tests  316 passed (316)`
-- e2e (`npm test`, fin 16:32) : `1 failed` · `38 skipped` · `379 passed (11.5m)`. L'échec : `proches-etats.spec.ts:110` [bureau], « deux proches ajoutés d'affilée… », qui attendait « Tes proches 2 » et a reçu « Tes proches ». C'est l'instabilité connue des tests de proches (leçon du 2026-10-15). Relancé seul `--repeat-each=3` (port 4173 libre, charge 4,9) : `3 passed (18.5s)`. Aucun fichier de `src/` ni de `tests/` n'a changé dans cette tâche.
-- types : `tsc --noEmit -p .` sans erreur
-- build : `✓ built in 1.88s`
+Suite finale, lancée à 16:52 après l'écriture d'`emploi.json` :
+- **unit** : `Test Files  21 passed (21)` · `Tests  316 passed (316)`
+- **e2e** : `2 failed` · `38 skipped` · `378 passed (11.7m)`.
+  - Les deux échecs sont dans `immobilier.spec.ts:220` (« D2 … ») et `:376` (« AC-10 … »), en bureau. Ce sont des rechargements de page en plein test (« Execution context was destroyed, most likely because of a navigation » ; « navigated to … »).
+  - Cause probable : j'ai lancé `npm run build` pendant la suite, et le serveur de développement recharge la page quand `dist/index.html` change. C'est une erreur de ma part, à ne pas refaire.
+  - Relancés seuls `--repeat-each=3` (port 4173 libre) : `6 passed (8.2s)`.
+  - Aucun fichier de `src/` ni de `tests/` n'a changé ; `emploi.json` n'est lu par aucune page.
+- Suite précédente (16:21, même code sans la règle d'Yvrench) : `379 passed`, `1 failed` (`proches-etats.spec.ts:110`, instabilité connue, `3 passed` en relance seule).
+- **types** : `tsc --noEmit -p .` sans erreur
+- **build** : `✓ built in 2.22s` ; `dist/data/emploi.json` présent
 
 ## Décisions prises à la place de Vincent
-- Décision : zones d'emploi lues dans la table de l'Insee à la géographie du 01/01/2025 (`ZE2020_au_01-01-2025`), celle de `communes.json`, plutôt que dans celle de 2026 qu'il aurait fallu recaler. Pourquoi : jointure directe, aucune commune à recaler, les 34 746 communes trouvées. Coût si c'est faux : aucun visible ; les zones 2020 n'ont pas changé de contour, seuls les codes des communes changent d'un millésime à l'autre.
-- Décision : une ligne BMO par métier × bassin × comité local × **département**. Les 435 cas où le même trio revient (12 couples bassin × comité à cheval sur deux ou trois départements) sont des parts, additionnées, et non des copies à dédoublonner. Pourquoi : les chiffres diffèrent d'un département à l'autre (48 en Ardèche, 555 dans la Drôme) ; c'est la « somme des lignes publiées » de R45 ; les comptes d'AC-12 retombent juste. Coût si c'est faux : un seul cas identique publié (vétérinaires, bassin 1129, 12 + 12) serait compté double.
-- Décision : recalage des communes absentes de la table **à rebours** (ancien code, commune d'origine), et non vers « la commune 2026 qui les a reprises » comme l'écrivait le plan. Pourquoi : mesuré, la table est sur une géographie plus ancienne ; aucune des 12 n'a de mouvement en 2026 ; c'est le recalage de H86 de cadre-de-vie que cite H142. Coût si c'est faux : 11 petites communes changeraient de bassin, mais les contrôles montrent un seul bassin possible pour chacune.
-- Décision (décidé par Claude) : le bassin de Monaco (9399) reste dans les 389 bassins : il compte dans N et dans le classement, comme l'ont mesuré la recherche et AC-12. Il n'a pas de ville principale (`null`), puisque aucune commune de la carte n'y est. La tâche 1 devra l'ignorer pour les distances. Pourquoi : H135 prend la ville principale parmi les communes de la carte. Coût si c'est faux : les recrutements de Monaco ne comptent pas pour les communes voisines (Beausoleil, Cap-d'Ail) ; ou bien il faudrait un point pour Monaco.
-- Décision (décidé par Claude) : libellés des métiers sans espace de fin (un seul libellé en avait une), sinon tels que publiés, fautes comprises (« Ouviers … »). Coût si c'est faux : aucun.
-- Décision (décidé par Claude, montré à la démo) : les 57 noms courants de `scripts/data/noms-metiers.csv`. Les plus discutables : « UX designer », « designer » et « webdesigner » vers les graphistes (U1X82) ; « devops » vers M2X92 ; « commercial » vers les attachés commerciaux (R2X80) ; « enseignant » vers les professeurs du secondaire (W0X90) ; « ingénieur gestion des risques » vers H1X91 (le métier du testeur). Coût si c'est faux : une suggestion de plus ou de moins dans le champ ; à corriger dans le fichier.
-- Décision : le texte de la mention de chômage dans CLAUDE.md porte « 2e trimestre 2026 ». La page le lira dans `emploi.json` (`trimestre_chomage`), sans l'écrire en dur.
+- Décision : zones d'emploi lues dans la table de l'Insee à la géographie du 01/01/2025, celle de `communes.json`, plutôt que dans celle de 2026 qu'il aurait fallu recaler. Pourquoi : jointure directe, les 34 746 communes trouvées. Coût si c'est faux : aucun visible ; les zones 2020 n'ont pas changé de contour, seuls les codes des communes changent d'un millésime à l'autre.
+- Décision : une ligne BMO par métier × bassin × comité local × **département**. Les 435 cas où le même trio revient (12 couples bassin × comité à cheval sur deux ou trois départements) sont des parts, additionnées. Pourquoi : les chiffres diffèrent d'un département à l'autre (48 en Ardèche, 555 dans la Drôme) ; c'est la « somme des lignes publiées » de R45 ; les comptes d'AC-12 retombent juste. Coût si c'est faux : un seul cas identique publié (vétérinaires, bassin 1129, 12 + 12) serait compté double.
+- Décision : recalage des 11 communes absentes de la table **à rebours** (ancien code, ou commune dont elles sont sorties), et non vers « la commune 2026 qui les a reprises » comme l'écrivait le plan. Pourquoi : mesuré, la table est sur une géographie plus ancienne ; aucune des 12 n'a de mouvement en 2026 ; c'est le recalage de H86 de cadre-de-vie que cite H142. Coût si c'est faux : 11 petites communes changeraient de bassin, mais le contrôle montre un seul bassin possible pour chacune.
+- Décision (décidé par Claude) : **Monaco (9399) sans ville principale**. Le bassin reste dans les 389 : il compte dans N et dans le classement, comme dans les mesures de la recherche et dans AC-12 (k = 39 et 97). Sa ville principale est `null`, car aucune commune de la carte n'est dans ce bassin (H135 la choisit parmi les communes de la carte). **La tâche 1 doit l'ignorer pour les distances et pour « le plus proche ».** Coût si c'est faux : les recrutements de Monaco ne comptent pas pour les communes voisines (Beausoleil, Cap-d'Ail, Roquebrune) ; il faudrait sinon un point pour Monaco, hors de la carte.
+- Décision (décidé par Claude) : libellés des métiers sans espace de fin (un seul en avait une), sinon tels que publiés, fautes comprises (« Ouviers … »). Coût si c'est faux : aucun.
+- Décision (décidé par Claude, montré à la démo) : les 57 noms courants de `scripts/data/noms-metiers.csv`. Les plus discutables :
+  - « UX designer », « designer » et « webdesigner » vers les graphistes (U1X82) ;
+  - « devops » vers M2X92 ;
+  - « commercial » vers les attachés commerciaux (R2X80) ;
+  - « enseignant » vers les professeurs du secondaire (W0X90) ;
+  - « ingénieur gestion des risques » vers H1X91 (le métier du testeur).
+
+  Coût si c'est faux : une suggestion de plus ou de moins dans le champ ; à corriger dans le fichier.
+- Décision : format d'`emploi.json`, avec des tableaux et un champ `champs` qui nomme les colonnes, comme `mairies.json` :
+  - `bassins` : `[code, ville]` ;
+  - `zones` : `[code, nom, taux]` ;
+  - `metiers` : `{code, libelle, noms, peu_chiffre, bassins: [[bassin, projets, niveau]]}`, bassins chiffrés seulement, triés par projets décroissants ;
+  - `communes` : `[code, bassin, zone]`, dans l'ordre de `communes.json` ;
+  - `trimestre_chomage` à part.
+
+  Pourquoi : poids (234 Ko compressés). Coût si c'est faux : la tâche 1 lit un autre format ; c'est elle qui fabrique celui de la fixture.
 
 ## Fichiers touchés hors de la liste de la tâche
 - `docs/plans/2026-11-21-emploi/captures/` (T0a-*) : les preuves et les sondes. Le dossier est prévu par le plan pour la 0b.
-- `docs/solutions/2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md` : leçon (la mesure contredit le plan)
+- `docs/solutions/2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md` (leçon) et `docs/solutions/README.md` (index régénéré par le crochet)
 
 ## Tests existants modifiés
 - aucun
 
 ## Leçons écrites
-- `docs/solutions/2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md` : une table « 2026 » peut porter des codes plus anciens. Il faut regarder les mouvements dans les deux sens avant d'écrire la règle de recalage. Et des lignes « en double » peuvent être des parts par département, pas des copies.
-
-## Question pour Vincent
-**Yvrench (Somme, 296 habitants) n'est pas dans la table des bassins de France Travail, et aucun changement de commune ne l'explique : à quel bassin la rattacher ?**
-
-Ce que ça change : sans bassin, sa fiche ne pourrait rien dire de l'emploi, et le critère AC-12 (« les 34 746 communes ont un bassin ») tombe. Les 11 autres communes absentes se recalent toutes par l'historique des communes (changements de code et communes rétablies). Yvrench est la seule qui manque vraiment.
-
-| Option | Ce que ça coûte |
-|---|---|
-| **A. Une règle écrite dans le script** : une commune absente de la table et sans aucun changement de commune prend le bassin de la commune la plus proche, de mairie à mairie. Pour Yvrench : Yvrencheux à 0,8 km, bassin d'Abbeville (3201). Ses 7 voisines les plus proches (jusqu'à 5 km) sont toutes dans ce bassin, et sa zone d'emploi est aussi celle d'Abbeville. | Aucun délai. La règle vaut aussi pour un futur oubli ; le script l'affiche. |
-| **B. Une exception écrite à la main** pour Yvrench seule (80832 → 3201) dans le script, avec la raison. | Aucun délai. Même résultat ; une prochaine commune oubliée arrêterait encore le script. |
-| **C. Laisser Yvrench sans bassin** : sa fiche dirait seulement le chômage. | Il faut amender AC-12 (« 34 745 communes ») et prévoir l'état « sans bassin » dans la fiche (tâche 2). |
-
-**Recommandation : A.** C'est la règle la plus simple qui donne la réponse évidente (toutes ses voisines sont dans le bassin d'Abbeville). Après la réponse, la fin prend environ 15 minutes : la règle, le vrai lancement qui écrit `emploi.json`, la suite complète, puis le commit.
+- `docs/solutions/2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md` :
+  - une table « 2026 » peut porter des codes plus anciens : il faut regarder les mouvements dans les deux sens avant d'écrire la règle de recalage ;
+  - des lignes « en double » peuvent être des parts par département, pas des copies.

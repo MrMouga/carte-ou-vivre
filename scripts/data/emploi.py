@@ -38,6 +38,7 @@ import csv
 import hashlib
 import io
 import json
+import math
 import os
 import sys
 import zipfile
@@ -220,6 +221,24 @@ def recalage(code, table, mvt):
     return trouves[0], chemin
 
 
+def distance_km(a, b):
+    """Distance à vol d'oiseau entre deux points [lon, lat], en km (haversine, sphère de 6 371 km : `distanceKm` de
+    src/proches/distance.ts)."""
+    (lon1, lat1), (lon2, lat2) = a, b
+    h = (math.sin(math.radians(lat2 - lat1) / 2) ** 2
+         + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(math.radians(lon2 - lon1) / 2) ** 2)
+    return 2 * 6371 * math.asin(min(1, math.sqrt(h)))
+
+
+def voisine(code, points, candidates):
+    """H142 amendée (Vincent, 2026-11-21) : commune absente de la table sans aucun mouvement du COG → la commune de la
+    table la plus proche, de mairie à mairie (points de reperes.json) ; égalité au plus petit code. (code, km) ou None."""
+    if code not in points:
+        return None
+    proches = sorted((distance_km(points[code], points[c]), c) for c in candidates if c != code and c in points)
+    return (proches[0][1], proches[0][0]) if proches else None
+
+
 def lire_zones():
     """Composition communale des zones d'emploi 2020 (géographie au 01/01/2025) : code INSEE → zone."""
     z = zipfile.ZipFile(os.path.join(RAW, FICHIERS["zones d'emploi"][0]))
@@ -285,7 +304,11 @@ def main():
     table = lire_bassins_table()
     with open(os.path.join(RAW, FICHIERS['COG 2026'][0]), encoding='utf-8') as f:
         mvt = list(csv.DictReader(f))
-    commune_bassin, recalees = {}, {}
+    reperes = json.load(open(os.path.join(OUT, 'reperes.json'), encoding='utf-8'))['reperes']
+    check(len(reperes) == len(pop), 'reperes.json : un point de mairie par commune, dans l\'ordre de communes.json')
+    points = {c: reperes[i][:2] for i, c in enumerate(pop)}
+    dans_table = [c for c in pop if c in table]
+    commune_bassin, recalees, par_voisine = {}, {}, {}
     for code in pop:
         if code in PLM:
             arr = {table.get(a) for a in PLM[code]}
@@ -295,12 +318,22 @@ def main():
             commune_bassin[code] = table[code]
         else:
             n, chemin = recalage(code, table, mvt)
+            if not chemin:  # aucun mouvement dans le COG : la commune la plus proche (H142 amendée)
+                v = voisine(code, points, dans_table)
+                check(v is not None, f'{code} ({nom[code]}) sans mouvement : une voisine de la table', muet=True)
+                par_voisine[code] = v
+                commune_bassin[code] = table[v[0]]
+                continue
             check(n is not None, f'{code} ({nom[code]}) recalé sur un code de la table, un seul bassin ({chemin})', muet=True)
             recalees[code] = (n, chemin)
             commune_bassin[code] = table[n]
     for c, (n, chemin) in sorted(recalees.items()):
         print(f'  recalée : {nom[c]} ({c}) → code {n} de la table, bassin {table[n]} ; mouvements (ancien code, MOD, date) {chemin}')
-    check(sorted(recalees) == ABSENTES, f'H142 : les 12 communes absentes de la table recalées, et elles seules ({len(recalees)})')
+    for c, (v, km) in sorted(par_voisine.items()):
+        print(f'  sans mouvement, rattachée à la plus proche : {nom[c]} ({c}) → {nom[v]} ({v}) à {km:.2f} km, bassin {table[v]}')
+    check(sorted([*recalees, *par_voisine]) == ABSENTES and sorted(par_voisine) == ['80832'],
+          f'H142 : les 12 communes absentes de la table, et elles seules : {len(recalees)} recalées par le COG,'
+          f' {len(par_voisine)} par la plus proche (Yvrench)')
     hors = sorted({b for b in commune_bassin.values() if b not in noms_bassins})
     check(not hors, f'tout bassin des communes est un bassin du BMO ({hors})')
     sans = sorted(set(noms_bassins) - set(commune_bassin.values()))
