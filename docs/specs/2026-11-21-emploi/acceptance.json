@@ -149,7 +149,7 @@
       "given": "L'« extrait_bmo » de la fixture (20 bassins, métier M2X90)",
       "when": "les niveaux des bassins sont calculés",
       "then": "projets par bassin : b01 500, b02 300, b03 300, b04 120 (60 + 60), b05 80, b06 80, b07 40 (la ligne cachée ne compte pas), b08 12, b09 5, b10 5 ; b11 et b12 (cachés) et b13 à b20 (absents) n'ont pas de chiffre. Niveau « 10 » (2 bassins visés, égalités comprises) : b01, b02, b03. Niveau « 25 » (5 visés, égalités comprises) : b04, b05, b06 en plus. Niveau « tous » : b07, b08, b09, b10. Aucun niveau : b11 à b20",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
