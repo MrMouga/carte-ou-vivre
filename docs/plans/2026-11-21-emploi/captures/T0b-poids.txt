@@ -1,0 +1,7 @@
+T0b-poids.mjs — 21/11/2026 17:22:12
+emploi.json : brut 1 496 506 o ; gzip -9 233 948 o ; brotli -q 11 164 785 o
+mairies.json : brut 1 526 497 o ; gzip -9 457 847 o ; brotli -q 11 356 655 o
+nuances.json : brut 1 459 o ; gzip -9 430 o ; brotli -q 11 393 o
+achat.json : brut 1 435 241 o ; gzip -9 232 384 o ; brotli -q 11 169 379 o
+communes.json : brut 3 185 359 o ; gzip -9 810 570 o ; brotli -q 11 633 625 o
+reperes.json : brut 1 626 077 o ; gzip -9 587 411 o ; brotli -q 11 461 821 o

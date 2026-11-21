@@ -1,0 +1,22 @@
+  ok   BMO : colonnes attendues (BE26, clpe, met…)
+BMO : 51641 lignes de métropole, dont 100 sans comité local (Monaco)
+  ok   BMO : une seule ligne par métier × bassin × comité local × département (0 en double)
+BMO : 435 métier × bassin × comité local sur plusieurs départements (une ligne chacun, additionnées) ; 23 aux lignes identiques (met, xmet, smet) : [(('B0X31', '5304', 'CLPE29002'), [('*', '*', '*'), ('*', '*', '*')]), (('B2X37', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('B6X71', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('C0X30', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('D1X30', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('D2X31', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('E4X30', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('E5X70', '4444', 'CLPE6AE08'), [('*', '*', '*'), ('*', '*', '*')])]
+  dont avec un chiffre publié : 1 [(('V2X92', '1129', 'CLPE94001'), [('12', '*', '*'), ('12', '*', '*')])]
+bassin	libellé BMO	ville principale (dép.)	part de la population dans ce département	distance au barycentre
+7503	CONFOLENS	Castelnau-de-Médoc (33)	29 %	99 km	147 communes
+2409	ARGENTON SUR CREUSE	Le Blanc (36)	100 %	38 km	117 communes
+2718	MONTBARD	Châtillon-sur-Seine (21)	100 %	30 km	252 communes
+9301	ALPES DE HAUTE PROVENCE	Manosque (04)	100 %	27 km	198 communes
+2702	DECIZE	Decize (58)	100 %	24 km	151 communes
+2823	SUD MANCHE	Granville (50)	100 %	24 km	143 communes
+7515	MONTMORILLON	Chauvigny (86)	100 %	24 km	93 communes
+2805	FORGES LES EAUX	Gournay-en-Bray (76)	100 %	23 km	116 communes
+7521	JONZAC	Pons (17)	100 %	23 km	129 communes
+2828	MORTAGNE L AIGLE	L'Aigle (61)	100 %	22 km	134 communes
+5212	LA FLECHE	La Flèche (72)	100 %	21 km	62 communes
+8438	PAYS DE GEX	Valserhône (01)	100 %	21 km	38 communes
+5307	GUINGAMP	Paimpol (22)	100 %	19 km	78 communes
+7534	MONT DE MARSAN	Mont-de-Marsan (40)	100 %	19 km	179 communes
+9316	SUD VAUCLUSE	Cavaillon (84)	100 %	19 km	60 communes
+bassins dont la ville principale est dans un département qui a moins de la moitié de la population du bassin : [('1138', 'T5 Boucle Nord de Seine', 'Argenteuil'), ('5313', 'REDON', 'Redon'), ('7503', 'CONFOLENS', 'Castelnau-de-Médoc')]

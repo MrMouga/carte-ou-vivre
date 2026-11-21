@@ -1,0 +1,17 @@
+colonnes : ['region', 'dep', 'code_commune', 'lib_commune', 'code_bassin_2026', 'lib_bassin_2026']
+{'region': '75', 'dep': '16', 'code_commune': '16106', 'lib_commune': 'CONFOLENS', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33010', 'lib_commune': 'ARCINS', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33012', 'lib_commune': 'ARSAC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33022', 'lib_commune': 'AVENSAN', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33070', 'lib_commune': 'BRACH', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33104', 'lib_commune': 'CASTELNAU DE MEDOC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33146', 'lib_commune': 'CUSSAC FORT MEDOC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33211', 'lib_commune': 'LABARDE', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33220', 'lib_commune': 'LAMARQUE', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33248', 'lib_commune': 'LISTRAC MEDOC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33268', 'lib_commune': 'MARGAUX CANTENAC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33297', 'lib_commune': 'MOULIS EN MEDOC', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+{'region': '75', 'dep': '33', 'code_commune': '33517', 'lib_commune': 'SOUSSANS', 'code_bassin_2026': '7503', 'lib_bassin_2026': 'CONFOLENS'}
+BMO 7503 : {'BE26': '7503', 'NOMBE26': 'CONFOLENS', 'clpe': 'CLPE16003', 'Dept': '16'} {'NOM_REG': 'Nouvelle-Aquitaine', 'NOMBE26': 'CONFOLENS', 'clpe': 'CLPE16003'}
+BMO 7503 : {'BE26': '7503', 'NOMBE26': 'CONFOLENS', 'clpe': 'CLPE33006', 'Dept': '33'} {'NOM_REG': 'Nouvelle-Aquitaine', 'NOMBE26': 'CONFOLENS', 'clpe': 'CLPE33006'}
+BMO 7503 V1X80 : {'annee': '2026', 'Code métier BMO': 'V1X80', 'Nom métier BMO': 'Infirmiers et sages-femmes', 'Famille_met': 'S', 'Lbl_fam_met': 'Fonctions sociales et médico-sociales', 'REG': '75', 'NOM_REG': 'Nouvelle-Aquitaine', 'Dept': '16', 'NomDept': 'Charente', 'BE26': '7503', 'NOMBE26': 'CONFOLENS', 'clpe': 'CLPE16003', 'met': '339', 'xmet': '339', 'smet': '*'}

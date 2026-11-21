@@ -1,0 +1,9 @@
+plus peuplée de la partie charentaise du bassin 7503 : Terres-de-Haute-Charente (16192, 3777 hab.)
+A0X40 Agriculteurs à « 10 » (7503 : 909 projets, niveau 10) : 4882 communes avec Castelnau-de-Médoc, 4971 avec Terres-de-Haute-Charente
+A1X42 Viticulteurs, arboriculteurs à « 10 » (7503 : 882 projets, niveau 10) : 5443 communes avec Castelnau-de-Médoc, 5497 avec Terres-de-Haute-Charente
+QBX01 Gestionnaires de la banque et de l'assurance à « 10 » (7503 : 17 projets, niveau 10) : 5974 communes avec Castelnau-de-Médoc, 6030 avec Terres-de-Haute-Charente
+R4X90 Cadres commerciaux, acheteurs et cadres de la mercatique à « tous » (7503 : 5 projets, niveau tous) : 18271 communes avec Castelnau-de-Médoc, 18325 avec Terres-de-Haute-Charente
+V1X80 Infirmiers et sages-femmes à « 10 » (7503 : 339 projets, niveau 10) : 6192 communes avec Castelnau-de-Médoc, 6275 avec Terres-de-Haute-Charente
+V1X80 Infirmiers et sages-femmes à « 25 » (7503 : 339 projets, niveau 10) : 13448 communes avec Castelnau-de-Médoc, 13531 avec Terres-de-Haute-Charente
+V1X80 Infirmiers et sages-femmes à « tous » (7503 : 339 projets, niveau 10) : 31456 communes avec Castelnau-de-Médoc, 31498 avec Terres-de-Haute-Charente
+métiers chiffrés dans 7503 : 58 ; dont au niveau « 10 » : 4

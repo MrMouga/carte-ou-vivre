@@ -1,0 +1,13 @@
+21/11/2026 17:24:13 ; version servie 164a0ede7412151f6bef86fe9d1fd5823e339902 ; 15 essais par sens ; 2 tours
+-- tour 1, début 17:24:13, charge 3.37 3.89 4.39
+tour 1, curseur du prix, un cran (témoin) : médiane 160 ms ; min 144 max 162 ; essais 158 160 161 161 159 160 162 144 160 162 144 145 161 160 145
+tour 1, « Ville dense » cochée (34 031 communes décolorées) : médiane 178 ms ; min 176 max 211 ; essais 198 179 177 193 194 176 177 178 178 178 177 177 177 211 177
+tour 1, « Ville dense » décochée (34 031 communes recolorées) : médiane 261 ms ; min 259 max 359 ; essais 261 260 259 259 261 260 260 353 277 277 261 261 359 260 278
+tour 1, cases de la mer 50 ↔ 100 km (H90) : médiane 160 ms ; min 143 max 177 ; essais 171 159 160 159 161 144 161 144 161 143 171 151 177 143 160
+-- tour 1, fin 17:24:57, charge 3.63 3.82 4.34
+-- tour 2, début 17:24:57, charge 3.63 3.82 4.34
+tour 2, curseur du prix, un cran (témoin) : médiane 161 ms ; min 159 max 278 ; essais 163 160 179 160 161 160 159 278 160 177 176 161 162 161 161
+tour 2, « Ville dense » cochée (34 031 communes décolorées) : médiane 191 ms ; min 176 max 194 ; essais 191 192 193 192 193 178 176 177 194 192 177 191 178 194 178
+tour 2, « Ville dense » décochée (34 031 communes recolorées) : médiane 276 ms ; min 246 max 278 ; essais 263 276 277 277 260 277 260 260 246 276 260 277 278 277 278
+tour 2, cases de la mer 50 ↔ 100 km (H90) : médiane 160 ms ; min 141 max 173 ; essais 173 141 160 145 161 143 160 142 160 143 161 144 160 146 160
+-- tour 2, fin 17:25:41, charge 2.67 3.57 4.22

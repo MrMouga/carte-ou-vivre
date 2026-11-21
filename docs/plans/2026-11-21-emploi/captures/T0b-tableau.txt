@@ -1,0 +1,43 @@
+T0b-tableau.mjs — 21/11/2026 17:20:10 — charge (1, 5, 15 min) : 2.66 4.17 4.65
+34 746 communes, 389 bassins, dont 388 avec une ville principale (sans : 9399)
+calcul des villes principales à 30 km de chaque commune (Node v22.22.0, tri par latitude) : médiane 47.4 ms ; min 46.5 max 49.7 ; 15 essais après 3 d'échauffement
+couples commune → ville principale à 30 km ou moins : 75 354 ; communes sans aucune ville à 30 km : 2 569
+contrôle sans tri (34 746 × 388 distances) : 75 354 couples, 0 écart avec le calcul trié ; 594 ms (une fois)
+
+AC-12 : communes qui passent M2X90 à « 10 % » : 4 588 (attendu 4 588, écart accepté 4 542 à 4 634) → dans l'écart
+AC-12 : La Rochelle, V1X80 à « 10 % », le plus proche : La Roche-sur-Yon, 61 km (attendu La Roche-sur-Yon, 61 km)
+AC-12 : Pau, M2X90 à « 10 % », le plus proche : Bayonne, 92 km (attendu Bayonne, 92 km)
+AC-12 : V1X80 à « 10 % » : Bordeaux passe, Pau passe
+
+== R4X90 — Cadres commerciaux, acheteurs et cadres de la mercatique
+noms courants : business developer, chargé d'affaires, chef de produit, marketing, prospecteur ; peu chiffré : non ; bassins chiffrés : 162 sur 389
+bassins par niveau (cumulés) : 10 % 39, 25 % 100, tous 162
+communes qui passent (sur 34 746) : 10 % 4 993, 25 % 12 175, partout où il recrute 18 271
+  Bordeaux (bassin 7532) : 199 projets, niveau « 10 % », 6e sur 162 chiffrés ; communes à 30 km de sa ville principale : 179 ; la ville elle-même — 10 % : passe (Bordeaux, sur place) ; 25 % : passe (Bordeaux, sur place) ; partout où il recrute : passe (Bordeaux, sur place)
+  Nantes (bassin 5220) : 147 projets, niveau « 10 % », 8e sur 162 chiffrés ; communes à 30 km de sa ville principale : 95 ; la ville elle-même — 10 % : passe (Nantes, sur place) ; 25 % : passe (Nantes, sur place) ; partout où il recrute : passe (Nantes, sur place)
+  La Rochelle (bassin 7504) : 6 projets, niveau « partout où il recrute », 148e sur 162 chiffrés ; communes à 30 km de sa ville principale : 100 ; la ville elle-même — 10 % : ne passe pas (Nantes, à 122 km) ; 25 % : ne passe pas (La Roche-sur-Yon, à 61 km) ; partout où il recrute : passe (La Rochelle, sur place)
+  Pau (bassin 7538) : pas de chiffre publié ; communes à 30 km de sa ville principale : 284 ; la ville elle-même — 10 % : ne passe pas (Toulouse, à 151 km) ; 25 % : ne passe pas (Dax, à 72 km) ; partout où il recrute : ne passe pas (Mont-de-Marsan, à 67 km)
+  Toulouse (bassin 7617) : 156 projets, niveau « 10 % », 7e sur 162 chiffrés ; communes à 30 km de sa ville principale : 238 ; la ville elle-même — 10 % : passe (Toulouse, sur place) ; 25 % : passe (Toulouse, sur place) ; partout où il recrute : passe (Toulouse, sur place)
+villes principales du niveau « 10 % » (39) : Paris 1 016 · Nanterre 421 · Vitry-sur-Seine 285 · Boulogne-Billancourt 228 · Versailles 201 · Bordeaux 199 · Toulouse 156 · Nantes 147 · Lille 142 · Argenteuil 125 · Lyon 122 · Vénissieux 121 · Strasbourg 103 · Marseille 102 · Rennes 94 · Rouen 75 · Antony 73 · Tourcoing 72 · Montpellier 65 · Sartrouville 63 · Tours 61 · Amiens 60 · Aix-en-Provence 57 · Chelles 56 · Évry-Courcouronnes 51 · Angers 51 · Grenoble 51 · Aulnay-sous-Bois 47 · Montreuil 47 · Reims 47 · Limoges 47 · Dijon 45 · Saint-Denis 44 · Avignon 44 · Cergy 41 · Nancy 37 · Vaulx-en-Velin 37 · Franconville 34 · Orléans 34
+
+== H1X91 — Ingénieurs et cadres techniques en Hygiène Sécurité Environnement -HSE- industriels et exploitation éco-industriel
+noms courants : ingénieur gestion des risques ; peu chiffré : oui ; bassins chiffrés : 46 sur 389
+bassins par niveau (cumulés) : 10 % 42, 25 % 46, tous 46
+communes qui passent (sur 34 746) : 10 % 6 920, 25 % 7 465, partout où il recrute 7 465
+  Bordeaux (bassin 7532) : 7 projets, niveau « 10 % », 39e sur 46 chiffrés ; communes à 30 km de sa ville principale : 179 ; la ville elle-même — 10 % : passe (Bordeaux, sur place) ; 25 % : passe (Bordeaux, sur place) ; partout où il recrute : passe (Bordeaux, sur place)
+  Nantes (bassin 5220) : 16 projets, niveau « 10 % », 12e sur 46 chiffrés ; communes à 30 km de sa ville principale : 95 ; la ville elle-même — 10 % : passe (Nantes, sur place) ; 25 % : passe (Nantes, sur place) ; partout où il recrute : passe (Nantes, sur place)
+  La Rochelle (bassin 7504) : pas de chiffre publié ; communes à 30 km de sa ville principale : 100 ; la ville elle-même — 10 % : ne passe pas (Nantes, à 122 km) ; 25 % : ne passe pas (Nantes, à 122 km) ; partout où il recrute : ne passe pas (Nantes, à 122 km)
+  Pau (bassin 7538) : pas de chiffre publié ; communes à 30 km de sa ville principale : 284 ; la ville elle-même — 10 % : ne passe pas (Tarbes, à 37 km) ; 25 % : ne passe pas (Tarbes, à 37 km) ; partout où il recrute : ne passe pas (Tarbes, à 37 km)
+  Toulouse (bassin 7617) : 20 projets, niveau « 10 % », 7e sur 46 chiffrés ; communes à 30 km de sa ville principale : 238 ; la ville elle-même — 10 % : passe (Toulouse, sur place) ; 25 % : passe (Toulouse, sur place) ; partout où il recrute : passe (Toulouse, sur place)
+villes principales du niveau « 10 % » (42) : Vénissieux 250 · Paris 88 · Chelles 39 · Montpellier 39 · Caen 28 · Aix-en-Provence 27 · Toulouse 20 · Vannes 19 · Compiègne 18 · Limoges 18 · Épinal 16 · Nantes 16 · Nanterre 15 · Grenoble 15 · Saint-Étienne 15 · Lille 13 · Lyon 13 · Clermont-Ferrand 13 · Brest 12 · Sarrebourg 11 · Annecy 11 · Marseille 11 · Versailles 10 · Argenteuil 10 · Arras 9 · Troyes 9 · Tarbes 9 · Antibes 9 · Antony 8 · Tours 8 · Tourcoing 8 · Metz 8 · Cergy 7 · Auxerre 7 · Le Havre 7 · Douai 7 · Strasbourg 7 · Pornic 7 · Bordeaux 7 · Rodez 7 · Nîmes 7 · Nice 7
+
+== V1X80 — Infirmiers et sages-femmes
+noms courants : infirmière, sage-femme ; peu chiffré : non ; bassins chiffrés : 358 sur 389
+bassins par niveau (cumulés) : 10 % 39, 25 % 98, tous 358
+communes qui passent (sur 34 746) : 10 % 6 192, 25 % 13 448, partout où il recrute 31 456
+  Bordeaux (bassin 7532) : 626 projets, niveau « 10 % », 7e sur 358 chiffrés ; communes à 30 km de sa ville principale : 179 ; la ville elle-même — 10 % : passe (Bordeaux, sur place) ; 25 % : passe (Bordeaux, sur place) ; partout où il recrute : passe (Bordeaux, sur place)
+  Nantes (bassin 5220) : 570 projets, niveau « 10 % », 10e sur 358 chiffrés ; communes à 30 km de sa ville principale : 95 ; la ville elle-même — 10 % : passe (Nantes, sur place) ; 25 % : passe (Nantes, sur place) ; partout où il recrute : passe (Nantes, sur place)
+  La Rochelle (bassin 7504) : 66 projets, niveau « partout où il recrute », 145e sur 358 chiffrés ; communes à 30 km de sa ville principale : 100 ; la ville elle-même — 10 % : ne passe pas (La Roche-sur-Yon, à 61 km) ; 25 % : ne passe pas (La Roche-sur-Yon, à 61 km) ; partout où il recrute : passe (La Rochelle, sur place)
+  Pau (bassin 7538) : 326 projets, niveau « 10 % », 22e sur 358 chiffrés ; communes à 30 km de sa ville principale : 284 ; la ville elle-même — 10 % : passe (Pau, sur place) ; 25 % : passe (Pau, sur place) ; partout où il recrute : passe (Pau, sur place)
+  Toulouse (bassin 7617) : 761 projets, niveau « 10 % », 3e sur 358 chiffrés ; communes à 30 km de sa ville principale : 238 ; la ville elle-même — 10 % : passe (Toulouse, sur place) ; 25 % : passe (Toulouse, sur place) ; partout où il recrute : passe (Toulouse, sur place)
+villes principales du niveau « 10 % » (39) : Paris 1 680 · Rouen 1 016 · Toulouse 761 · Nice 710 · Lille 667 · Tours 658 · Bordeaux 626 · Marseille 571 · Argenteuil 570 · Nantes 570 · Rennes 554 · Lyon 492 · Vitry-sur-Seine 460 · Aix-en-Provence 460 · Nanterre 453 · Brest 443 · Angers 430 · Strasbourg 406 · Aulnay-sous-Bois 365 · Le Mans 349 · Castelnau-de-Médoc 339 · Pau 326 · Orléans 300 · Sartrouville 298 · Champigny-sur-Marne 297 · Versailles 296 · Évreux 294 · Montreuil 291 · Caen 285 · Montpellier 280 · Besançon 266 · Chambéry 262 · Bayonne 257 · Amiens 255 · Annecy 254 · Nancy 236 · La Roche-sur-Yon 232 · Limoges 224 · Clermont-Ferrand 221

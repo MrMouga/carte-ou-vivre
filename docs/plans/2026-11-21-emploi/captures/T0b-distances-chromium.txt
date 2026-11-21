@@ -1,0 +1,9 @@
+(node:24044) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+début 21/11/2026 17:23:46 ; charge 3.96 4.03 4.46 ; Chromium 153.0.8010.12
+processeur ralenti 4 fois ; fin 21/11/2026 17:23:50 ; charge 3.96 4.03 4.46
+préparation (points et villes principales), page neuve : médiane 14 ms ; min 14 max 22 ; essais 22 14 15 14 14 16 14
+calcul des villes principales à 30 km, premier appel dans une page neuve (7 pages) : médiane 154 ms ; min 152 max 163 ; essais 157 154 152 155 153 154 163
+même calcul, à chaud (10 appels dans la dernière page) : médiane 144 ms ; min 142 max 185 ; essais 142 152 185 144 143 147 144 144 144 143
+un filtre (compter les communes qui passent un métier à un niveau), moyenne : 1.0 ms
+communes qui passent : {"M2X90:10":4588,"M2X90:25":11934,"M2X90:tous":13934,"R4X90:10":4993,"R4X90:25":12175,"R4X90:tous":18271,"H1X91:10":6920,"H1X91:25":7465,"H1X91:tous":7465,"V1X80:10":6192,"V1X80:25":13448,"V1X80:tous":31456}

@@ -1,0 +1,9 @@
+début 21/11/2026 17:22:40 ; charge 4.88 4.19 4.55 ; version servie 164a0ede7412151f6bef86fe9d1fd5823e339902
+Fast 4G : {"offline":false,"downloadThroughput":1012500,"uploadThroughput":168750,"latency":165} ; 7 essais par jeu, en alternance ; fin 21/11/2026 17:23:24 ; charge 4.31 4.12 4.50
+achat.json seul : médiane 425 ms ; essais 433 424 423 426 417 425 426
+mairies.json seul : médiane 639 ms ; essais 639 638 636 644 635 639 640
+emploi.json seul : médiane 429 ms ; essais 436 429 433 436 429 427 429
+chargement actuel (communes + reperes + achat + mairies + nuances) : médiane 2289 ms ; essais 2296 2294 2287 2289 2288 2289 2295
+chargement avec emploi (… + emploi) : médiane 2543 ms ; essais 2543 2543 2544 2543 2540 2541 2541
+chargement ajouté (médianes) : 254 ms
+octets [transférés, corps compressé, corps décompressé] : {"/data/achat.json":[245840,245540,1435241],"/data/mairies.json":[463271,462971,1526497],"/data/emploi.json":[250827,250527,1496506],"/data/communes.json":[820581,820281,3185359],"/data/reperes.json":[589756,589456,1626077],"/data/nuances.json":[735,435,1459]}
