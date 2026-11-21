@@ -1,0 +1,28 @@
+18:35:56 /?loyer=1200&metier=V1X80:10,M2X90 → ?loyer=1200&metier=V1X80:10,M2X90
+18:36:06 fiche 33063 (bordeaux)
+18:36:06   sous « Mairie » : Infirmiers et sages-femmes : Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026
+18:36:06   sous « Mairie » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de Bordeaux, 742 recrutements prévus en 2026
+18:36:06   sous « Mairie » : Chômage : 8,0 % dans la zone d'emploi de Bordeaux (2e trimestre 2026)
+18:36:16 fiche 17300 (la-rochelle)
+18:36:16   raison : Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)
+18:36:16   sous « Mairie » : Infirmiers et sages-femmes : bassin de La Rochelle, 66 recrutements prévus en 2026
+18:36:16   sous « Mairie » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de La Rochelle, pas de chiffre publié pour ce métier
+18:36:16   sous « Mairie » : Chômage : 7,7 % dans la zone d'emploi de La Rochelle (2e trimestre 2026)
+18:36:27 fiche 64445 (pau)
+18:36:27   sous « Mairie » : Infirmiers et sages-femmes : Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026
+18:36:27   sous « Mairie » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de Pau, pas de chiffre publié pour ce métier
+18:36:27   sous « Mairie » : Chômage : 6,9 % dans la zone d'emploi de Pau (2e trimestre 2026)
+18:36:36 fiche 33474 (saint-selve)
+18:36:36   sous « Mairie » : Infirmiers et sages-femmes : Bordeaux, à 20 km, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026
+18:36:36   sous « Mairie » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de Bordeaux, 742 recrutements prévus en 2026
+18:36:36   sous « Mairie » : Chômage : 8,0 % dans la zone d'emploi de Bordeaux (2e trimestre 2026)
+18:36:44   essai raté pour 88005 → Angomont (54)
+18:36:52   essai raté pour 88005 → Angomont (54)
+18:37:02 fiche 88005 (allarmont)
+18:37:02   raison : Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Strasbourg, 55 km)
+18:37:02   sous « Mairie » : Infirmiers et sages-femmes : bassin de Saint-Dié-des-Vosges, 65 recrutements prévus en 2026
+18:37:02   sous « Mairie » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de Saint-Dié-des-Vosges, pas de chiffre publié pour ce métier
+18:37:02   sous « Mairie » : Chômage : 10,1 % dans la zone d'emploi de Saint-Dié-des-Vosges (2e trimestre 2026)
+18:37:06 pied de page : Estimations ANIL, à partir des données du Groupe SeLoger et de leboncoin · © Shom-IGN, 2021 Shom IGN · Source : Insee, populations légales · Contours des communes : Etalab, d'après Admin Express © IGN · Fond Plan IGN et estompage : © IGN – Géoplateforme · Recherche d'adresse et temps de trajet : © IGN – Géoplateforme (Base Adresse Nationale, BD TOPO®) · Prix d'achat : Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema, communes soumises à la loi Montagne (2019) · Résultats des élections municipales 2026 : ministère de l'Intérieur ; blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche · Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 (table des bassins mise à jour le 17/04/2026) · Chômage : Insee, taux de chômage localisés par zone d'emploi, 2e trimestre 2026
+18:37:10 390 : première de la liste : 1 Colombine (70) 354 € · 424 km 71
+18:37:12 390 : sous « Mairie » : ["Infirmiers et sages-femmes : Besançon, à 26 km, parmi les 10 % de bassins qui recrutent le plus · 266 recrutements prévus en 2026","Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : bassin de Gray, pas de chiffre publié pour ce métier","Chômage : 6,9 % dans la zone d'emploi de Besançon (2e trimestre 2026)"]

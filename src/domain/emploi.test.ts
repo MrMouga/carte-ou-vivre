@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import emploiSpec from '../../docs/specs/2026-11-21-emploi/acceptance.json';
-import { avecPlusProche, joindreEmploi, lireEmploi, plusProche, type Emploi, type EmploiJson } from './emploi';
-import { raisonTexte } from './format';
+import { avecPlusProche, joindreEmploi, ligneMetier, lireEmploi, plusProche, type Emploi, type EmploiJson } from './emploi';
+import { chomageFiche, metierFiche, raisonTexte } from './format';
 import { communeDeLigne, evaluer, REGLAGES_DEPART, type Commune, type LigneCommunes, type MetierChoisi, type Niveau, type Raison, type Reglages } from './score';
 import { ecrireAdresse, garderMetiersConnus, lireAdresse, lirePrix } from './url';
 
@@ -347,5 +347,106 @@ describe('AC-12 (vraies données)', () => {
     console.log(`AC-12 : M2X90 à « 10 % », ${n} communes passent`);
     expect(n).toBeGreaterThanOrEqual(4542);
     expect(n).toBeLessThanOrEqual(4634);
+  });
+});
+
+// Tâche 2 : les lignes de la fiche (R47, H136, H138, H139). Le libellé est séparé du reste de la ligne (design F : libellé
+// en `texte-fort`) ; le texte lu est celui de R47.
+describe('R47 : lignes des métiers et du chômage dans la fiche', () => {
+  const ligne = (id: Id, choisi: MetierChoisi, e: Emploi = emploi, communes = six) => {
+    const l = ligneMetier(e, communes.findIndex((c) => c.code === code[id]), choisi);
+    if (!l) return null;
+    const { libelle, reste } = metierFiche(l);
+    return texte(`${libelle} : ${reste}`);
+  };
+  const chomage = (id: Id) => texte(chomageFiche(six.find((c) => c.code === code[id])!, emploi.trimestre));
+
+  it('AC-10 (calcul) /?loyer=1200&metier=V1X80:25,V2X90 : Quaibleu, Grandeville et Terrebasse', () => {
+    const metiers: MetierChoisi[] = [{ code: 'V1X80', niveau: '25' }, { code: 'V2X90', niveau: null }];
+    const lignes = (id: Id) => [...metiers.map((m) => ligne(id, m)), chomage(id)];
+    expect(lignes('E')).toEqual([
+      'Infirmiers et sages-femmes : Grandeville, à 28 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026',
+      'Médecins : bassin de Montcher, 410 recrutements prévus en 2026',
+      "Chômage : 6,8 % dans la zone d'emploi de Montcher (2e trimestre 2026)",
+    ]);
+    expect(lignes('B')).toEqual([
+      'Infirmiers et sages-femmes : Grandeville, sur place, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026',
+      'Médecins : bassin de Grandeville, 120 recrutements prévus en 2026',
+      "Chômage : 7,1 % dans la zone d'emploi de Grandeville (2e trimestre 2026)",
+    ]);
+    expect(lignes('D')).toEqual([
+      'Infirmiers et sages-femmes : Montcher, à 29 km, parmi les 10 % de bassins qui recrutent le plus · 1 680 recrutements prévus en 2026',
+      'Médecins : bassin de Grandeville, 120 recrutements prévus en 2026',
+      "Chômage : 7,1 % dans la zone d'emploi de Grandeville (2e trimestre 2026)",
+    ]);
+  });
+
+  it('les trois niveaux écrits : le plus étroit du bassin le plus proche (« 10 % », « 25 % », « bassin où ce métier recrute »)', () => {
+    // Terrebasse, « 25 % » coché : Montcher (29 km) est à « 10 » ; c'est son niveau à lui qui est écrit.
+    expect(ligne('D', { code: 'V1X80', niveau: '25' })).toContain('Montcher, à 29 km, parmi les 10 % de bassins qui recrutent le plus');
+    expect(ligne('A', { code: 'V1X80', niveau: '25' })).toBe('Infirmiers et sages-femmes : Grandeville, à 25 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026');
+    // AC-5 : Rhinval, « Partout où il recrute ».
+    expect(ligne('F', { code: 'V1X80', niveau: 'tous' })).toBe('Infirmiers et sages-femmes : Rhinval, sur place, bassin où ce métier recrute · 66 recrutements prévus en 2026');
+  });
+
+  it('sans niveau, ou la commune ne passe pas : le bassin de la commune et ses projets, ou « pas de chiffre publié pour ce métier » (AC-9)', () => {
+    expect(ligne('B', { code: 'U1X82', niveau: null })).toBe(`${LIB.U1X82} : bassin de Grandeville, pas de chiffre publié pour ce métier`);
+    expect(ligne('C', { code: 'U1X82', niveau: null })).toBe(`${LIB.U1X82} : bassin de Montcher, 1 027 recrutements prévus en 2026`);
+    expect(ligne('F', { code: 'U1X82', niveau: 'tous' })).toBe(`${LIB.U1X82} : bassin de Rhinval, pas de chiffre publié pour ce métier`);
+    // AC-6 : Portmer, écartée par les graphistes à « 10 % » : le bassin de Portmer (Grandeville), sans chiffre.
+    expect(ligne('A', { code: 'U1X82', niveau: '10' })).toBe(`${LIB.U1X82} : bassin de Grandeville, pas de chiffre publié pour ce métier`);
+    // Quaibleu, infirmiers à « 10 % » : écartée (Montcher à 45 km) ; le bassin de Quaibleu est celui de Montcher.
+    expect(ligne('E', { code: 'V1X80', niveau: '10' })).toBe('Infirmiers et sages-femmes : bassin de Montcher, 1 680 recrutements prévus en 2026');
+  });
+
+  it('chômage : une décimale, « Chômage : inconnu » sans zone (Rhinval, H138)', () => {
+    expect(chomage('F')).toBe('Chômage : inconnu');
+    expect(texte(chomageFiche({ zoneEmploi: 'Pau', chomage: 7 }, '2e trimestre 2026'))).toBe("Chômage : 7,0 % dans la zone d'emploi de Pau (2e trimestre 2026)");
+  });
+
+  it('espaces insécables : milliers, avant « recrutements », avant « % », dans le trimestre', () => {
+    const l = metierFiche(ligneMetier(emploi, IDS.indexOf('D'), { code: 'V1X80', niveau: '10' })!);
+    expect(l.libelle).toBe('Infirmiers et sages-femmes');
+    expect(l.reste).toContain('1 680 recrutements prévus en 2026');
+    expect(l.reste).toContain('les 10 % de bassins');
+    expect(l.reste).toContain('à 29 km');
+    expect(chomageFiche(six[IDS.indexOf('E')], emploi.trimestre)).toBe("Chômage : 6,8 % dans la zone d'emploi de Montcher (2e trimestre 2026)");
+  });
+
+  it('jeu sans bassin (comme « métropole ») : pas de ligne de métier, « Chômage : inconnu »', () => {
+    const vide = emploiFixture([]);
+    const communes = joindreEmploi(sixSans, vide);
+    const e = lireEmploi(vide, communes, communes.map(() => [0, 0]));
+    expect(ligne('B', { code: 'V1X80', niveau: null }, e, communes)).toBeNull();
+    expect(ligne('B', { code: 'V1X80', niveau: 'tous' }, e, communes)).toBeNull();
+    expect(texte(chomageFiche(communes[1], e.trimestre))).toBe('Chômage : inconnu');
+  });
+
+  describe('distances calculées : « à n km », « à moins d’1 km », « sur place »', () => {
+    // Comme « distances calculées (H136) » : V, ville principale ; A à 30,4 km, B à 30,6 km, C à 0,4 km, D à 1,4 km.
+    const json: EmploiJson = {
+      trimestre_chomage: '2e trimestre 2026',
+      bassins: [['B9', '99101']],
+      zones: [],
+      metiers: [{ code: 'M1', libelle: 'Métier', noms: [], peu_chiffre: false, bassins: [['B9', 1234, '10']] }],
+      communes: ['99101', '99102', '99103', '99104', '99105'].map((c) => [c, 'B9', null]),
+    };
+    const communes = joindreEmploi(['Villebas', 'Aval', 'Bval', 'Cval', 'Dval'].map((n, i) => commune(`9910${i + 1}`, n)), json);
+    const e = lireEmploi(json, communes, [[2, 45], [2, aNord(30.4)], [2, aNord(30.6)], [2, aNord(0.4)], [2, aNord(1.4)]]);
+    const l = (i: number) => {
+      const x = metierFiche(ligneMetier(e, i, { code: 'M1', niveau: '10' })!);
+      return texte(`${x.libelle} : ${x.reste}`);
+    };
+    const suite = ', parmi les 10 % de bassins qui recrutent le plus · 1 234 recrutements prévus en 2026';
+
+    it('la ville elle-même « sur place » ; 0,4 km « à moins d’1 km » ; 1,4 km « à 1 km » ; 30,4 km « à 30 km » (passe)', () => {
+      expect(l(0)).toBe(`Métier : Villebas, sur place${suite}`);
+      expect(l(3)).toBe(`Métier : Villebas, à moins d'1 km${suite}`);
+      expect(l(4)).toBe(`Métier : Villebas, à 1 km${suite}`);
+      expect(l(1)).toBe(`Métier : Villebas, à 30 km${suite}`);
+    });
+    it('30,6 km : la commune ne passe pas, la ligne dit son bassin', () => {
+      expect(l(2)).toBe('Métier : bassin de Villebas, 1 234 recrutements prévus en 2026');
+    });
   });
 });

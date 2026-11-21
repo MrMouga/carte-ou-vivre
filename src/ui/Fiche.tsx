@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { distanceProche, estimationTexte, mairieFiche, merFiche, montagneFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, tempsProche, typeTexte } from '@/domain/format';
+import { chomageFiche, distanceProche, estimationTexte, mairieFiche, merFiche, metierFiche, montagneFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, tempsProche, typeTexte } from '@/domain/format';
 import type { ReglagePrix } from '@/domain/prix';
-import type { Evaluation, Raison } from '@/domain/score';
-import { avecPlusProche, type Emploi } from '@/domain/emploi';
+import type { Evaluation, MetierChoisi, Raison } from '@/domain/score';
+import { avecPlusProche, ligneMetier, type Emploi } from '@/domain/emploi';
 import { cn } from '@/lib/cn';
 import type { Proche } from '@/proches/useProches';
 import { CLASSES_PALIER } from './Legend';
@@ -19,6 +19,8 @@ type Props = {
   index: number;
   /** Données de l'emploi : « le plus proche » des raisons d'un métier (R46), calculé à l'ouverture de la fiche. */
   emploi: Emploi;
+  /** Métiers choisis, dans l'ordre du choix (R47) ; absent : aucun. */
+  metiers?: MetierChoisi[];
   onRetour: () => void;
 };
 
@@ -39,7 +41,7 @@ export function ligneProche(p: Proche, index: number): string {
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond ; commune sans
 // note (R25 d'immobilier : passe, prix inconnu, aucun autre critère qui note) : ni score ni rang, la ligne dit pourquoi.
 // Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
-export function Fiche({ evaluation: e, total, prix, proches, index, emploi, onRetour }: Props) {
+export function Fiche({ evaluation: e, total, prix, proches, index, emploi, metiers = [], onRetour }: Props) {
   const c = e.commune;
   const estimation = estimationTexte(c, prix);
   const titre = useRef<HTMLHeadingElement>(null);
@@ -87,6 +89,20 @@ export function Fiche({ evaluation: e, total, prix, proches, index, emploi, onRe
       <p className="text-texte tabular-nums">{montagneFiche(c.montagneKm)}</p>
       {/* Mairies, R40 (D6, H112) : la mairie élue en 2026 sous la montagne, toujours affichée, sans mise en avant. */}
       <p className="text-texte tabular-nums">{mairieFiche(c)}</p>
+      {/* Emploi, R47 (H139, design F) : sous « Mairie », une ligne par métier choisi, libellé en gras, puis le chômage,
+          toujours présent. */}
+      {metiers.map((m) => {
+        const l = ligneMetier(emploi, index, m);
+        if (!l) return null;
+        const { libelle, reste } = metierFiche(l);
+        return (
+          <p key={m.code} className="text-texte tabular-nums">
+            {/* Insécable avant « : » : un libellé long ne laisse pas les deux-points seuls en début de ligne. */}
+            <span className="text-texte-fort">{libelle}</span>{' '}: {reste}
+          </p>
+        );
+      })}
+      <p className="text-texte tabular-nums">{chomageFiche(c, emploi.trimestre)}</p>
       {proches.length > 0 && (
         <div className="flex flex-col gap-1 pt-2">
           <h3 className="text-categorie uppercase text-muted-foreground">Tes proches</h3>

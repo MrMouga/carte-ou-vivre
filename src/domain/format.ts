@@ -1,5 +1,6 @@
 import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
 import { couverture, marque } from '../proches/etat';
+import type { LigneMetier } from './emploi';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
@@ -209,6 +210,33 @@ export function mairieFiche(c: Pick<Commune, 'bord' | 'nuance' | 'liste'>): stri
         : `${LIBELLE_BORD[c.bord]} (${c.nuance})`;
   return c.liste == null ? `Mairie : ${bloc}` : `Mairie : ${bloc} · «${NBSP}${c.liste}${NBSP}»`;
 }
+
+/**
+ * Fiche, sous « Mairie » (R47 d'emploi) : la ligne d'un métier choisi, libellé à part (design F : en `texte-fort`), lue
+ * « <libellé> : <reste> ». « Grandeville, à 28 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements
+ * prévus en 2026 » ; « bassin de Montcher, 1 027 recrutements prévus en 2026 » ; « bassin de …, pas de chiffre publié
+ * pour ce métier ». La distance comme la mer : « à moins d'1 km », « à n km » (arrondi), « sur place ».
+ */
+export function metierFiche(l: LigneMetier): { libelle: string; reste: string } {
+  const projets = (n: number) => `${entier(n)}${NBSP}recrutements prévus en${NBSP}2026`;
+  if (l.forme === 'bassin')
+    return { libelle: l.libelle, reste: `bassin de ${l.ville}, ${l.projets == null ? 'pas de chiffre publié pour ce métier' : projets(l.projets)}` };
+  const ou = l.surPlace ? 'sur place' : l.km < 1 ? `à moins d'1${NBSP}km` : `à${NBSP}${km(l.km)}`;
+  const niveau = l.niveau === 'tous' ? 'bassin où ce métier recrute' : `parmi les ${l.niveau}${NBSP}% de bassins qui recrutent le plus`;
+  return { libelle: l.libelle, reste: `${l.ville}, ${ou}, ${niveau} · ${projets(l.projets)}` };
+}
+
+/**
+ * Fiche, dernière ligne de l'emploi, toujours présente (R47, H138) : « Chômage : 7,1 % dans la zone d'emploi de Pau
+ * (2e trimestre 2026) », une décimale ; le trimestre lu dans emploi.json, tenu d'un bloc ; « Chômage : inconnu ».
+ */
+export const chomageFiche = (c: Pick<Commune, 'zoneEmploi' | 'chomage'>, trimestre: string) =>
+  c.chomage == null || c.zoneEmploi == null
+    ? 'Chômage : inconnu'
+    : `Chômage : ${c.chomage.toFixed(1).replace('.', ',')}${NBSP}% dans la zone d'emploi de ${c.zoneEmploi} (${insecable(trimestre)})`;
+
+/** Un groupe de mots tenu sur une ligne (« 2e trimestre 2026 »). */
+export const insecable = (t: string) => t.replace(/ /g, NBSP);
 
 /** « 1re », « 2e »… */
 export const ordinal = (n: number) => `${n}${n === 1 ? 're' : 'e'}`;

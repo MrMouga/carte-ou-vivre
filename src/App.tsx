@@ -233,6 +233,7 @@ export function App() {
         proches={proches.proches}
         index={indexChoisie!}
         emploi={donnees!.emploi}
+        metiers={reglages.metiers}
         onRetour={retourListe}
       />
     ) : null;
@@ -286,13 +287,13 @@ export function App() {
           criteres={
             <>
               {reglagesUI()}
-              <Mentions className="mx-4 mb-4" />
+              <Mentions className="mx-4 mb-4" trimestre={donnees?.emploi.trimestre} />
             </>
           }
           liste={
             <>
               {!choisie && liste}
-              <Mentions className="mx-4 mb-4" />
+              <Mentions className="mx-4 mb-4" trimestre={donnees?.emploi.trimestre} />
             </>
           }
           fiche={fiche}
@@ -323,7 +324,7 @@ export function App() {
       >
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
           <Legend sansPlafond={resultat?.actif === false} fondIndisponible={fond === 'secours'} />
-          <Mentions className="max-bureau:hidden" />
+          <Mentions className="max-bureau:hidden" trimestre={donnees?.emploi.trimestre} />
         </div>
         <div className="w-bouton-icone shrink-0 max-bureau:hidden" />
         <div className="w-liste shrink-0 max-bureau:hidden" />

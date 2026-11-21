@@ -1,3 +1,4 @@
+import { insecable } from '@/domain/format';
 import { cn } from '@/lib/cn';
 
 // Mentions obligatoires (CLAUDE.md, Données ; Figma 5:147) ; tranche proches : la recherche d'adresse et les trajets
@@ -6,12 +7,15 @@ import { cn } from '@/lib/cn';
 // Tranche cadre-de-vie (R30, H80) : la grille de densité de l'Insee et la zone de montagne du Cerema, chacune posée avec la
 // ligne de la fiche qui l'utilise (textes fixés en tâche 1, CLAUDE.md « Données »).
 // Tranche mairies (R43, H118) : la source des résultats et celle des blocs, posées avec la ligne « Mairie » de la fiche.
+// Tranche emploi (R49, H143 amendée) : France Travail (projets et bassins, date de la table) et Insee (chômage), posées avec
+// les lignes de la fiche ; le trimestre du chômage vient d'emploi.json, jamais écrit ici.
 // Logos Shom et IGN : leurs conditions d'usage n'ont pas été trouvées en ligne ; à la place, leur nom encadré
 // et un lien vers leur site (repli du plan, tâche 5b), en attendant la réponse de Vincent.
 const lien = 'underline-offset-2 hover:text-foreground hover:underline';
 const logo = 'rounded-echantillon border border-border px-1 text-foreground hover:bg-background';
 
-export function Mentions({ className }: { className?: string }) {
+/** `trimestre` : celui du chômage, lu dans emploi.json (H143) ; absent pendant le chargement, la mention s'écrit sans lui. */
+export function Mentions({ className, trimestre }: { className?: string; trimestre?: string }) {
   return (
     // Rôle explicite : un <footer> posé dans <main> n'est pas un repère de pied de page.
     <footer role="contentinfo" className={cn('rounded-base bg-card px-2 py-1 text-mentions text-muted-foreground', className)}>
@@ -30,7 +34,10 @@ export function Mentions({ className }: { className?: string }) {
       Demandes de valeurs foncières (DGFiP), statistiques Etalab, ventes 2023 à 2025 (2021 à 2025 sous 30 ventes) · Type
       d'environnement : Insee, grille communale de densité 2025 (mise en ligne le 21/07/2025) · Zone de montagne : Cerema,
       communes soumises à la loi Montagne (2019) · Résultats des élections municipales 2026 : ministère de l'Intérieur ;
-      blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche
+      blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche ·
+      Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 (table des bassins
+      mise à jour le 17/04/2026) · Chômage : Insee, taux de chômage localisés par zone d'emploi
+      {trimestre && `, ${insecable(trimestre)}`}
     </footer>
   );
 }

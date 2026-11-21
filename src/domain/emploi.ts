@@ -4,7 +4,7 @@
 // de src/proches/distance.ts, comparées et écrites au km comme la mer (`kmCompare`) ; la ville principale elle-même : 0 km.
 // Le jeu de test peut les donner telles quelles (`distances_km`, H144) : elles remplacent alors le calcul.
 import { distanceKm } from '../proches/distance';
-import { dansNiveau, ecartNiveaux, kmCompare, type Commune, type Niveau, type Raison } from './score';
+import { dansNiveau, ecartNiveaux, kmCompare, type Commune, type MetierChoisi, type Niveau, type Raison } from './score';
 
 /** `public/data/emploi.json`, tableaux nommés par `champs` (scripts/data/emploi.py). */
 export type EmploiJson = {
@@ -45,6 +45,8 @@ export type Emploi = {
    * d'1 km ; Infinity sans ville principale. Une seule fonction, quelle que soit la source (calcul ou jeu de test).
    */
   distance: (i: number, k: number) => number;
+  /** La même distance avant l'arrondi (fiche, R47 : « à moins d'1 km » ou « à n km », comme la mer) ; jeu de test : ses km. */
+  distanceBrute: (i: number, k: number) => number;
   /**
    * Villes principales à 30 km ou moins de chaque commune (R46), à plat : celles de la commune `i` sont
    * `bassin[debut[i]]` à `bassin[debut[i + 1] - 1]` (index de bassin).
@@ -83,16 +85,18 @@ export function lireEmploi(json: EmploiJson, communes: readonly Commune[], point
     ]),
   );
   const fixture = json.distances_km;
-  const distance = fixture
+  // Une seule source de distance : `brute` (km de la fixture, ou de mairie à mairie) ; `distance` en est la valeur comparée.
+  const brute = fixture
     ? (i: number, k: number) => (villes[k] < 0 ? Infinity : (fixture[communes[i].code]?.[bassins[k]] ?? Infinity))
     : (i: number, k: number) => {
         const v = villes[k];
         if (v < 0) return Infinity;
-        return v === i ? 0 : kmCompare(distanceKm(points[i], points[v]));
+        return v === i ? 0 : distanceKm(points[i], points[v]);
       };
+  const distance = fixture ? brute : (i: number, k: number) => (villes[k] === i ? 0 : kmCompare(brute(i, k)));
   const aTrente = fixture ? villesATrenteToutes(communes.length, bassins.length, distance) : villesATrenteParBande(communes.length, villes, points, distance);
   performance.measure('emploi : villes principales à 30 km', { start: debutCalcul, end: performance.now() });
-  return { trimestre: json.trimestre_chomage, metiers, bassins, villes, communes, distance, aTrente };
+  return { trimestre: json.trimestre_chomage, metiers, bassins, villes, communes, distance, distanceBrute: brute, aTrente };
 }
 
 /** Jeu de test (quelques communes) : toutes les villes principales, sans tri. */
@@ -149,18 +153,51 @@ function villesATrenteParBande(n: number, villes: Int32Array, points: readonly (
  * code INSEE.
  */
 export function plusProche(e: Emploi, i: number, code: string, niveau: Niveau): { code: string; nom: string; km: number } | null {
+  const meilleur = bassinPlusProche(e, i, code, niveau);
+  return meilleur && { code: meilleur.ville.code, nom: meilleur.ville.nom, km: meilleur.km };
+}
+
+/** `plusProche`, avec le bassin (index), son niveau le plus étroit et ses projets. */
+function bassinPlusProche(e: Emploi, i: number, code: string, niveau: Niveau) {
   const metier = e.metiers.get(code);
   if (!metier) return null;
-  let meilleur: { km: number; niveau: Niveau; projets: number; ville: Commune } | null = null;
+  let meilleur: { k: number; km: number; niveau: Niveau; projets: number; ville: Commune } | null = null;
   for (let k = 0; k < e.bassins.length; k++) {
     const x = metier.bassins.get(e.bassins[k]);
     if (!x || !dansNiveau(x.niveau, niveau) || e.villes[k] < 0) continue;
-    const c = { km: e.distance(i, k), niveau: x.niveau, projets: x.projets, ville: e.communes[e.villes[k]] };
+    const c = { k, km: e.distance(i, k), niveau: x.niveau, projets: x.projets, ville: e.communes[e.villes[k]] };
     if (c.km === Infinity) continue;
     const avant = !meilleur || (c.km - meilleur.km || ecartNiveaux(c.niveau, meilleur.niveau) || meilleur.projets - c.projets || (c.ville.code < meilleur.ville.code ? -1 : 1)) < 0;
     if (avant) meilleur = c;
   }
-  return meilleur && { code: meilleur.ville.code, nom: meilleur.ville.nom, km: meilleur.km };
+  return meilleur;
+}
+
+/**
+ * Ligne d'un métier choisi dans la fiche de la commune `i` (R47). `niveau` : le métier a un niveau coché et la commune
+ * passe son filtre (R46) : la ville principale la plus proche du niveau (égalité : H136), sa distance (`surPlace` pour la
+ * ville elle-même ; sinon km avant l'arrondi, comme la mer), le niveau le plus étroit de ce bassin et ses projets.
+ * `bassin` : sinon, le bassin de la commune, nommé par sa ville principale (H135), et ses projets (null : pas de chiffre
+ * publié, D7). Null : métier inconnu, ou commune sans bassin (jeu de test « métropole »).
+ */
+export type LigneMetier =
+  | { forme: 'niveau'; libelle: string; ville: string; surPlace: boolean; km: number; niveau: Niveau; projets: number }
+  | { forme: 'bassin'; libelle: string; ville: string; projets: number | null };
+
+export function ligneMetier(e: Emploi, i: number, { code, niveau }: MetierChoisi): LigneMetier | null {
+  const metier = e.metiers.get(code);
+  if (!metier) return null;
+  if (niveau != null) {
+    const p = bassinPlusProche(e, i, code, niveau);
+    if (p && p.km <= RAYON_KM) {
+      const surPlace = e.villes[p.k] === i;
+      return { forme: 'niveau', libelle: metier.libelle, ville: p.ville.nom, surPlace, km: surPlace ? 0 : e.distanceBrute(i, p.k), niveau: p.niveau, projets: p.projets };
+    }
+  }
+  const bassin = e.communes[i].bassin;
+  const k = bassin == null ? -1 : e.bassins.indexOf(bassin);
+  if (k < 0 || e.villes[k] < 0) return null;
+  return { forme: 'bassin', libelle: metier.libelle, ville: e.communes[e.villes[k]].nom, projets: metier.bassins.get(bassin!)?.projets ?? null };
 }
 
 /** La raison d'un métier, avec la ville principale la plus proche de la commune `i` (fiche, R46). */
