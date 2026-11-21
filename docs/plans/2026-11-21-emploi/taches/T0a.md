@@ -1,5 +1,5 @@
 # Tâche 0a — Les données de l'emploi, servies
-Statut : question · Début 16:08 · Fin 16:13 · Commits : ce rapport seul (aucun code)
+Statut : question · Début 16:08 · Fin 16:13 · Commits : 7015a9f (ce rapport et les preuves, aucun code)
 
 ## Ce que l'utilisateur peut faire maintenant
 Rien de neuf. La tâche s'est arrêtée sur sa première condition d'arrêt : **la licence de la table des bassins d'emploi 2026 ne se trouve nulle part** (H143). Sans cette table, aucune commune ne se relie à un bassin : rien d'autre n'a été construit (ni `sources.py`, ni `emploi.py`, ni `emploi.json`), pour ne pas bâtir sur une source pas encore acceptée.
