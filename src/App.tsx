@@ -5,8 +5,9 @@ import { paddingCarte, type Repere } from './map/view';
 import type { Rond } from './map/RankMarkers';
 import { Fiche } from './ui/Fiche';
 import { communeDeLigne, evaluer, joindreBords, type Commune, type LigneCommunes, type MairiesJson, type NuancesJson, type Reglages } from './domain/score';
-import { ecrireAdresse, lireAdresse, lirePrix } from './domain/url';
+import { ecrireAdresse, garderMetiersConnus, lireAdresse, lirePrix } from './domain/url';
 import { joindreAchats, type AchatJson, type Changement } from './domain/prix';
+import { joindreEmploi, lireEmploi, type Emploi, type EmploiJson } from './domain/emploi';
 import { Settings } from './ui/Settings';
 import { Legend } from './ui/Legend';
 import { List } from './ui/List';
@@ -22,7 +23,7 @@ import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 
-type Donnees = { communes: Commune[]; reperes: Repere[] };
+type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi };
 const REPRISE_ADRESSE_MS = 1000;
 
 /** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
@@ -45,17 +46,19 @@ async function lire<T>(url: string): Promise<T> {
 }
 
 // H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE ; H122 de
-// mairies : de même pour les mairies élues en 2026 et leurs nuances.
+// mairies : de même pour les mairies élues en 2026 et leurs nuances ; H140 d'emploi : de même pour l'emploi, dont les
+// villes principales à 30 km de chaque commune sont calculées ici, une fois.
 async function charger(): Promise<Donnees> {
-  const [c, r, a, m, n] = await Promise.all([
+  const [c, r, a, m, n, e] = await Promise.all([
     lire<{ communes: LigneCommunes[] }>('/data/communes.json'),
     lire<{ reperes: Repere[] }>('/data/reperes.json'),
     lire<AchatJson>('/data/achat.json'),
     lire<MairiesJson>('/data/mairies.json'),
     lire<NuancesJson>('/data/nuances.json'),
+    lire<EmploiJson>('/data/emploi.json'),
   ]);
-  const communes = c.communes.map(communeDeLigne);
-  return { communes: joindreBords(joindreAchats(communes, a), m, n), reperes: r.reperes };
+  const communes = joindreEmploi(joindreBords(joindreAchats(c.communes.map(communeDeLigne), a), m, n), e);
+  return { communes, reperes: r.reperes, emploi: lireEmploi(e, communes, r.reperes) };
 }
 
 export function App() {
@@ -97,7 +100,12 @@ export function App() {
     setErreur(false);
     setPrete(false);
     avecDelai(charger(), DELAI_DONNEES_MS).then(
-      (d) => !annule && setDonnees(d),
+      (d) => {
+        if (annule) return;
+        setDonnees(d);
+        // R48 : les métiers de l'adresse sont gardés tels quels jusqu'ici ; les codes inconnus partent, deux au plus restent.
+        setReglages((r) => garderMetiersConnus(r, new Set(d.emploi.metiers.keys())));
+      },
       () => !annule && setErreur(true),
     );
     return () => {
@@ -173,7 +181,7 @@ export function App() {
     [proches.proches],
   );
   const resultat = useMemo(
-    () => (donnees ? evaluer(donnees.communes, reglages, proches.prets, prix) : null),
+    () => (donnees ? evaluer(donnees.communes, reglages, proches.prets, prix, donnees.emploi) : null),
     [donnees, reglages, proches.prets, prix],
   );
   const ronds = useMemo<Rond[]>(
@@ -224,6 +232,7 @@ export function App() {
         prix={prix}
         proches={proches.proches}
         index={indexChoisie!}
+        emploi={donnees!.emploi}
         onRetour={retourListe}
       />
     ) : null;

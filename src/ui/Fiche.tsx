@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { distanceProche, estimationTexte, mairieFiche, merFiche, montagneFiche, nomAffiche, prixFiche, raisonTexte, rangTexte, tempsProche, typeTexte } from '@/domain/format';
 import type { ReglagePrix } from '@/domain/prix';
-import type { Evaluation } from '@/domain/score';
+import type { Evaluation, Raison } from '@/domain/score';
+import { avecPlusProche, type Emploi } from '@/domain/emploi';
 import { cn } from '@/lib/cn';
 import type { Proche } from '@/proches/useProches';
 import { CLASSES_PALIER } from './Legend';
@@ -16,8 +17,13 @@ type Props = {
   /** Proches dans l'ordre d'ajout, et l'index de la commune dans communes.json (ordre de leurs temps). */
   proches: Proche[];
   index: number;
+  /** Données de l'emploi : « le plus proche » des raisons d'un métier (R46), calculé à l'ouverture de la fiche. */
+  emploi: Emploi;
   onRetour: () => void;
 };
+
+/** Deux métiers peuvent écarter la même commune : la clé d'une raison de métier porte son code. */
+const cleRaison = (r: Raison) => (r.critere === 'metier' ? `metier-${r.code}` : r.critere);
 
 /**
  * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours » ;
@@ -33,7 +39,7 @@ export function ligneProche(p: Proche, index: number): string {
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond ; commune sans
 // note (R25 d'immobilier : passe, prix inconnu, aucun autre critère qui note) : ni score ni rang, la ligne dit pourquoi.
 // Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
-export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: Props) {
+export function Fiche({ evaluation: e, total, prix, proches, index, emploi, onRetour }: Props) {
   const c = e.commune;
   const estimation = estimationTexte(c, prix);
   const titre = useRef<HTMLHeadingElement>(null);
@@ -65,8 +71,8 @@ export function Fiche({ evaluation: e, total, prix, proches, index, onRetour }: 
           <h3 className="text-categorie uppercase text-muted-foreground">Ne passe pas tes critères</h3>
           <ul className="flex flex-col">
             {e.raisons.map((r) => (
-              <li key={r.critere} className="text-texte-fort tabular-nums">
-                {raisonTexte(r)}
+              <li key={cleRaison(r)} className="text-texte-fort tabular-nums">
+                {raisonTexte(r.critere === 'metier' ? avecPlusProche(emploi, index, r) : r)}
               </li>
             ))}
           </ul>

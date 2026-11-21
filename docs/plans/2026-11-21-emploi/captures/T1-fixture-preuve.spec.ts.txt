@@ -1,0 +1,45 @@
+// TEMPORAIRE (tâche 1 d'emploi) : preuve sur la fixture, non versionnée ; les vrais tests viennent en tâche 3a/3b.
+import { expect, test, type Page } from '@playwright/test';
+import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
+import { attendreCouleurs, ouvrir, vue, type Jeu } from './lib/carte';
+import { voirListe } from './lib/feuille';
+
+const SIX: Jeu = { items: cadreDeVie.fixture.items, tuiles: new URL('../fixtures/tuiles-immobilier/', import.meta.url) };
+type Six = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
+const adresse = (page: Page) => new URL(page.url()).pathname + new URL(page.url()).search;
+const liste = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
+const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
+
+test('T1 /?loyer=aucun&metier=V1X80:10 : Montcher et Terrebasse en couleur neutre, les 4 autres non colorées ; raison de Quaibleu', async ({ page }) => {
+  await ouvrir(page, '/?loyer=aucun&metier=V1X80:10', { jeu: SIX });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=aucun&metier=V1X80:10');
+  await attendreCouleurs<Six>(page, { C: 'area-unranked', D: 'area-unranked', A: null, B: null, E: null, F: null }, { jeu: SIX });
+  const { centre } = vue(page, SIX);
+  await page.mouse.click(centre('E').x, centre('E').y);
+  await expect(fiche(page)).toContainText('Quaibleu (13)');
+  const t = nbsp(await fiche(page).innerText());
+  expect(t.split('Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Montcher, 45 km)').length).toBe(2);
+});
+
+test('T1 AC-4 (adresse) /?loyer=1200&metier=V1X80:10 : 1 commune, Terrebasse 65', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&metier=V1X80:10', { jeu: SIX });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('1 commune passe tes critères');
+  await expect(liste(page)).toContainText('Terrebasse (23)');
+});
+
+test('T1 AC-11 (adresse) : trois adresses réécrites', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&metier=V1X80:10,ZZ999:25,U1X82:50,V2X90', { jeu: SIX });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
+  await ouvrir(page, '/?loyer=1200&metier=V1X80:10,V1X80:25', { jeu: SIX });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+  await ouvrir(page, '/?metier=V2X90:tous&mairie=gauche&loyer=1200', { jeu: SIX });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mairie=gauche&metier=V2X90:tous');
+});
+
+test('T1 jeu « 5 communes » et métropole : la page s’ouvre', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&metier=V1X80:25');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('communes passent tes critères');
+});

@@ -4,6 +4,7 @@ import acceptance from '../../../docs/specs/2026-10-12-loyer-mer/acceptance.json
 import immobilier from '../../../docs/specs/2026-10-14-immobilier/acceptance.json' with { type: 'json' };
 import cadreDeVie from '../../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import mairies from '../../../docs/specs/2026-10-18-mairies/acceptance.json' with { type: 'json' };
+import emploiSpec from '../../../docs/specs/2026-11-21-emploi/acceptance.json' with { type: 'json' };
 import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
@@ -69,6 +70,44 @@ const mairiesJson = (jeu: Jeu) => ({
     return !m || m.sans_resultat ? [it.code_insee, null, null] : [it.code_insee, m.mairie_etiquette ?? '', m.mairie_liste];
   }),
 });
+// Emploi (spec emploi, plan « Fixtures ») : pris dans la fixture « 6 communes » d'emploi, par code INSEE (les « 5
+// communes » ont donc leurs bassins) ; servi à tous les jeux (H140 : la page ne s'ouvre pas sans lui). La ville principale
+// d'un bassin est la commune de ce bassin à 0 km d'elle-même dans `distances_km` (99B1 Grandeville, 99B2 Montcher, 99B3
+// Rhinval) ; un bassin dont la ville n'est pas dans le jeu n'est pas servi. `distances_km` passe des noms aux codes (nom de
+// commune → code INSEE, nom de ville principale → code de bassin) ; la zone d'emploi a pour code son nom. Le jeu
+// « métropole » n'a ni bassin ni zone (décidé par Claude).
+type Niveau = '10' | '25' | 'tous';
+const emploiJson = (jeu: Jeu) => {
+  const f = emploiSpec.fixture;
+  const dansJeu = new Set(jeu.items === METROPOLE.items ? [] : jeu.items.map((it) => it.code_insee));
+  const items = f.items.filter((it) => dansJeu.has(it.code_insee));
+  const distances = f.distances_km as Record<string, Record<string, number>>;
+  const villes = items.filter((it) => distances[it.nom][it.nom] === 0);
+  const bassinDeVille = new Map(villes.map((v) => [v.nom, v.bassin]));
+  const bassins = new Set(villes.map((v) => v.bassin));
+  return {
+    champs: { bassins: ['code', 'ville'], zones: ['code', 'nom', 'taux'], 'metiers.bassins': ['bassin', 'projets', 'niveau'], communes: ['code', 'bassin', 'zone'] },
+    trimestre_chomage: f.trimestre_chomage,
+    bassins: villes.map((v) => [v.bassin, v.code_insee]),
+    zones: [...new Map(items.filter((it) => it.zone_emploi != null).map((it) => [it.zone_emploi, [it.zone_emploi, it.zone_emploi, it.chomage]])).values()],
+    metiers: f.metiers.map((m) => ({
+      code: m.code,
+      libelle: m.libelle,
+      noms: Object.entries(f.noms_courants).filter(([, code]) => code === m.code).map(([nom]) => nom),
+      peu_chiffre: m.peu_chiffre,
+      bassins: Object.entries(m.bassins as Record<string, { niveau: Niveau | null; projets?: number }>)
+        .filter(([b, v]) => v.niveau != null && bassins.has(b))
+        .map(([b, v]) => [b, v.projets, v.niveau]),
+    })),
+    communes: jeu.items.map((it) => {
+      const e = items.find((x) => x.code_insee === it.code_insee);
+      return [it.code_insee, e?.bassin ?? null, e?.zone_emploi ?? null];
+    }),
+    distances_km: Object.fromEntries(
+      items.map((it) => [it.code_insee, Object.fromEntries(Object.entries(distances[it.nom]).filter(([v]) => bassinDeVille.has(v)).map(([v, km]) => [bassinDeVille.get(v), km]))]),
+    ),
+  };
+};
 // Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
 const reperesJson = ({ items }: Jeu) => ({
   champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
@@ -87,6 +126,7 @@ export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIX
   await page.route('**/data/achat.json', (r) => r.fulfill({ json: achatJson(jeu) }));
   await page.route('**/data/mairies.json', (r) => r.fulfill({ json: mairiesJson(jeu) }));
   await page.route('**/data/nuances.json', (r) => r.fulfill({ json: nuancesJson() }));
+  await page.route('**/data/emploi.json', (r) => r.fulfill({ json: emploiJson(jeu) }));
   await page.route('**/tuiles/**', (r) => {
     const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });

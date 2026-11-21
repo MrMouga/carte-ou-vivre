@@ -7,9 +7,11 @@
 // taille (R27) ; raisons dans l'ordre de H83.
 // Spec mairies : le bord de la mairie élue en 2026 filtre sans noter, comme le type (R38) ; raisons dans l'ordre de H113.
 // Le mot « mairie » désigne le point de chaque commune (D18 de loyer-mer) : la mairie élue s'appelle ici `bord`, `nuance`, `liste`.
+// Spec emploi : un métier à niveau coché filtre sans noter, comme le type (R46) ; raisons dans l'ordre de H139.
 // Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer et montagne au km (sous 1 km : comparée
 // comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
+import type { Emploi } from './emploi';
 
 export const SURFACE_M2 = 52;
 
@@ -35,7 +37,22 @@ export type Commune = {
   bord?: Bord | null;
   nuance?: string | null;
   liste?: string | null;
+  // Spec emploi (H142, H138) : code du bassin d'emploi, nom Insee de la zone d'emploi et son taux de chômage. Absent ou
+  // null = inconnu.
+  bassin?: string | null;
+  zoneEmploi?: string | null;
+  chomage?: number | null;
 };
+
+/** R45 : niveaux d'un bassin pour un métier, du plus étroit au plus large (noms de l'adresse, H128). */
+export type Niveau = '10' | '25' | 'tous';
+const RANG_NIVEAU: Record<Niveau, number> = { '10': 0, '25': 1, tous: 2 };
+/** R45 : un bassin d'un niveau est aussi dans les niveaux plus larges. */
+export const dansNiveau = (niveauBassin: Niveau, coche: Niveau) => RANG_NIVEAU[niveauBassin] <= RANG_NIVEAU[coche];
+/** Comparaison des niveaux, le plus étroit d'abord (H136). */
+export const ecartNiveaux = (a: Niveau, b: Niveau) => RANG_NIVEAU[a] - RANG_NIVEAU[b];
+/** Un métier choisi (R48) : son code et son niveau coché, `null` = aucun. */
+export type MetierChoisi = { code: string; niveau: Niveau | null };
 
 /**
  * H108 : les blocs de la circulaire du 2 février 2026 et « sans étiquette » (D2, D8), noms de l'adresse ; sans « extrême
@@ -89,8 +106,17 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
  * facultative, pour que les réglages écrits avant la montagne restent valables). `tailles` vide = « Peu importe ».
  * `types` : types d'environnement cochés (R27) ; absent ou vide = « Peu importe » (facultatif, comme `montagne`).
  * `mairies` : bords de mairie cochés (R38 de mairies) ; absent ou vide = « Peu importe » (facultatif, comme `types`).
+ * `metiers` : métiers choisis dans l'ordre du choix, deux au plus (R48 d'emploi) ; absent = aucun (facultatif, comme `mairies`).
  */
-export type Reglages = { loyer: number | null; mer: number | null; montagne?: number | null; tailles: Taille[]; types?: TypeEnv[]; mairies?: Bord[] };
+export type Reglages = {
+  loyer: number | null;
+  mer: number | null;
+  montagne?: number | null;
+  tailles: Taille[];
+  types?: TypeEnv[];
+  mairies?: Bord[];
+  metiers?: MetierChoisi[];
+};
 
 /** R28, H69 de cadre-de-vie : les distances de la mer ; aucune cochée = « Peu importe » (D12). */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
@@ -126,6 +152,12 @@ export type Raison =
   | { critere: 'type'; type: TypeEnv }
   /** R38 de mairies : bord de la mairie hors des pastilles cochées ; null = sans résultat. */
   | { critere: 'bord'; bord: Bord | null }
+  /**
+   * R46 d'emploi : aucun bassin du niveau coché à 30 km ou moins. L'évaluation ne porte que le métier et le niveau ;
+   * `plusProche` (ville principale la plus proche du niveau, km affichés) est ajouté par `avecPlusProche` d'emploi.ts, à
+   * l'ouverture de la fiche.
+   */
+  | { critere: 'metier'; code: string; libelle: string; niveau: Niveau; plusProche?: { nom: string; km: number } }
   /** `valeur` : fin de tranche en minutes, 0 = plus de 3 h (ou, pour un partiel, plus que sa couverture) ; `zones` : celles du proche. */
   | { critere: 'proche'; nom: string; valeur: number; plafond: number; zones?: readonly number[] }
   /** Proche à vol d'oiseau (R35) : `valeur` et `plafond` en km, `valeur` telle qu'affichée (au km). */
@@ -192,9 +224,24 @@ export function palier(score: number): 1 | 2 | 3 | 4 | 5 {
 
 const CRITERE_PRIX = { louer: { total: 'loyer', m2: 'loyer-m2' }, acheter: { total: 'achat', m2: 'achat-m2' } } as const;
 
-export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = [], prix: ReglagePrix = PRIX_DEPART): Resultat {
+/**
+ * `emploi` : données de l'emploi (emploi.ts), avec les villes principales à 30 km ou moins de chaque commune, dans l'ordre
+ * de `communes` ; sans elles, les métiers ne filtrent pas.
+ */
+export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = [], prix: ReglagePrix = PRIX_DEPART, emploi?: Emploi): Resultat {
   // Critères qui notent : prix, mer, montagne, proches prêts (état « sans plafond » si aucun, details.md de cadre-de-vie).
   const actif = r.loyer != null || r.mer != null || r.montagne != null || proches.length > 0;
+  // R46 : pour chaque métier à niveau coché, les bassins de ce niveau (par index de bassin) ; un métier sans niveau, ou
+  // inconnu, ne filtre pas.
+  const filtresMetier = (r.metiers ?? []).flatMap(({ code, niveau }) => {
+    const metier = emploi?.metiers.get(code);
+    if (!emploi || !metier || niveau == null) return [];
+    const garde = Uint8Array.from(emploi.bassins, (b) => {
+      const x = metier.bassins.get(b);
+      return x && dansNiveau(x.niveau, niveau) ? 1 : 0;
+    });
+    return [{ raison: { critere: 'metier', code, libelle: metier.libelle, niveau } as const, garde }];
+  });
   const parCode = new Map<string, Evaluation>();
   const passent: Evaluation[] = [];
   communes.forEach((c, i) => {
@@ -231,6 +278,13 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
     if (r.mairies?.length) {
       const b = c.bord ?? null;
       if (b == null || !r.mairies.includes(b)) raisons.push({ critere: 'bord', bord: b });
+    }
+    // R46 : passe si la ville principale d'au moins un bassin du niveau est à 30 km ou moins ; une raison par métier.
+    for (const { raison, garde } of filtresMetier) {
+      const { debut, bassin } = emploi!.aTrente;
+      let passe = false;
+      for (let t = debut[i]; t < debut[i + 1] && !passe; t++) passe = garde[bassin[t]] === 1;
+      if (!passe) raisons.push({ ...raison });
     }
     for (const p of proches) {
       if ('distances' in p) {

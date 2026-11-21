@@ -236,6 +236,12 @@ export function raisonTexte(r: Raison): string {
       return `Environnement : ${LIBELLE_TYPE[r.type].toLowerCase()}, hors des types choisis`;
     case 'bord':
       return `Mairie : ${r.bord == null ? 'aucun résultat en 2026' : LIBELLE_BORD[r.bord].toLowerCase()}, hors des mairies choisies`;
+    case 'metier': {
+      // R46 d'emploi ; « le plus proche » ajouté par la fiche (`avecPlusProche`), absent si aucun bassin n'a de ville.
+      const ou = r.niveau === 'tous' ? 'aucun bassin où ce métier recrute' : `aucun bassin parmi les ${r.niveau}${NBSP}% qui recrutent le plus`;
+      const proche = r.plusProche ? ` (le plus proche : ${r.plusProche.nom}, ${km(r.plusProche.km)})` : '';
+      return `${r.libelle} : ${ou} dans un rayon de ${km(30)}${proche}`;
+    }
     case 'loyer-inconnu':
       return 'Loyer inconnu';
     case 'mer-inconnue':

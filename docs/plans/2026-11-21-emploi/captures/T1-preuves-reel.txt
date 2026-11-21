@@ -1,0 +1,13 @@
+Sortie de `OUT=… node docs/plans/2026-11-21-emploi/captures/T1-preuves-reel.mjs`, 2026-11-21 18:12-18:13, version construite
+de l'arbre de travail de la tâche 1 servie par `npx vite preview --port 4180` (vraies données, vrai fond Plan IGN), 1 440 × 900.
+
+18:12:41 /?loyer=aucun&metier=V1X80:10 → /?loyer=aucun&metier=V1X80:10
+18:12:51   fiche 33063 : passe ; raisons : []
+18:13:02   fiche 64445 : passe ; raisons : []
+18:13:12   fiche 17300 : ne passe pas ; raisons : ["Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)"]
+18:13:16 /?loyer=aucun&metier=V1X80:10,M2X90:10 → /?loyer=aucun&metier=V1X80:10,M2X90:10
+18:13:26   fiche 33063 : passe ; raisons : []
+18:13:36   fiche 64445 : ne passe pas ; raisons : ["Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Bayonne, 92 km)"]
+18:13:40 /?metier=V1X80:10,ZZ999:25,M2X90:50,V2X90&loyer=aucun → /?loyer=aucun&metier=V1X80:10,M2X90 ; liste : (sans plafond)
+18:13:43 /?loyer=aucun&metier=M2X90:tous,M2X90:10&mairie=gauche → /?loyer=aucun&mairie=gauche&metier=M2X90:tous ; liste : (sans plafond)
+18:13:47 /?loyer=1200 → /?loyer=1200 ; liste : 34 674 communes passent tes critères

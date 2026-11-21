@@ -1,0 +1,13 @@
+
+Running 8 tests using 2 workers
+
+  ✓  2 [bureau] › tests/e2e/zz-t1-preuve.spec.ts:25:1 › T1 AC-4 (adresse) /?loyer=1200&metier=V1X80:10 : 1 commune, Terrebasse 65 (1.6s)
+  ✓  1 [bureau] › tests/e2e/zz-t1-preuve.spec.ts:14:1 › T1 /?loyer=aucun&metier=V1X80:10 : Montcher et Terrebasse en couleur neutre, les 4 autres non colorées ; raison de Quaibleu (1.9s)
+  ✓  4 [bureau] › tests/e2e/zz-t1-preuve.spec.ts:41:1 › T1 jeu « 5 communes » et métropole : la page s’ouvre (727ms)
+  ✓  3 [bureau] › tests/e2e/zz-t1-preuve.spec.ts:32:1 › T1 AC-11 (adresse) : trois adresses réécrites (1.7s)
+  ✓  5 [mobile] › tests/e2e/zz-t1-preuve.spec.ts:14:1 › T1 /?loyer=aucun&metier=V1X80:10 : Montcher et Terrebasse en couleur neutre, les 4 autres non colorées ; raison de Quaibleu (1.6s)
+  ✓  6 [mobile] › tests/e2e/zz-t1-preuve.spec.ts:25:1 › T1 AC-4 (adresse) /?loyer=1200&metier=V1X80:10 : 1 commune, Terrebasse 65 (1.5s)
+  ✓  8 [mobile] › tests/e2e/zz-t1-preuve.spec.ts:41:1 › T1 jeu « 5 communes » et métropole : la page s’ouvre (589ms)
+  ✓  7 [mobile] › tests/e2e/zz-t1-preuve.spec.ts:32:1 › T1 AC-11 (adresse) : trois adresses réécrites (1.3s)
+
+  8 passed (7.1s)
