@@ -1,5 +1,5 @@
 # Tâche 0a — Les données de l'emploi, servies
-Statut : faite · Début 16:08 · Fin 17:06 · Commits : 7015a9f, fb9cda9 (1re question : licence) ; 3c865ed, f5606f1 (2e question : Yvrench) ; COMMIT_FIN (fin)
+Statut : faite · Début 16:08 · Fin 17:06 · Commits : 7015a9f, fb9cda9 (1re question : licence) ; 3c865ed, f5606f1 (2e question : Yvrench) ; 7e15bb7 (fin) + ce rapport
 
 Historique :
 - 16:13, 1re question : la licence de la table des bassins est introuvable. Réponse de Vincent à 16:20 : s'en servir, avec la mention datée (H143 amendée, 9c95b57).
