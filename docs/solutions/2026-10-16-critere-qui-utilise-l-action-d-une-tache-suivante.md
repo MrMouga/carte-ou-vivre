@@ -6,3 +6,5 @@
 **Ce qui n'a pas marché** — Lire la colonne « then » des critères pour répartir les tâches, sans lire le « when » jusqu'au bout.
 **Ce qui a marché** — Décidé par le constructeur (le plan ne l'avait pas prévu, et ce n'était pas sur la liste « demander d'abord ») : le lien met le proche en recalcul en fin de file dès 5a, par le même chemin que la réouverture ; 5b garde la priorité sur les recalculs automatiques, AC-9, AC-11 et « Retirer » pendant un recalcul.
 **Prévention** — Règle de jugement pour /breakdown : pour chaque critère confié à une tâche, relever chaque geste de son « when » (boutons, liens, réglages) et vérifier qu'il est construit dans cette tâche ou avant.
+
+Revu le 2026-11-21 (/breakdown emploi) : vaut aussi pour le « then ». AC-11 d'emploi, placé en tâche 1 (filtre par l'adresse, sans écran), disait « « 10 % » est cochée » : une case construite en tâche 3. Relevé par la relecture du plan, déplacé en tâche 3b. Lire given, when **et** then.
