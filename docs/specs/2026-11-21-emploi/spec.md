@@ -21,9 +21,10 @@
 - **D11** — La part des projets jugés difficiles par les employeurs n'est pas affichée. *Pourquoi* : Vincent ; elle se lit à l'envers. *Écarté* : l'afficher.
 - **D12** — Rien n'est dit quand deux niveaux gardent les mêmes bassins (métier rare). *Pourquoi* : Vincent. *Écarté* : une phrase sous les pastilles.
 - **D13** — Sous le champ, toujours : les emplois de l'État ne sont pas dans l'enquête. *Pourquoi* : Vincent ; un enseignant du public verrait une carte presque vide (P-6). *Écarté* : la FAQ seule ; rien.
+- **D14** — Un métier chiffré dans moins de 130 bassins de métropole porte, sous son libellé, un avertissement : la carte en oublie sûrement. *Pourquoi* : Vincent, le 2026-11-21 à /breakdown, après la mesure du risque : 96 métiers sur 217 sont dans ce cas, dont l'ingénieur HSE d'un testeur (46 bassins ; Dunkerque, Fos, Lacq absents du fichier). *Écarté* : continuer sans rien dire ; revoir D2 et D3 (nouvelle /spec, le 6 décembre manqué) ; mettre l'emploi en pause.
 
 **Pas maintenant** : distance réglable, temps en voiture, note, plus de deux métiers, intitulés plus fins.
 **Hypothèses** : H128 à H146 dans [détails](details.md#hypothèses).
-**Taille** : 6 règles, 13 critères, ~6 tâches ; passe par /ui.
-**Le risque** : une carte jugée fausse sur un métier connu : saisonniers comptés, un métier de cadre chiffré dans un tiers des bassins. Test : Vincent donne les métiers de ses 3 testeurs avant la tâche 0 ; l'un d'eux chiffré dans moins de 130 bassins → arrêt et retour à Vincent. Démo : Vincent juge 3 métiers dans 5 bassins connus ; deux faux → retour sur D3.
+**Taille** : 7 règles, 14 critères, ~6 tâches ; passe par /ui.
+**Le risque** : une carte jugée fausse sur un métier connu : saisonniers comptés, un métier de cadre chiffré dans un tiers des bassins. Test : Vincent donne les métiers de ses 3 testeurs avant la tâche 0 ; l'un d'eux chiffré dans moins de 130 bassins → arrêt et retour à Vincent. Démo : Vincent juge 3 métiers dans 5 bassins connus ; deux faux → retour sur D3. *Mesuré le 2026-11-21 (/breakdown)* : business developer et prospecteur éolien → « Cadres commerciaux, acheteurs et cadres de la mercatique » (162 bassins) ; ingénieur gestion des risques en industrie → « Ingénieurs et cadres techniques HSE » (46 bassins) : arrêt, tranché par D14. Le jugement des 3 métiers dans 5 bassins se fait aussi en fin de tâche 0 (choix de Vincent).
 **Questions ouvertes** : aucune.

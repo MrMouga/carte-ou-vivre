@@ -22,6 +22,7 @@
     "metiers": [
       {
         "code": "V1X80",
+        "peu_chiffre": false,
         "libelle": "Infirmiers et sages-femmes",
         "bassins": {
           "99B1": { "niveau": "25", "projets": 626 },
@@ -31,6 +32,7 @@
       },
       {
         "code": "U1X82",
+        "peu_chiffre": true,
         "libelle": "Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle",
         "bassins": {
           "99B1": { "niveau": null },
@@ -40,6 +42,7 @@
       },
       {
         "code": "M2X90",
+        "peu_chiffre": true,
         "libelle": "Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom",
         "bassins": {
           "99B1": { "niveau": "10", "projets": 742 },
@@ -49,6 +52,7 @@
       },
       {
         "code": "V2X90",
+        "peu_chiffre": false,
         "libelle": "Médecins",
         "bassins": {
           "99B1": { "niveau": "25", "projets": 120 },
@@ -185,6 +189,14 @@
       "given": "Fixture « 6 communes », page ouverte sur / à 390 × 844, onglet « Critères »",
       "when": "l'utilisateur touche « Ton métier », tape « infirm », touche la suggestion, touche « 10 % », puis ouvre l'onglet « Les 10 premières »",
       "then": "le champ reste visible pendant la saisie (règle du clavier de R20 d'interface-telephone) et la suggestion « Infirmiers et sages-femmes » est visible sous le champ ; après le toucher, le métier est choisi ; après « 10 % », l'onglet « Les 10 premières » montre « 1 commune passe tes critères » puis Terrebasse (23) 65 ; l'adresse devient /?loyer=1200&metier=V1X80:10",
+      "passes": false
+    },
+    {
+      "id": "AC-14",
+      "rule": "R50",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80,U1X82",
+      "when": "l'utilisateur regarde « Emploi », puis coche « 25 % » pour les graphistes",
+      "then": "sous « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle », la phrase « Chiffré dans peu de bassins : la carte en oublie sûrement. » ; aucune phrase de ce genre sous « Infirmiers et sages-femmes » ; après « 25 % », la phrase est toujours là et l'adresse devient /?loyer=1200&metier=V1X80,U1X82:25",
       "passes": false
     }
   ]

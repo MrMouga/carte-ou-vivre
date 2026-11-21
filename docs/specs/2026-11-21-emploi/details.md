@@ -47,6 +47,7 @@ Interactions : choisir, retirer un métier ou cocher un niveau → carte, liste,
   Exemples : AC-5, AC-6, AC-9, AC-10. *Pourquoi* : D6, D7, D8, D11.
 - **R48** — Adresse (étend R41 de mairies, D9). `metier` liste les métiers dans l'ordre où ils ont été choisis, séparés par des virgules ; chacun est un code de métier, suivi de `:10`, `:25` ou `:tous` si un niveau est coché (H128) ; `metier` n'est écrite que si un métier est choisi. Un code inconnu est retiré ; un niveau inconnu est retiré sans retirer le métier ; un code déjà présent est retiré ; au-delà de deux, les suivants sont retirés. Ordre : plafond du prix, `mer`, `montagne`, `taille`, `env`, `mairie`, `metier`, `bien`, `unite`, `surface`. L'adresse est réécrite à l'ouverture avec les réglages effectifs. Exemples : AC-1, AC-3 à AC-6, AC-11. *Pourquoi* : D9.
 - **R49** — Pied de page. Il cite la source des projets de recrutement et des bassins, et celle du chômage (H143), à côté des mentions des tranches précédentes. Exemple : AC-1. *Pourquoi* : Licence Ouverte, citer la source.
+- **R50** — Métier peu chiffré (D14). Un métier chiffré (R45) dans moins de 130 bassins de métropole est **peu chiffré** ; dans « Emploi », sous son libellé, il porte toujours la phrase de H147, quel que soit son niveau. Le compte se fait en tâche 0, sur le fichier retenu (96 métiers sur 217 le 2026-11-21, mesure exploratoire). Rien de plus dans la fiche ni sur la carte. Exemple : AC-14. *Pourquoi* : D14.
 
 ## Cas limites
 - Métier choisi sans niveau → rien ne filtre ; seule la fiche change (AC-1, AC-9).
@@ -61,6 +62,7 @@ Interactions : choisir, retirer un métier ou cocher un niveau → carte, liste,
 - Commune sans zone d'emploi → « Chômage : inconnu » (AC-9, fixture seulement : H138).
 - Le dernier métier retiré alors que la catégorie est repliée → résumé « Peu importe ».
 - Libellé très long (jusqu'à environ 130 caractères) → écrit en entier, sur plusieurs lignes.
+- Métier peu chiffré (R50) avec un niveau coché → l'avertissement reste ; il filtre comme les autres.
 
 ## Impact sur les tranches existantes
 
@@ -111,6 +113,7 @@ Sur une page sans métier choisi, la ligne de chômage mise à part (lue par « 
 - **H144** — Dans la fixture, les distances commune → ville principale sont données telles quelles (`distances_km`) et ne se déduisent pas des points des mairies, qui ne bougent pas (tests des tranches précédentes) ; sur les vraies données, la façon de les obtenir se décide en /breakdown ; les deux voies donnent la même valeur au km. *Décidé par Claude* ; écarté : déplacer les points ou les carrés de la fixture (tests protégés).
 - **H145** — Le champ « Second métier » quitté avec du texte reste ouvert avec son texte ; seul Échap le referme et le vide. *Décidé par Claude.*
 - **H146** — Chaque métier est chiffré dans au moins 6 bassins (mesuré le 2026-11-21) : « le plus proche » a toujours une ville à nommer ; un fichier qui casse cette règle arrête la tâche 0.
+- **H147** — Texte de R50 : « Chiffré dans peu de bassins : la carte en oublie sûrement. », en `secondaire`, entre la ligne du libellé (et « Retirer ») et « Où ce métier recrute le plus » ; le groupe des niveaux en est décrit (`aria-describedby`). Dans la fixture, le champ `peu_chiffre` de chaque métier donne la réponse (vrais comptes : infirmiers 358, médecins 262, ingénieurs en informatique 120, graphistes 90). *Texte et place décidés par Claude*, contestables à la démo.
 
 ## Recommandations de la recherche
 
