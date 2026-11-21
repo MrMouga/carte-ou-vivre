@@ -1,0 +1,34 @@
+Tâche 0a d'emploi — recherche de la licence de la table des bassins d'emploi 2026 (H143), 2026-11-21 16:08-16:12
+
+Fichier : Bassins_d'emploi_2026.xlsx
+  https://statistiques.francetravail.org/bmo/Handlers/HTFile.ashx?MEDIAID=188096 (redirigé vers images.pr-rooms.com)
+  Last-Modified: Fri, 17 Apr 2026 08:43:50 GMT ; 1 410 342 octets ; sha256 3c7f5048491b90d21cfb16afdacb98f60b03a127b34bc871fd09fa41c09da455
+  (identique à la recherche du 2026-11-21)
+
+Où la licence a été cherchée, et ce qui s'y trouve :
+1. Page de méthode BMO 2026 (statistiques.francetravail.org/bmo/static/methode_2026) : la seule phrase qui lie le
+   fichier est « Cliquez ici pour accéder au fichier des bassins d'emploi. » Aucun mot sur la licence ou la réutilisation.
+2. Le fichier lui-même : une feuille « Feuil1 » (6 colonnes), propriétés du document (auteur, société « France Travail »),
+   aucune mention de licence ni de conditions.
+3. « Informations légales » de France Travail (lien du pied de page) : éditeur, directeur de la publication, cookies ;
+   rien sur la réutilisation des données. Pied de page : « © FRANCE TRAVAIL 2026 ».
+4. Page « Open data » de France Travail : « France Travail a choisi de s'associer à la démarche globale d'ouverture des
+   données publiques (Open Data), initiée par l'Etat en collaboration avec la mission Etalab, en rendant accessibles des
+   données sur cette page. » La table des bassins n'y est pas ; elle renvoie à la PRADA pour les questions de réutilisation.
+5. data.gouv.fr, organisation France Travail (14 jeux) : la table des bassins n'est une ressource d'aucun jeu. Le jeu BMO
+   (licence fr-lo = Licence Ouverte) ne contient que les fichiers annuels de l'enquête.
+
+Piste écartée par la mesure — refaire la table par les comités locaux (CLPE) :
+  « Référentiel des Comités Locaux Pour l'Emploi » (France Travail, data.gouv, Licence Ouverte 2.0, 24/09/2026) :
+  commune → CLPE ; le fichier BMO donne les couples (bassin, CLPE). Sonde : captures/T0a-sonde-clpe.py
+    CLPE de métropole dans le BMO 341 dont à plusieurs bassins 188
+    référentiel CLPE 34879 communes 364 CLPE
+    communes de la carte : 34746 ; même bassin que la table 13492, autre bassin 157, CLPE à plusieurs bassins 20058,
+    sans CLPE ou CLPE hors BMO 1032
+  → un CLPE sur deux couvre plusieurs bassins : 20 058 communes sans bassin déterminable. Inutilisable.
+
+Table de la Dares (H134, à signaler seulement) :
+  « La nomenclature des familles professionnelles 2021 » (Dares, data.gouv) : licence « notspecified » ; codes et
+  libellés des FAP seulement, pas de table des intitulés de métiers. Portail data.dares.travail-emploi.gouv.fr :
+  33 jeux, aucune table des intitulés vers les FAP ; le jeu de la nomenclature y est sans licence. Le site de la Dares
+  répond par une page anti-robot. → pas de table ouverte trouvée : liste écrite à la main (H134, montrée à la démo).
