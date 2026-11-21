@@ -1,5 +1,5 @@
 # Tâche 0a — Les données de l'emploi, servies
-Statut : question · Début 16:08 · Fin 16:40 · Commits : 7015a9f, fb9cda9 (1re question : licence), puis COMMIT_REPRISE (reprise après la réponse de Vincent)
+Statut : question · Début 16:08 · Fin 16:40 · Commits : 7015a9f, fb9cda9 (1re question : licence), puis 3c865ed (reprise après la réponse de Vincent)
 
 Historique : 1re question à 16:13 (licence de la table des bassins introuvable) ; réponse de Vincent à 16:20 (s'en servir, mention datée, H143 amendée en 9c95b57) ; reprise ; **2e arrêt** sur une autre condition d'arrêt du plan : un code de commune non recalé (Yvrench, 80832).
 
