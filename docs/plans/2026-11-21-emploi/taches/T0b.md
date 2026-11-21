@@ -1,5 +1,5 @@
 # Tâche 0b — Les mesures et le jugement de Vincent
-Statut : question · Début 17:18 · Fin 17:35 · Commits : un seul, « build(emploi): tâche 0b — tableau des 3 métiers, poids, chargement, distances et réaction mesurés » (mesures, scripts jetables et ce rapport)
+Statut : question · Début 17:18 · Fin 17:35 · Commits : fb74549 (mesures, scripts jetables et ce rapport) puis le commit du hash dans ce rapport
 
 ## Pour Vincent (≈ 10 min)
 Le détail est dans [mesure-tache-0.md](../mesure-tache-0.md), parts « 0b ». Trois choses à trancher : le tableau (la question principale), la réaction de la carte (au-delà du seuil), et un bassin bizarre de la source.
