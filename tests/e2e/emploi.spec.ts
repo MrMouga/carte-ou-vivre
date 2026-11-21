@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
-import { ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
+import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
 import { mobile, voirCriteres, voirListe } from './lib/feuille';
 
 // Tranche emploi, sur la fixture « 6 communes » de cadre-de-vie étendue par celles de mairies et d'emploi (emploi.json
@@ -271,6 +271,132 @@ test('390 px : champ en 16 px et 44 px de haut ; cases et « Retirer » de 44 px
   const libelle = metierChoisi(page, GRAPHISTES).getByText(GRAPHISTES, { exact: true });
   expect(nbsp(await libelle.textContent())).toBe(GRAPHISTES);
   expect((await libelle.boundingBox())!.height).toBeGreaterThan(40); // au moins deux lignes
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 3b : les niveaux (R46, R47, R48) ; cocher une case de « Où ce métier recrute le plus » : carte, liste, fiche et
+// adresse suivent ; en bureau et à 390 px (onglet « Critères » pour cocher, « Les 10 premières » pour lire la liste).
+
+/** Les raisons de la fiche (liste sous « Ne passe pas tes critères »), texte par texte ; vide si la commune passe. */
+const raisons = async (page: Page) =>
+  (await fiche(page).locator('h3', { hasText: 'Ne passe pas tes critères' }).locator('xpath=following-sibling::ul[1]/li').allInnerTexts()).map((t) => nbsp(t).trim());
+const texteFiche = async (page: Page) => nbsp(await fiche(page).innerText());
+/** Coche (ou décoche) une case de niveau depuis l'onglet « Critères », la fiche refermée. */
+async function cocher(page: Page, libelle: string, nom: string) {
+  const retour = page.getByRole('button', { name: '← Les 10 premières' });
+  if (await retour.isVisible()) await retour.click();
+  await voirCriteres(page);
+  await caseNiveau(page, libelle, nom).click();
+}
+const raisonNiveau = (libelle: string, niveau: '10' | '25', proche: string) =>
+  `${libelle} : aucun bassin parmi les ${niveau} % qui recrutent le plus dans un rayon de 30 km (le plus proche : ${proche})`;
+
+test('AC-4 /?loyer=1200&metier=V1X80, « 10 % » : /?loyer=1200&metier=V1X80:10, 1 commune, Terrebasse 65 ; A B E F non colorées ; fiche de Quaibleu : ligne du bassin de Montcher et raison une seule fois', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80');
+  await cocher(page, INFIRMIERS, '10 %');
+  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+  await apresRendu(page);
+  await attendreCouleurs<Six>(page, { A: null, B: null, E: null, F: null }, { jeu: SIX });
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
+  expect(await nomsScores(page)).toEqual(['Terrebasse (23) · 65']);
+
+  await ficheDeCarte(page, 'E', 'Quaibleu (13)');
+  expect(await texteFiche(page)).toContain('Infirmiers et sages-femmes : bassin de Montcher, 1 680 recrutements prévus en 2026');
+  const raison = raisonNiveau(INFIRMIERS, '10', 'Montcher, 45 km');
+  expect((await raisons(page)).filter((r) => r === raison)).toHaveLength(1);
+  expect((await texteFiche(page)).split(raison).length - 1).toBe(1);
+});
+
+test('AC-5 /?loyer=1200&metier=V1X80:10, « 25 % » : 4 communes, raison de Rhinval (Montcher, 160 km) ; « Partout où il recrute » : 5 communes dans l’ordre de départ, ligne de Rhinval « sur place », plus de raison pour ce métier', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10');
+  await cocher(page, INFIRMIERS, '25 %');
+  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'false');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:25');
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('4 communes passent tes critères');
+  expect(await nomsScores(page)).toEqual(['Terrebasse (23) · 65', 'Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9']);
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  expect(await raisons(page)).toContain(raisonNiveau(INFIRMIERS, '25', 'Montcher, 160 km'));
+
+  await cocher(page, INFIRMIERS, 'Partout où il recrute');
+  await expect(caseNiveau(page, INFIRMIERS, 'Partout où il recrute')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'false');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:tous');
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('5 communes passent tes critères');
+  expect(await nomsScores(page)).toEqual(DEPART);
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  expect(await texteFiche(page)).toContain('Infirmiers et sages-femmes : Rhinval, sur place, bassin où ce métier recrute · 66 recrutements prévus en 2026');
+  expect((await raisons(page)).filter((r) => r.startsWith(`${INFIRMIERS} :`))).toEqual([]);
+  expect(await texteFiche(page)).not.toContain(`${INFIRMIERS} : aucun bassin`);
+});
+
+test('AC-6 /?loyer=1200&metier=V1X80:25,U1X82, « 10 % » des graphistes : /?loyer=1200&metier=V1X80:25,U1X82:10, Terrebasse 65 seule ; fiche de Portmer : raison des graphistes (Montcher, 85 km), aucune des infirmiers, ligne des infirmiers à Grandeville, 25 km', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80:25,U1X82');
+  await cocher(page, GRAPHISTES, '10 %');
+  await expect(caseNiveau(page, GRAPHISTES, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:25,U1X82:10');
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
+  expect(await nomsScores(page)).toEqual(['Terrebasse (23) · 65']);
+
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  const r = await raisons(page);
+  expect(r).toContain(raisonNiveau(GRAPHISTES, '10', 'Montcher, 85 km'));
+  expect(r.filter((t) => t.startsWith(`${INFIRMIERS} :`))).toEqual([]);
+  expect(await texteFiche(page)).toContain('Infirmiers et sages-femmes : Grandeville, à 25 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026');
+});
+
+test('AC-7 /?loyer=aucun&metier=V1X80, « 10 % » : page « sans plafond », Montcher et Terrebasse en couleur neutre, A B E F non colorées ; /?loyer=aucun&metier=V1X80:10', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=aucun&metier=V1X80');
+  await cocher(page, INFIRMIERS, '10 %');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=aucun&metier=V1X80:10');
+  await apresRendu(page);
+  await attendreCouleurs<Six>(page, { C: 'area-unranked', D: 'area-unranked', A: null, B: null, E: null, F: null }, { jeu: SIX });
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('Fixe un loyer ou une distance à la mer pour classer les communes.');
+  await expect(listeCommunes(page).getByRole('button')).toHaveCount(0);
+});
+
+test('AC-9 /?loyer=1200&metier=U1X82 : fiches de Grandeville (pas de chiffre publié) et Montcher (1 027) ; « Partout où il recrute » : /?loyer=1200&metier=U1X82:tous, Terrebasse 65 seule ; fiche de Rhinval : pas de chiffre, raison (Montcher, 160 km), « Chômage : inconnu »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=U1X82');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
+  await ficheDeCarte(page, 'B', 'Grandeville (33)');
+  expect(await texteFiche(page)).toContain(`${GRAPHISTES} : bassin de Grandeville, pas de chiffre publié pour ce métier`);
+  await ficheDeCarte(page, 'C', 'Montcher (75)');
+  expect(await texteFiche(page)).toContain(`${GRAPHISTES} : bassin de Montcher, 1 027 recrutements prévus en 2026`);
+
+  await cocher(page, GRAPHISTES, 'Partout où il recrute');
+  await expect(caseNiveau(page, GRAPHISTES, 'Partout où il recrute')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82:tous');
+  await voirListe(page);
+  await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
+  expect(await nomsScores(page)).toEqual(['Terrebasse (23) · 65']);
+  await ficheDeCarte(page, 'F', 'Rhinval (67)');
+  const t = await texteFiche(page);
+  expect(t).toContain(`${GRAPHISTES} : bassin de Rhinval, pas de chiffre publié pour ce métier`);
+  expect(await raisons(page)).toContain(`${GRAPHISTES} : aucun bassin où ce métier recrute dans un rayon de 30 km (le plus proche : Montcher, 160 km)`);
+  expect(t).toContain('Chômage : inconnu');
+});
+
+test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X82 avec « 10 % » cochée pour les infirmiers, rien pour les graphistes ; /?loyer=1200&metier=V1X80:10 ; /?loyer=1200&mairie=gauche&metier=V2X90:tous', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10,ZZ999:25,U1X82:50,V2X90');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
+  await voirCriteres(page);
+  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  expect(await niveaux(page, INFIRMIERS).getByRole('button', { pressed: true }).count()).toBe(1);
+  for (const b of await niveaux(page, GRAPHISTES).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
+  await expect(tousNiveaux(page)).toHaveCount(2);
+
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10,V1X80:25');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+
+  await ouvrirSix(page, '/?metier=V2X90:tous&mairie=gauche&loyer=1200');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mairie=gauche&metier=V2X90:tous');
 });
 
 // Tâche 2, suite.

@@ -1,0 +1,68 @@
+19:58:50 1440x900 suggestions pour « infirm » : Infirmiers et sages-femmes
+19:58:52 1440x900 infirmiers-choisi | adresse ?loyer=1200&metier=V1X80 | compte 34 674 communes passent tes critères
+19:58:52     1 · Allarmont (88) · 73 · 326 € · 431 km
+19:58:52     2 · Bréménil (54) · 73 · 326 € · 423 km
+19:58:52     3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+19:58:52     4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+19:58:52     5 · Luvigny (88) · 73 · 326 € · 434 km
+19:58:52     6 · Moussey (88) · 73 · 326 € · 434 km
+19:58:52     7 · Neufmaisons (54) · 73 · 326 € · 422 km
+19:58:52     8 · Pexonne (54) · 73 · 326 € · 421 km
+19:58:52     9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km
+19:58:52     10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km
+19:58:54 1440x900 infirmiers-10 | adresse ?loyer=1200&metier=V1X80:10 | compte 6 216 communes passent tes critères
+19:58:54     1 · Colombine (70) · 71 · 354 € · 424 km
+19:58:54     2 · Rouez (72) · 70 · 361 € · 107 km
+19:58:54     3 · Le Châtenet-en-Dognon (87) · 70 · 363 € · 191 km
+19:58:54     4 · Sauviat-sur-Vige (87) · 70 · 363 € · 199 km
+19:58:54     5 · Bongheat (63) · 69 · 370 € · 240 km
+19:58:54     6 · Bort-l'Étang (63) · 69 · 370 € · 246 km
+19:58:54     7 · Estandeuil (63) · 69 · 370 € · 235 km
+19:58:54     8 · Trézioux (63) · 69 · 370 € · 239 km
+19:58:54     9 · Dangeul (72) · 69 · 373 € · 116 km
+19:58:54     10 · Marolles-les-Braults (72) · 69 · 373 € · 117 km
+19:58:55 1440x900 infirmiers-decoche | adresse ?loyer=1200&metier=V1X80 | compte 34 674 communes passent tes critères
+19:58:55     1 · Allarmont (88) · 73 · 326 € · 431 km
+19:58:55     2 · Bréménil (54) · 73 · 326 € · 423 km
+19:58:55     3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+19:58:55     4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+19:58:55     5 · Luvigny (88) · 73 · 326 € · 434 km
+19:58:55     6 · Moussey (88) · 73 · 326 € · 434 km
+19:58:55     7 · Neufmaisons (54) · 73 · 326 € · 422 km
+19:58:55     8 · Pexonne (54) · 73 · 326 € · 421 km
+19:58:55     9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km
+19:58:55     10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km
+19:58:57 390x844 suggestions pour « infirm » : Infirmiers et sages-femmes
+19:59:01 390x844 infirmiers-choisi | adresse ?loyer=1200&metier=V1X80 | compte 34 674 communes passent tes critères
+19:59:01     1 · Allarmont (88) · 73 · 326 € · 431 km
+19:59:01     2 · Bréménil (54) · 73 · 326 € · 423 km
+19:59:01     3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+19:59:01     4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+19:59:01     5 · Luvigny (88) · 73 · 326 € · 434 km
+19:59:01     6 · Moussey (88) · 73 · 326 € · 434 km
+19:59:01     7 · Neufmaisons (54) · 73 · 326 € · 422 km
+19:59:01     8 · Pexonne (54) · 73 · 326 € · 421 km
+19:59:01     9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km
+19:59:01     10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km
+19:59:04 390x844 infirmiers-10 | adresse ?loyer=1200&metier=V1X80:10 | compte 6 216 communes passent tes critères
+19:59:04     1 · Colombine (70) · 71 · 354 € · 424 km
+19:59:04     2 · Rouez (72) · 70 · 361 € · 107 km
+19:59:04     3 · Le Châtenet-en-Dognon (87) · 70 · 363 € · 191 km
+19:59:04     4 · Sauviat-sur-Vige (87) · 70 · 363 € · 199 km
+19:59:04     5 · Bongheat (63) · 69 · 370 € · 240 km
+19:59:04     6 · Bort-l'Étang (63) · 69 · 370 € · 246 km
+19:59:04     7 · Estandeuil (63) · 69 · 370 € · 235 km
+19:59:04     8 · Trézioux (63) · 69 · 370 € · 239 km
+19:59:04     9 · Dangeul (72) · 69 · 373 € · 116 km
+19:59:04     10 · Marolles-les-Braults (72) · 69 · 373 € · 117 km
+19:59:07 390x844 infirmiers-decoche | adresse ?loyer=1200&metier=V1X80 | compte 34 674 communes passent tes critères
+19:59:07     1 · Allarmont (88) · 73 · 326 € · 431 km
+19:59:07     2 · Bréménil (54) · 73 · 326 € · 423 km
+19:59:07     3 · Celles-sur-Plaine (88) · 73 · 326 € · 428 km
+19:59:07     4 · La Petite-Raon (88) · 73 · 326 € · 434 km
+19:59:07     5 · Luvigny (88) · 73 · 326 € · 434 km
+19:59:07     6 · Moussey (88) · 73 · 326 € · 434 km
+19:59:07     7 · Neufmaisons (54) · 73 · 326 € · 422 km
+19:59:07     8 · Pexonne (54) · 73 · 326 € · 421 km
+19:59:07     9 · Raon-lès-Leau (54) · 73 · 326 € · 435 km
+19:59:07     10 · Raon-sur-Plaine (88) · 73 · 326 € · 435 km

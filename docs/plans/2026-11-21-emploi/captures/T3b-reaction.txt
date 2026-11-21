@@ -1,0 +1,17 @@
+21/11/2026 19:59:40 ; version servie cd8c46f7aedb5609e7baddd2bb7c663e68c51d44 ; 15 essais par sens ; 2 tours
+-- tour 1, début 19:59:40, charge 4.20 4.51 4.54
+tour 1, curseur du prix, un cran (témoin) : médiane 160 ms ; min 158 max 167 ; essais 167 159 160 161 161 161 158 160 159 163 160 160 161 160 160
+tour 1, « 10 % » des infirmiers (28 458 communes) cochée : médiane 177 ms ; min 174 max 196 ; essais 196 174 176 177 176 192 178 177 175 174 176 178 176 178 193
+tour 1, « 10 % » des infirmiers (28 458 communes) décochée : médiane 243 ms ; min 239 max 245 ; essais 245 244 241 244 244 243 242 243 242 244 244 243 239 241 244
+tour 1, « Ville dense », substitut de la tâche 0b (34 031 communes) cochée : médiane 176 ms ; min 157 max 208 ; essais 208 177 175 193 176 178 177 176 177 176 175 177 176 157 175
+tour 1, « Ville dense », substitut de la tâche 0b (34 031 communes) décochée : médiane 261 ms ; min 257 max 277 ; essais 257 259 277 259 261 275 261 258 259 260 261 258 275 261 261
+tour 1, cases de la mer 50 ↔ 100 km (H90) : médiane 158 ms ; min 138 max 174 ; essais 174 138 158 144 160 141 161 141 159 142 160 141 159 143 159
+-- tour 1, fin 20:00:50, charge 2.77 3.99 4.34
+-- tour 2, début 20:00:50, charge 2.77 3.99 4.34
+tour 2, curseur du prix, un cran (témoin) : médiane 160 ms ; min 158 max 176 ; essais 176 158 160 161 160 161 159 159 158 163 161 160 160 159 162
+tour 2, « 10 % » des infirmiers (28 458 communes) cochée : médiane 176 ms ; min 159 max 200 ; essais 200 175 177 173 161 175 178 159 177 176 178 177 179 176 175
+tour 2, « 10 % » des infirmiers (28 458 communes) décochée : médiane 243 ms ; min 226 max 245 ; essais 240 242 244 243 242 243 244 245 242 244 243 226 241 244 245
+tour 2, « Ville dense », substitut de la tâche 0b (34 031 communes) cochée : médiane 179 ms ; min 175 max 245 ; essais 215 178 179 176 177 191 192 175 176 245 193 175 178 179 192
+tour 2, « Ville dense », substitut de la tâche 0b (34 031 communes) décochée : médiane 273 ms ; min 259 max 279 ; essais 275 276 274 279 276 277 261 259 260 273 261 259 259 273 261
+tour 2, cases de la mer 50 ↔ 100 km (H90) : médiane 158 ms ; min 140 max 177 ; essais 177 140 159 142 160 142 159 142 158 145 160 145 158 143 161
+-- tour 2, fin 20:02:00, charge 2.55 3.66 4.18
