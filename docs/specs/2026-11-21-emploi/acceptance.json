@@ -93,7 +93,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /, regarde « Emploi » et le pied de page, puis tape « infirm » dans « Ton métier » et choisit « Infirmiers et sages-femmes », puis replie « Emploi »",
       "then": "à l'ouverture : l'adresse devient /?loyer=1200 ; une catégorie « Emploi », ouverte, suit « Vie locale » et précède « Tes proches » ; elle montre le champ « Ton métier », vide, la phrase « Les emplois de l'État (enseignants du public, fonctionnaires) ne sont pas dans l'enquête. » et aucune pastille de niveau ; la liste est celle d'AC-1 de mairies ; le pied de page contient « Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 » et « Chômage : Insee, taux de chômage localisés par zone d'emploi, 2e trimestre 2026 ». Après le choix : une seule suggestion avait été proposée, « Infirmiers et sages-femmes » ; l'adresse devient /?loyer=1200&metier=V1X80 ; le métier choisi est affiché avec ses pastilles « 10 % », « 25 % », « Partout où il recrute », aucune cochée, une action « Retirer » et un lien « + Ajouter un second métier » ; la liste ne change pas (5 communes, mêmes scores). Repliée, « Emploi » montre « 1 métier »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -101,7 +101,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur tape successivement, dans « Ton métier » vidé à chaque fois : « i », « medecin », « dévelop », « developpeur », « femm », « etude », « xyz »",
       "then": "« i » : aucune suggestion ; « medecin » : une suggestion, « Médecins » ; « dévelop » : une suggestion, « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom » ; « developpeur » : la même suggestion (nom courant « développeur ») ; « femm » : « Infirmiers et sages-femmes » ; « etude » : « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom » ; « xyz » : le texte « Aucun métier trouvé » et aucune suggestion. L'adresse reste /?loyer=1200",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -197,7 +197,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80,U1X82",
       "when": "l'utilisateur regarde « Emploi », puis coche « 25 % » pour les graphistes",
       "then": "sous « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle », la phrase « Chiffré dans peu de bassins : la carte en oublie sûrement. » ; aucune phrase de ce genre sous « Infirmiers et sages-femmes » ; après « 25 % », la phrase est toujours là et l'adresse devient /?loyer=1200&metier=V1X80,U1X82:25",
-      "passes": false
+      "passes": true
     }
   ]
 }
