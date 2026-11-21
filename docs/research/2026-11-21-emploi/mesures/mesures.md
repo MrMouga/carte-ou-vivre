@@ -37,5 +37,14 @@ Commandes, depuis un dossier qui contient les deux fichiers téléchargés :
 ## Table commune → bassin 2026
 
 - Feuille `Feuil1`, colonnes `region`, `dep`, `code_commune`, `lib_commune`, `code_bassin_2026`, `lib_bassin_2026` ; 34 990 communes, chacune dans un seul bassin.
-- Jointure par code INSEE avec nos 34 746 communes (`public/data/communes.json`, COG 2025) : **34 731 trouvées**. 15 absentes : Paris (75056), Lyon (69123) et Marseille (13055), présents dans la table par arrondissement (Paris → bassin 1107 « T1 Paris » ; Marseille → 9306 ; Lyon → 3 bassins : 8439, 8442, 8444), et 12 autres codes (`12218`, `14581`, `15031`, `15035`, `15047`, `15171`, `49126`, `60694`, `69114`, `80832`, `85165`, `85212`), sans doute des changements de communes entre 2025 et 2026 (non vérifié).
+- Jointure par code INSEE avec nos 34 746 communes (`public/data/communes.json`, COG 2025) : **34 731 trouvées**. 15 absentes : Paris (75056), Lyon (69123) et Marseille (13055), présents dans la table par arrondissement (Paris → bassin 1107 « T1 Paris » ; Marseille → 9306 ; Lyon → 8428 « LYON CENTRE », ses 9 arrondissements. *Corrigé après vérification : une première version disait « Lyon → 3 bassins : 8439, 8442, 8444 », erreur d'un filtre de `jointure.py` relevée par le vérificateur et recontrôlée par Claude.*), et 12 autres codes (`12218`, `14581`, `15031`, `15035`, `15047`, `15171`, `49126`, `60694`, `69114`, `80832`, `85165`, `85212`), sans doute des changements de communes entre 2025 et 2026 (non vérifié).
 - Les 386 bassins de nos communes sont tous dans le fichier BMO. Trois bassins du fichier BMO n'ont aucune de nos communes : 1107 (T1 Paris, joint par ses arrondissements), 8428 (Lyon centre, idem) et 9399 (Monaco).
+
+## Couverture par métier (ajout du 2026-11-21, après vérification)
+
+`python3 -I couverture_metiers.py bmo-sheet2.csv`. Un bassin « a un chiffre » pour un métier si au moins une de ses lignes `clpe` n'est pas `*` ; absent ou masqué partout = pas de chiffre.
+
+- Par métier (217) : bassins avec un chiffre, sur 389 : min 6, **médiane 147**, max 386. Seuls 79 métiers sur 217 ont un chiffre dans au moins la moitié des bassins.
+- Exemples : M2X90 ingénieurs et cadres d'étude en informatique 120 ; M1X80 techniciens d'étude et de développement en informatique 131 ; V1X80 infirmiers et sages-femmes 358 ; L5X90 cadres administratifs, comptables et financiers 159 ; L1X60 employés de la comptabilité 281 ; W0X80 professeurs des écoles 28 ; R4X91 technico-commerciaux 170 ; J3X40 conducteurs de véhicules légers 240.
+- Par groupe (3 premiers caractères du code, 81 groupes) : min 18, médiane 239 ; 49 groupes sur 81 chiffrés dans au moins la moitié des bassins.
+- Par domaine (1re lettre, 21 domaines) : min 57, médiane 348.
