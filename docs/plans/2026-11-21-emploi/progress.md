@@ -15,6 +15,8 @@ Tâche 0b : mesures faites, en attente du jugement — commits fb74549..86986ce 
   Réponse de Vincent (17:47) : **les trois métiers crédibles** (D3 tient). Il demande s'il faut l'Apec plutôt que France Travail ; réponse de Claude : non (cadres du privé seulement, maille région, aucune licence de réutilisation écrite) ; pistes pour plus tard : offres de France Travail (autre tranche, change D2). H135 amendée (Confolens). Tâche 0b close ; reste la correction de Confolens dans `emploi.py` (T0c).
 Tâche 0c (Confolens) : faite — commits e859410..32f3805 — preuve : captures/T0c-controles-emploi.txt, T0c-compte.txt (17:52) — 2 min — agent : 66 k — rapport : taches/T0c.md
   Vérif orchestrateur (17:56) : fichiers = liste autorisée ; `["7503","16192"]` dans `emploi.json` ; contrôle « seule 7503 diffère de la règle » ok ; AC-12 inchangé (M2X90 4 588) ; V1X80 à 10 % : 6 192 → 6 275 communes ; Vitest 316 / 316. Décision du builder : code 16192 écrit dans le script (arrêt si les populations changent).
+Tâche 1 : faite — commits 93f7fe7..86968c3 — preuve : captures/T1-fiche-la-rochelle-infirmiers-10-1440x900.png, T1-fiche-pau-*.png, T1-preuves-reel.txt, T1-mesure-distances.txt (174 ms au processeur ÷ 4, contre 168 en 0b), T1-npm-test.txt (18:00-18:14) — 24 min — agent : 235 k — rapport : taches/T1.md
+  Vérif orchestrateur (18:28) : `tests/e2e/lib/carte.ts` +40 lignes, 0 changée (conforme au plan) — **le garde-fou des tests protégés n'a de nouveau pas demandé l'accord** (comme à mairies, pour /retro) ; aucun autre test existant modifié ; AC-12 dans `src/domain/emploi.test.ts` (4 tests) ; capture de la fiche de La Rochelle relue (raison exacte d'AC-12) ; Vitest 345 / 345 ; jetons ok ; Playwright 381 verts, 38 sautés, 0 rouge ; types et build verts. Non couvert par T1 : 390 px sur les vraies données, erreur de chargement d'`emploi.json` (à voir en QA). Captures PNG de ~1 Mo chacune, non réduites (mineur, leçon 2026-10-14).
 
 ## Décisions prises à la place de Vincent
 - T0a — Monaco (bassin 9399) sans ville principale (`null`) : aucune commune de la carte dedans ; reste dans les 389 et compte dans le classement des niveaux. Coût si faux : un bassin de moins dans le classement décalerait des niveaux à la marge. **La tâche 1 l'ignore pour les distances et « le plus proche ».**
@@ -23,6 +25,13 @@ Tâche 0c (Confolens) : faite — commits e859410..32f3805 — preuve : captures
 - T0a — Les 11 communes absentes sont recalées vers leur **ancien** code (la table des bassins est sur une géographie plus ancienne), et non vers une commune 2026 comme l'écrivait le plan. Coût si faux : aucun, H142 contrôlée.
 - T0a — 57 noms courants écrits à la main (`scripts/data/noms-metiers.csv`, table de la Dares non ouverte) : **à montrer à la démo**.
 - T0a — Format d'`emploi.json` en tableaux avec `champs`, comme `mairies.json`. Coût si faux : aucun.
+- T0c — Code 16192 (Terres-de-Haute-Charente) écrit dans `emploi.py` en plus de la règle ; arrêt si les populations changent. Coût si faux : un arrêt à lever.
+- T1 — L'adresse garde les codes de métier tels quels jusqu'à la fin du chargement d'`emploi.json` ; le tri de R48 (codes inconnus retirés, puis deux au plus) se fait à l'arrivée. Coût si faux : un code inconnu visible ≤ 1 s dans l'adresse.
+- T1 — Un code de métier se reconnaît d'abord à sa forme (`[A-Za-z0-9]+`). Coût : aucun.
+- T1 — Types et règle des niveaux dans `score.ts`, lecture / jointure / distances dans `emploi.ts`. Coût : aucun.
+- T1 — La raison d'un métier porte aussi son libellé ; sans « plus proche » (jeu sans bassin), elle s'écrit sans parenthèse. Coût : aucun sur les vraies données.
+- T1 — Dans `carte.ts`, la ville principale d'un bassin de la fixture est déduite de `distances_km` (la commune à 0 km d'elle-même) ; un bassin dont la ville n'est pas dans le jeu n'est pas servi. Coût : tests seulement.
+- T1 — `performance.measure('emploi : villes principales à 30 km')` laissé dans la page. Coût : aucun.
 
 ## Retours à traiter à la démo
 

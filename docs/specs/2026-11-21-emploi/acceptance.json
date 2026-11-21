@@ -181,7 +181,7 @@
       "given": "Les vraies données (fichiers BMO 2026 et bassins d'emploi 2026 retenus en tâche 0, communes de la carte)",
       "when": "les niveaux sont calculés et la page est ouverte sur /?loyer=aucun&metier=V1X80:10, puis /?loyer=aucun&metier=V1X80:10,M2X90:10, puis /?loyer=aucun&metier=M2X90:10",
       "then": "389 bassins et 217 métiers en métropole ; chaque métier est chiffré dans au moins 6 bassins ; les 34 746 communes ont un bassin ; pour M2X90 : 39 bassins au niveau « 10 », 98 aux niveaux « 10 » ou « 25 », 120 chiffrés ; le bassin de Bordeaux au niveau « 10 » avec 742 projets ; le bassin de La Rochelle sans chiffre. Avec les infirmiers à « 10 % » : Bordeaux et Pau passent ; les raisons de la fiche de La Rochelle (17) contiennent « Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km) ». Avec les deux métiers : Pau ne passe plus, raison « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Bayonne, 92 km) ». Avec M2X90 seul à « 10 % » : 4 588 communes passent (mesuré le 2026-11-21 avant le recalage des 12 communes de H142 ; un écart de plus de 1 % revient à Vincent)",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",
