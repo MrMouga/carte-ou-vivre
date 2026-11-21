@@ -75,7 +75,7 @@ test('AC-1 ouverture de / : /?loyer=1200 ; « Vie locale » ouverte suit « Cadr
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   const titres = await titresCategories(page.getByRole('region', { name: 'Réglages' }));
   expect(titres.indexOf('Vie locale')).toBe(titres.indexOf('Cadre de vie') + 1);
-  expect(titres.indexOf('Tes proches')).toBe(titres.indexOf('Vie locale') + 1); // H111
+  expect(titres.indexOf('Tes proches')).toBe(titres.indexOf('Emploi') + 1); // H111, révisée par emploi (H129)
   await expect(titreVieLocale(page)).toHaveAttribute('aria-expanded', 'true');
   expect(await libelles(page)).toEqual([
     'Gauche', 'Divers', 'Centre', 'Droite', 'Extrême droite', 'Sans étiquette',

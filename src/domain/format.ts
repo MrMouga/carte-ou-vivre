@@ -148,6 +148,12 @@ export function resumeCadre(r: Reglages): string {
 /** Résumé de la catégorie « Vie locale » repliée (H110 de mairies) : « Peu importe », sinon « 1 choix », « 2 choix »… */
 export const resumeVieLocale = (r: Reglages) => (r.mairies?.length ? `${r.mairies.length}${NBSP}choix` : 'Peu importe');
 
+/** Résumé de la catégorie « Emploi » repliée (H132 d'emploi) : « Peu importe », « 1 métier », « 2 métiers ». */
+export const resumeEmploi = (r: Reglages) => {
+  const n = r.metiers?.length ?? 0;
+  return n ? `${n}${NBSP}métier${n > 1 ? 's' : ''}` : 'Peu importe';
+};
+
 export const loyerTexte = (m2: number | null) =>
   m2 == null ? 'Loyer inconnu' : `${euros(loyerPour(m2))} par mois pour ${SURFACE_M2}${NBSP}m² (${eurosM2(m2)})`;
 

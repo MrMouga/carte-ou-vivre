@@ -200,6 +200,44 @@ export function ligneMetier(e: Emploi, i: number, { code, niveau }: MetierChoisi
   return { forme: 'bassin', libelle: metier.libelle, ville: e.communes[e.villes[k]].nom, projets: metier.bassins.get(bassin!)?.projets ?? null };
 }
 
+/** R44 : suggestions dès 2 caractères (espaces non comptées), 8 au plus (H133). */
+export const MIN_CARACTERES_METIER = 2;
+export const MAX_SUGGESTIONS_METIER = 8;
+
+/** H133 : accents et casse ignorés ; les séparateurs de mots (espace, tiret, apostrophes, virgule, parenthèses) deviennent une espace. */
+const mots = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .split(/[\s\-'’,()]+/)
+    .filter(Boolean);
+
+/** Le texte tapé (déjà découpé) commence-t-il un mot de `texte` ? Plusieurs mots tapés se suivent dans le texte. */
+function commenceUnMot(texte: string, tape: string): boolean {
+  const m = mots(texte);
+  return m.some((_, i) => m.slice(i).join(' ').startsWith(tape));
+}
+
+/**
+ * R44, H133, H134 : les métiers dont un mot du libellé, ou d'un nom courant, commence par le texte tapé ; ceux de `exclus`
+ * (déjà choisis) écartés. Trouvés par leur libellé d'abord, puis par un nom courant, chacun dans l'ordre alphabétique ;
+ * chacun une fois ; 8 au plus ; rien sous 2 caractères.
+ */
+export function chercherMetiers(metiers: Iterable<Metier>, texte: string, exclus: readonly string[] = []): Metier[] {
+  const tape = mots(texte).join(' ');
+  if (tape.replace(/ /g, '').length < MIN_CARACTERES_METIER) return [];
+  const parLibelle: Metier[] = [];
+  const parNom: Metier[] = [];
+  for (const m of metiers) {
+    if (exclus.includes(m.code)) continue;
+    if (commenceUnMot(m.libelle, tape)) parLibelle.push(m);
+    else if (m.noms.some((n) => commenceUnMot(n, tape))) parNom.push(m);
+  }
+  const alpha = (a: Metier, b: Metier) => a.libelle.localeCompare(b.libelle, 'fr');
+  return [...parLibelle.sort(alpha), ...parNom.sort(alpha)].slice(0, MAX_SUGGESTIONS_METIER);
+}
+
 /** La raison d'un métier, avec la ville principale la plus proche de la commune `i` (fiche, R46). */
 export function avecPlusProche(e: Emploi, i: number, r: Extract<Raison, { critere: 'metier' }>): Extract<Raison, { critere: 'metier' }> {
   const p = plusProche(e, i, r.code, r.niveau);

@@ -208,7 +208,7 @@ export function App() {
   // Compte annoncé aux lecteurs d'écran : l'unique zone `role=status` de la page, vide sans plafond (D17 de loyer-mer).
   const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
   const reglagesUI = (pied?: React.ReactNode) => (
-    <Settings reglages={reglages} onChange={setReglages} prix={prix} onPrix={changerPrix} inactif={!prete}>
+    <Settings reglages={reglages} onChange={setReglages} prix={prix} onPrix={changerPrix} metiers={donnees?.emploi.metiers ?? null} inactif={!prete}>
       <Proches
         proches={proches.proches}
         onAjouter={proches.ajouter}

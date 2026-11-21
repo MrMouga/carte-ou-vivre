@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import emploiSpec from '../../docs/specs/2026-11-21-emploi/acceptance.json';
-import { avecPlusProche, joindreEmploi, ligneMetier, lireEmploi, plusProche, type Emploi, type EmploiJson } from './emploi';
-import { chomageFiche, metierFiche, raisonTexte } from './format';
+import { avecPlusProche, chercherMetiers, joindreEmploi, ligneMetier, lireEmploi, plusProche, type Emploi, type EmploiJson, type Metier } from './emploi';
+import { chomageFiche, metierFiche, raisonTexte, resumeEmploi } from './format';
 import { communeDeLigne, evaluer, REGLAGES_DEPART, type Commune, type LigneCommunes, type MetierChoisi, type Niveau, type Raison, type Reglages } from './score';
 import { ecrireAdresse, garderMetiersConnus, lireAdresse, lirePrix } from './url';
 
@@ -448,5 +448,82 @@ describe('R47 : lignes des métiers et du chômage dans la fiche', () => {
     it('30,6 km : la commune ne passe pas, la ligne dit son bassin', () => {
       expect(l(2)).toBe('Métier : bassin de Villebas, 1 234 recrutements prévus en 2026');
     });
+  });
+});
+
+// Tâche 3a : la recherche du champ « Ton métier » (R44, H133, H134) et le résumé de « Emploi » repliée (H132).
+describe('H133 : recherche de métiers', () => {
+  const libelles = (q: string, exclus: string[] = []) => chercherMetiers(emploi.metiers.values(), q, exclus).map((m) => m.libelle);
+  const ING = LIB.M2X90;
+
+  it('AC-2 fixture « 6 communes » : « i », « medecin », « dévelop », « developpeur », « femm », « etude », « xyz »', () => {
+    expect(libelles('i')).toEqual([]);
+    expect(libelles('medecin')).toEqual(['Médecins']);
+    expect(libelles('dévelop')).toEqual([ING]);
+    expect(libelles('developpeur')).toEqual([ING]); // nom courant « développeur »
+    expect(libelles('femm')).toEqual(['Infirmiers et sages-femmes']); // mot après un tiret, une seule fois (libellé et « sage-femme »)
+    expect(libelles('etude')).toEqual([ING]); // mot après une apostrophe, accent ignoré
+    expect(libelles('xyz')).toEqual([]);
+  });
+
+  it('AC-1 « infirm » : une seule suggestion, « Infirmiers et sages-femmes »', () => {
+    expect(libelles('infirm')).toEqual(['Infirmiers et sages-femmes']);
+  });
+
+  it('AC-3 un métier déjà choisi n’est pas proposé', () => {
+    expect(libelles('infirm', ['V1X80'])).toEqual([]);
+    expect(libelles('graph', ['V1X80'])).toEqual([LIB.U1X82]);
+  });
+
+  it('accents et casse ignorés, dans le texte tapé comme dans le libellé ; espaces autour ignorés', () => {
+    expect(libelles('MÉDECIN')).toEqual(['Médecins']);
+    expect(libelles('  ingénieurs ')).toEqual([ING]);
+    expect(libelles('INGENIEURS')).toEqual([ING]);
+  });
+
+  it('un mot commence au début, après une espace, un tiret, une apostrophe, une virgule ou une parenthèse ; jamais au milieu d’un mot', () => {
+    const m = (code: string, libelle: string, noms: string[] = []): Metier => ({ code, libelle, noms, peuChiffre: false, bassins: new Map() });
+    const liste = [m('A1', 'Cadres administratifs, comptables et financiers (hors juristes)'), m('A2', "Agents d'entretien"), m('A3', 'Aides-soignants')];
+    const q = (t: string) => chercherMetiers(liste, t).map((x) => x.code);
+    expect(q('comptab')).toEqual(['A1']); // après une virgule et une espace
+    expect(q('hors')).toEqual(['A1']); // après une parenthèse
+    expect(q('juristes)')).toEqual(['A1']);
+    expect(q('entret')).toEqual(['A2']); // après une apostrophe
+    expect(q('soign')).toEqual(['A3']); // après un tiret
+    expect(q('omptab')).toEqual([]); // milieu d'un mot
+    expect(q('agents d’entretien')).toEqual(['A2']); // plusieurs mots, apostrophe typographique
+    expect(q('aides soign')).toEqual(['A3']); // une espace à la place du tiret
+  });
+
+  it('ordre : trouvés par leur libellé d’abord, puis par un nom courant, chacun dans l’ordre alphabétique ; 8 au plus ; chacun une fois', () => {
+    const m = (code: string, libelle: string, noms: string[] = []): Metier => ({ code, libelle, noms, peuChiffre: false, bassins: new Map() });
+    const liste = [
+      m('N2', 'Vendeurs', ['conseiller de vente']),
+      m('L3', 'Conseillers clientèle'),
+      m('N1', 'Agents de sécurité', ['convoyeur']),
+      m('L1', 'Conducteurs de bus', ['conducteur']),
+      m('L2', 'Cadres commerciaux', ['conseiller commercial']),
+    ];
+    // Par le libellé : « Conducteurs de bus », « Conseillers clientèle » ; par un nom courant : « Agents de sécurité »
+    // (« convoyeur »), « Cadres commerciaux » (« conseiller commercial »), « Vendeurs » ; « Conducteurs » une seule fois.
+    expect(chercherMetiers(liste, 'con').map((x) => x.code)).toEqual(['L1', 'L3', 'N1', 'L2', 'N2']);
+    const beaucoup = Array.from({ length: 12 }, (_, i) => m(`X${i}`, `Agents ${String.fromCharCode(108 - i)}`));
+    const trouves = chercherMetiers(beaucoup, 'agents');
+    expect(trouves).toHaveLength(8);
+    expect(trouves.map((x) => x.libelle)).toEqual([...beaucoup.map((x) => x.libelle)].sort((a, b) => a.localeCompare(b, 'fr')).slice(0, 8));
+  });
+
+  it('moins de 2 caractères (espaces non comptées) : aucune suggestion', () => {
+    expect(libelles('')).toEqual([]);
+    expect(libelles(' m ')).toEqual([]);
+    expect(libelles('me')).toEqual(['Médecins']);
+  });
+});
+
+describe('H132 : résumé de « Emploi » repliée', () => {
+  it('« Peu importe », « 1 métier », « 2 métiers »', () => {
+    expect(texte(resumeEmploi({ ...REGLAGES_DEPART }))).toBe('Peu importe');
+    expect(texte(resumeEmploi({ ...REGLAGES_DEPART, metiers: [{ code: 'V1X80', niveau: null }] }))).toBe('1 métier');
+    expect(texte(resumeEmploi({ ...REGLAGES_DEPART, metiers: [{ code: 'V1X80', niveau: '10' }, { code: 'U1X82', niveau: null }] }))).toBe('2 métiers');
   });
 });
