@@ -143,6 +143,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-21 | Échéance déplacée du 2026-11-08 au 2026-12-06 : 4 réponses r/france et liste des 10 à 30 personnes | Le temps est allé aux tranches, pas à la distribution (mi-temps ratée) ; raison déduite par Claude, Vincent n'en a pas donné : à corriger si fausse. |
 | 2026-11-21 | Échéance ratée : la moitié du temps à la distribution à partir du 8/11 | Pas de conséquence écrite dans le plan ; la distribution prend du retard sur le post du 6/12. |
 | 2026-11-21 | Échéances déplacées du 2026-11-15 au 2026-11-30 : règles de r/france, canal r/france, 3 posts trouvés et 1 réponse par semaine | Le temps est allé aux tranches, pas à la distribution (mi-temps ratée) ; raison déduite par Claude, Vincent n'en a pas donné : à corriger si fausse. |
+| 2026-11-21 | /spec emploi : recherche de données d'abord (/research) | Les 3 amis entendent « emploi » comme « trouver du travail dans mon métier » (réponse de Vincent) ; la discovery n'a vérifié que le chômage par zone d'emploi (302 zones, sans métier) et n'a pas exploré l'emploi par commune et secteur ni les recrutements par métier. Spec emploi suspendue avant l'entretien, reprise sur les recommandations de la recherche. |
 
 ## Hypothèses à vérifier
 
