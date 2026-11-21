@@ -14,6 +14,7 @@ Sources : [cadrage](cadrage.md) · [rapport du chercheur](agents/donnees.md) · 
 ## Réponses par sujet
 
 ### S1 — Quelle source ouverte donne un indicateur par métier et par territoire fin ?
+- Pari avant lecture (Vincent) : « oui, mais trouée » — conforme au constat.
 - Faits :
   - Jeu « Enquête Besoins en Main d'Oeuvre (BMO) », France Travail, data.gouv.fr : licence `fr-lo` (Licence Ouverte), mis à jour le 2026-04-21, annuel ([rapport § Fiche 1](agents/donnees.md), confirmé par le vérificateur sur l'API data.gouv) — primaire.
   - Fichier `Base-open-data-BMO-2026.xlsx` (Last-Modified 21/04/2026, sha256 `735d0443…`) : une ligne par métier × bassin × comité local pour l'emploi ; colonnes `met` (projets de recrutement), `xmet` (jugés difficiles), `smet` (saisonniers) ; en métropole, 389 bassins, 217 métiers, 8 grandes familles, 21 domaines et 81 groupes de métiers d'après les codes ([mesures](mesures/mesures.md), refaites à l'identique par le vérificateur) — primaire.
@@ -27,6 +28,7 @@ Sources : [cadrage](cadrage.md) · [rapport du chercheur](agents/donnees.md) · 
 - Niveau : critique · Confiance : **moyenne** pour l'existence, la licence et la maille (fichier lu, mesuré deux fois, et page de méthode confirmée) ; elle serait faible si l'on comptait seulement les sources indépendantes.
 
 ### S2 — Que mesure l'indicateur, et quels sont ses trous ?
+- Pari avant lecture (Vincent) : pour un métier de cadre comme ingénieur en informatique, un chiffre dans plus de 80 % des bassins. Mesuré : 120 bassins sur 389 (31 %). Écart à discuter en premier.
 - Faits :
   - « Cette enquête mesure les intentions de recrutement des employeurs pour l'année à venir, qu'il s'agisse de créations de postes ou de remplacements » ; temps partiel et saisonniers inclus ; « redressés … calage sur marges » ; à Toulon, 3 140 réponses sur 14 390 interrogés, soit 21,8 % (fiche bassin de Toulon, confirmé) — primaire.
   - « L'enquête ne comprend donc ni les administrations de l'État … ni certaines entreprises publiques » (confirmé) — primaire.
