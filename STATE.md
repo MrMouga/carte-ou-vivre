@@ -35,7 +35,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 - Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `9664a3b` (sept tranches, dont mairies), prouvé le 2026-10-19 à 15:46 (docs/ship/2026-10-19-mairies/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
 - Usagers hors de l'équipe : 3 (3 amis de la cible, lien envoyé, semaine du 9 au 15 novembre 2026 : [note](docs/feedback/2026-11-21-amis.md))
-- Prochaine tranche : emploi (`/spec`), choisie le 2026-11-21 après les retours des 3 amis ; mesure du chargement sur téléphone après elle.
+- Prochaine tranche : emploi, spec validée le 2026-11-21 ; suite : `/ui` (nouvelle session). Avant la tâche 0 de `/breakdown` : Vincent donne les métiers de ses 3 testeurs (seuil d'arrêt : un métier chiffré dans moins de 130 bassins). Mesure du chargement sur téléphone après la tranche.
 
 ## Échéances
 
@@ -145,6 +145,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-21 | Échéances déplacées du 2026-11-15 au 2026-11-30 : règles de r/france, canal r/france, 3 posts trouvés et 1 réponse par semaine | Le temps est allé aux tranches, pas à la distribution (mi-temps ratée) ; raison déduite par Claude, Vincent n'en a pas donné : à corriger si fausse. |
 | 2026-11-21 | /spec emploi : recherche de données d'abord (/research) | Les 3 amis entendent « emploi » comme « trouver du travail dans mon métier » (réponse de Vincent) ; la discovery n'a vérifié que le chômage par zone d'emploi (302 zones, sans métier) et n'a pas exploré l'emploi par commune et secteur ni les recrutements par métier. Spec emploi suspendue avant l'entretien, reprise sur les recommandations de la recherche. |
 | 2026-11-21 | Recherche « emploi » : suffisante pour la spec ; tranche « métier + marché du coin » | Source trouvée : enquête Besoins en main-d'œuvre 2026 de France Travail (Licence Ouverte), projets de recrutement prévus pour 217 métiers × 389 bassins, table commune → bassin officielle (34 731 communes jointes). Trouée : un métier typique chiffré dans 147 bassins sur 389 (ingénieurs en informatique : 120 ; pari de Vincent : plus de 80 %). Choix de Vincent : la BMO par métier, plus le chômage par zone d'emploi pour les trous ; P-1 à P-8 prises comme base. [synthèse](docs/research/2026-11-21-emploi/synthesis.md) |
+| 2026-11-21 | Spec validée : emploi | Jusqu'à deux métiers (217 de l'enquête Besoins en main-d'œuvre 2026, champ qui propose), un niveau par métier (10 %, 25 % des bassins qui recrutent le plus, partout où il recrute) ; une commune passe si la ville principale d'un bassin de ce niveau est à 30 km ou moins (fixes) ; filtre seul ; chômage de la zone d'emploi Insee dans chaque fiche (à la place du « chômage pour les trous » d'après la recherche) ; métiers dans le lien ; part « difficile » non affichée ; phrase sur l'État sous le champ ; 13 critères, au plafond perso. Idée de Vincent pendant l'entretien : la proximité d'un bassin plutôt que l'appartenance, et le classement par métier. [spec](docs/specs/2026-11-21-emploi/spec.md) |
 
 ## Hypothèses à vérifier
 
@@ -199,11 +200,13 @@ Autres questions :
 - Repli si le 8 novembre est raté : « proches + mer/montagne » (Signal d'arrêt) ou « proches + loyers », proposé par la discovery parce que ce sont les deux critères avec la meilleure donnée ?
 - Emploi : la cible entend-elle un taux de chômage du coin ou des offres dans son métier ? À demander aux 3 amis avant `/spec` emploi (synthèse du 2026-11-21).
 - Services : quelle famille d'abord (santé, commerces, écoles, gare) ? À demander aux 3 amis avant une tranche services.
+- Emploi : métiers exacts des 3 testeurs, à donner par Vincent avant la tâche 0 (seuil d'arrêt : moins de 130 bassins chiffrés).
 - Emploi (recherche du 2026-11-21) : sens d'une case absente de la BMO (« aucun projet » ou « non publié ») et seuil du secret statistique, non documentés ; licence de la table commune → bassin non lue ; métiers exacts des 3 testeurs, pour mesurer la couverture qui compte : tâche 0 de `/breakdown` emploi.
 - Chargement sur téléphone : mesurer sur un vrai téléphone en 4G après la tranche emploi (choix de Vincent du 2026-11-21), puis `/tweak` si la cause est simple.
 
 ## Documents
 
+- [Spec « Emploi » — 2026-11-21](docs/specs/2026-11-21-emploi/spec.md) · [relecture](docs/specs/2026-11-21-emploi/relecture.md)
 - [Recherche « emploi » — 2026-11-21](docs/research/2026-11-21-emploi/) · [synthèse](docs/research/2026-11-21-emploi/synthesis.md) · [mesures](docs/research/2026-11-21-emploi/mesures/mesures.md) · [vérification](docs/research/2026-11-21-emploi/verification.md)
 - [Retours « 3 amis » — synthèse — 2026-11-21](docs/feedback/synthese-2026-11-21.md) · [note de séance](docs/feedback/2026-11-21-amis.md)
 - [Mise en ligne « Mairies » — 2026-10-19](docs/ship/2026-10-19-mairies/ship.md)

@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-11-21 | Une spec qui écrit des distances dans la fixture : regarder d'abord où les tests posent les points des communes | spec, tests | — | [2026-11-21-distances-dans-la-fixture-et-points-des-tests.md](2026-11-21-distances-dans-la-fixture-et-points-des-tests.md) |
 | 2026-10-19 | Un test qui clique une commune à sa place d'ouverture : rouvrir l'adresse avant chaque clic, car choisir une commune zoome la carte | tests, outil | — | [2026-10-19-clic-sur-la-carte-apres-un-choix-de-commune.md](2026-10-19-clic-sur-la-carte-apres-un-choix-de-commune.md) |
 | 2026-10-18 | Une case vide dans une donnée officielle : chercher la règle qui l'a laissée vide avant de l'appeler « sans » | data, spec | — | [2026-10-18-case-vide-veut-dire-non-classe.md](2026-10-18-case-vide-veut-dire-non-classe.md) |
 | 2026-10-16 | Poser le stockage avant l'ouverture : garder la pose « une seule fois » dans localStorage, pas dans sessionStorage, si le test rouvre une page | tests, outil | — | [2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md](2026-10-16-stockage-pose-avant-ouverture-garde-par-onglet.md) |
