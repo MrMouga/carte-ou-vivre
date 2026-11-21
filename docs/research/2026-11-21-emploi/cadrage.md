@@ -1,6 +1,6 @@
 # Cadrage — recherche « emploi »
 
-Date : 2026-11-21 · Début : 13:31 · Ambition : perso · Tranche servie : emploi · Type : profondeur (une question, deux angles) · Statut : en cours
+Date : 2026-11-21 · Début : 13:31 · Ambition : perso · Tranche servie : emploi · Type : profondeur (une question, deux angles) · Statut : terminé
 
 Origine : retours de 3 amis de la cible ([synthèse](../../feedback/synthese-2026-11-21.md)), qui demandent l'emploi sans relance et l'entendent comme « trouver du travail dans mon métier » (réponse de Vincent, 2026-11-21).
 

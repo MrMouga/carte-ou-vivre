@@ -1,6 +1,6 @@
 # Recherche — emploi
 
-Date : 2026-11-21 · Tranche servie : emploi · Statut : brouillon
+Date : 2026-11-21 · Tranche servie : emploi · Statut : terminée
 
 Sources : [cadrage](cadrage.md) · [rapport du chercheur](agents/donnees.md) · [mesures sur les fichiers](mesures/mesures.md) · [vérification](verification.md)
 
@@ -101,3 +101,8 @@ Début 13:31 · fin 13:44 · 2 agents · par agent :
 - studio:researcher (donnees) — 175 s — 72 287 tokens — 26 appels (budget 20)
 - studio:verifier (spot-check + tous les faits de S1) — 137 s — 66 176 tokens
 - Claude : lecture directe des deux fichiers xlsx et mesures (≈ 12 appels).
+
+## Décision de Vincent (2026-11-21)
+- **Suffisant pour la spec** : ce qui reste ouvert (sens des cases absentes, secret statistique, licence de la table des bassins) passe en tâche 0 de `/breakdown`.
+- **Forme de la tranche : métier + marché du coin** : la BMO par métier, plus le chômage Insee par zone d'emploi pour les bassins sans chiffre (coût accepté : deux sources, une tranche plus grosse ; la spec dira comment les deux se combinent).
+- **P-1 à P-8 prises comme base** de `/spec`, qui les reprend une par une.
