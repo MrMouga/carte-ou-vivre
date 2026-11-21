@@ -150,8 +150,11 @@ export function App() {
   // Sous 1 024 px : feuille repliée en une barre (R17), ouverte au départ (D3). Plier ou déplier ne bouge pas la carte (D8).
   const [repliee, setRepliee] = useState(false);
   // 390 px : tant que l'ajout d'un proche a le focus, la feuille monte en haut, pour que le champ et ses suggestions
-  // restent au-dessus du clavier (Figma 27:1160).
-  const [ajout, setAjout] = useState(false);
+  // restent au-dessus du clavier (Figma 27:1160). De même pour un champ de métier (emploi, R20 d'interface-telephone) ;
+  // chacun son état, pour que seul le champ qui a fait monter la feuille s'y place.
+  const [ajoutProche, setAjoutProche] = useState(false);
+  const [ajoutMetier, setAjoutMetier] = useState(false);
+  const ajout = ajoutProche || ajoutMetier;
   const [retour, setRetour] = useState<string | null>(null);
   // Ni repli pendant le chargement, l'erreur ou l'ajout : la feuille y est ouverte (details.md).
   const feuilleRepliee = !bureau && repliee && prete && !erreur && !ajout;
@@ -208,7 +211,16 @@ export function App() {
   // Compte annoncé aux lecteurs d'écran : l'unique zone `role=status` de la page, vide sans plafond (D17 de loyer-mer).
   const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
   const reglagesUI = (pied?: React.ReactNode) => (
-    <Settings reglages={reglages} onChange={setReglages} prix={prix} onPrix={changerPrix} metiers={donnees?.emploi.metiers ?? null} inactif={!prete}>
+    <Settings
+      reglages={reglages}
+      onChange={setReglages}
+      prix={prix}
+      onPrix={changerPrix}
+      metiers={donnees?.emploi.metiers ?? null}
+      inactif={!prete}
+      onAjoutMetier={setAjoutMetier}
+      monteMetier={ajoutMetier}
+    >
       <Proches
         proches={proches.proches}
         onAjouter={proches.ajouter}
@@ -218,8 +230,8 @@ export function App() {
         onEffacer={proches.effacer}
         memoireRefusee={proches.memoireRefusee}
         inactif={!prete}
-        onAjout={setAjout}
-        monte={ajout}
+        onAjout={setAjoutProche}
+        monte={ajoutProche}
       />
       {pied}
     </Settings>

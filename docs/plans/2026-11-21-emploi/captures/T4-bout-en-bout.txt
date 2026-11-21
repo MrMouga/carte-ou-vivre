@@ -1,0 +1,64 @@
+21:16:16 ===== 1440x900 =====
+21:16:16 Étape 1
+21:16:21   OK  adresse ?loyer=1200
+21:16:21   OK  catégories : Logement > Cadre de vie > Vie locale > Emploi > Tes proches
+21:16:21   OK  champ « Ton métier » vide
+21:16:21   OK  phrase sur l’État visible
+21:16:32   OK  Bordeaux : « Chômage : 8,0 % dans la zone d'emploi de Bordeaux (2e trimestre 2026) »
+21:16:32 Étape 2
+21:16:32   suggestions pour « infirm » : Infirmiers et sages-femmes
+21:16:34   OK  adresse ?loyer=1200&metier=V1X80
+21:16:45   OK  Bordeaux : « Infirmiers et sages-femmes : bassin de Bordeaux, 626 recrutements prévus en 2026 »
+21:16:45 Étape 3
+21:16:45   OK  curseur Sans limite, adresse ?loyer=aucun&metier=V1X80
+21:16:46   OK  adresse ?loyer=aucun&metier=V1X80:10
+21:16:57   OK  bordeaux passe ; « Infirmiers et sages-femmes : Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 »
+21:17:07   OK  pau passe ; « Infirmiers et sages-femmes : Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026 »
+21:17:16   OK  La Rochelle : raisons ["Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)"]
+21:17:16 Étape 4
+21:17:16   OK  le champ « Second métier » a le focus
+21:17:17   suggestions pour « développeur » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom
+21:17:18   OK  focus sur « 10 % » du second métier
+21:17:19   OK  adresse ?loyer=aucun&metier=V1X80:10,M2X90:10
+21:17:30   OK  Pau : raisons ["Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Bayonne, 92 km)"]
+21:17:30 Étape 5
+21:17:34   OK  adresse B ?loyer=aucun&metier=V1X80:10,M2X90:10 = A ?loyer=aucun&metier=V1X80:10,M2X90:10
+21:17:34   OK  métiers ["Retirer Infirmiers et sages-femmes","Retirer Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom"] ; cases ["10 %✓/25 %/Partout où il recrute","10 %✓/25 %/Partout où il recrute"]
+21:17:37   OK  même carte : 200 points sur 200 identiques (± 3)
+21:17:37 Étape 6
+21:17:37   OK  pied de page : « Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 »
+21:17:37   OK  pied de page : « Chômage : Insee, taux de chômage localisés par zone d'emploi, 2e trimestre 2026 »
+21:17:37 ===== 390x844 =====
+21:17:37 Étape 1
+21:17:41   OK  adresse ?loyer=1200
+21:17:41   OK  catégories : Logement > Cadre de vie > Vie locale > Emploi > Tes proches
+21:17:41   OK  champ « Ton métier » vide
+21:17:41   OK  phrase sur l’État visible
+21:17:51   OK  Bordeaux : « Chômage : 8,0 % dans la zone d'emploi de Bordeaux (2e trimestre 2026) »
+21:17:51 Étape 2
+21:17:51   suggestions pour « infirm » : Infirmiers et sages-femmes
+21:17:53   OK  adresse ?loyer=1200&metier=V1X80
+21:18:04   OK  Bordeaux : « Infirmiers et sages-femmes : bassin de Bordeaux, 626 recrutements prévus en 2026 »
+21:18:04 Étape 3
+21:18:04   OK  curseur Sans limite, adresse ?loyer=aucun&metier=V1X80
+21:18:05   OK  adresse ?loyer=aucun&metier=V1X80:10
+21:18:15   OK  bordeaux passe ; « Infirmiers et sages-femmes : Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 »
+21:18:24   OK  pau passe ; « Infirmiers et sages-femmes : Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026 »
+21:18:31   essai raté pour 17300 → Lagord (17)
+21:18:37   essai raté pour 17300 → Lagord (17)
+21:18:46   OK  La Rochelle : raisons ["Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)"]
+21:18:46 Étape 4
+21:18:46   OK  le champ « Second métier » a le focus
+21:18:46   OK  390 px : feuille montée (pas d’onglets)
+21:18:47   suggestions pour « développeur » : Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom
+21:18:48   OK  390 px : feuille redescendue après le choix
+21:18:48   OK  focus sur « 10 % » du second métier
+21:18:49   OK  adresse ?loyer=aucun&metier=V1X80:10,M2X90:10
+21:18:59   OK  Pau : raisons ["Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Bayonne, 92 km)"]
+21:18:59 Étape 5
+21:19:02   OK  adresse B ?loyer=aucun&metier=V1X80:10,M2X90:10 = A ?loyer=aucun&metier=V1X80:10,M2X90:10
+21:19:02   OK  métiers ["Retirer Infirmiers et sages-femmes","Retirer Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom"] ; cases ["10 %✓/25 %/Partout où il recrute","10 %✓/25 %/Partout où il recrute"]
+21:19:06   OK  même carte : 400 points sur 400 identiques (± 3)
+21:19:06 Étape 6
+21:19:06   OK  pied de page : « Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 »
+21:19:06   OK  pied de page : « Chômage : Insee, taux de chômage localisés par zone d'emploi, 2e trimestre 2026 »

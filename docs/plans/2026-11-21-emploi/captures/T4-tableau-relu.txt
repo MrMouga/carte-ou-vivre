@@ -1,0 +1,49 @@
+20:46:04 == R4X90 — Cadres commerciaux, acheteurs et cadres de la mercatique
+20:46:12   OK    10   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 199 recrutements prévus en 2026 | passe
+20:46:20   OK    10   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 147 recrutements prévus en 2026 | passe
+20:46:26   OK    10   La Rochelle | bassin de La Rochelle, 6 recrutements prévus en 2026 | raison : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Nantes, 122 km)
+20:46:33   OK    10   Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Toulouse, 151 km)
+20:46:40   OK    10   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 156 recrutements prévus en 2026 | passe
+20:46:47   OK    25   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 199 recrutements prévus en 2026 | passe
+20:46:54   OK    25   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 147 recrutements prévus en 2026 | passe
+20:47:01   OK    25   La Rochelle | bassin de La Rochelle, 6 recrutements prévus en 2026 | raison : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)
+20:47:08   OK    25   Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Dax, 72 km)
+20:47:15   OK    25   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 156 recrutements prévus en 2026 | passe
+20:47:22   OK    tous Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 199 recrutements prévus en 2026 | passe
+20:47:29   OK    tous Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 147 recrutements prévus en 2026 | passe
+20:47:36   OK    tous La Rochelle | La Rochelle, sur place, bassin où ce métier recrute · 6 recrutements prévus en 2026 | passe
+20:47:43   OK    tous Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin où ce métier recrute dans un rayon de 30 km (le plus proche : Mont-de-Marsan, 67 km)
+20:47:50   OK    tous Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 156 recrutements prévus en 2026 | passe
+20:47:50 == H1X91 — Ingénieurs et cadres techniques en Hygiène Sécurité Environnement -HSE- industriels et exploitation éco-industriel
+20:47:57   OK    10   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 7 recrutements prévus en 2026 | passe
+20:48:04   OK    10   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 16 recrutements prévus en 2026 | passe
+20:48:11   OK    10   La Rochelle | bassin de La Rochelle, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Nantes, 122 km)
+20:48:18   OK    10   Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Tarbes, 37 km)
+20:48:25   OK    10   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 20 recrutements prévus en 2026 | passe
+20:48:32   OK    25   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 7 recrutements prévus en 2026 | passe
+20:48:39   OK    25   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 16 recrutements prévus en 2026 | passe
+20:48:45   OK    25   La Rochelle | bassin de La Rochelle, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Nantes, 122 km)
+20:48:52   OK    25   Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Tarbes, 37 km)
+20:49:00   OK    25   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 20 recrutements prévus en 2026 | passe
+20:49:06   OK    tous Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 7 recrutements prévus en 2026 | passe
+20:49:13   OK    tous Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 16 recrutements prévus en 2026 | passe
+20:49:20   OK    tous La Rochelle | bassin de La Rochelle, pas de chiffre publié pour ce métier | raison : aucun bassin où ce métier recrute dans un rayon de 30 km (le plus proche : Nantes, 122 km)
+20:49:27   OK    tous Pau         | bassin de Pau, pas de chiffre publié pour ce métier | raison : aucun bassin où ce métier recrute dans un rayon de 30 km (le plus proche : Tarbes, 37 km)
+20:49:34   OK    tous Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 20 recrutements prévus en 2026 | passe
+20:49:34 == V1X80 — Infirmiers et sages-femmes
+20:49:41   OK    10   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 | passe
+20:49:48   OK    10   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 570 recrutements prévus en 2026 | passe
+20:49:55   OK    10   La Rochelle | bassin de La Rochelle, 66 recrutements prévus en 2026 | raison : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)
+20:50:02   OK    10   Pau         | Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026 | passe
+20:50:09   OK    10   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 761 recrutements prévus en 2026 | passe
+20:50:16   OK    25   Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 | passe
+20:50:23   OK    25   Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 570 recrutements prévus en 2026 | passe
+20:50:30   OK    25   La Rochelle | bassin de La Rochelle, 66 recrutements prévus en 2026 | raison : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km)
+20:50:38   OK    25   Pau         | Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026 | passe
+20:50:45   OK    25   Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 761 recrutements prévus en 2026 | passe
+20:50:52   OK    tous Bordeaux    | Bordeaux, sur place, parmi les 10 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 | passe
+20:50:59   OK    tous Nantes      | Nantes, sur place, parmi les 10 % de bassins qui recrutent le plus · 570 recrutements prévus en 2026 | passe
+20:51:06   OK    tous La Rochelle | La Rochelle, sur place, bassin où ce métier recrute · 66 recrutements prévus en 2026 | passe
+20:51:13   OK    tous Pau         | Pau, sur place, parmi les 10 % de bassins qui recrutent le plus · 326 recrutements prévus en 2026 | passe
+20:51:20   OK    tous Toulouse    | Toulouse, sur place, parmi les 10 % de bassins qui recrutent le plus · 761 recrutements prévus en 2026 | passe
+20:51:20 écarts : 0 sur 45 fiches

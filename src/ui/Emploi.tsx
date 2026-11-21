@@ -1,9 +1,10 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { chercherMetiers, MIN_CARACTERES_METIER, type Metier } from '@/domain/emploi';
 import { resumeEmploi } from '@/domain/format';
 import type { MetierChoisi, Niveau, Reglages } from '@/domain/score';
-import { layout } from '@/theme/tokens';
+import { geste, layout } from '@/theme/tokens';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
 
@@ -14,6 +15,12 @@ import { Categorie } from './Categorie';
 // se décoche, D12 de cadre-de-vie) ; tant qu'aucune n'est cochée, la phrase « Coche un niveau… » (H130). Toujours en bas,
 // la phrase de D13. Pendant le chargement, tout est désactivé (les métiers de l'adresse s'affichent à l'arrivée
 // d'emploi.json, qui donne leurs libellés).
+// Avec un métier, « + Ajouter un second métier » ouvre le champ « Second métier » à sa place (état « ajout en cours ») ;
+// Échap le referme et le vide ; quitté, il reste ouvert avec son texte (H145).
+// Sous 1 024 px, chaque champ de métier suit la règle du champ d'adresse des proches (R20 d'interface-telephone, leçons
+// 2026-10-13-feuille-qui-monte-au-focus et 2026-10-13-ios-clavier-champ-deplace-apres-focus) : tant qu'il a le focus, la
+// feuille monte (App) ; elle monte et le champ se place sous la poignée *avant* le focus, que le focus vienne du doigt,
+// du lien ou de « Retirer ».
 
 type Props = {
   reglages: Reglages;
@@ -21,6 +28,10 @@ type Props = {
   /** Les métiers d'emploi.json, par code ; null pendant le chargement. */
   catalogue: ReadonlyMap<string, Metier> | null;
   disabled?: boolean;
+  /** Le focus entre dans un champ de métier ou en sort (390 px : la feuille monte, App). */
+  onAjout?: (actif: boolean) => void;
+  /** 390 px : la feuille est montée pour un champ de métier (App, en réponse à `onAjout`). */
+  monte?: boolean;
 };
 
 const NIVEAUX: { code: Niveau; libelle: string }[] = [
@@ -47,15 +58,21 @@ function avecMetiers(r: Reglages, metiers: MetierChoisi[]): Reglages {
 
 /**
  * Champ à suggestions (R44, H133) : liste des libellés sous le champ (Suggestion d'adresse des proches, une ligne par
- * libellé, qui passe à la ligne). Au clavier : flèches pour changer de suggestion, Entrée pour choisir, Échap pour vider.
+ * libellé, qui passe à la ligne). Au clavier : flèches pour changer de suggestion, Entrée pour choisir, Échap pour vider
+ * (ou, avec `onEchap`, pour refermer le champ : « Second métier »).
  */
-function ChampMetier({ libelle, catalogue, exclus, onChoix, disabled, champ }: {
+function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, champ, focus = false, monte, onAjout }: {
   libelle: string;
   catalogue: ReadonlyMap<string, Metier> | null;
   exclus: string[];
   onChoix: (m: Metier) => void;
+  onEchap?: () => void;
   disabled: boolean;
   champ: React.RefObject<HTMLInputElement | null>;
+  /** Le champ s'ouvre avec le focus (lien du second métier, « Retirer » du dernier métier). */
+  focus?: boolean;
+  monte: boolean;
+  onAjout?: (actif: boolean) => void;
 }) {
   const [texte, setTexte] = useState('');
   const [actif, setActif] = useState(0);
@@ -63,6 +80,48 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, disabled, champ }: {
   const idListe = `${id}-suggestions`;
   const liste = useRef<HTMLUListElement>(null);
   const label = useRef<HTMLLabelElement>(null);
+  const bloc = useRef<HTMLDivElement>(null);
+  // 390 px : la feuille montée (App), le bloc défile en haut de l'onglet, sous la poignée, dans le rendu même qui monte la
+  // feuille (`useLayoutEffect`), avant que le champ ait le focus : Safari sur iPhone note la place du champ au début du
+  // focus et fait glisser la page pour la centrer au-dessus du clavier (leçon 2026-10-13-ios-clavier…). Ouvert avec le
+  // focus demandé (lien, « Retirer ») : le focus vient seulement maintenant, champ déjà en place. `scroll-mt-1` : comme
+  // le champ d'adresse des proches, rien de coupé sous la poignée.
+  useLayoutEffect(() => {
+    if (!monte) return;
+    if (!enBureau()) bloc.current?.scrollIntoView({ block: 'start' });
+    if (focus && !bloc.current?.contains(document.activeElement)) champ.current?.focus();
+  }, [monte]);
+  // Au montage : focus demandé ou déjà dans le bloc (rendu de nouveau en mode strict) → la feuille monte ; au démontage
+  // (métier choisi, champ refermé), elle redescend, même si le navigateur n'annonce pas la perte du focus.
+  useEffect(() => {
+    if (focus || bloc.current?.contains(document.activeElement)) onAjout?.(true);
+    return () => onAjout?.(false);
+  }, []); // au montage seulement
+  const entrer = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) onAjout?.(true);
+  };
+  const sortir = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) onAjout?.(false);
+  };
+  // 390 px, toucher du champ, feuille pas encore montée : au relâchement du doigt, on annule le focus du navigateur, on
+  // monte et on place la feuille tout de suite (`flushSync` : rendu et `useLayoutEffect` ci-dessus), puis on donne le
+  // focus, champ déjà à sa place ; dans un `touchend`, iOS ouvre le clavier. Un doigt qui a bougé (défilement) garde le
+  // comportement du navigateur. Même code que le champ d'adresse des proches (Proches.tsx).
+  const toucher = useRef<{ x: number; y: number } | null>(null);
+  const toucherDebut = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    toucher.current = e.touches.length === 1 ? { x: t.clientX, y: t.clientY } : null;
+  };
+  const toucherFin = (e: React.TouchEvent<HTMLInputElement>) => {
+    const debut = toucher.current;
+    toucher.current = null;
+    const t = e.changedTouches[0];
+    if (!debut || !t || monte || enBureau() || disabled || !e.cancelable) return;
+    if (Math.hypot(t.clientX - debut.x, t.clientY - debut.y) >= geste['seuil-toucher']) return;
+    e.preventDefault();
+    flushSync(() => onAjout?.(true));
+    e.currentTarget.focus({ preventScroll: true });
+  };
   const suggestions = catalogue ? chercherMetiers(catalogue.values(), texte, exclus) : [];
   const aucun = !!catalogue && texte.replace(/\s/g, '').length >= MIN_CARACTERES_METIER && suggestions.length === 0;
   const ouverte = suggestions.length > 0;
@@ -80,7 +139,7 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, disabled, champ }: {
     onChoix(m);
   };
   return (
-    <div className="flex flex-col gap-1">
+    <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-1 max-bureau:scroll-mt-1">
       <label ref={label} htmlFor={id} className="text-secondaire text-muted-foreground">
         {libelle}
       </label>
@@ -104,12 +163,15 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, disabled, champ }: {
           if (e.key === 'ArrowDown' && ouverte) setActif((a) => Math.min(a + 1, suggestions.length - 1));
           else if (e.key === 'ArrowUp' && ouverte) setActif((a) => Math.max(a - 1, 0));
           else if (e.key === 'Enter' && suggestions[actif]) choisir(suggestions[actif]);
+          else if (e.key === 'Escape' && onEchap) onEchap();
           else if (e.key === 'Escape' && texte) {
             setTexte('');
             setActif(0);
           } else return;
           e.preventDefault();
         }}
+        onTouchStart={toucherDebut}
+        onTouchEnd={toucherFin}
         className={CHAMP}
       />
       {/* Toujours présent, pour que les lecteurs d'écran lisent le message (sans le rôle `status`, pris par le compte). */}
@@ -209,7 +271,7 @@ function MetierLigne({ metier, niveau, premier, disabled, onNiveau, onRetirer, r
   );
 }
 
-export function Emploi({ reglages, onChange, catalogue, disabled = false }: Props) {
+export function Emploi({ reglages, onChange, catalogue, disabled = false, onAjout, monte = false }: Props) {
   // Les métiers de l'adresse ne s'affichent qu'une fois leurs libellés connus (emploi.json chargé).
   const choisis = (reglages.metiers ?? []).flatMap((c) => {
     const metier = catalogue?.get(c.code);
@@ -217,29 +279,58 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false }: Prop
   });
   const exclus = choisis.map((c) => c.code);
   const champ = useRef<HTMLInputElement>(null);
+  const lien = useRef<HTMLButtonElement>(null);
+  // État « ajout en cours » : le champ « Second métier » est ouvert (lien), jusqu'à un choix, Échap ou « Retirer ».
+  const [second, setSecond] = useState(false);
+  // « Ton métier » revient après « Retirer » du dernier métier : il s'ouvre avec le focus, la feuille montée d'abord (390 px).
+  const [champAvecFocus, setChampAvecFocus] = useState(false);
   const premieresCases = useRef(new Map<string, HTMLButtonElement>());
   const retirers = useRef(new Map<string, HTMLButtonElement>());
-  // Où va le focus après le rendu : la première case d'un métier qui arrive (design F, WCAG 2.4.3 : le champ disparaît),
-  // ou, après « Retirer », le champ s'il revient, sinon le premier élément du métier restant (décidé par Claude).
-  const focus = useRef<{ case: string } | { retirer: string } | 'champ' | null>(null);
+  // Où va le focus après le rendu : la première case d'un métier qui arrive (design F, WCAG 2.4.3 : le champ disparaît) ;
+  // après « Retirer », le premier élément du métier restant (décidé par Claude) ; après Échap dans « Second métier », le
+  // lien qui l'avait ouvert. Le champ « Ton métier » qui revient prend le focus lui-même (`focus` de ChampMetier).
+  const focus = useRef<{ case: string } | { retirer: string } | 'lien' | null>(null);
+  // La demande attend que sa cible existe : un rendu venu d'une autre mise à jour de la page peut passer avant celui qui
+  // ajoute le métier (vu une fois sur 20 environ à 390 px, tâche 4), et la consommerait sans rien trouver.
   useEffect(() => {
     const f = focus.current;
+    if (!f) return;
+    const cible = f === 'lien' ? lien.current : 'case' in f ? premieresCases.current.get(f.case) : retirers.current.get(f.retirer);
+    if (!cible) return;
     focus.current = null;
-    if (f === 'champ') champ.current?.focus();
-    else if (f && 'case' in f) premieresCases.current.get(f.case)?.focus();
-    else if (f && 'retirer' in f) retirers.current.get(f.retirer)?.focus();
+    cible.focus();
   });
 
   const ecrire = (metiers: MetierChoisi[]) => onChange(avecMetiers(reglages, metiers));
+  // Un choix ferme le champ : la feuille redescend dans le même rendu que le métier ajouté, pour que le focus aille sur
+  // « 10 % » dans la feuille redescendue (et que le navigateur l'y fasse voir).
   const choisir = (m: Metier) => {
     focus.current = { case: m.code };
+    onAjout?.(false);
+    setSecond(false);
+    setChampAvecFocus(false);
     ecrire([...(reglages.metiers ?? []), { code: m.code, niveau: null }]);
   };
   const retirer = (code: string) => {
     const restants = (reglages.metiers ?? []).filter((c) => c.code !== code);
     const restant = choisis.find((c) => c.code !== code);
-    focus.current = restant ? { retirer: restant.code } : 'champ';
+    setSecond(false);
+    if (restant) focus.current = { retirer: restant.code };
+    else {
+      // Plus de métier : « Ton métier » revient avec le focus ; la feuille monte avant le montage du champ (390 px).
+      setChampAvecFocus(true);
+      onAjout?.(true);
+    }
     ecrire(restants);
+  };
+  const ouvrirSecond = () => {
+    setSecond(true);
+    onAjout?.(true); // la feuille monte avant le montage du champ, qui prend le focus une fois placé
+  };
+  const fermerSecond = () => {
+    focus.current = 'lien';
+    onAjout?.(false); // dans le même rendu que le lien qui revient : il prend le focus dans la feuille redescendue
+    setSecond(false);
   };
   const regler = (code: string, niveau: Niveau | null) => ecrire((reglages.metiers ?? []).map((c) => (c.code === code ? { ...c, niveau } : c)));
 
@@ -247,7 +338,17 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false }: Prop
     <Categorie titre="Emploi" resume={resumeEmploi(reglages)}>
       <div className="flex flex-col gap-3">
         {choisis.length === 0 ? (
-          <ChampMetier libelle="Ton métier" catalogue={catalogue} exclus={exclus} onChoix={choisir} disabled={disabled} champ={champ} />
+          <ChampMetier
+            libelle="Ton métier"
+            catalogue={catalogue}
+            exclus={exclus}
+            onChoix={choisir}
+            disabled={disabled}
+            champ={champ}
+            focus={champAvecFocus}
+            monte={monte}
+            onAjout={onAjout}
+          />
         ) : (
           <ul className="flex flex-col gap-3">
             {choisis.map((c, i) => (
@@ -265,12 +366,26 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false }: Prop
             ))}
           </ul>
         )}
-        {/* Le second champ (« Second métier ») vient en tâche 4 ; le lien est affiché dès maintenant (plan, tâche 3a). */}
-        {choisis.length === 1 && (
-          <Button variant="lien" className={`self-start ${TOUCHER}`} disabled={disabled}>
-            + Ajouter un second métier
-          </Button>
-        )}
+        {/* Un métier : le lien, ou à sa place le champ « Second métier » (état « ajout en cours », design F-cat-ajout). */}
+        {choisis.length === 1 &&
+          (second ? (
+            <ChampMetier
+              libelle="Second métier"
+              catalogue={catalogue}
+              exclus={exclus}
+              onChoix={choisir}
+              onEchap={fermerSecond}
+              disabled={disabled}
+              champ={champ}
+              focus
+              monte={monte}
+              onAjout={onAjout}
+            />
+          ) : (
+            <Button ref={lien} variant="lien" className={`self-start ${TOUCHER}`} disabled={disabled} onClick={ouvrirSecond}>
+              + Ajouter un second métier
+            </Button>
+          ))}
         <p className="text-secondaire text-muted-foreground">{ETAT}</p>
       </div>
     </Categorie>

@@ -24,7 +24,7 @@ type Props = {
   ref: React.RefObject<HTMLDivElement | null>;
   onglet: Onglet;
   onOnglet: (o: Onglet) => void;
-  /** Le focus est dans l'ajout d'un proche (champ, suggestions, « Nom », « Ajouter ») : la feuille monte. */
+  /** Le focus est dans l'ajout d'un proche (champ, suggestions, « Nom », « Ajouter ») ou dans un champ de métier (emploi) : la feuille monte. */
   ajout: boolean;
   /** Texte de la tête : « 3 communes passent tes critères », « Aucun plafond fixé » (H42), vide pendant le chargement. */
   compte: string;

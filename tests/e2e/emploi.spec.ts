@@ -1,7 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
-import { mobile, voirCriteres, voirListe } from './lib/feuille';
+import { amenerEnBas, mobile, onglet, voirCriteres, voirListe } from './lib/feuille';
+import { size, space } from '../../src/theme/tokens';
 
 // Tranche emploi, sur la fixture « 6 communes » de cadre-de-vie étendue par celles de mairies et d'emploi (emploi.json
 // fabriqué par tests/e2e/lib/carte.ts depuis la fixture d'emploi, par code INSEE ; jamais le vrai fichier).
@@ -242,6 +243,12 @@ test('deux métiers venus de l’adresse : chacun ses cases, pas de lien d’ajo
   await retirer(page, GRAPHISTES).click();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   await expect(champMetier(page)).toBeFocused();
+  // 390 px (tâche 4, R20) : le champ revenu a le focus dans la feuille montée ; on en sort d'abord, comme on ferme le
+  // clavier du téléphone (même geste que `voirListe` pour l'ajout d'un proche).
+  if (mobile(page)) {
+    await expect(page.getByRole('tablist')).toBeHidden();
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  }
   await titreEmploi(page).click();
   expect(nbsp(await titreEmploi(page).textContent())).toBe('EmploiPeu importe');
 });
@@ -397,6 +404,226 @@ test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X8
 
   await ouvrirSix(page, '/?metier=V2X90:tous&mairie=gauche&loyer=1200');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mairie=gauche&metier=V2X90:tous');
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 4 : le second métier (R44, état « ajout en cours », H145) ; au téléphone, « Ton métier » et « Second métier »
+// suivent la règle du champ d'adresse des proches (R20 d'interface-telephone) ; H48 à 375 × 548.
+
+const champSecond = (page: Page) => page.getByRole('combobox', { name: 'Second métier' });
+const textesNiveaux = async (page: Page, libelle: string) => (await niveaux(page, libelle).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim());
+
+test('AC-3 /?loyer=1200&metier=V1X80, « + Ajouter un second métier » : « infirm » → « Aucun métier trouvé » ; « graph » choisi : /?loyer=1200&metier=V1X80,U1X82, deux métiers et leurs 3 pastilles, plus de lien ; repliée « 2 métiers » ; « Retirer » les infirmiers : /?loyer=1200&metier=U1X82, les graphistes seuls, le lien revient', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80');
+  await voirCriteres(page);
+  await lienSecond(page).click();
+  await expect(champSecond(page)).toBeFocused();
+  await champSecond(page).fill('infirm');
+  await expect(reglages(page).getByText('Aucun métier trouvé', { exact: true })).toBeVisible();
+  await expect(suggestions(page)).toHaveCount(0);
+  await champSecond(page).fill('');
+  await champSecond(page).fill('graph');
+  await expect(suggestions(page)).toHaveText([GRAPHISTES]);
+  await suggestions(page).first().click();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80,U1X82');
+  await expect(tousNiveaux(page)).toHaveCount(2);
+  for (const l of [INFIRMIERS, GRAPHISTES]) expect(await textesNiveaux(page, l)).toEqual(['10 %', '25 %', 'Partout où il recrute']);
+  await expect(lienSecond(page)).toHaveCount(0);
+  await expect(champSecond(page)).toHaveCount(0);
+
+  await titreEmploi(page).click();
+  await expect(titreEmploi(page)).toHaveAttribute('aria-expanded', 'false');
+  expect(nbsp(await titreEmploi(page).textContent())).toBe('Emploi2 métiers');
+  await titreEmploi(page).click();
+  await expect(titreEmploi(page)).toHaveAttribute('aria-expanded', 'true');
+
+  await retirer(page, INFIRMIERS).click();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
+  await expect(tousNiveaux(page)).toHaveCount(1);
+  await expect(metierChoisi(page, GRAPHISTES)).toBeVisible();
+  await expect(retirer(page, INFIRMIERS)).toHaveCount(0);
+  await expect(lienSecond(page)).toBeVisible();
+});
+
+// Hors AC (état « ajout en cours » de details.md, H145) : le champ s'ouvre sous le premier métier, avec le focus ; Échap le
+// referme et le vide, le focus revient au lien ; quitté avec du texte, il reste ouvert avec son texte ; un choix au clavier.
+test('« Second métier » : sous le premier métier, avec le focus ; Échap le referme et le vide (focus au lien) ; quitté avec du texte, il reste ouvert avec son texte ; Entrée choisit', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10');
+  await voirCriteres(page);
+  await lienSecond(page).click();
+  await expect(champSecond(page)).toBeFocused();
+  await expect(champSecond(page)).toHaveValue('');
+  await expect(lienSecond(page)).toHaveCount(0);
+  const y = async (l: ReturnType<Page['getByRole']>) => (await l.boundingBox())!.y;
+  expect(await y(champSecond(page))).toBeGreaterThan(await y(niveaux(page, INFIRMIERS)));
+  expect(await y(champSecond(page))).toBeLessThan((await reglages(page).getByText(ETAT, { exact: true }).boundingBox())!.y);
+
+  await page.keyboard.type('med');
+  await expect(suggestions(page)).toHaveText(['Médecins']);
+  await page.keyboard.press('Escape');
+  await expect(champSecond(page)).toHaveCount(0);
+  await expect(lienSecond(page)).toBeFocused();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+
+  await page.keyboard.press('Enter'); // le lien a le focus : il rouvre le champ, vide
+  await expect(champSecond(page)).toBeFocused();
+  await expect(champSecond(page)).toHaveValue('');
+  await page.keyboard.type('graph');
+  await page.keyboard.press('Tab');
+  await expect(champSecond(page)).not.toBeFocused();
+  await expect(champSecond(page)).toBeVisible();
+  await expect(champSecond(page)).toHaveValue('graph');
+  await titreEmploi(page).click();
+  await titreEmploi(page).click();
+  await expect(champSecond(page)).toHaveValue('graph');
+
+  await champSecond(page).focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
+  await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeFocused();
+  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+});
+
+// Au toucher (H41 d'interface-telephone), même relevé que tests/e2e/proches-clavier-iphone.spec.ts : la place du champ au
+// tout début du focus, par un écouteur `focusin` en capture sur `window` posé avant le chargement de la page (avant le code
+// de la page, là où Safari la lit). Ligne du clavier de l'iPhone de Vincent dans une fenêtre de 390 × 664 : y = 342.
+const CLAVIER_IPHONE = 342;
+const POIGNEE = space['space-2'] + size['taille-rail'] + space['space-2'];
+type Boite = { top: number; bottom: number };
+declare global {
+  interface Window {
+    __metierAuFocus?: Record<string, Boite>;
+  }
+}
+async function releverAuFocus(page: Page) {
+  await page.addInitScript(() => {
+    window.__metierAuFocus = {};
+    addEventListener(
+      'focusin',
+      (e) => {
+        const el = e.target as HTMLInputElement;
+        const nom = el.labels?.[0]?.textContent?.trim();
+        if (nom !== 'Ton métier' && nom !== 'Second métier') return;
+        const r = el.getBoundingClientRect();
+        window.__metierAuFocus![nom] = { top: r.top, bottom: r.bottom };
+      },
+      true,
+    );
+  });
+}
+const auFocus = (page: Page, nom: 'Ton métier' | 'Second métier') => page.evaluate((n) => window.__metierAuFocus?.[n], nom);
+const deuxImages = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
+/** R20 : au début du focus, le champ est déjà sous la poignée de la feuille montée, au-dessus du clavier ; il ne bouge plus. */
+async function placeAuFocus(page: Page, nom: 'Ton métier' | 'Second métier') {
+  const champ = page.getByRole('combobox', { name: nom });
+  await expect(champ).toBeFocused();
+  const b = await auFocus(page, nom);
+  expect(b, `place de « ${nom} » au début du focus`).toBeDefined();
+  expect(b!.top).toBeGreaterThanOrEqual(size['taille-bande-carte'] + POIGNEE);
+  expect(b!.bottom).toBeLessThanOrEqual(CLAVIER_IPHONE);
+  await deuxImages(page);
+  expect(Math.abs((await champ.boundingBox())!.y - b!.top)).toBeLessThanOrEqual(1);
+  return b!;
+}
+
+test.describe('390 × 844 au toucher', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('AC-13 / à 390 × 844, « Critères » : toucher « Ton métier », « infirm », la suggestion visible sous le champ et touchée, « 10 % » ; « Les 10 premières » : 1 commune, Terrebasse 65 ; /?loyer=1200&metier=V1X80:10', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+    await releverAuFocus(page);
+    await ouvrirSix(page);
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+    await expect(onglet(page, 'Critères')).toHaveAttribute('aria-selected', 'true');
+    // Comme Vincent : faire défiler « Critères » jusqu'à voir le champ en bas de l'écran, puis le toucher.
+    await amenerEnBas(champMetier(page));
+    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await champMetier(page).tap();
+    const auDebut = await placeAuFocus(page, 'Ton métier');
+
+    await champMetier(page).pressSequentially('infirm');
+    await expect(suggestions(page)).toHaveText([INFIRMIERS]);
+    await deuxImages(page);
+    const champ = (await champMetier(page).boundingBox())!;
+    expect(Math.abs(champ.y - auDebut.top)).toBeLessThanOrEqual(1);
+    const s = (await suggestions(page).first().boundingBox())!;
+    expect(s.y).toBeGreaterThanOrEqual(champ.y + champ.height);
+    expect(s.y + s.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+
+    await suggestions(page).first().tap();
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80');
+    await expect(metierChoisi(page, INFIRMIERS)).toBeVisible();
+    await caseNiveau(page, INFIRMIERS, '10 %').tap();
+    await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+
+    await onglet(page, 'Les 10 premières').tap();
+    await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
+    expect(await nomsScores(page)).toEqual(['Terrebasse (23) · 65']);
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
+  });
+});
+
+// Hors AC (R20 d'interface-telephone, fenêtre de Safari sur l'iPhone de Vincent) : chaque chemin qui donne le focus à un
+// champ de métier (toucher du champ, « + Ajouter un second métier », « Retirer » du dernier métier) monte et place la
+// feuille d'abord ; le champ ne bouge plus pendant la saisie ; la suggestion reste au-dessus du clavier.
+test.describe('390 × 664 au toucher (fenêtre de Safari)', () => {
+  test.use({ viewport: { width: 390, height: 664 }, hasTouch: true });
+
+  test('« + Ajouter un second métier » touché : au début du focus, « Second métier » est déjà sous la poignée, au-dessus du clavier ; la suggestion aussi ; choisie, la feuille redescend', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+    await releverAuFocus(page);
+    await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10');
+    await amenerEnBas(lienSecond(page));
+    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await lienSecond(page).tap();
+    const b = await placeAuFocus(page, 'Second métier');
+    await expect(page.getByRole('tablist')).toBeHidden(); // feuille montée : la poignée seule au-dessus du champ
+    await champSecond(page).pressSequentially('graph');
+    await expect(suggestions(page)).toHaveText([GRAPHISTES]);
+    await deuxImages(page);
+    expect(Math.abs((await champSecond(page).boundingBox())!.y - b.top)).toBeLessThanOrEqual(1);
+    const s = (await suggestions(page).first().boundingBox())!;
+    expect(s.y + s.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+    await suggestions(page).first().tap();
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
+    await expect(page.getByRole('tablist')).toBeVisible();
+    await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeFocused();
+    await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeInViewport({ ratio: 1 });
+  });
+
+  test('« Ton métier » touché, puis « Retirer » du dernier métier : chaque fois, au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+    await releverAuFocus(page);
+    await ouvrirSix(page);
+    await amenerEnBas(champMetier(page));
+    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await champMetier(page).tap();
+    await placeAuFocus(page, 'Ton métier');
+    await champMetier(page).pressSequentially('graph');
+    await suggestions(page).first().tap();
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
+    await expect(page.getByRole('tablist')).toBeVisible();
+
+    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await retirer(page, GRAPHISTES).tap();
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+    await placeAuFocus(page, 'Ton métier');
+  });
+});
+
+// Hors AC (H48 d'interface-telephone) : la catégorie « Emploi » ne pousse pas le curseur du prix hors de la feuille sur le
+// plus petit écran visé.
+test('375 × 548 : à l’ouverture, « Loyer maximum » entièrement visible dans la feuille ; « Emploi » plus bas dans l’onglet', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+  await page.setViewportSize({ width: 375, height: 548 });
+  await ouvrirSix(page);
+  const f = (await page.getByTestId('feuille').boundingBox())!;
+  const curseur = (await page.getByRole('slider', { name: 'Loyer maximum' }).boundingBox())!;
+  expect(curseur.y).toBeGreaterThanOrEqual(f.y);
+  expect(curseur.y + curseur.height).toBeLessThanOrEqual(548);
+  expect((await titreEmploi(page).boundingBox())!.y).toBeGreaterThan(curseur.y);
 });
 
 // Tâche 2, suite.
