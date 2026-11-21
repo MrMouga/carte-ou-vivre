@@ -1,0 +1,75 @@
+  ok   zones d'emploi : « Géographie au 01/01/2025 » dans l'en-tête (celle de communes.json)
+Yvrench (80832), 296 hab., zone d'emploi 3201 :
+    0.8 km  Yvrencheux (80833) bassin 3201 zone 3201
+    3.4 km  Noyelles-en-Chaussée (80599) bassin 3201 zone 3201
+    3.5 km  Gapennes (80374) bassin 3201 zone 3201
+    4.2 km  Coulonvillers (80215) bassin 3201 zone 3201
+    4.4 km  Maison-Ponthieu (80501) bassin 3201 zone 3201
+    4.5 km  Oneux (80609) bassin 3201 zone 3201
+    5.0 km  Cramont (80221) bassin 3201 zone 3201
+    5.2 km  Conteville (80208) bassin 3202 zone 3201
+BMO 2026 : Base-open-data-BMO-2026.xlsx, Last-Modified Tue, 21 Apr 2026 07:03:05 GMT, téléchargé le 2026-11-21T16:14:26+01:00, 3755481 octets, sha256 735d0443b799b4c18c145055f87244a355a48b6286ee98ddbab272491d9792e0
+  ok   BMO 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+bassins 2026 : bassins-emploi-2026.xlsx, Last-Modified Fri, 17 Apr 2026 08:43:50 GMT, téléchargé le 2026-11-21T16:14:27+01:00, 1410342 octets, sha256 3c7f5048491b90d21cfb16afdacb98f60b03a127b34bc871fd09fa41c09da455
+  ok   bassins 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+chômage : chomage-zone-t1-2003-t2-2026.xlsx, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 146588 octets, sha256 0662c648e68feec0fd1901bd11fe9a084043e03ead3103f526b19c35de588db7
+  ok   chômage : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+zones d'emploi : ZE2020_au_01-01-2025.zip, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 991817 octets, sha256 aec5884669f23669e6234f5a2d5fe4c33d1b5af3d5bf7135dd14f640b63eda2c
+  ok   zones d'emploi : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+COG 2026 : v_mvt_commune_2026.csv, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 2076555 octets, sha256 8b339fad8232e97233af3fd9468715af845e2cf8b14cb67b24d9a301ef8645f1
+  ok   COG 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+  ok   34746 communes sur la carte
+  ok   BMO : colonnes attendues (BE26, clpe, met…)
+BMO : 51641 lignes de métropole, dont 100 sans comité local (Monaco)
+  ok   BMO : une seule ligne par métier × bassin × comité local × département (0 en double)
+BMO : 435 métier × bassin × comité local sur plusieurs départements (une ligne chacun, additionnées) ; 23 aux lignes identiques (met, xmet, smet) : [(('B0X31', '5304', 'CLPE29002'), [('*', '*', '*'), ('*', '*', '*')]), (('B2X37', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('B6X71', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('C0X30', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('D1X30', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('D2X31', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('E4X30', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('E5X70', '4444', 'CLPE6AE08'), [('*', '*', '*'), ('*', '*', '*')])]
+  dont avec un chiffre publié : 1
+BMO métropole : 389 bassins, 217 métiers
+  ok   389 bassins en métropole
+  ok   217 métiers en métropole
+  ok   Marseille : ses 16 arrondissements dans le seul bassin 9306 (['9306'])
+  ok   Lyon : ses 9 arrondissements dans le seul bassin 8428 (['8428'])
+  ok   Paris : ses 20 arrondissements dans le seul bassin 1107 (['1107'])
+  SONDE : Yvrench rattachée provisoirement à Yvrencheux (80833), bassin 3201
+  recalée : Conques-en-Rouergue (12218) → code 12076 de la table, bassin 7614 ; mouvements (ancien code, MOD, date) [('12076', '50', '2024-03-04')]
+  recalée : Aurseulles (14581) → code 14011 de la table, bassin 2818 ; mouvements (ancien code, MOD, date) [('14011', '50', '2024-04-24')]
+  recalée : Celles (15031) → code 15141 de la table, bassin 8451 ; mouvements (ancien code, MOD, date) [('15141', '21', '2025-01-01')]
+  recalée : Chalinargues (15035) → code 15141 de la table, bassin 8451 ; mouvements (ancien code, MOD, date) [('15141', '21', '2025-01-01')]
+  recalée : Chavagnac (15047) → code 15141 de la table, bassin 8451 ; mouvements (ancien code, MOD, date) [('15141', '21', '2025-01-01')]
+  recalée : Sainte-Anastasie (15171) → code 15141 de la table, bassin 8451 ; mouvements (ancien code, MOD, date) [('15141', '21', '2025-01-01')]
+  recalée : Orée d'Anjou (49126) → code 49069 de la table, bassin 5229 ; mouvements (ancien code, MOD, date) [('49069', '50', '2025-01-01')]
+  recalée : Les Hauts-Talican (60694) → code 60054 de la table, bassin 3213 ; mouvements (ancien code, MOD, date) [('60054', '21', '2024-01-01')]
+  recalée : Porte des Pierres Dorées (69114) → code 69159 de la table, bassin 8444 ; mouvements (ancien code, MOD, date) [('69159', '50', '2024-03-15')]
+  recalée : Yvrench (80832) → code 80833 de la table, bassin 3201 ; mouvements (ancien code, MOD, date) ['sonde']
+  recalée : L'Oie (85165) → code 85084 de la table, bassin 5214 ; mouvements (ancien code, MOD, date) [('85084', '21', '2024-01-01')]
+  recalée : Sainte-Florence (85212) → code 85084 de la table, bassin 5214 ; mouvements (ancien code, MOD, date) [('85084', '21', '2024-01-01')]
+  ok   H142 : les 12 communes absentes de la table recalées, et elles seules (12)
+  ok   tout bassin des communes est un bassin du BMO ([])
+bassins du BMO sans commune de la carte : ['9399'] (['MONACO'])
+  ok   seul le bassin de Monaco (9399) n'a aucune commune de la carte
+  ok   H142 : Paris ville principale du bassin 1107
+  ok   H142 : Lyon ville principale du bassin 8428
+  ok   H142 : Marseille ville principale du bassin 9306
+  ok   zones d'emploi : « Géographie au 01/01/2025 » dans l'en-tête (celle de communes.json)
+chômage : dernier trimestre 2026-T2 « 2e trimestre 2026 »
+  ok   chômage : dernier trimestre publié = 2e trimestre 2026 (H138)
+  ok   H138 : les 34746 communes ont une zone d'emploi (sans : [])
+  ok   H138 : chaque zone des communes a un taux au 2e trimestre 2026 (sans : [])
+  ok   H142 : les 34746 communes ont un bassin
+zones d'emploi des communes : 287 ; taux de 4.3 à 14.4 %
+  ok   noms courants : 57 (60 au plus, H134)
+  ok   noms courants : chacun une seule fois (un seul métier par nom)
+  ok   noms courants : chaque code est un métier du fichier
+  ok   noms courants : développeur, data scientist, UX designer, sage-femme, business developer, prospecteur, chargé d'affaires
+  ok   H146 : chaque métier chiffré dans au moins 6 bassins (le moins : 6)
+R50 : 96 métiers peu chiffrés (moins de 130 bassins) sur 217
+  libellé de la fixture V1X80 : identique
+  libellé de la fixture V2X90 : identique
+  libellé de la fixture M2X90 : identique
+  libellé de la fixture U1X82 : identique
+  ok   AC-12 : M2X90, 39 bassins au niveau « 10 » (attendu 39)
+  ok   AC-12 : M2X90, 98 bassins aux niveaux « 10 » ou « 25 » (attendu 98)
+  ok   AC-12 : M2X90, 120 bassins chiffrés (attendu 120)
+  ok   AC-12 : bassin de Bordeaux (7532, ville principale Bordeaux) au niveau « 10 » avec 742 projets ((742, '10'))
+  ok   AC-12 : bassin de La Rochelle (7504) sans chiffre pour M2X90
+écrit : public/data/emploi.json (1496506 octets)

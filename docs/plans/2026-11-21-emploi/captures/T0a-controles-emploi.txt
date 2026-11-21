@@ -1,0 +1,23 @@
+BMO 2026 : Base-open-data-BMO-2026.xlsx, Last-Modified Tue, 21 Apr 2026 07:03:05 GMT, téléchargé le 2026-11-21T16:14:26+01:00, 3755481 octets, sha256 735d0443b799b4c18c145055f87244a355a48b6286ee98ddbab272491d9792e0
+  ok   BMO 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+bassins 2026 : bassins-emploi-2026.xlsx, Last-Modified Fri, 17 Apr 2026 08:43:50 GMT, téléchargé le 2026-11-21T16:14:27+01:00, 1410342 octets, sha256 3c7f5048491b90d21cfb16afdacb98f60b03a127b34bc871fd09fa41c09da455
+  ok   bassins 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+chômage : chomage-zone-t1-2003-t2-2026.xlsx, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 146588 octets, sha256 0662c648e68feec0fd1901bd11fe9a084043e03ead3103f526b19c35de588db7
+  ok   chômage : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+zones d'emploi : ZE2020_au_01-01-2025.zip, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 991817 octets, sha256 aec5884669f23669e6234f5a2d5fe4c33d1b5af3d5bf7135dd14f640b63eda2c
+  ok   zones d'emploi : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+COG 2026 : v_mvt_commune_2026.csv, Last-Modified None, téléchargé le 2026-11-21T16:14:27+01:00, 2076555 octets, sha256 8b339fad8232e97233af3fd9468715af845e2cf8b14cb67b24d9a301ef8645f1
+  ok   COG 2026 : empreinte égale à celle retenue (CLAUDE.md) et à celle notée
+  ok   34746 communes sur la carte
+  ok   BMO : colonnes attendues (BE26, clpe, met…)
+BMO : 51641 lignes de métropole, dont 100 sans comité local (Monaco)
+  ok   BMO : une seule ligne par métier × bassin × comité local × département (0 en double)
+BMO : 435 métier × bassin × comité local sur plusieurs départements (une ligne chacun, additionnées) ; 23 aux lignes identiques (met, xmet, smet) : [(('B0X31', '5304', 'CLPE29002'), [('*', '*', '*'), ('*', '*', '*')]), (('B2X37', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('B6X71', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('C0X30', '8421', 'CLPE26002'), [('*', '*', '*'), ('*', '*', '*')]), (('D1X30', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('D2X31', '1118', 'CLPE91001'), [('*', '*', '*'), ('*', '*', '*')]), (('E4X30', '8431', 'CLPE26003'), [('*', '*', '*'), ('*', '*', '*')]), (('E5X70', '4444', 'CLPE6AE08'), [('*', '*', '*'), ('*', '*', '*')])]
+  dont avec un chiffre publié : 1 [(('V2X92', '1129', 'CLPE94001'), [('12', '*', '*'), ('12', '*', '*')])]
+BMO métropole : 389 bassins, 217 métiers
+  ok   389 bassins en métropole
+  ok   217 métiers en métropole
+  ok   Marseille : ses 16 arrondissements dans le seul bassin 9306 (['9306'])
+  ok   Lyon : ses 9 arrondissements dans le seul bassin 8428 (['8428'])
+  ok   Paris : ses 20 arrondissements dans le seul bassin 1107 (['1107'])
+  ÉCHEC 80832 (Yvrench) recalé sur un code de la table, un seul bassin ([])

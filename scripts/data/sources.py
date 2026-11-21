@@ -20,7 +20,19 @@ DVF_MOIS = 'stats_dvf.csv'
 # une ligne par commune et ses listes ; même <nom>.info.json que la DVF (relu par mairies.py).
 MUNI_T1 = 'municipales-2026-resultats-communes-2026-03-20.csv'
 MUNI_T2 = 'municipales-2026-resultats-communes-2026-03-23-16h14.csv'
-NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2)
+# Emploi (tranche emploi, tâche 0a, 2026-11-21) : enquête Besoins en main-d'œuvre 2026 de France Travail (Licence
+# Ouverte, jeu « Enquête Besoins en Main d'Oeuvre (BMO) » de data.gouv.fr) ; table des bassins d'emploi 2026 (France
+# Travail, liée depuis la page de méthode de l'enquête ; aucune licence écrite, réutilisée en citant la source et sa date,
+# décision de Vincent du 2026-11-21, H143) ; taux de chômage localisés par zone d'emploi (Insee, paru le 18/09/2026,
+# 2e trimestre 2026) ; zones d'emploi 2020 des communes, géographie au 01/01/2025 (Insee, celle de communes.json) ;
+# mouvements des communes du COG 2026 (Insee : les 12 communes 2025 absentes de la table des bassins, H142).
+# Même <nom>.info.json que la DVF (relu par emploi.py).
+BMO = 'Base-open-data-BMO-2026.xlsx'
+BASSINS = 'bassins-emploi-2026.xlsx'  # nom du serveur : « Bassins_d'emploi_2026.xlsx » (apostrophe retirée)
+CHOMAGE = 'chomage-zone-t1-2003-t2-2026.xlsx'
+ZE = 'ZE2020_au_01-01-2025.zip'
+MVT_2026 = 'v_mvt_commune_2026.csv'
+NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2, BMO, BASSINS, CHOMAGE, ZE, MVT_2026)
 
 CEREMA = 'montagne/cerema'
 CEREMA_URL = 'https://static.data.gouv.fr/resources/application-des-dispositions-durbanisme-de-la-loi-montagne-en-france-metropolitaine/'
@@ -70,6 +82,12 @@ SOURCES = {
     # Zone de montagne (cadre-de-vie, source B retenue en tâche 0) : Cerema, « Application des dispositions d'urbanisme
     # de la loi Montagne en France Métropolitaine », communes au 1er janvier 2019 (Licence Ouverte 2.0) ; 7z.
     CEREMA + '/l-commune-loimontagne85-000-2019.7z': CEREMA_URL + '20241112-090411/l-commune-loimontagne85-000-2019.7z',
+    # Emploi (voir BMO plus haut). Le serveur des bassins redirige vers images.pr-rooms.com (suivi par urllib).
+    BMO: 'https://www.francetravail.org/files/live/sites/peorg/files/documents/Statistiques-et-analyses/Open-data/BMO/Base-open-data-BMO-2026.xlsx',
+    BASSINS: 'https://statistiques.francetravail.org/bmo/Handlers/HTFile.ashx?MEDIAID=188096',
+    CHOMAGE: 'https://www.insee.fr/fr/statistiques/fichier/1893230/chomage-zone-t1-2003-t2-2026.xlsx',
+    ZE: 'https://www.insee.fr/fr/statistiques/fichier/4652957/ZE2020_au_01-01-2025.zip',
+    MVT_2026: 'https://www.insee.fr/fr/statistiques/fichier/8740222/v_mvt_commune_2026.csv',
 }
 # Même jeu : zones infra-communales des communes classées en partie, une archive par département (34 départements).
 for dep, date in ZINF.items():
