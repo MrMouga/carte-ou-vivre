@@ -35,7 +35,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 - Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `9664a3b` (sept tranches, dont mairies), prouvé le 2026-10-19 à 15:46 (docs/ship/2026-10-19-mairies/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
 - Usagers hors de l'équipe : 3 (3 amis de la cible, lien envoyé, semaine du 9 au 15 novembre 2026 : [note](docs/feedback/2026-11-21-amis.md))
-- Prochaine tranche : emploi, spec validée le 2026-11-21 ; suite : `/ui` (nouvelle session). Avant la tâche 0 de `/breakdown` : Vincent donne les métiers de ses 3 testeurs (seuil d'arrêt : un métier chiffré dans moins de 130 bassins). Mesure du chargement sur téléphone après la tranche.
+- Prochaine tranche : emploi, spec et design validés le 2026-11-21 ; suite : `/breakdown`. Avant la tâche 0 de `/breakdown` : Vincent donne les métiers de ses 3 testeurs (seuil d'arrêt : un métier chiffré dans moins de 130 bassins). Mesure du chargement sur téléphone après la tranche.
 
 ## Échéances
 
@@ -146,6 +146,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-21 | /spec emploi : recherche de données d'abord (/research) | Les 3 amis entendent « emploi » comme « trouver du travail dans mon métier » (réponse de Vincent) ; la discovery n'a vérifié que le chômage par zone d'emploi (302 zones, sans métier) et n'a pas exploré l'emploi par commune et secteur ni les recrutements par métier. Spec emploi suspendue avant l'entretien, reprise sur les recommandations de la recherche. |
 | 2026-11-21 | Recherche « emploi » : suffisante pour la spec ; tranche « métier + marché du coin » | Source trouvée : enquête Besoins en main-d'œuvre 2026 de France Travail (Licence Ouverte), projets de recrutement prévus pour 217 métiers × 389 bassins, table commune → bassin officielle (34 731 communes jointes). Trouée : un métier typique chiffré dans 147 bassins sur 389 (ingénieurs en informatique : 120 ; pari de Vincent : plus de 80 %). Choix de Vincent : la BMO par métier, plus le chômage par zone d'emploi pour les trous ; P-1 à P-8 prises comme base. [synthèse](docs/research/2026-11-21-emploi/synthesis.md) |
 | 2026-11-21 | Spec validée : emploi | Jusqu'à deux métiers (217 de l'enquête Besoins en main-d'œuvre 2026, champ qui propose), un niveau par métier (10 %, 25 % des bassins qui recrutent le plus, partout où il recrute) ; une commune passe si la ville principale d'un bassin de ce niveau est à 30 km ou moins (fixes) ; filtre seul ; chômage de la zone d'emploi Insee dans chaque fiche (à la place du « chômage pour les trous » d'après la recherche) ; métiers dans le lien ; part « difficile » non affichée ; phrase sur l'État sous le champ ; 13 critères, au plafond perso. Idée de Vincent pendant l'entretien : la proximité d'un bassin plutôt que l'appartenance, et le classement par métier. [spec](docs/specs/2026-11-21-emploi/spec.md) |
+| 2026-11-21 | Design validé : emploi | Fusion F sur la base A : métier choisi en libellé gras avec « Retirer » sur sa ligne, niveaux en Cases collées comme la mer, phrase « Coche un niveau… » tant que rien n'est coché (choix de Vincent ; H130, H131 et l'état « un métier » amendés), focus sur « 10 % » après un choix ; pari de Vincent : A, relecture à l'aveugle : A ; sans Figma. |
 
 ## Hypothèses à vérifier
 
@@ -206,6 +207,7 @@ Autres questions :
 
 ## Documents
 
+- [Design « Emploi » — 2026-11-21](docs/design/emploi/README.md) · [décisions](docs/design/emploi/decisions.md)
 - [Spec « Emploi » — 2026-11-21](docs/specs/2026-11-21-emploi/spec.md) · [relecture](docs/specs/2026-11-21-emploi/relecture.md)
 - [Recherche « emploi » — 2026-11-21](docs/research/2026-11-21-emploi/) · [synthèse](docs/research/2026-11-21-emploi/synthesis.md) · [mesures](docs/research/2026-11-21-emploi/mesures/mesures.md) · [vérification](docs/research/2026-11-21-emploi/verification.md)
 - [Retours « 3 amis » — synthèse — 2026-11-21](docs/feedback/synthese-2026-11-21.md) · [note de séance](docs/feedback/2026-11-21-amis.md)
