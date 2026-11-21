@@ -79,7 +79,7 @@ Sur une page sans pastille de mairie cochée : loyer-mer AC-1 à AC-15 ; interfa
 - **H108** — Noms dans l'adresse : `gauche`, `divers`, `centre`, `droite`, `extreme-droite`, `sans-etiquette`.
 - **H109** — Le groupe a un titre visible « Mairie élue en 2026 », qui est aussi son nom pour les lecteurs d'écran ; les pastilles sont des boutons à bascule (« cochée » = enfoncée), comme les types d'environnement ; au clavier, Tab de pastille en pastille.
 - **H110** — Résumé de « Vie locale » repliée : « Peu importe » si rien n'est coché ; sinon « 1 choix », « 2 choix »… (/ui peut le changer par une révision de la spec, AC-8).
-- **H111** — « Vie locale » est entre « Cadre de vie » et « Tes proches ».
+- **H111** — « Vie locale » est entre « Cadre de vie » et « Tes proches ». *Révisée par [emploi](../2026-11-21-emploi/details.md) (H129, 2026-11-21) : « Emploi » s'insère entre « Vie locale » et « Tes proches » ; « Vie locale » suit toujours « Cadre de vie ».*
 - **H112** — Une fiche ouverte sans filtre de mairie montre la ligne « Mairie » comme les autres lignes, sans mise en avant.
 - **H113** — Ordre des raisons dans la fiche : prix, mer, montagne, taille, type, mairie, proches.
 - **H114** — Le nom de la liste est affiché tel que les fichiers l'écrivent (majuscules comprises), en entier, entre guillemets français ; aucune correction de casse.

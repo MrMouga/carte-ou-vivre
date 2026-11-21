@@ -1,0 +1,191 @@
+{
+  "slice": "emploi",
+  "fixture": {
+    "description": "Fixture inventée « 6 communes » de mairies, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, points des mairies, loyers, prix, mer, type d'environnement, montagne et mairie élue. Au départ (/ : prix 1 200 € pour 52 m², rien de coché, aucun métier), la liste est celle d'AC-1 de mairies : Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; Montcher (75) ne passe pas (loyer 1 560 €). Chaque commune gagne : bassin (code du bassin d'emploi), zone_emploi (nom Insee de sa zone d'emploi, ou null) et chomage (taux, ou null). Trois bassins inventés, chacun nommé par sa ville principale (H135) : 99B1 « Grandeville » (communes Grandeville, Portmer, Terrebasse ; ville principale Grandeville, 260 000 hab.), 99B2 « Montcher » (Montcher, Quaibleu ; ville principale Montcher, 2 100 000 hab.), 99B3 « Rhinval » (Rhinval seule). Distances : `distances_km`, à vol d'oiseau, de la mairie de chaque commune à la mairie de chaque ville principale, en km affichés ; elles sont données telles quelles par la fixture (H144) et ne se déduisent pas des points des mairies de la fixture, qui ne bougent pas (posés sur une grille d'environ 111 km pour les tests des tranches précédentes) ; elles sont cohérentes entre elles (positions planes en km : Grandeville (0 ; 0), Montcher (60 ; 0), Portmer (−25 ; 0), Terrebasse (37,69 ; 18,53), Quaibleu (19,66 ; −19,94), Rhinval (184,17 ; 100,91)). Quatre métiers, libellés réels ; chiffres en partie repris des vrais fichiers, sans valeur de preuve. Le niveau de chaque bassin pour chaque métier est donné (calculé en amont par R45, testée à part par AC-8 sur l'`extrait_bmo`) : « 10 », « 25 », « tous » (chiffré, hors des 25 %) ou null (pas de chiffre publié). Un bassin à « 10 » est aussi dans les 25 % et dans « Partout où il recrute ». Les fixtures « 5 communes » et « métropole » ne gagnent ces champs que si la page en a besoin pour s'ouvrir (H140).",
+    "items": [
+      { "id": "A", "code_insee": "99001", "nom": "Portmer", "bassin": "99B1", "zone_emploi": "Grandeville", "chomage": 7.1 },
+      { "id": "B", "code_insee": "99002", "nom": "Grandeville", "bassin": "99B1", "zone_emploi": "Grandeville", "chomage": 7.1 },
+      { "id": "C", "code_insee": "99003", "nom": "Montcher", "bassin": "99B2", "zone_emploi": "Montcher", "chomage": 6.8 },
+      { "id": "D", "code_insee": "99004", "nom": "Terrebasse", "bassin": "99B1", "zone_emploi": "Grandeville", "chomage": 7.1 },
+      { "id": "E", "code_insee": "99005", "nom": "Quaibleu", "bassin": "99B2", "zone_emploi": "Montcher", "chomage": 6.8 },
+      { "id": "F", "code_insee": "99006", "nom": "Rhinval", "bassin": "99B3", "zone_emploi": null, "chomage": null }
+    ],
+    "trimestre_chomage": "2e trimestre 2026",
+    "distances_km": {
+      "Portmer": { "Grandeville": 25, "Montcher": 85, "Rhinval": 232 },
+      "Grandeville": { "Grandeville": 0, "Montcher": 60, "Rhinval": 210 },
+      "Montcher": { "Grandeville": 60, "Montcher": 0, "Rhinval": 160 },
+      "Terrebasse": { "Grandeville": 42, "Montcher": 29, "Rhinval": 168 },
+      "Quaibleu": { "Grandeville": 28, "Montcher": 45, "Rhinval": 204 },
+      "Rhinval": { "Grandeville": 210, "Montcher": 160, "Rhinval": 0 }
+    },
+    "metiers": [
+      {
+        "code": "V1X80",
+        "libelle": "Infirmiers et sages-femmes",
+        "bassins": {
+          "99B1": { "niveau": "25", "projets": 626 },
+          "99B2": { "niveau": "10", "projets": 1680 },
+          "99B3": { "niveau": "tous", "projets": 66 }
+        }
+      },
+      {
+        "code": "U1X82",
+        "libelle": "Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle",
+        "bassins": {
+          "99B1": { "niveau": null },
+          "99B2": { "niveau": "10", "projets": 1027 },
+          "99B3": { "niveau": null }
+        }
+      },
+      {
+        "code": "M2X90",
+        "libelle": "Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom",
+        "bassins": {
+          "99B1": { "niveau": "10", "projets": 742 },
+          "99B2": { "niveau": "10", "projets": 2938 },
+          "99B3": { "niveau": null }
+        }
+      },
+      {
+        "code": "V2X90",
+        "libelle": "Médecins",
+        "bassins": {
+          "99B1": { "niveau": "25", "projets": 120 },
+          "99B2": { "niveau": "10", "projets": 410 },
+          "99B3": { "niveau": "tous", "projets": 9 }
+        }
+      }
+    ],
+    "noms_courants": { "développeur": "M2X90", "sage-femme": "V1X80" },
+    "extrait_bmo": {
+      "description": "Lignes inventées au format du fichier BMO (une ligne par métier × bassin × comité local ; « * » = case cachée), pour un seul métier M2X90, sur un territoire inventé de 20 bassins (N = 20). Bassins absents du fichier : b13 à b20.",
+      "lignes": [
+        { "bassin": "b01", "met": "500" },
+        { "bassin": "b02", "met": "300" },
+        { "bassin": "b03", "met": "300" },
+        { "bassin": "b04", "met": "60" },
+        { "bassin": "b04", "met": "60" },
+        { "bassin": "b05", "met": "80" },
+        { "bassin": "b06", "met": "80" },
+        { "bassin": "b07", "met": "40" },
+        { "bassin": "b07", "met": "*" },
+        { "bassin": "b08", "met": "12" },
+        { "bassin": "b09", "met": "5" },
+        { "bassin": "b10", "met": "5" },
+        { "bassin": "b11", "met": "*" },
+        { "bassin": "b12", "met": "*" }
+      ],
+      "bassins": ["b01", "b02", "b03", "b04", "b05", "b06", "b07", "b08", "b09", "b10", "b11", "b12", "b13", "b14", "b15", "b16", "b17", "b18", "b19", "b20"]
+    },
+    "services": {
+      "fond IGN (Géoplateforme)": { "normal": { "réponse": "tuiles servies" } }
+    }
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R44",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre /, regarde « Emploi » et le pied de page, puis tape « infirm » dans « Ton métier » et choisit « Infirmiers et sages-femmes », puis replie « Emploi »",
+      "then": "à l'ouverture : l'adresse devient /?loyer=1200 ; une catégorie « Emploi », ouverte, suit « Vie locale » et précède « Tes proches » ; elle montre le champ « Ton métier », vide, la phrase « Les emplois de l'État (enseignants du public, fonctionnaires) ne sont pas dans l'enquête. » et aucune pastille de niveau ; la liste est celle d'AC-1 de mairies ; le pied de page contient « Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 » et « Chômage : Insee, taux de chômage localisés par zone d'emploi, 2e trimestre 2026 ». Après le choix : une seule suggestion avait été proposée, « Infirmiers et sages-femmes » ; l'adresse devient /?loyer=1200&metier=V1X80 ; le métier choisi est affiché avec ses pastilles « 10 % », « 25 % », « Partout où il recrute », aucune cochée, une action « Retirer » et un lien « + Ajouter un second métier » ; la liste ne change pas (5 communes, mêmes scores). Repliée, « Emploi » montre « 1 métier »",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R44",
+      "given": "Fixture « 6 communes », page ouverte sur /",
+      "when": "l'utilisateur tape successivement, dans « Ton métier » vidé à chaque fois : « i », « medecin », « dévelop », « developpeur », « femm », « etude », « xyz »",
+      "then": "« i » : aucune suggestion ; « medecin » : une suggestion, « Médecins » ; « dévelop » : une suggestion, « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom » ; « developpeur » : la même suggestion (nom courant « développeur ») ; « femm » : « Infirmiers et sages-femmes » ; « etude » : « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom » ; « xyz » : le texte « Aucun métier trouvé » et aucune suggestion. L'adresse reste /?loyer=1200",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R44",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80",
+      "when": "l'utilisateur clique « + Ajouter un second métier », tape « infirm », puis efface, tape « graph » et choisit la suggestion, replie puis déplie « Emploi », puis clique « Retirer » sur « Infirmiers et sages-femmes »",
+      "then": "« infirm » : « Aucun métier trouvé » (déjà choisi) ; après « graph » : l'adresse devient /?loyer=1200&metier=V1X80,U1X82, deux métiers sont affichés avec chacun leurs 3 pastilles, et aucun lien « + Ajouter un second métier » n'est proposé ; repliée, « Emploi » montre « 2 métiers ». Après « Retirer » : l'adresse devient /?loyer=1200&metier=U1X82 ; seul « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle » reste, et le lien « + Ajouter un second métier » revient",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R46",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80",
+      "when": "l'utilisateur coche « 10 % » pour « Infirmiers et sages-femmes », puis ouvre la fiche de Quaibleu",
+      "then": "l'adresse devient /?loyer=1200&metier=V1X80:10 ; la liste montre « 1 commune passe tes critères » puis Terrebasse (23) 65 (Montcher, à 29 km, est dans les 10 %) ; Portmer, Grandeville, Quaibleu et Rhinval ne sont pas colorées ; la fiche de Quaibleu (13) a la ligne « Infirmiers et sages-femmes : bassin de Montcher, 1 680 recrutements prévus en 2026 » et, dans ses raisons, une seule fois, « Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Montcher, 45 km) »",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R46",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80:10",
+      "when": "l'utilisateur coche « 25 % », puis « Partout où il recrute », et ouvre la fiche de Rhinval",
+      "then": "avec « 25 % » : l'adresse devient /?loyer=1200&metier=V1X80:25 ; la liste montre « 4 communes passent tes critères » puis, dans l'ordre, Terrebasse (23) 65, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; les raisons de la fiche de Rhinval (67) contiennent « Infirmiers et sages-femmes : aucun bassin parmi les 25 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Montcher, 160 km) ». Avec « Partout où il recrute » : l'adresse devient /?loyer=1200&metier=V1X80:tous ; la liste montre « 5 communes passent tes critères » et retrouve l'ordre de départ (Terrebasse 65, Rhinval 52, Portmer 46, Grandeville 31, Quaibleu 9) ; la fiche de Rhinval a la ligne « Infirmiers et sages-femmes : Rhinval, sur place, bassin où ce métier recrute · 66 recrutements prévus en 2026 » et plus de raison pour ce métier",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R46",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80:25,U1X82",
+      "when": "l'utilisateur coche « 10 % » pour les graphistes, puis ouvre la fiche de Portmer",
+      "then": "l'adresse devient /?loyer=1200&metier=V1X80:25,U1X82:10 ; la liste montre « 1 commune passe tes critères » puis Terrebasse (23) 65 ; les raisons de la fiche de Portmer (17) contiennent « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Montcher, 85 km) » et aucune raison pour les infirmiers ; sa ligne des infirmiers est « Infirmiers et sages-femmes : Grandeville, à 25 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R46",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=aucun&metier=V1X80",
+      "when": "l'utilisateur coche « 10 % »",
+      "then": "la page est dans l'état « sans plafond » de loyer-mer : Montcher (75) et Terrebasse (23) prennent la couleur neutre ; Portmer, Grandeville, Quaibleu et Rhinval ne sont pas colorées ; l'adresse devient /?loyer=aucun&metier=V1X80:10",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R45",
+      "given": "L'« extrait_bmo » de la fixture (20 bassins, métier M2X90)",
+      "when": "les niveaux des bassins sont calculés",
+      "then": "projets par bassin : b01 500, b02 300, b03 300, b04 120 (60 + 60), b05 80, b06 80, b07 40 (la ligne cachée ne compte pas), b08 12, b09 5, b10 5 ; b11 et b12 (cachés) et b13 à b20 (absents) n'ont pas de chiffre. Niveau « 10 » (2 bassins visés, égalités comprises) : b01, b02, b03. Niveau « 25 » (5 visés, égalités comprises) : b04, b05, b06 en plus. Niveau « tous » : b07, b08, b09, b10. Aucun niveau : b11 à b20",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R47",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=U1X82",
+      "when": "l'utilisateur ouvre la fiche de Grandeville, puis celle de Montcher, puis coche « Partout où il recrute » et ouvre la fiche de Rhinval",
+      "then": "Grandeville : « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle : bassin de Grandeville, pas de chiffre publié pour ce métier ». Montcher : « … : bassin de Montcher, 1 027 recrutements prévus en 2026 ». Avec « Partout où il recrute » : l'adresse devient /?loyer=1200&metier=U1X82:tous ; la liste montre « 1 commune passe tes critères » puis Terrebasse (23) 65 ; la fiche de Rhinval a la ligne « … : bassin de Rhinval, pas de chiffre publié pour ce métier », la raison « … : aucun bassin où ce métier recrute dans un rayon de 30 km (le plus proche : Montcher, 160 km) » et la ligne « Chômage : inconnu »",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R47",
+      "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80:25,V2X90",
+      "when": "l'utilisateur ouvre les fiches de Quaibleu, Grandeville et Terrebasse",
+      "then": "Quaibleu : sous la ligne « Mairie », dans l'ordre, « Infirmiers et sages-femmes : Grandeville, à 28 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 », puis « Médecins : bassin de Montcher, 410 recrutements prévus en 2026 », puis « Chômage : 6,8 % dans la zone d'emploi de Montcher (2e trimestre 2026) ». Grandeville : « Infirmiers et sages-femmes : Grandeville, sur place, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026 » et « Chômage : 7,1 % dans la zone d'emploi de Grandeville (2e trimestre 2026) ». Terrebasse : « Infirmiers et sages-femmes : Montcher, à 29 km, parmi les 10 % de bassins qui recrutent le plus · 1 680 recrutements prévus en 2026 » et « Médecins : bassin de Grandeville, 120 recrutements prévus en 2026 »",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R48",
+      "given": "Fixture « 6 communes »",
+      "when": "l'utilisateur ouvre successivement /?loyer=1200&metier=V1X80:10,ZZ999:25,U1X82:50,V2X90 puis /?loyer=1200&metier=V1X80:10,V1X80:25 puis /?metier=V2X90:tous&mairie=gauche&loyer=1200",
+      "then": "la première adresse est réécrite /?loyer=1200&metier=V1X80:10,U1X82 (code inconnu retiré, niveau inconnu retiré sans retirer le métier, troisième métier retiré) et « 10 % » est cochée pour les infirmiers, rien pour les graphistes ; la deuxième est réécrite /?loyer=1200&metier=V1X80:10 ; la troisième est réécrite /?loyer=1200&mairie=gauche&metier=V2X90:tous",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R45",
+      "given": "Les vraies données (fichiers BMO 2026 et bassins d'emploi 2026 retenus en tâche 0, communes de la carte)",
+      "when": "les niveaux sont calculés et la page est ouverte sur /?loyer=aucun&metier=V1X80:10, puis /?loyer=aucun&metier=V1X80:10,M2X90:10, puis /?loyer=aucun&metier=M2X90:10",
+      "then": "389 bassins et 217 métiers en métropole ; chaque métier est chiffré dans au moins 6 bassins ; les 34 746 communes ont un bassin ; pour M2X90 : 39 bassins au niveau « 10 », 98 aux niveaux « 10 » ou « 25 », 120 chiffrés ; le bassin de Bordeaux au niveau « 10 » avec 742 projets ; le bassin de La Rochelle sans chiffre. Avec les infirmiers à « 10 % » : Bordeaux et Pau passent ; les raisons de la fiche de La Rochelle (17) contiennent « Infirmiers et sages-femmes : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : La Roche-sur-Yon, 61 km) ». Avec les deux métiers : Pau ne passe plus, raison « Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin parmi les 10 % qui recrutent le plus dans un rayon de 30 km (le plus proche : Bayonne, 92 km) ». Avec M2X90 seul à « 10 % » : 4 588 communes passent (mesuré le 2026-11-21 avant le recalage des 12 communes de H142 ; un écart de plus de 1 % revient à Vincent)",
+      "passes": false
+    },
+    {
+      "id": "AC-13",
+      "rule": "R44",
+      "given": "Fixture « 6 communes », page ouverte sur / à 390 × 844, onglet « Critères »",
+      "when": "l'utilisateur touche « Ton métier », tape « infirm », touche la suggestion, touche « 10 % », puis ouvre l'onglet « Les 10 premières »",
+      "then": "le champ reste visible pendant la saisie (règle du clavier de R20 d'interface-telephone) et la suggestion « Infirmiers et sages-femmes » est visible sous le champ ; après le toucher, le métier est choisi ; après « 10 % », l'onglet « Les 10 premières » montre « 1 commune passe tes critères » puis Terrebasse (23) 65 ; l'adresse devient /?loyer=1200&metier=V1X80:10",
+      "passes": false
+    }
+  ]
+}

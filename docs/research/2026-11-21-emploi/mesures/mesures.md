@@ -48,3 +48,7 @@ Commandes, depuis un dossier qui contient les deux fichiers téléchargés :
 - Exemples : M2X90 ingénieurs et cadres d'étude en informatique 120 ; M1X80 techniciens d'étude et de développement en informatique 131 ; V1X80 infirmiers et sages-femmes 358 ; L5X90 cadres administratifs, comptables et financiers 159 ; L1X60 employés de la comptabilité 281 ; W0X80 professeurs des écoles 28 ; R4X91 technico-commerciaux 170 ; J3X40 conducteurs de véhicules légers 240.
 - Par groupe (3 premiers caractères du code, 81 groupes) : min 18, médiane 239 ; 49 groupes sur 81 chiffrés dans au moins la moitié des bassins.
 - Par domaine (1re lettre, 21 domaines) : min 57, médiane 348.
+
+## Valeur citée par la spec emploi (ajout du 2026-11-21)
+
+- V1X80 « Infirmiers et sages-femmes », bassin de Bordeaux : 626 projets (somme des lignes publiées du bassin `BORDEAUX` dans `bmo-sheet2.csv`), lu le 2026-11-21.
