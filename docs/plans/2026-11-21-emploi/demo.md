@@ -3,6 +3,8 @@
 
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf ; une preuve = capture ou sortie de commande, datée.
 
+**Pari de Vincent avant lecture** (2026-11-22 11:52) : « Tout marche ».
+
 ## Ce qui est construit
 Pour l'essayer : **http://localhost:5173/** (serveur de dev lancé), ou `npm run dev`.
 

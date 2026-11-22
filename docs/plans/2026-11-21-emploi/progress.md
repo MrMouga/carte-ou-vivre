@@ -61,6 +61,8 @@ Aucun Bloquant ni Majeur : pas de corrections avant la démo ; les 8 Mineurs von
 - T4 — Au téléphone, « Retirer » du dernier métier fait monter la feuille et ouvre le clavier sur « Ton métier » (comme H52 pour les proches). Coût si faux : un clavier qui s'ouvre sans être demandé.
 - T4 — Quitté vide, le champ « Second métier » reste ouvert ; seul Échap le referme (lecture de H145). Coût si faux : un champ vide qui reste affiché.
 - T4 — `App` garde deux états de montée de la feuille, un pour les proches, un pour les métiers. Coût : aucun.
+- Démo (retouches 1) — La fiche et les raisons gardent « parmi les 10 % / 25 % de bassins qui recrutent le plus » : ce sont elles qui expliquent « Le plus » et « Beaucoup ». Coût si faux : deux vocabulaires (pastilles en mots, fiche en %).
+- Démo (retouches 1) — Après le choix d'un métier, le focus va sur la première pastille, « Partout », au lieu de « 10 % ». Coût si faux : un Tab de plus pour atteindre « Le plus ».
 
 ## Retours à traiter à la démo
 - Vincent (2026-11-22, test iPhone) : « les étiquettes 10 % 25 % partout où il recrute ne sont pas claires » → à la démo, chemin court : proposer 2-3 jeux de libellés (et de titre « Où ce métier recrute le plus ») à comparer ; touche D3, H130, H131, les textes de R47 (« parmi les 10 % de bassins qui recrutent le plus ») et les critères qui lisent ces libellés (AC-1, AC-4 à AC-7, AC-9, AC-10, AC-12, AC-13, AC-14).

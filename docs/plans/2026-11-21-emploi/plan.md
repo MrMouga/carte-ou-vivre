@@ -1,4 +1,5 @@
 # Plan — emploi
+À revoir (2026-11-22) : D15 (libellés des niveaux « Partout » · « Beaucoup » · « Le plus ») et H148 ajoutées à la démo par le chemin court ; le plan cite encore « 10 % » dans ses preuves.
 2026-11-21 · validé · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-11-21-emploi/spec.md) (D1–D14) · Détails : [details.md](../../specs/2026-11-21-emploi/details.md) (R44–R50, H128–H147) · Critères : [acceptance.json](../../specs/2026-11-21-emploi/acceptance.json) (AC-1 à AC-14) · Design : [README](../../design/emploi/README.md) (prototype F, pas de Figma) · Système : [contrat](../../design/system/README.md)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici. Le site existe : sept tranches construites et en ligne.)
 

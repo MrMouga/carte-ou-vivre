@@ -1,4 +1,5 @@
 2026-11-21 · validé
+À revoir (2026-11-22) : les pastilles des niveaux s'appellent désormais « Partout » · « Beaucoup » · « Le plus » sous « Où ce métier recrute » (D15 de la spec) ; les captures F-* montrent encore « 10 % » · « 25 % » · « Partout où il recrute ».
 # Design — emploi
 
 Spec : [docs/specs/2026-11-21-emploi/](../../specs/2026-11-21-emploi/spec.md) · Temps convenu : 1 h, 1 session (tenu à peu près) · Support : prototypes en code, sans Figma, sans références (choix de Vincent) · Étend le [système](../system/README.md) (composant « Métier choisi ») et les tranches construites (le code fait foi).
