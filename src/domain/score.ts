@@ -118,6 +118,12 @@ export type Reglages = {
   metiers?: MetierChoisi[];
 };
 
+/** Réglages avec `metiers` ; aucun métier : le champ facultatif est retiré (plan d'emploi, « Le réglage »). */
+export function avecMetiers(r: Reglages, metiers: MetierChoisi[]): Reglages {
+  const { metiers: _, ...reste } = r;
+  return metiers.length ? { ...reste, metiers } : reste;
+}
+
 /** R28, H69 de cadre-de-vie : les distances de la mer ; aucune cochée = « Peu importe » (D12). */
 export const CHOIX_MER = [10, 30, 50, 100] as const;
 /** R29, H69 : les mêmes distances pour la montagne. */

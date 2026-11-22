@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
 import { amenerEnBas, mobile, onglet, voirCriteres, voirListe } from './lib/feuille';
@@ -85,6 +85,12 @@ const retirer = (page: Page, libelle: string) => page.getByRole('button', { name
 const lienSecond = (page: Page) => page.getByRole('button', { name: '+ Ajouter un second métier' });
 /** La ligne d'un métier choisi (composant « Métier choisi »), reconnue à son « Retirer ». */
 const metierChoisi = (page: Page, libelle: string) => reglages(page).getByRole('listitem').filter({ has: retirer(page, libelle) });
+/** La phrase « Coche un niveau… » (H130) sous un métier choisi. */
+const indice = (page: Page, libelle: string) => metierChoisi(page, libelle).getByText(INDICE, { exact: true });
+const aucunMetier = (page: Page) => reglages(page).getByText('Aucun métier trouvé', { exact: true });
+const textesNiveaux = async (page: Page, libelle: string) => (await niveaux(page, libelle).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim());
+/** Haut d'un élément dans la fenêtre. */
+const y = async (l: Locator) => (await l.boundingBox())!.y;
 const listeCommunes = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
 const nomsScores = async (page: Page) =>
   (await listeCommunes(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label') ?? ''))).map((l) => nbsp(l).split(' · ').slice(1, 3).join(' · '));
@@ -115,7 +121,7 @@ test('AC-1 ouverture de / : « Emploi » ouverte entre « Vie locale » et « Te
   await suggestions(page).first().click();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80');
   await expect(metierChoisi(page, INFIRMIERS)).toContainText(INFIRMIERS);
-  expect((await niveaux(page, INFIRMIERS).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim())).toEqual(['10 %', '25 %', 'Partout où il recrute']);
+  expect(await textesNiveaux(page, INFIRMIERS)).toEqual(['10 %', '25 %', 'Partout où il recrute']);
   for (const b of await niveaux(page, INFIRMIERS).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await expect(retirer(page, INFIRMIERS)).toBeVisible();
   await expect(lienSecond(page)).toBeVisible();
@@ -143,7 +149,7 @@ test('AC-2 « i », « medecin », « dévelop », « developpeur », « femm »
     ['etude', [INGENIEURS]],
     ['xyz', []],
   ];
-  const aucun = reglages(page).getByText('Aucun métier trouvé', { exact: true });
+  const aucun = aucunMetier(page);
   for (const [tape, libelles] of attendu) {
     await champMetier(page).fill('');
     await champMetier(page).fill(tape);
@@ -163,7 +169,6 @@ test('AC-14 /?loyer=1200&metier=V1X80,U1X82 : « Chiffré dans peu de bassins…
   await expect(phrase).toBeVisible();
   await expect(metierChoisi(page, INFIRMIERS)).not.toContainText('Chiffré dans peu de bassins');
   // H147 : sous la ligne du libellé et de « Retirer », au-dessus de « Où ce métier recrute le plus » ; elle décrit le groupe.
-  const y = async (l: ReturnType<Page['getByText']>) => (await l.boundingBox())!.y;
   expect(await y(phrase)).toBeGreaterThan(await y(graphistes.getByText(GRAPHISTES, { exact: true })));
   expect(await y(phrase)).toBeLessThan(await y(graphistes.getByText('Où ce métier recrute le plus', { exact: true })));
   await expect(niveaux(page, GRAPHISTES)).toHaveAccessibleDescription(new RegExp(`^${PEU_CHIFFRE}`));
@@ -194,11 +199,11 @@ test('clavier : flèches et Entrée choisissent, le focus va sur « 10 % » ; «
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90');
   await expect(caseNiveau(page, INGENIEURS, '10 %')).toBeFocused();
   // H130 : sans niveau, la phrase « Coche un niveau… » décrit le groupe ; elle part dès qu'un niveau est coché.
-  await expect(metierChoisi(page, INGENIEURS).getByText(INDICE, { exact: true })).toBeVisible();
+  await expect(indice(page, INGENIEURS)).toBeVisible();
   await expect(niveaux(page, INGENIEURS)).toHaveAccessibleDescription(`${PEU_CHIFFRE} ${INDICE}`);
   await page.keyboard.press('Space');
   await expect(caseNiveau(page, INGENIEURS, '10 %')).toHaveAttribute('aria-pressed', 'true');
-  await expect(metierChoisi(page, INGENIEURS).getByText(INDICE, { exact: true })).toHaveCount(0);
+  await expect(indice(page, INGENIEURS)).toHaveCount(0);
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90:10');
   await page.keyboard.press('Space'); // la case cochée se décoche (D12 de cadre-de-vie)
   await expect(caseNiveau(page, INGENIEURS, '10 %')).toHaveAttribute('aria-pressed', 'false');
@@ -223,8 +228,8 @@ test('deux métiers venus de l’adresse : chacun ses cases, pas de lien d’ajo
   await voirCriteres(page);
   await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
   for (const b of await niveaux(page, GRAPHISTES).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
-  await expect(metierChoisi(page, INFIRMIERS).getByText(INDICE, { exact: true })).toHaveCount(0);
-  await expect(metierChoisi(page, GRAPHISTES).getByText(INDICE, { exact: true })).toBeVisible();
+  await expect(indice(page, INFIRMIERS)).toHaveCount(0);
+  await expect(indice(page, GRAPHISTES)).toBeVisible();
   await expect(lienSecond(page)).toHaveCount(0);
   await expect(champMetier(page)).toHaveCount(0);
   await expect(reglages(page).getByText(ETAT, { exact: true })).toBeVisible();
@@ -411,7 +416,6 @@ test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X8
 // suivent la règle du champ d'adresse des proches (R20 d'interface-telephone) ; H48 à 375 × 548.
 
 const champSecond = (page: Page) => page.getByRole('combobox', { name: 'Second métier' });
-const textesNiveaux = async (page: Page, libelle: string) => (await niveaux(page, libelle).getByRole('button').allInnerTexts()).map((t) => nbsp(t).trim());
 
 test('AC-3 /?loyer=1200&metier=V1X80, « + Ajouter un second métier » : « infirm » → « Aucun métier trouvé » ; « graph » choisi : /?loyer=1200&metier=V1X80,U1X82, deux métiers et leurs 3 pastilles, plus de lien ; repliée « 2 métiers » ; « Retirer » les infirmiers : /?loyer=1200&metier=U1X82, les graphistes seuls, le lien revient', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80');
@@ -420,7 +424,7 @@ test('AC-3 /?loyer=1200&metier=V1X80, « + Ajouter un second métier » : « inf
   await lienSecond(page).click();
   await expect(champSecond(page)).toBeFocused();
   await champSecond(page).fill('infirm');
-  await expect(reglages(page).getByText('Aucun métier trouvé', { exact: true })).toBeVisible();
+  await expect(aucunMetier(page)).toBeVisible();
   await expect(suggestions(page)).toHaveCount(0);
   await champSecond(page).fill('');
   await champSecond(page).fill('graph');
@@ -455,9 +459,8 @@ test('« Second métier » : sous le premier métier, avec le focus ; Échap le 
   await expect(champSecond(page)).toBeFocused();
   await expect(champSecond(page)).toHaveValue('');
   await expect(lienSecond(page)).toHaveCount(0);
-  const y = async (l: ReturnType<Page['getByRole']>) => (await l.boundingBox())!.y;
   expect(await y(champSecond(page))).toBeGreaterThan(await y(niveaux(page, INFIRMIERS)));
-  expect(await y(champSecond(page))).toBeLessThan((await reglages(page).getByText(ETAT, { exact: true }).boundingBox())!.y);
+  expect(await y(champSecond(page))).toBeLessThan(await y(reglages(page).getByText(ETAT, { exact: true })));
 
   await page.keyboard.type('med');
   await expect(suggestions(page)).toHaveText(['Médecins']);
@@ -513,6 +516,8 @@ async function releverAuFocus(page: Page) {
   });
 }
 const auFocus = (page: Page, nom: 'Ton métier' | 'Second métier') => page.evaluate((n) => window.__metierAuFocus?.[n], nom);
+/** Oublie les places relevées jusqu'ici (avant le geste dont on mesure le focus). */
+const oublierReleve = (page: Page) => page.evaluate(() => (window.__metierAuFocus = {}));
 const deuxImages = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))));
 /** R20 : au début du focus, le champ est déjà sous la poignée de la feuille montée, au-dessus du clavier ; il ne bouge plus. */
 async function placeAuFocus(page: Page, nom: 'Ton métier' | 'Second métier') {
@@ -538,7 +543,7 @@ test.describe('390 × 844 au toucher', () => {
     await expect(onglet(page, 'Critères')).toHaveAttribute('aria-selected', 'true');
     // Comme Vincent : faire défiler « Critères » jusqu'à voir le champ en bas de l'écran, puis le toucher.
     await amenerEnBas(champMetier(page));
-    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await oublierReleve(page);
     await champMetier(page).tap();
     const auDebut = await placeAuFocus(page, 'Ton métier');
 
@@ -576,7 +581,7 @@ test.describe('390 × 664 au toucher (fenêtre de Safari)', () => {
     await releverAuFocus(page);
     await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10');
     await amenerEnBas(lienSecond(page));
-    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await oublierReleve(page);
     await lienSecond(page).tap();
     const b = await placeAuFocus(page, 'Second métier');
     await expect(page.getByRole('tablist')).toBeHidden(); // feuille montée : la poignée seule au-dessus du champ
@@ -598,7 +603,7 @@ test.describe('390 × 664 au toucher (fenêtre de Safari)', () => {
     await releverAuFocus(page);
     await ouvrirSix(page);
     await amenerEnBas(champMetier(page));
-    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await oublierReleve(page);
     await champMetier(page).tap();
     await placeAuFocus(page, 'Ton métier');
     await champMetier(page).pressSequentially('graph');
@@ -606,7 +611,7 @@ test.describe('390 × 664 au toucher (fenêtre de Safari)', () => {
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
     await expect(page.getByRole('tablist')).toBeVisible();
 
-    await page.evaluate(() => (window.__metierAuFocus = {}));
+    await oublierReleve(page);
     await retirer(page, GRAPHISTES).tap();
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
     await placeAuFocus(page, 'Ton métier');

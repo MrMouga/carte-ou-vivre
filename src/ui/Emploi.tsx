@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { chercherMetiers, MIN_CARACTERES_METIER, type Metier } from '@/domain/emploi';
 import { resumeEmploi } from '@/domain/format';
-import type { MetierChoisi, Niveau, Reglages } from '@/domain/score';
+import { avecMetiers, type MetierChoisi, type Niveau, type Reglages } from '@/domain/score';
 import { geste, layout } from '@/theme/tokens';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
@@ -50,25 +50,18 @@ const CHAMP =
 const TOUCHER = 'max-bureau:min-h-toucher';
 const enBureau = () => innerWidth >= layout['largeur-bureau'];
 
-/** Réglages avec `metiers` ; aucun métier : le champ facultatif est retiré (plan, « Le réglage »). */
-function avecMetiers(r: Reglages, metiers: MetierChoisi[]): Reglages {
-  const { metiers: _, ...reste } = r;
-  return metiers.length ? { ...reste, metiers } : reste;
-}
-
 /**
  * Champ à suggestions (R44, H133) : liste des libellés sous le champ (Suggestion d'adresse des proches, une ligne par
  * libellé, qui passe à la ligne). Au clavier : flèches pour changer de suggestion, Entrée pour choisir, Échap pour vider
  * (ou, avec `onEchap`, pour refermer le champ : « Second métier »).
  */
-function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, champ, focus = false, monte, onAjout }: {
+function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, focus = false, monte, onAjout }: {
   libelle: string;
   catalogue: ReadonlyMap<string, Metier> | null;
   exclus: string[];
   onChoix: (m: Metier) => void;
   onEchap?: () => void;
   disabled: boolean;
-  champ: React.RefObject<HTMLInputElement | null>;
   /** Le champ s'ouvre avec le focus (lien du second métier, « Retirer » du dernier métier). */
   focus?: boolean;
   monte: boolean;
@@ -78,6 +71,7 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, c
   const [actif, setActif] = useState(0);
   const id = useId();
   const idListe = `${id}-suggestions`;
+  const champ = useRef<HTMLInputElement>(null);
   const liste = useRef<HTMLUListElement>(null);
   const label = useRef<HTMLLabelElement>(null);
   const bloc = useRef<HTMLDivElement>(null);
@@ -278,7 +272,6 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false, onAjou
     return metier ? [{ ...c, metier }] : [];
   });
   const exclus = choisis.map((c) => c.code);
-  const champ = useRef<HTMLInputElement>(null);
   const lien = useRef<HTMLButtonElement>(null);
   // État « ajout en cours » : le champ « Second métier » est ouvert (lien), jusqu'à un choix, Échap ou « Retirer ».
   const [second, setSecond] = useState(false);
@@ -344,7 +337,6 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false, onAjou
             exclus={exclus}
             onChoix={choisir}
             disabled={disabled}
-            champ={champ}
             focus={champAvecFocus}
             monte={monte}
             onAjout={onAjout}
@@ -376,7 +368,6 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false, onAjou
               onChoix={choisir}
               onEchap={fermerSecond}
               disabled={disabled}
-              champ={champ}
               focus
               monte={monte}
               onAjout={onAjout}

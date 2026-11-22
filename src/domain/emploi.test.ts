@@ -69,13 +69,19 @@ const passent = (metiers: MetierChoisi[]) => {
   const res = ev(metiers);
   return IDS.filter((id) => res.parCode.get(code[id])!.passe).map(nom);
 };
-const raisonsMetier = (id: Id, metiers: MetierChoisi[], e = emploi, communes = six) => {
-  const res = ev(metiers, SANS_PLAFOND, e, communes);
-  const i = communes.findIndex((c) => c.code === code[id]);
-  return res.parCode
-    .get(code[id])!
+/** Les raisons des métiers de la commune `c` (index `i`), telles que la fiche les écrit (« le plus proche » compris). */
+const textesRaisonsMetier = (res: ReturnType<typeof evaluer>, e: Emploi, i: number, c: string) =>
+  res.parCode
+    .get(c)!
     .raisons.filter((r) => r.critere === 'metier')
     .map((r) => texte(raisonTexte(avecPlusProche(e, i, r as Extract<Raison, { critere: 'metier' }>))));
+const raisonsMetier = (id: Id, metiers: MetierChoisi[], e = emploi, communes = six) =>
+  textesRaisonsMetier(ev(metiers, SANS_PLAFOND, e, communes), e, communes.findIndex((c) => c.code === code[id]), code[id]);
+/** Jeu sans bassin (comme « métropole ») : les 6 communes, aucune dans le fichier d'emploi. */
+const sansBassin = () => {
+  const vide = emploiFixture([]);
+  const communes = joindreEmploi(sixSans, vide);
+  return { communes, e: lireEmploi(vide, communes, communes.map(() => [0, 0])) };
 };
 const LIB = Object.fromEntries(f.metiers.map((m) => [m.code, m.libelle]));
 
@@ -185,9 +191,7 @@ describe('R46 sur la fixture, avec distances_km', () => {
   });
 
   it('jeu sans bassin (comme « métropole ») : aucune commune ne passe un niveau coché, et la raison n’a pas de « plus proche »', () => {
-    const vide = emploiFixture([]);
-    const communes = joindreEmploi(sixSans, vide);
-    const e = lireEmploi(vide, communes, communes.map(() => [0, 0]));
+    const { communes, e } = sansBassin();
     expect(ev([{ code: 'V1X80', niveau: 'tous' }], SANS_PLAFOND, e, communes).parCode.get(code.B)!.passe).toBe(false);
     expect(raisonsMetier('B', [{ code: 'V1X80', niveau: 'tous' }], e, communes)).toEqual([
       'Infirmiers et sages-femmes : aucun bassin où ce métier recrute dans un rayon de 30 km',
@@ -196,8 +200,8 @@ describe('R46 sur la fixture, avec distances_km', () => {
 });
 
 // Distances calculées (vraies données) : de mairie à mairie, comparées au km comme la mer (H136).
-const RAYON_KM = 6371;
-const aNord = (km: number) => 45 + ((km / RAYON_KM) * 180) / Math.PI;
+const RAYON_TERRE_KM = 6371;
+const aNord = (km: number) => 45 + ((km / RAYON_TERRE_KM) * 180) / Math.PI;
 const commune = (code: string, nom: string): Commune => ({ code, nom, dep: '99', population: 1000, loyerM2: null, estimationPropre: true, merKm: null });
 
 describe('distances calculées (H136)', () => {
@@ -298,11 +302,7 @@ describe('AC-12 (vraies données)', () => {
   const e = lireEmploi(vrai, communes, reperes);
   const i = (c: string) => communes.findIndex((x) => x.code === c);
   const [BORDEAUX, PAU, LA_ROCHELLE] = ['33063', '64445', '17300'];
-  const raisons = (res: ReturnType<typeof evaluer>, c: string) =>
-    res.parCode
-      .get(c)!
-      .raisons.filter((r) => r.critere === 'metier')
-      .map((r) => texte(raisonTexte(avecPlusProche(e, i(c), r as Extract<Raison, { critere: 'metier' }>))));
+  const raisons = (res: ReturnType<typeof evaluer>, c: string) => textesRaisonsMetier(res, e, i(c), c);
 
   it('AC-12 389 bassins, 217 métiers chiffrés dans au moins 6 bassins, 34 746 communes avec un bassin ; M2X90 : 39, 98, 120 ; Bordeaux « 10 » avec 742 ; La Rochelle sans chiffre', () => {
     expect(vrai.bassins).toHaveLength(389);
@@ -414,9 +414,7 @@ describe('R47 : lignes des métiers et du chômage dans la fiche', () => {
   });
 
   it('jeu sans bassin (comme « métropole ») : pas de ligne de métier, « Chômage : inconnu »', () => {
-    const vide = emploiFixture([]);
-    const communes = joindreEmploi(sixSans, vide);
-    const e = lireEmploi(vide, communes, communes.map(() => [0, 0]));
+    const { communes, e } = sansBassin();
     expect(ligne('B', { code: 'V1X80', niveau: null }, e, communes)).toBeNull();
     expect(ligne('B', { code: 'V1X80', niveau: 'tous' }, e, communes)).toBeNull();
     expect(texte(chomageFiche(communes[1], e.trimestre))).toBe('Chômage : inconnu');
@@ -455,6 +453,7 @@ describe('R47 : lignes des métiers et du chômage dans la fiche', () => {
 describe('H133 : recherche de métiers', () => {
   const libelles = (q: string, exclus: string[] = []) => chercherMetiers(emploi.metiers.values(), q, exclus).map((m) => m.libelle);
   const ING = LIB.M2X90;
+  const m = (code: string, libelle: string, noms: string[] = []): Metier => ({ code, libelle, noms, peuChiffre: false, bassins: new Map() });
 
   it('AC-2 fixture « 6 communes » : « i », « medecin », « dévelop », « developpeur », « femm », « etude », « xyz »', () => {
     expect(libelles('i')).toEqual([]);
@@ -482,7 +481,6 @@ describe('H133 : recherche de métiers', () => {
   });
 
   it('un mot commence au début, après une espace, un tiret, une apostrophe, une virgule ou une parenthèse ; jamais au milieu d’un mot', () => {
-    const m = (code: string, libelle: string, noms: string[] = []): Metier => ({ code, libelle, noms, peuChiffre: false, bassins: new Map() });
     const liste = [m('A1', 'Cadres administratifs, comptables et financiers (hors juristes)'), m('A2', "Agents d'entretien"), m('A3', 'Aides-soignants')];
     const q = (t: string) => chercherMetiers(liste, t).map((x) => x.code);
     expect(q('comptab')).toEqual(['A1']); // après une virgule et une espace
@@ -496,7 +494,6 @@ describe('H133 : recherche de métiers', () => {
   });
 
   it('ordre : trouvés par leur libellé d’abord, puis par un nom courant, chacun dans l’ordre alphabétique ; 8 au plus ; chacun une fois', () => {
-    const m = (code: string, libelle: string, noms: string[] = []): Metier => ({ code, libelle, noms, peuChiffre: false, bassins: new Map() });
     const liste = [
       m('N2', 'Vendeurs', ['conseiller de vente']),
       m('L3', 'Conseillers clientèle'),

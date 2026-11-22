@@ -1,6 +1,6 @@
 import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
 import { couverture, marque } from '../proches/etat';
-import type { LigneMetier } from './emploi';
+import { RAYON_KM, type LigneMetier } from './emploi';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
 
 // Formats d'affichage (H3, R4) : espace insécable avant les milliers et avant les unités.
@@ -274,7 +274,7 @@ export function raisonTexte(r: Raison): string {
       // R46 d'emploi ; « le plus proche » ajouté par la fiche (`avecPlusProche`), absent si aucun bassin n'a de ville.
       const ou = r.niveau === 'tous' ? 'aucun bassin où ce métier recrute' : `aucun bassin parmi les ${r.niveau}${NBSP}% qui recrutent le plus`;
       const proche = r.plusProche ? ` (le plus proche : ${r.plusProche.nom}, ${km(r.plusProche.km)})` : '';
-      return `${r.libelle} : ${ou} dans un rayon de ${km(30)}${proche}`;
+      return `${r.libelle} : ${ou} dans un rayon de ${km(RAYON_KM)}${proche}`;
     }
     case 'loyer-inconnu':
       return 'Loyer inconnu';

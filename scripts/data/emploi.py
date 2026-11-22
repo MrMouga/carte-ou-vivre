@@ -48,6 +48,7 @@ import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from communes import feuille_xlsx  # noqa: E402
+from sources import BASSINS, BMO, CHOMAGE, MVT_2026, ZE  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 RAW = os.path.join(ROOT, 'data-raw')
@@ -55,13 +56,14 @@ OUT = os.path.join(ROOT, 'public', 'data')
 NOMS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'noms-metiers.csv')
 CLAUDE_MD = os.path.join(ROOT, 'CLAUDE.md')
 
-# Fichiers retenus en tâche 0a (2026-11-21), empreintes notées aussi dans CLAUDE.md : un fichier changé arrête le script.
+# Fichiers retenus en tâche 0a (2026-11-21), noms de sources.py, empreintes notées aussi dans CLAUDE.md : un fichier
+# changé arrête le script.
 FICHIERS = {
-    'BMO 2026': ('Base-open-data-BMO-2026.xlsx', '735d0443b799b4c18c145055f87244a355a48b6286ee98ddbab272491d9792e0'),
-    'bassins 2026': ('bassins-emploi-2026.xlsx', '3c7f5048491b90d21cfb16afdacb98f60b03a127b34bc871fd09fa41c09da455'),
-    'chômage': ('chomage-zone-t1-2003-t2-2026.xlsx', '0662c648e68feec0fd1901bd11fe9a084043e03ead3103f526b19c35de588db7'),
-    'zones d\'emploi': ('ZE2020_au_01-01-2025.zip', 'aec5884669f23669e6234f5a2d5fe4c33d1b5af3d5bf7135dd14f640b63eda2c'),
-    'COG 2026': ('v_mvt_commune_2026.csv', '8b339fad8232e97233af3fd9468715af845e2cf8b14cb67b24d9a301ef8645f1'),
+    'BMO 2026': (BMO, '735d0443b799b4c18c145055f87244a355a48b6286ee98ddbab272491d9792e0'),
+    'bassins 2026': (BASSINS, '3c7f5048491b90d21cfb16afdacb98f60b03a127b34bc871fd09fa41c09da455'),
+    'chômage': (CHOMAGE, '0662c648e68feec0fd1901bd11fe9a084043e03ead3103f526b19c35de588db7'),
+    'zones d\'emploi': (ZE, 'aec5884669f23669e6234f5a2d5fe4c33d1b5af3d5bf7135dd14f640b63eda2c'),
+    'COG 2026': (MVT_2026, '8b339fad8232e97233af3fd9468715af845e2cf8b14cb67b24d9a301ef8645f1'),
 }
 SEUIL_PEU_CHIFFRE = 130  # R50 (D14)
 MIN_BASSINS = 6  # H146
@@ -149,11 +151,6 @@ def empreintes():
               f" {info['octets']} octets, sha256 {sha.hexdigest()}")
         check(sha.hexdigest() == attendu == info['sha256'] and attendu in claude,
               f'{titre} : empreinte égale à celle retenue (CLAUDE.md) et à celle notée')
-
-
-def ecrire(nom):
-    """Chemin d'un fichier produit."""
-    return os.path.join(OUT, nom)
 
 
 def colonnes(lignes, i):
@@ -260,7 +257,7 @@ def lire_chomage():
     lignes = feuille_xlsx(os.path.join(RAW, FICHIERS['chômage'][0]), 'txcho_ze')
     i = next(i for i, r in enumerate(lignes) if r.get('A') == 'ZE2020')
     c = colonnes(lignes, i)
-    derniere = max((v for v in lignes[i].values() if v[:4].isdigit()), key=lambda v: v)
+    derniere = max(v for v in lignes[i].values() if v[:4].isdigit())
     col = c[derniere]
     trimestre = lignes[i - 1][col].replace('\xa0', ' ').strip()
     print(f'chômage : dernier trimestre {derniere} « {trimestre} »')
@@ -421,7 +418,7 @@ def main():
         'metiers': metiers,
         'communes': [[c, commune_bassin[c], zones_communes[c]] for c in pop],
     }
-    path = ecrire('emploi.json')
+    path = os.path.join(OUT, 'emploi.json')
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(sortie, f, ensure_ascii=False, separators=(',', ':'))
     print(f'écrit : {os.path.relpath(path, ROOT)} ({os.path.getsize(path)} octets)')

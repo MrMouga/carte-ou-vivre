@@ -5,7 +5,7 @@
 // liste les types d'environnement cochés, comme `taille`.
 // Spec mairies, R41 : `mairie` liste les bords cochés, comme `env`, placée après `env`.
 // Spec emploi, R48 : `metier` liste les métiers choisis dans l'ordre du choix, chacun avec son niveau, placée après `mairie`.
-import { CHOIX_MER, CHOIX_MONTAGNE, type Bord, type MetierChoisi, type Niveau, type Reglages, type Taille, type TypeEnv } from './score';
+import { avecMetiers, CHOIX_MER, CHOIX_MONTAGNE, type Bord, type MetierChoisi, type Niveau, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
@@ -71,6 +71,8 @@ export function lirePrix(search: string): ReglagePrix {
 const NIVEAUX: readonly string[] = ['10', '25', 'tous'] satisfies Niveau[];
 /** R48 : deux métiers au plus. */
 export const MAX_METIERS = 2;
+/** R48 : code inconnu retiré, puis deux au plus. */
+const metiersConnus = (metiers: MetierChoisi[], codes: ReadonlySet<string>) => metiers.filter((m) => codes.has(m.code)).slice(0, MAX_METIERS);
 
 /**
  * R48, H128 : `V1X80:10,U1X82` → métiers dans l'ordre, un niveau inconnu retiré sans le métier, un code déjà présent
@@ -84,15 +86,12 @@ function lireMetiers(v: string | null, codes?: ReadonlySet<string>): MetierChois
     if (!/^[A-Za-z0-9]+$/.test(code) || metiers.some((m) => m.code === code)) continue;
     metiers.push({ code, niveau: NIVEAUX.includes(niveau) ? (niveau as Niveau) : null });
   }
-  return codes ? metiers.filter((m) => codes.has(m.code)).slice(0, MAX_METIERS) : metiers;
+  return codes ? metiersConnus(metiers, codes) : metiers;
 }
 
 /** R48 : au chargement d'emploi.json, retire les métiers inconnus et garde les deux premiers ; le champ disparaît s'il n'en reste aucun. */
 export function garderMetiersConnus(r: Reglages, codes: ReadonlySet<string>): Reglages {
-  if (!r.metiers) return r;
-  const { metiers, ...reste } = r;
-  const gardes = (metiers ?? []).filter((m) => codes.has(m.code)).slice(0, MAX_METIERS);
-  return gardes.length ? { ...reste, metiers: gardes } : reste;
+  return r.metiers ? avecMetiers(r, metiersConnus(r.metiers, codes)) : r;
 }
 
 /**
