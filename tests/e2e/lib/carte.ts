@@ -77,7 +77,7 @@ const mairiesJson = (jeu: Jeu) => ({
 // commune → code INSEE, nom de ville principale → code de bassin) ; la zone d'emploi a pour code son nom. Le jeu
 // « métropole » n'a ni bassin ni zone (décidé par Claude).
 type Niveau = '10' | '25' | 'tous';
-const emploiJson = (jeu: Jeu) => {
+export const emploiJson = (jeu: Jeu) => {
   const f = emploiSpec.fixture;
   const dansJeu = new Set(jeu.items === METROPOLE.items ? [] : jeu.items.map((it) => it.code_insee));
   const items = f.items.filter((it) => dansJeu.has(it.code_insee));

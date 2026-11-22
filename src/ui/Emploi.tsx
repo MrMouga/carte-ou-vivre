@@ -11,8 +11,9 @@ import { Categorie } from './Categorie';
 // Catégorie « Emploi » (spec emploi, R44, R50, H129 à H133, H147 ; design F : docs/design/emploi/README.md), entre « Vie
 // locale » et « Tes proches » (H129). Sans métier : le champ « Ton métier », qui propose dès 2 caractères (H133). Un métier
 // choisi (composant « Métier choisi » du contrat) : libellé et « Retirer » sur la même ligne ; la phrase de H147 s'il est
-// peu chiffré ; « Où ce métier recrute le plus » et ses Cases collées en 3 colonnes (boutons à bascule exclusifs, la cochée
-// se décoche, D12 de cadre-de-vie) ; tant qu'aucune n'est cochée, la phrase « Coche un niveau… » (H130). Toujours en bas,
+// peu chiffré ; « Où ce métier recrute » et ses Cases collées en 3 colonnes, du plus large au plus étroit (D15 : « Partout »,
+// « Beaucoup », « Le plus » ; boutons à bascule exclusifs, la cochée se décoche, D12 de cadre-de-vie) ; tant qu'aucune n'est
+// cochée, la phrase « Coche un niveau… » (H130). Toujours en bas,
 // la phrase de D13. Pendant le chargement, tout est désactivé (les métiers de l'adresse s'affichent à l'arrivée
 // d'emploi.json, qui donne leurs libellés).
 // Avec un métier, « + Ajouter un second métier » ouvre le champ « Second métier » à sa place (état « ajout en cours ») ;
@@ -34,10 +35,11 @@ type Props = {
   monte?: boolean;
 };
 
+// D15 (H131 révisée) : mêmes niveaux, même adresse ; la fiche dit ce que « Beaucoup » (25 %) et « Le plus » (10 %) veulent dire.
 const NIVEAUX: { code: Niveau; libelle: string }[] = [
-  { code: '10', libelle: '10 %' },
-  { code: '25', libelle: '25 %' },
-  { code: 'tous', libelle: 'Partout où il recrute' },
+  { code: 'tous', libelle: 'Partout' },
+  { code: '25', libelle: 'Beaucoup' },
+  { code: '10', libelle: 'Le plus' },
 ];
 const ETAT = "Les emplois de l'État (enseignants du public, fonctionnaires) ne sont pas dans l'enquête.";
 const INDICE = 'Coche un niveau pour garder les communes proches de ces bassins.';
@@ -132,6 +134,18 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, f
     setActif(0);
     onChoix(m);
   };
+  // H148 : aux flèches, la suggestion en surbrillance vient dans la vue (le navigateur ne fait pas défiler pour
+  // `aria-activedescendant`) ; en bureau, au-dessus du compte collé en bas du panneau, qui en couvre le bas.
+  const surligner = (i: number) => {
+    setActif(i);
+    const o = liste.current?.children[i];
+    if (!o) return;
+    o.scrollIntoView({ block: 'nearest' });
+    if (!enBureau()) return;
+    const panneau = o.closest('section');
+    const bas = panneau?.querySelector('[role="status"]')?.getBoundingClientRect().top;
+    if (bas != null && o.getBoundingClientRect().bottom > bas) panneau!.scrollBy({ top: o.getBoundingClientRect().bottom - bas });
+  };
   return (
     <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-1 max-bureau:scroll-mt-1">
       <label ref={label} htmlFor={id} className="text-secondaire text-muted-foreground">
@@ -154,8 +168,8 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, f
           setActif(0);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowDown' && ouverte) setActif((a) => Math.min(a + 1, suggestions.length - 1));
-          else if (e.key === 'ArrowUp' && ouverte) setActif((a) => Math.max(a - 1, 0));
+          if (e.key === 'ArrowDown' && ouverte) surligner(Math.min(actif + 1, suggestions.length - 1));
+          else if (e.key === 'ArrowUp' && ouverte) surligner(Math.max(actif - 1, 0));
           else if (e.key === 'Enter' && suggestions[actif]) choisir(suggestions[actif]);
           else if (e.key === 'Escape' && onEchap) onEchap();
           else if (e.key === 'Escape' && texte) {
@@ -234,9 +248,11 @@ function MetierLigne({ metier, niveau, premier, disabled, onNiveau, onRetirer, r
       )}
       <div className="flex flex-col gap-1">
         <span id={idTitre} className="text-secondaire text-muted-foreground">
-          Où ce métier recrute le plus
+          Où ce métier recrute
         </span>
-        {/* Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus. */}
+        {/* Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus.
+            La case focalisée passe devant ses voisines (`relative`, `z-1`), sinon la suivante couvre le côté droit de son
+            anneau (H148). */}
         <div role="group" aria-labelledby={`${idTitre} ${idLibelle}`} aria-describedby={decrit} className="grid grid-cols-3 gap-px rounded-chip border border-border bg-border">
           {NIVEAUX.map((n, k) => {
             const cochee = niveau === n.code;
@@ -248,7 +264,7 @@ function MetierLigne({ metier, niveau, premier, disabled, onNiveau, onRetirer, r
                 aria-pressed={cochee}
                 disabled={disabled}
                 onClick={() => onNiveau(cochee ? null : n.code)}
-                className="flex min-h-toucher cursor-pointer items-center justify-center bg-card p-1 text-center text-pastille text-foreground first:rounded-l-chip last:rounded-r-chip disabled:cursor-default disabled:opacity-50 aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+                className="relative flex min-h-toucher cursor-pointer items-center justify-center bg-card p-1 text-center text-pastille text-foreground first:rounded-l-chip last:rounded-r-chip focus-visible:z-1 disabled:cursor-default disabled:opacity-50 aria-pressed:bg-primary aria-pressed:text-primary-foreground"
               >
                 {n.libelle}
               </button>
@@ -296,7 +312,7 @@ export function Emploi({ reglages, onChange, catalogue, disabled = false, onAjou
 
   const ecrire = (metiers: MetierChoisi[]) => onChange(avecMetiers(reglages, metiers));
   // Un choix ferme le champ : la feuille redescend dans le même rendu que le métier ajouté, pour que le focus aille sur
-  // « 10 % » dans la feuille redescendue (et que le navigateur l'y fasse voir).
+  // la première case, « Partout », dans la feuille redescendue (et que le navigateur l'y fasse voir).
   const choisir = (m: Metier) => {
     focus.current = { case: m.code };
     onAjout?.(false);

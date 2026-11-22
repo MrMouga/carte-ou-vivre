@@ -1,8 +1,9 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
-import { apresRendu, attendreCouleurs, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
+import { apresRendu, attendreCouleurs, emploiJson, ouvrir, servirFixture, vue, type Jeu } from './lib/carte';
 import { amenerEnBas, mobile, onglet, voirCriteres, voirListe } from './lib/feuille';
-import { size, space } from '../../src/theme/tokens';
+import { readPixels } from './lib/pixels';
+import { color, size, space } from '../../src/theme/tokens';
 
 // Tranche emploi, sur la fixture « 6 communes » de cadre-de-vie étendue par celles de mairies et d'emploi (emploi.json
 // fabriqué par tests/e2e/lib/carte.ts depuis la fixture d'emploi, par code INSEE ; jamais le vrai fichier).
@@ -78,8 +79,10 @@ const reglages = (page: Page) => page.getByRole('region', { name: 'Réglages' })
 const titreEmploi = (page: Page) => page.getByRole('heading', { level: 2, name: /^Emploi/ }).getByRole('button');
 const champMetier = (page: Page) => page.getByRole('combobox', { name: 'Ton métier' });
 const suggestions = (page: Page) => page.getByRole('listbox', { name: 'Suggestions de métiers' }).getByRole('option');
-const niveaux = (page: Page, libelle: string) => page.getByRole('group', { name: `Où ce métier recrute le plus ${libelle}`, exact: true });
-const tousNiveaux = (page: Page) => page.getByRole('group', { name: /^Où ce métier recrute le plus/ });
+const niveaux = (page: Page, libelle: string) => page.getByRole('group', { name: `Où ce métier recrute ${libelle}`, exact: true });
+const tousNiveaux = (page: Page) => page.getByRole('group', { name: /^Où ce métier recrute / });
+/** Les cases de niveau (D15), dans l'ordre affiché : du plus large au plus étroit. */
+const CASES = ['Partout', 'Beaucoup', 'Le plus'];
 const caseNiveau = (page: Page, libelle: string, nom: string) => niveaux(page, libelle).getByRole('button', { name: nom, exact: true });
 const retirer = (page: Page, libelle: string) => page.getByRole('button', { name: `Retirer ${libelle}`, exact: true });
 const lienSecond = (page: Page) => page.getByRole('button', { name: '+ Ajouter un second métier' });
@@ -121,7 +124,7 @@ test('AC-1 ouverture de / : « Emploi » ouverte entre « Vie locale » et « Te
   await suggestions(page).first().click();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80');
   await expect(metierChoisi(page, INFIRMIERS)).toContainText(INFIRMIERS);
-  expect(await textesNiveaux(page, INFIRMIERS)).toEqual(['10 %', '25 %', 'Partout où il recrute']);
+  expect(await textesNiveaux(page, INFIRMIERS)).toEqual(CASES);
   for (const b of await niveaux(page, INFIRMIERS).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await expect(retirer(page, INFIRMIERS)).toBeVisible();
   await expect(lienSecond(page)).toBeVisible();
@@ -160,7 +163,7 @@ test('AC-2 « i », « medecin », « dévelop », « developpeur », « femm »
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
 });
 
-test('AC-14 /?loyer=1200&metier=V1X80,U1X82 : « Chiffré dans peu de bassins… » sous les graphistes seulement ; après « 25 % » pour les graphistes, toujours là, /?loyer=1200&metier=V1X80,U1X82:25', async ({ page }) => {
+test('AC-14 /?loyer=1200&metier=V1X80,U1X82 : « Chiffré dans peu de bassins… » sous les graphistes seulement ; après « Beaucoup » pour les graphistes, toujours là, /?loyer=1200&metier=V1X80,U1X82:25', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80,U1X82');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80,U1X82');
   await voirCriteres(page);
@@ -168,20 +171,21 @@ test('AC-14 /?loyer=1200&metier=V1X80,U1X82 : « Chiffré dans peu de bassins…
   const phrase = graphistes.getByText(PEU_CHIFFRE, { exact: true });
   await expect(phrase).toBeVisible();
   await expect(metierChoisi(page, INFIRMIERS)).not.toContainText('Chiffré dans peu de bassins');
-  // H147 : sous la ligne du libellé et de « Retirer », au-dessus de « Où ce métier recrute le plus » ; elle décrit le groupe.
+  // H147 : sous la ligne du libellé et de « Retirer », au-dessus de « Où ce métier recrute » ; elle décrit le groupe.
   expect(await y(phrase)).toBeGreaterThan(await y(graphistes.getByText(GRAPHISTES, { exact: true })));
-  expect(await y(phrase)).toBeLessThan(await y(graphistes.getByText('Où ce métier recrute le plus', { exact: true })));
+  expect(await y(phrase)).toBeLessThan(await y(graphistes.getByText('Où ce métier recrute', { exact: true })));
   await expect(niveaux(page, GRAPHISTES)).toHaveAccessibleDescription(new RegExp(`^${PEU_CHIFFRE}`));
 
-  await caseNiveau(page, GRAPHISTES, '25 %').click();
-  await expect(caseNiveau(page, GRAPHISTES, '25 %')).toHaveAttribute('aria-pressed', 'true');
+  await caseNiveau(page, GRAPHISTES, 'Beaucoup').click();
+  await expect(caseNiveau(page, GRAPHISTES, 'Beaucoup')).toHaveAttribute('aria-pressed', 'true');
   await expect(phrase).toBeVisible();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80,U1X82:25');
   await expect(metierChoisi(page, INFIRMIERS)).not.toContainText('Chiffré dans peu de bassins');
 });
 
-// Hors AC (R44, H133 « au clavier, flèches, Entrée, Échap » ; design F « focus sur 10 % » ; plan : focus après « Retirer »).
-test('clavier : flèches et Entrée choisissent, le focus va sur « 10 % » ; « Retirer » rend le focus au champ ; Échap vide le champ', async ({ page }) => {
+// Hors AC (R44, H133 « au clavier, flèches, Entrée, Échap » ; état « un métier » de details.md : focus sur la première
+// case, « Partout » (D15) ; plan : focus après « Retirer »).
+test('clavier : flèches et Entrée choisissent, le focus va sur « Partout » ; « Retirer » rend le focus au champ ; Échap vide le champ', async ({ page }) => {
   await ouvrirSix(page);
   await voirCriteres(page);
   await champMetier(page).fill('in');
@@ -197,16 +201,16 @@ test('clavier : flèches et Entrée choisissent, le focus va sur « 10 % » ; «
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Enter');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90');
-  await expect(caseNiveau(page, INGENIEURS, '10 %')).toBeFocused();
+  await expect(caseNiveau(page, INGENIEURS, 'Partout')).toBeFocused();
   // H130 : sans niveau, la phrase « Coche un niveau… » décrit le groupe ; elle part dès qu'un niveau est coché.
   await expect(indice(page, INGENIEURS)).toBeVisible();
   await expect(niveaux(page, INGENIEURS)).toHaveAccessibleDescription(`${PEU_CHIFFRE} ${INDICE}`);
   await page.keyboard.press('Space');
-  await expect(caseNiveau(page, INGENIEURS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INGENIEURS, 'Partout')).toHaveAttribute('aria-pressed', 'true');
   await expect(indice(page, INGENIEURS)).toHaveCount(0);
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90:10');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90:tous');
   await page.keyboard.press('Space'); // la case cochée se décoche (D12 de cadre-de-vie)
-  await expect(caseNiveau(page, INGENIEURS, '10 %')).toHaveAttribute('aria-pressed', 'false');
+  await expect(caseNiveau(page, INGENIEURS, 'Partout')).toHaveAttribute('aria-pressed', 'false');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=M2X90');
 
   await retirer(page, INGENIEURS).focus();
@@ -226,16 +230,16 @@ test('clavier : flèches et Entrée choisissent, le focus va sur « 10 % » ; «
 test('deux métiers venus de l’adresse : chacun ses cases, pas de lien d’ajout ; « Retirer » sur le premier : le second reste, le focus va sur son « Retirer », le lien revient ; résumés « 1 métier » puis « Peu importe »', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10,U1X82');
   await voirCriteres(page);
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
   for (const b of await niveaux(page, GRAPHISTES).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await expect(indice(page, INFIRMIERS)).toHaveCount(0);
   await expect(indice(page, GRAPHISTES)).toBeVisible();
   await expect(lienSecond(page)).toHaveCount(0);
   await expect(champMetier(page)).toHaveCount(0);
   await expect(reglages(page).getByText(ETAT, { exact: true })).toBeVisible();
-  // Aucun focus donné à l'ouverture : seul un choix l'amène sur « 10 % ».
-  await expect(caseNiveau(page, GRAPHISTES, '10 %')).not.toBeFocused();
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).not.toBeFocused();
+  // Aucun focus donné à l'ouverture : seul un choix l'amène sur la première case, « Partout ».
+  await expect(caseNiveau(page, GRAPHISTES, 'Partout')).not.toBeFocused();
+  await expect(caseNiveau(page, INFIRMIERS, 'Partout')).not.toBeFocused();
 
   await retirer(page, INFIRMIERS).click();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
@@ -286,7 +290,7 @@ test('390 px : champ en 16 px et 44 px de haut ; cases et « Retirer » de 44 px
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Tâche 3b : les niveaux (R46, R47, R48) ; cocher une case de « Où ce métier recrute le plus » : carte, liste, fiche et
+// Tâche 3b : les niveaux (R46, R47, R48) ; cocher une case de « Où ce métier recrute » : carte, liste, fiche et
 // adresse suivent ; en bureau et à 390 px (onglet « Critères » pour cocher, « Les 10 premières » pour lire la liste).
 
 /** Les raisons de la fiche (liste sous « Ne passe pas tes critères »), texte par texte ; vide si la commune passe. */
@@ -303,10 +307,10 @@ async function cocher(page: Page, libelle: string, nom: string) {
 const raisonNiveau = (libelle: string, niveau: '10' | '25', proche: string) =>
   `${libelle} : aucun bassin parmi les ${niveau} % qui recrutent le plus dans un rayon de 30 km (le plus proche : ${proche})`;
 
-test('AC-4 /?loyer=1200&metier=V1X80, « 10 % » : /?loyer=1200&metier=V1X80:10, 1 commune, Terrebasse 65 ; A B E F non colorées ; fiche de Quaibleu : ligne du bassin de Montcher et raison une seule fois', async ({ page }) => {
+test('AC-4 /?loyer=1200&metier=V1X80, « Le plus » : /?loyer=1200&metier=V1X80:10, 1 commune, Terrebasse 65 ; A B E F non colorées ; fiche de Quaibleu : ligne du bassin de Montcher et raison une seule fois', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80');
-  await cocher(page, INFIRMIERS, '10 %');
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await cocher(page, INFIRMIERS, 'Le plus');
+  await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
   await apresRendu(page);
   await attendreCouleurs<Six>(page, { A: null, B: null, E: null, F: null }, { jeu: SIX });
@@ -321,11 +325,11 @@ test('AC-4 /?loyer=1200&metier=V1X80, « 10 % » : /?loyer=1200&metier=V1X80:10,
   expect((await texteFiche(page)).split(raison).length - 1).toBe(1);
 });
 
-test('AC-5 /?loyer=1200&metier=V1X80:10, « 25 % » : 4 communes, raison de Rhinval (Montcher, 160 km) ; « Partout où il recrute » : 5 communes dans l’ordre de départ, ligne de Rhinval « sur place », plus de raison pour ce métier', async ({ page }) => {
+test('AC-5 /?loyer=1200&metier=V1X80:10, « Beaucoup » : 4 communes, raison de Rhinval (Montcher, 160 km) ; « Partout » : 5 communes dans l’ordre de départ, ligne de Rhinval « sur place », plus de raison pour ce métier', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10');
-  await cocher(page, INFIRMIERS, '25 %');
-  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'true');
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'false');
+  await cocher(page, INFIRMIERS, 'Beaucoup');
+  await expect(caseNiveau(page, INFIRMIERS, 'Beaucoup')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'false');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:25');
   await voirListe(page);
   await expect(listeCommunes(page)).toContainText('4 communes passent tes critères');
@@ -333,9 +337,9 @@ test('AC-5 /?loyer=1200&metier=V1X80:10, « 25 % » : 4 communes, raison de Rhin
   await ficheDeCarte(page, 'F', 'Rhinval (67)');
   expect(await raisons(page)).toContain(raisonNiveau(INFIRMIERS, '25', 'Montcher, 160 km'));
 
-  await cocher(page, INFIRMIERS, 'Partout où il recrute');
-  await expect(caseNiveau(page, INFIRMIERS, 'Partout où il recrute')).toHaveAttribute('aria-pressed', 'true');
-  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'false');
+  await cocher(page, INFIRMIERS, 'Partout');
+  await expect(caseNiveau(page, INFIRMIERS, 'Partout')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, 'Beaucoup')).toHaveAttribute('aria-pressed', 'false');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:tous');
   await voirListe(page);
   await expect(listeCommunes(page)).toContainText('5 communes passent tes critères');
@@ -346,11 +350,11 @@ test('AC-5 /?loyer=1200&metier=V1X80:10, « 25 % » : 4 communes, raison de Rhin
   expect(await texteFiche(page)).not.toContain(`${INFIRMIERS} : aucun bassin`);
 });
 
-test('AC-6 /?loyer=1200&metier=V1X80:25,U1X82, « 10 % » des graphistes : /?loyer=1200&metier=V1X80:25,U1X82:10, Terrebasse 65 seule ; fiche de Portmer : raison des graphistes (Montcher, 85 km), aucune des infirmiers, ligne des infirmiers à Grandeville, 25 km', async ({ page }) => {
+test('AC-6 /?loyer=1200&metier=V1X80:25,U1X82, « Le plus » des graphistes : /?loyer=1200&metier=V1X80:25,U1X82:10, Terrebasse 65 seule ; fiche de Portmer : raison des graphistes (Montcher, 85 km), aucune des infirmiers, ligne des infirmiers à Grandeville, 25 km', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80:25,U1X82');
-  await cocher(page, GRAPHISTES, '10 %');
-  await expect(caseNiveau(page, GRAPHISTES, '10 %')).toHaveAttribute('aria-pressed', 'true');
-  await expect(caseNiveau(page, INFIRMIERS, '25 %')).toHaveAttribute('aria-pressed', 'true');
+  await cocher(page, GRAPHISTES, 'Le plus');
+  await expect(caseNiveau(page, GRAPHISTES, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, 'Beaucoup')).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:25,U1X82:10');
   await voirListe(page);
   await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
@@ -363,9 +367,9 @@ test('AC-6 /?loyer=1200&metier=V1X80:25,U1X82, « 10 % » des graphistes : /?loy
   expect(await texteFiche(page)).toContain('Infirmiers et sages-femmes : Grandeville, à 25 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements prévus en 2026');
 });
 
-test('AC-7 /?loyer=aucun&metier=V1X80, « 10 % » : page « sans plafond », Montcher et Terrebasse en couleur neutre, A B E F non colorées ; /?loyer=aucun&metier=V1X80:10', async ({ page }) => {
+test('AC-7 /?loyer=aucun&metier=V1X80, « Le plus » : page « sans plafond », Montcher et Terrebasse en couleur neutre, A B E F non colorées ; /?loyer=aucun&metier=V1X80:10', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=aucun&metier=V1X80');
-  await cocher(page, INFIRMIERS, '10 %');
+  await cocher(page, INFIRMIERS, 'Le plus');
   await expect.poll(() => adresse(page)).toBe('/?loyer=aucun&metier=V1X80:10');
   await apresRendu(page);
   await attendreCouleurs<Six>(page, { C: 'area-unranked', D: 'area-unranked', A: null, B: null, E: null, F: null }, { jeu: SIX });
@@ -374,7 +378,7 @@ test('AC-7 /?loyer=aucun&metier=V1X80, « 10 % » : page « sans plafond », Mon
   await expect(listeCommunes(page).getByRole('button')).toHaveCount(0);
 });
 
-test('AC-9 /?loyer=1200&metier=U1X82 : fiches de Grandeville (pas de chiffre publié) et Montcher (1 027) ; « Partout où il recrute » : /?loyer=1200&metier=U1X82:tous, Terrebasse 65 seule ; fiche de Rhinval : pas de chiffre, raison (Montcher, 160 km), « Chômage : inconnu »', async ({ page }) => {
+test('AC-9 /?loyer=1200&metier=U1X82 : fiches de Grandeville (pas de chiffre publié) et Montcher (1 027) ; « Partout » : /?loyer=1200&metier=U1X82:tous, Terrebasse 65 seule ; fiche de Rhinval : pas de chiffre, raison (Montcher, 160 km), « Chômage : inconnu »', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=U1X82');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82');
   await ficheDeCarte(page, 'B', 'Grandeville (33)');
@@ -382,8 +386,8 @@ test('AC-9 /?loyer=1200&metier=U1X82 : fiches de Grandeville (pas de chiffre pub
   await ficheDeCarte(page, 'C', 'Montcher (75)');
   expect(await texteFiche(page)).toContain(`${GRAPHISTES} : bassin de Montcher, 1 027 recrutements prévus en 2026`);
 
-  await cocher(page, GRAPHISTES, 'Partout où il recrute');
-  await expect(caseNiveau(page, GRAPHISTES, 'Partout où il recrute')).toHaveAttribute('aria-pressed', 'true');
+  await cocher(page, GRAPHISTES, 'Partout');
+  await expect(caseNiveau(page, GRAPHISTES, 'Partout')).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=U1X82:tous');
   await voirListe(page);
   await expect(listeCommunes(page)).toContainText('1 commune passe tes critères');
@@ -395,11 +399,11 @@ test('AC-9 /?loyer=1200&metier=U1X82 : fiches de Grandeville (pas de chiffre pub
   expect(t).toContain('Chômage : inconnu');
 });
 
-test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X82 avec « 10 % » cochée pour les infirmiers, rien pour les graphistes ; /?loyer=1200&metier=V1X80:10 ; /?loyer=1200&mairie=gauche&metier=V2X90:tous', async ({ page }) => {
+test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X82 avec « Le plus » cochée pour les infirmiers, rien pour les graphistes ; /?loyer=1200&metier=V1X80:10 ; /?loyer=1200&mairie=gauche&metier=V2X90:tous', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&metier=V1X80:10,ZZ999:25,U1X82:50,V2X90');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
   await voirCriteres(page);
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
   expect(await niveaux(page, INFIRMIERS).getByRole('button', { pressed: true }).count()).toBe(1);
   for (const b of await niveaux(page, GRAPHISTES).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await expect(tousNiveaux(page)).toHaveCount(2);
@@ -409,6 +413,78 @@ test('AC-11 trois adresses réécrites (R48) : /?loyer=1200&metier=V1X80:10,U1X8
 
   await ouvrirSix(page, '/?metier=V2X90:tous&mairie=gauche&loyer=1200');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mairie=gauche&metier=V2X90:tous');
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Retouches 1 (démo du 2026-11-22, H148) : les trois constats mineurs de la relecture navigateur (qa.md).
+
+// Hors AC (H148) : deux raisons de métier ne se lisent pas comme un seul bloc.
+test('H148 fiche de Portmer, graphistes et infirmiers à « Le plus » : les deux raisons de métier séparées par un espace', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&metier=U1X82:10,V1X80:10');
+  await ficheDeCarte(page, 'A', 'Portmer (17)');
+  const items = fiche(page).locator('h3', { hasText: 'Ne passe pas tes critères' }).locator('xpath=following-sibling::ul[1]/li');
+  expect(await raisons(page)).toEqual([raisonNiveau(GRAPHISTES, '10', 'Montcher, 85 km'), raisonNiveau(INFIRMIERS, '10', 'Montcher, 85 km')]);
+  const [a, b] = [(await items.nth(0).boundingBox())!, (await items.nth(1).boundingBox())!];
+  expect(b.y - (a.y + a.height)).toBeGreaterThanOrEqual(space['space-1']);
+});
+
+// Hors AC (H148) : au clavier, la suggestion en surbrillance reste visible dans le panneau de bureau, au-dessus du compte
+// collé en bas. Huit métiers inventés en plus de la fixture (aucun bassin), pour avoir huit suggestions.
+test('H148 bureau : flèche bas jusqu’à la 8e suggestion, le panneau défile, elle est visible au-dessus du compte', async ({ page }) => {
+  test.skip(mobile(page), 'panneau de bureau');
+  await servirFixture(page, { jeu: SIX });
+  const json = emploiJson(SIX);
+  const inventes = Array.from({ length: 8 }, (_, i) => ({
+    code: `ZZ${i}`,
+    libelle: `Métier inventé numéro ${i + 1}, au libellé assez long pour passer sur deux lignes dans le panneau`,
+    noms: [],
+    peu_chiffre: false,
+    bassins: [],
+  }));
+  await page.route('**/data/emploi.json', (r) => r.fulfill({ json: { ...json, metiers: [...json.metiers, ...inventes] } }));
+  await page.goto('/');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await champMetier(page).fill('invent');
+  await expect(suggestions(page)).toHaveCount(8);
+  // Le panneau remonté tout en haut : le champ et sa liste sont sous le bas de la fenêtre.
+  await reglages(page).evaluate((e) => e.scrollTo({ top: 0 }));
+  for (let i = 0; i < 7; i++) await page.keyboard.press('ArrowDown');
+  const huitieme = suggestions(page).nth(7);
+  await expect(huitieme).toHaveAttribute('aria-selected', 'true');
+  const o = (await huitieme.boundingBox())!;
+  const panneau = (await reglages(page).boundingBox())!;
+  const compte = (await reglages(page).getByRole('status').boundingBox())!;
+  expect(o.y).toBeGreaterThanOrEqual(panneau.y);
+  expect(o.y + o.height).toBeLessThanOrEqual(compte.y);
+  await expect(champMetier(page)).toBeFocused();
+});
+
+// Hors AC (H148, ui.md « focus visible ») : l'anneau de focus d'une case se voit en entier, y compris du côté de la case
+// voisine. Lu sur les pixels : au milieu de l'anneau (2 px, décalé de 2 px), à droite de la case, la couleur `ring`.
+test('H148 focus sur « Partout » après le choix au clavier, puis Tab sur « Beaucoup » : anneau entier, côté droit compris', async ({ page }) => {
+  await ouvrirSix(page);
+  await voirCriteres(page);
+  await champMetier(page).fill('infirm');
+  await page.keyboard.press('Enter');
+  const ring = [1, 3, 5].map((k) => parseInt(color.ring.slice(k, k + 2), 16));
+  const proche = (rgb: number[]) => rgb.every((v, k) => Math.abs(v - ring[k]) <= 40);
+  const milieu = size['ecart-focus'] + size['trait-focus'] / 2;
+  for (const nom of ['Partout', 'Beaucoup']) {
+    if (nom === 'Beaucoup') await page.keyboard.press('Tab');
+    const c = caseNiveau(page, INFIRMIERS, nom);
+    await expect(c).toBeFocused();
+    await expect(c).toBeInViewport({ ratio: 1 });
+    expect(await c.evaluate((e) => e.matches(':focus-visible'))).toBe(true);
+    await apresRendu(page);
+    const b = (await c.boundingBox())!;
+    const yMilieu = b.y + b.height / 2;
+    const [gauche, droite] = await readPixels(page, [
+      { x: b.x - milieu, y: yMilieu },
+      { x: b.x + b.width + milieu, y: yMilieu },
+    ]);
+    expect(proche(gauche), `${nom}, côté gauche : ${gauche}`).toBe(true);
+    expect(proche(droite), `${nom}, côté droit : ${droite}`).toBe(true);
+  }
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -432,7 +508,7 @@ test('AC-3 /?loyer=1200&metier=V1X80, « + Ajouter un second métier » : « inf
   await suggestions(page).first().click();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80,U1X82');
   await expect(tousNiveaux(page)).toHaveCount(2);
-  for (const l of [INFIRMIERS, GRAPHISTES]) expect(await textesNiveaux(page, l)).toEqual(['10 %', '25 %', 'Partout où il recrute']);
+  for (const l of [INFIRMIERS, GRAPHISTES]) expect(await textesNiveaux(page, l)).toEqual(CASES);
   await expect(lienSecond(page)).toHaveCount(0);
   await expect(champSecond(page)).toHaveCount(0);
 
@@ -484,8 +560,8 @@ test('« Second métier » : sous le premier métier, avec le focus ; Échap le 
   await champSecond(page).focus();
   await page.keyboard.press('Enter');
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
-  await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeFocused();
-  await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+  await expect(caseNiveau(page, GRAPHISTES, 'Partout')).toBeFocused();
+  await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
 });
 
 // Au toucher (H41 d'interface-telephone), même relevé que tests/e2e/proches-clavier-iphone.spec.ts : la place du champ au
@@ -535,7 +611,7 @@ async function placeAuFocus(page: Page, nom: 'Ton métier' | 'Second métier') {
 test.describe('390 × 844 au toucher', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
-  test('AC-13 / à 390 × 844, « Critères » : toucher « Ton métier », « infirm », la suggestion visible sous le champ et touchée, « 10 % » ; « Les 10 premières » : 1 commune, Terrebasse 65 ; /?loyer=1200&metier=V1X80:10', async ({ page }, info) => {
+  test('AC-13 / à 390 × 844, « Critères » : toucher « Ton métier », « infirm », la suggestion visible sous le champ et touchée, « Le plus » ; « Les 10 premières » : 1 commune, Terrebasse 65 ; /?loyer=1200&metier=V1X80:10', async ({ page }, info) => {
     test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
     await releverAuFocus(page);
     await ouvrirSix(page);
@@ -559,8 +635,8 @@ test.describe('390 × 844 au toucher', () => {
     await suggestions(page).first().tap();
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80');
     await expect(metierChoisi(page, INFIRMIERS)).toBeVisible();
-    await caseNiveau(page, INFIRMIERS, '10 %').tap();
-    await expect(caseNiveau(page, INFIRMIERS, '10 %')).toHaveAttribute('aria-pressed', 'true');
+    await caseNiveau(page, INFIRMIERS, 'Le plus').tap();
+    await expect(caseNiveau(page, INFIRMIERS, 'Le plus')).toHaveAttribute('aria-pressed', 'true');
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10');
 
     await onglet(page, 'Les 10 premières').tap();
@@ -594,8 +670,8 @@ test.describe('390 × 664 au toucher (fenêtre de Safari)', () => {
     await suggestions(page).first().tap();
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200&metier=V1X80:10,U1X82');
     await expect(page.getByRole('tablist')).toBeVisible();
-    await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeFocused();
-    await expect(caseNiveau(page, GRAPHISTES, '10 %')).toBeInViewport({ ratio: 1 });
+    await expect(caseNiveau(page, GRAPHISTES, 'Partout')).toBeFocused();
+    await expect(caseNiveau(page, GRAPHISTES, 'Partout')).toBeInViewport({ ratio: 1 });
   });
 
   test('« Ton métier » touché, puis « Retirer » du dernier métier : chaque fois, au début du focus, le champ est déjà sous la poignée, au-dessus du clavier, et ne bouge plus', async ({ page }, info) => {

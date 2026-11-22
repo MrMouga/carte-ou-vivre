@@ -71,7 +71,8 @@ export function Fiche({ evaluation: e, total, prix, proches, index, emploi, meti
       {!e.passe && (
         <div className="flex flex-col gap-1">
           <h3 className="text-categorie uppercase text-muted-foreground">Ne passe pas tes critères</h3>
-          <ul className="flex flex-col">
+          {/* H148 : un petit écart entre les raisons, pour que deux raisons longues (métiers) ne se lisent pas d'un bloc. */}
+          <ul className="flex flex-col gap-1">
             {e.raisons.map((r) => (
               <li key={cleRaison(r)} className="text-texte-fort tabular-nums">
                 {raisonTexte(r.critere === 'metier' ? avecPlusProche(emploi, index, r) : r)}
