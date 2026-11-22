@@ -109,7 +109,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&metier=V1X80",
       "when": "l'utilisateur clique « + Ajouter un second métier », tape « infirm », puis efface, tape « graph » et choisit la suggestion, replie puis déplie « Emploi », puis clique « Retirer » sur « Infirmiers et sages-femmes »",
       "then": "« infirm » : « Aucun métier trouvé » (déjà choisi) ; après « graph » : l'adresse devient /?loyer=1200&metier=V1X80,U1X82, deux métiers sont affichés avec chacun leurs 3 pastilles, et aucun lien « + Ajouter un second métier » n'est proposé ; repliée, « Emploi » montre « 2 métiers ». Après « Retirer » : l'adresse devient /?loyer=1200&metier=U1X82 ; seul « Graphistes, dessinateurs, stylistes, décorateurs et créateurs de supports de communication visuelle » reste, et le lien « + Ajouter un second métier » revient",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -189,7 +189,7 @@
       "given": "Fixture « 6 communes », page ouverte sur / à 390 × 844, onglet « Critères »",
       "when": "l'utilisateur touche « Ton métier », tape « infirm », touche la suggestion, touche « 10 % », puis ouvre l'onglet « Les 10 premières »",
       "then": "le champ reste visible pendant la saisie (règle du clavier de R20 d'interface-telephone) et la suggestion « Infirmiers et sages-femmes » est visible sous le champ ; après le toucher, le métier est choisi ; après « 10 % », l'onglet « Les 10 premières » montre « 1 commune passe tes critères » puis Terrebasse (23) 65 ; l'adresse devient /?loyer=1200&metier=V1X80:10",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",
