@@ -89,9 +89,8 @@ Deux relecteurs neufs, perso : spec ([review-spec.md](review-spec.md)) et naviga
 
 ## Retours traités, et ce qui reste
 - **Faits (retouches 1)** : les libellés des niveaux (« Partout » · « Beaucoup » · « Le plus », ton choix) et les Mineurs 1, 2 et 3.
-- **Vus par l'orchestrateur sur les captures des retouches, hors lot** (deux défauts de texte, petits et visibles) :
-  - « bassin **de Auch** » au lieu de « bassin **d'Auch** » : la spec écrit « bassin de <ville> » sans élision. C'est le cas de toute ville qui commence par une voyelle ou un h muet (Angers, Amiens, Orléans, Évry…).
-  - Dans la raison d'un métier au libellé long, le « : » tombe seul en début de ligne (« … télécom » puis « : aucun bassin… ») : l'espace insécable de la tâche 2 n'a été posée que sur la ligne du métier, pas sur la raison.
+- **Faits (retouches 2, commit efc0a9f)** : « bassin d'Auch », « du Havre », « des Sables-d'Olonne » (et de même pour « zone d'emploi de ») ; « : » insécable dans les raisons (H148, H149). Suite relancée à 16:47 : Vitest 365 / 365, Playwright 423 verts, 44 sautés, 0 rouge. Captures `R2-*`.
+- **Vu par l'agent des retouches 2, hors lot** : sur la fiche du Havre, le nom de la liste de la mairie (« Le Havre ! ») laisse le « ! » tomber seul à la ligne (tranche mairies).
 - **Laissés** : les Mineurs 4 à 8 (voir « Relectures »), et l'anneau de focus coupé sur les cases de la mer et de la montagne (même défaut, tranche cadre-de-vie, une ligne si tu le veux).
 
 ## Non vérifié
