@@ -5,6 +5,8 @@
 
 **Pari de Vincent avant lecture** (2026-11-22 11:52) : « Tout marche ».
 
+**Retouches 1 (2026-11-22, chemin court, commit 03ab563)** : les cases s'appellent maintenant « Partout » · « Beaucoup » · « Le plus » sous « Où ce métier recrute » (D15), et le focus va sur « Partout » après un choix. Les raisons de la fiche sont espacées, la suggestion active reste visible au clavier, et l'anneau de focus se voit en entier (H148). 10 critères ont été réécrits avec les nouveaux mots et vérifiés de nouveau : 14 sur 14 passent. Suite relancée à 14:15 : Vitest 361 / 361, Playwright 423 verts, 44 sautés, 0 rouge. Captures `R1-*`. Seul `tests/e2e/lib/carte.ts` change hors de la tranche, d'un mot : `export` devant une fonction écrite en tâche 1, pour le test de la 8e suggestion.
+
 ## Ce qui est construit
 Pour l'essayer : **http://localhost:5173/** (serveur de dev lancé), ou `npm run dev`.
 
@@ -15,7 +17,7 @@ Pour l'essayer : **http://localhost:5173/** (serveur de dev lancé), ou `npm run
 - **Second métier et téléphone (tâche 4)** : « + Ajouter un second métier ». Au téléphone, les champs restent au-dessus du clavier, ce que tu as vérifié sur ton iPhone.
 
 À essayer en premier :
-1. `/` → « Emploi » → taper « infirm » → choisir → cocher « 10 % » : la carte ne garde que les coins des bassins qui recrutent le plus d'infirmiers.
+1. `/` → « Emploi » → taper « infirm » → choisir → cocher « Le plus » : la carte ne garde que les coins des bassins qui recrutent le plus d'infirmiers.
 2. `/?loyer=aucun&metier=V1X80:10,M2X90:10` → fiche de Pau : « … (le plus proche : Bayonne, 92 km) ».
 3. Taper « business » : « Cadres commerciaux… » est proposé, grâce aux noms courants écrits à la main (57 noms, `scripts/data/noms-metiers.csv`, à relire).
 
@@ -85,9 +87,12 @@ Deux relecteurs neufs, perso : spec ([review-spec.md](review-spec.md)) et naviga
 
 **Hors consigne** : un relecteur a lancé `npx madge --version`, qui a téléchargé l'outil madge dans le cache npm de la machine (`~/.npm/_npx/483d2954a4c5190c`). Rien n'a été ajouté au projet. À supprimer avec ton accord.
 
-## Retours à traiter (chemin court)
-- **Libellés des niveaux** : ton retour sur l'iPhone, puis tes propositions. Recommandation : « Où ce métier recrute » · « Un peu » · « Beaucoup » · « Le plus », du plus large au plus étroit. Ne rien cocher voudrait dire « peu importe », comme ailleurs sur le site. Ce changement touche aussi la ligne de la fiche (« parmi les 10 % de bassins… ») et les textes de plusieurs critères.
-- Les Mineurs 1, 2 et 3 sont petits et visibles : ils peuvent partir avec les libellés.
+## Retours traités, et ce qui reste
+- **Faits (retouches 1)** : les libellés des niveaux (« Partout » · « Beaucoup » · « Le plus », ton choix) et les Mineurs 1, 2 et 3.
+- **Vus par l'orchestrateur sur les captures des retouches, hors lot** (deux défauts de texte, petits et visibles) :
+  - « bassin **de Auch** » au lieu de « bassin **d'Auch** » : la spec écrit « bassin de <ville> » sans élision. C'est le cas de toute ville qui commence par une voyelle ou un h muet (Angers, Amiens, Orléans, Évry…).
+  - Dans la raison d'un métier au libellé long, le « : » tombe seul en début de ligne (« … télécom » puis « : aucun bassin… ») : l'espace insécable de la tâche 2 n'a été posée que sur la ligne du métier, pas sur la raison.
+- **Laissés** : les Mineurs 4 à 8 (voir « Relectures »), et l'anneau de focus coupé sur les cases de la mer et de la montagne (même défaut, tranche cadre-de-vie, une ligne si tu le veux).
 
 ## Non vérifié
 - L'erreur de chargement d'`emploi.json` sur la page (seulement par les tests).
