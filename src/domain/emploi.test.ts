@@ -447,6 +447,40 @@ describe('R47 : lignes des métiers et du chômage dans la fiche', () => {
       expect(l(2)).toBe('Métier : bassin de Villebas, 1 234 recrutements prévus en 2026');
     });
   });
+
+  // Retouches 2 de la démo (2026-11-22) : constat « bassin de Auch » sur la fiche de Maulichères (32).
+  describe('H149 : « de » élidé ou contracté devant le nom de ville ou de zone', () => {
+    const bassin = (ville: string) => texte(metierFiche({ forme: 'bassin', libelle: 'Métier', ville, projets: null }).reste);
+    const zone = (nom: string) => texte(chomageFiche({ zoneEmploi: nom, chomage: 7.1 }, '2e trimestre 2026'));
+
+    it('voyelle, accentuée ou non, et « Y » : « d’ » (« bassin d’Auch », « d’Orléans », « d’Évry-Courcouronnes », « d’Yvetot »)', () => {
+      expect(bassin('Auch')).toBe("bassin d'Auch, pas de chiffre publié pour ce métier");
+      expect(bassin('Évry-Courcouronnes')).toBe("bassin d'Évry-Courcouronnes, pas de chiffre publié pour ce métier");
+      expect(bassin('Yvetot')).toBe("bassin d'Yvetot, pas de chiffre publié pour ce métier");
+      expect(zone('Orléans')).toBe("Chômage : 7,1 % dans la zone d'emploi d'Orléans (2e trimestre 2026)");
+      expect(zone('Etampes')).toBe("Chômage : 7,1 % dans la zone d'emploi d'Etampes (2e trimestre 2026)");
+    });
+    it('« Le … » : « du » ; « Les … » : « des » (« bassin du Havre », « du Mans », « des Sables-d’Olonne »)', () => {
+      expect(bassin('Le Havre')).toBe('bassin du Havre, pas de chiffre publié pour ce métier');
+      expect(zone('Le Mans')).toBe("Chômage : 7,1 % dans la zone d'emploi du Mans (2e trimestre 2026)");
+      expect(bassin('Les Sables-d\'Olonne')).toBe("bassin des Sables-d'Olonne, pas de chiffre publié pour ce métier");
+      expect(zone('Les Herbiers - Montaigu')).toBe("Chômage : 7,1 % dans la zone d'emploi des Herbiers - Montaigu (2e trimestre 2026)");
+    });
+    it('« La … », « H », consonne : « de » reste (« de La Rochelle », « de Hyères », « de Lens »)', () => {
+      expect(bassin('La Rochelle')).toBe('bassin de La Rochelle, pas de chiffre publié pour ce métier');
+      expect(bassin('Hyères')).toBe('bassin de Hyères, pas de chiffre publié pour ce métier');
+      expect(zone('Haguenau')).toBe("Chômage : 7,1 % dans la zone d'emploi de Haguenau (2e trimestre 2026)");
+      expect(bassin('Lens')).toBe('bassin de Lens, pas de chiffre publié pour ce métier');
+      // « Le » sans espace après n'est pas un article : « Lempdes », « Les » collé non plus (« Lesneven »).
+      expect(bassin('Lempdes')).toBe('bassin de Lempdes, pas de chiffre publié pour ce métier');
+      expect(bassin('Lesneven')).toBe('bassin de Lesneven, pas de chiffre publié pour ce métier');
+    });
+  });
+
+  it('H148 : dans une raison de métier, l’espace avant « : » est insécable', () => {
+    const r = raisonTexte({ critere: 'metier', code: 'M2X90', libelle: "Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom", niveau: '10' });
+    expect(r.startsWith("Ingénieurs et cadres d'étude, recherche et développement en informatique et télécom : aucun bassin")).toBe(true);
+  });
 });
 
 // Tâche 3a : la recherche du champ « Ton métier » (R44, H133, H134) et le résumé de « Emploi » repliée (H132).

@@ -226,7 +226,7 @@ export function mairieFiche(c: Pick<Commune, 'bord' | 'nuance' | 'liste'>): stri
 export function metierFiche(l: LigneMetier): { libelle: string; reste: string } {
   const projets = (n: number) => `${entier(n)}${NBSP}recrutements prévus en${NBSP}2026`;
   if (l.forme === 'bassin')
-    return { libelle: l.libelle, reste: `bassin de ${l.ville}, ${l.projets == null ? 'pas de chiffre publié pour ce métier' : projets(l.projets)}` };
+    return { libelle: l.libelle, reste: `bassin ${deNom(l.ville)}, ${l.projets == null ? 'pas de chiffre publié pour ce métier' : projets(l.projets)}` };
   const ou = l.surPlace ? 'sur place' : l.km < 1 ? `à moins d'1${NBSP}km` : `à${NBSP}${km(l.km)}`;
   const niveau = l.niveau === 'tous' ? 'bassin où ce métier recrute' : `parmi les ${l.niveau}${NBSP}% de bassins qui recrutent le plus`;
   return { libelle: l.libelle, reste: `${l.ville}, ${ou}, ${niveau} · ${projets(l.projets)}` };
@@ -239,7 +239,18 @@ export function metierFiche(l: LigneMetier): { libelle: string; reste: string } 
 export const chomageFiche = (c: Pick<Commune, 'zoneEmploi' | 'chomage'>, trimestre: string) =>
   c.chomage == null || c.zoneEmploi == null
     ? 'Chômage : inconnu'
-    : `Chômage : ${c.chomage.toFixed(1).replace('.', ',')}${NBSP}% dans la zone d'emploi de ${c.zoneEmploi} (${insecable(trimestre)})`;
+    : `Chômage : ${c.chomage.toFixed(1).replace('.', ',')}${NBSP}% dans la zone d'emploi ${deNom(c.zoneEmploi)} (${insecable(trimestre)})`;
+
+/**
+ * « de » devant un nom de ville ou de zone (H149 d'emploi) : « d'Auch », « d'Évry », « d'Yvetot » (voyelle, accentuée ou
+ * non, « Y » compris) ; « du Havre » (« Le … ») ; « des Sables-d'Olonne » (« Les … ») ; « de La Rochelle », « de Hyères »
+ * (pas d'élision devant « H » : h muet et h aspiré ne se distinguent pas sans liste).
+ */
+export function deNom(nom: string): string {
+  if (nom.startsWith('Le ')) return `du ${nom.slice(3)}`;
+  if (nom.startsWith('Les ')) return `des ${nom.slice(4)}`;
+  return /^[aeiouyàâäéèêëîïôöùûüœæ]/i.test(nom) ? `d'${nom}` : `de ${nom}`;
+}
 
 /** Un groupe de mots tenu sur une ligne (« 2e trimestre 2026 »). */
 export const insecable = (t: string) => t.replace(/ /g, NBSP);
@@ -274,7 +285,8 @@ export function raisonTexte(r: Raison): string {
       // R46 d'emploi ; « le plus proche » ajouté par la fiche (`avecPlusProche`), absent si aucun bassin n'a de ville.
       const ou = r.niveau === 'tous' ? 'aucun bassin où ce métier recrute' : `aucun bassin parmi les ${r.niveau}${NBSP}% qui recrutent le plus`;
       const proche = r.plusProche ? ` (le plus proche : ${r.plusProche.nom}, ${km(r.plusProche.km)})` : '';
-      return `${r.libelle} : ${ou} dans un rayon de ${km(RAYON_KM)}${proche}`;
+      // H148 : le « : » ne tombe jamais seul en début de ligne, comme sur la ligne du métier.
+      return `${r.libelle}${NBSP}: ${ou} dans un rayon de ${km(RAYON_KM)}${proche}`;
     }
     case 'loyer-inconnu':
       return 'Loyer inconnu';
