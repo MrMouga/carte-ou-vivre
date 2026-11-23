@@ -50,6 +50,19 @@ Les « sans chiffre » de la grande gare comptent les 360 communes de Corse.
 ## Poids
 Les 7 temps des 34 746 communes, en minutes entières plafonnées à 61 : 647 Ko bruts et 180 Ko compressés (gzip) sans code ; **918 Ko bruts et 266 Ko compressés avec un code INSEE par ligne**, le format retenu puisque le projet joint toujours par code.
 
+## Lycée et niveaux de gare (mesure du 2026-11-23, après D13)
+Lycée = général et/ou technologique (C301) ou professionnel (C302). Comptes de communes à temps inférieur ou égal au seuil, sans chiffre non compris :
+
+| Service | ≤ 5 min | ≤ 10 min | ≤ 15 min | ≤ 20 min | ≤ 30 min | > 60 min | Sans chiffre |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Lycée | 2 616 | 8 927 | 17 231 | 24 523 | 32 094 | 90 | 18 |
+| Gare d'au moins 100 000 voyageurs (E107, E108) | 1 752 | 6 120 | 11 795 | 17 144 | 25 162 | 903 | 378 |
+| Gare nationale (E107) | 92 | 671 | 1 962 | 3 924 | 9 240 | 8 262 | 378 |
+
+Temps vers une gare d'au moins 100 000 voyageurs / une gare nationale : Bordeaux 7 / 7, La Rochelle 6 / 6, Le Havre 6 / 6, Auch 4 / 67, Chamonix-Mont-Blanc 5 / 74, Les Sables-d'Olonne 5 / 82, Saint-Véran 40 / 176, Mende 92 / 137.
+
+Poids du fichier, compressé (gzip), avec le code INSEE : 8 temps avec le seuil de 100 000 voyageurs, 299 Ko ; 8 temps avec la gare nationale, 303 Ko ; 9 temps (trois niveaux de gare), 329 Ko.
+
 ## Figer les fichiers sans les télécharger
 data.gouv.fr publie pour les 13 fichiers leur taille (14,45 Go au total) et une somme de contrôle SHA-1. L'en-tête `Last-Modified` du serveur (20/10/2026 pour la Corse) diffère de la date de l'API (18/08/2026) : ne pas s'en servir pour figer.
 
