@@ -35,7 +35,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 - Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `9664a3b` (sept tranches, dont mairies), prouvé le 2026-10-19 à 15:46 (docs/ship/2026-10-19-mairies/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
 - Usagers hors de l'équipe : 3 (3 amis de la cible, lien envoyé, semaine du 9 au 15 novembre 2026 : [note](docs/feedback/2026-11-21-amis.md))
-- Prochaine tranche : emploi, spec, design et plan validés le 2026-11-21 ; suite : `/build` (nouvelle session conseillée). Avant la tâche 0 de `/breakdown` : Vincent donne les métiers de ses 3 testeurs (seuil d'arrêt : un métier chiffré dans moins de 130 bassins). Mesure du chargement sur téléphone après la tranche.
+- Prochaine tranche : emploi construite, démo acceptée le 2026-11-23 ; suite : `/ship`. À suivre après la tranche : le « ! » d'un nom de liste de mairie qui tombe seul à la ligne (« Le Havre ! ») ; l'anneau de focus coupé sur les cases de la mer et de la montagne ; mineurs laissés de la relecture d'emploi (`docs/plans/2026-11-21-emploi/demo.md`).
 
 ## Échéances
 
@@ -149,6 +149,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-21 | Design validé : emploi | Fusion F sur la base A : métier choisi en libellé gras avec « Retirer » sur sa ligne, niveaux en Cases collées comme la mer, phrase « Coche un niveau… » tant que rien n'est coché (choix de Vincent ; H130, H131 et l'état « un métier » amendés), focus sur « 10 % » après un choix ; pari de Vincent : A, relecture à l'aveugle : A ; sans Figma. |
 | 2026-11-21 | Spec emploi révisée (D14, R50, AC-14) à /breakdown : avertissement sous un métier chiffré dans moins de 130 bassins | Arrêt prévu par « Le risque » : l'ingénieur HSE d'un testeur n'est chiffré que dans 46 bassins (Dunkerque, Fos, Lacq absents), et 96 métiers sur 217 sont sous 130. Choix de Vincent parmi : continuer sans rien dire, revoir D2-D3, pause. Les deux autres testeurs (business developer, prospecteur éolien) : « Cadres commerciaux… », 162 bassins. |
 | 2026-11-21 | Plan validé : emploi | 7 tâches (0a données, 0b mesures et tableau jugé par Vincent, 1 filtre par l'adresse, 2 fiche et mentions, 3a catégorie, 3b niveaux, 4 second métier, téléphone et bout en bout) ; aucun paquet ; distances calculées dans le navigateur (fixture : distances données, H144) ; « deux faux » = deux métiers sur trois non crédibles (Vincent). |
+| 2026-11-23 | Tranche construite : emploi | Jusqu'à deux métiers, niveaux « Partout » · « Beaucoup » · « Le plus » (D15, changés à la démo), filtre à 30 km d'une ville principale, fiche avec métiers et chômage ; 14 critères sur 14, suite verte (Vitest 365, Playwright 423) ; table des bassins utilisée sans licence écrite, en citant sa date (H143, choix de Vincent) ; 3 métiers du tableau jugés crédibles après vérification sur le web ; 2 retouches à la démo (libellés + 3 mineurs ; élision « d'Auch »). Non poussé au moment de la démo. |
 
 ## Hypothèses à vérifier
 
@@ -209,7 +210,7 @@ Autres questions :
 
 ## Documents
 
-- [Plan « Emploi » — 2026-11-21](docs/plans/2026-11-21-emploi/plan.md) · [relecture](docs/plans/2026-11-21-emploi/review-plan.md)
+- [Plan « Emploi » — 2026-11-21](docs/plans/2026-11-21-emploi/plan.md) · [relecture](docs/plans/2026-11-21-emploi/review-plan.md) · [dossier du build](docs/plans/2026-11-21-emploi/) : [progression](docs/plans/2026-11-21-emploi/progress.md) · [démo](docs/plans/2026-11-21-emploi/demo.md) · [mesures](docs/plans/2026-11-21-emploi/mesure-tache-0.md) · [crédibilité](docs/plans/2026-11-21-emploi/credibilite-metiers.md)
 - [Design « Emploi » — 2026-11-21](docs/design/emploi/README.md) · [décisions](docs/design/emploi/decisions.md)
 - [Spec « Emploi » — 2026-11-21](docs/specs/2026-11-21-emploi/spec.md) · [relecture](docs/specs/2026-11-21-emploi/relecture.md)
 - [Recherche « emploi » — 2026-11-21](docs/research/2026-11-21-emploi/) · [synthèse](docs/research/2026-11-21-emploi/synthesis.md) · [mesures](docs/research/2026-11-21-emploi/mesures/mesures.md) · [vérification](docs/research/2026-11-21-emploi/verification.md)

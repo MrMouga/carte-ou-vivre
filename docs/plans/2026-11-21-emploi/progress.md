@@ -83,3 +83,5 @@ Retouches 2 : faites — commit efc0a9f — rapport : taches/retouches-2.md — 
 ## Preuves
 
 ## Coût
+
+Terminé 2026-11-23
