@@ -19,3 +19,24 @@ Tranches servies après ce push : loyer-mer, proches, interface-telephone, immob
 ## Ce que cette mise en ligne couvre, et ce qu'elle ne couvre pas
 - Couvre : la catégorie « Emploi » (jusqu'à deux métiers, niveaux « Partout » · « Beaucoup » · « Le plus »), le filtre à 30 km d'une ville principale, les lignes des métiers et du chômage dans chaque fiche, les deux mentions au pied de page.
 - Ne couvre pas : pas de nom de domaine, de mesure d'audience ni de canal de retours (voir [docs/distribution/plan.md](../../distribution/plan.md)). Le risque noté dans la spec reste : une carte jugée fausse sur un métier rare (phrase « peu chiffré » sous 96 métiers sur 217).
+
+## Preuve
+2026-11-23, 11:42-12:30 · **https://ou-vivre-en-france.narnia-assistant.workers.dev/** · push `92d9d7d..a9a4a7d` à 11:42:56 (accord de Vincent) · `/version.txt` = **`a9a4a7d613748b3eb4181fd8a0b548d7a4b9ce12`** à 11:44:23 · `scripts/check-live.sh` : page 200, version servie = `origin/main`, `achat.json` en `x-robots-tag: noindex`.
+
+Vérification de bout en bout ([details.md](../../specs/2026-11-21-emploi/details.md#vérification-de-bout-en-bout)) **sur le site en ligne**, vraies données, vrai fond Plan IGN, Chromium (Playwright), à 1 440 × 900 et 390 × 844, de 12:26:48 à 12:29:40 — script [preuve.mjs](preuve.mjs) (copie du script de la tâche 4 mise aux libellés de D15 ; la première version, restée sur « 10 % », s'arrêtait à l'étape 2 faute de trouver la case : défaut du script, pas du site) — sortie complète : [preuve-sortie.txt](preuve-sortie.txt), **44 contrôles OK, 0 écart** :
+1. `/` devient `/?loyer=1200` ; « Emploi » entre « Vie locale » et « Tes proches », champ vide, phrase sur l'État ; Bordeaux « Chômage : 8,0 % dans la zone d'emploi de Bordeaux (2e trimestre 2026) » ([bureau](captures/etape1-emploi-1440x900.jpg), [390 px](captures/etape1-emploi-390x844.jpg), [fiche](captures/etape1-fiche-bordeaux-1440x900.jpg)).
+2. « infirm » → « Infirmiers et sages-femmes » : `metier=V1X80` ; Bordeaux « … : bassin de Bordeaux, 626 recrutements prévus en 2026 » ([suggestions](captures/etape2-suggestions-1440x900.jpg), [choisi](captures/etape2-choisi-390x844.jpg)).
+3. « Sans limite », « Le plus » : `metier=V1X80:10` ; Bordeaux et Pau passent (« sur place, parmi les 10 % … · 626 / 326 recrutements ») ; La Rochelle « (le plus proche : La Roche-sur-Yon, 61 km) » ([carte](captures/etape3-carte-1440x900.jpg), [La Rochelle](captures/etape3-fiche-la-rochelle-390x844.jpg)).
+4. « + Ajouter un second métier », « développeur », « Le plus » : `metier=V1X80:10,M2X90:10` ; focus sur « Partout » après le choix ; Pau ne passe plus, « (le plus proche : Bayonne, 92 km) » ([deux métiers](captures/etape4-deux-metiers-1440x900.jpg), [Pau à 390 px](captures/etape4-fiche-pau-390x844.jpg)).
+5. Adresse copiée dans un nouvel onglet : mêmes métiers, mêmes cases, même carte (400 points sur 400) ([bureau](captures/etape5-nouvel-onglet-1440x900.jpg)).
+6. Les deux mentions de H143 au pied de page (lues dans la page ; [capture](captures/etape6-mentions-1440x900.jpg)).
+7. iPhone de Vincent : fait à la démo sur la version construite (« ça passe »), pas refait en ligne.
+
+Non vérifié en ligne : un vrai téléphone au doigt ; Safari ; la réaction de la carte au calme (H141).
+
+## Revenir en arrière
+- Le plus rapide : dans le tableau de bord Cloudflare, le Worker `ou-vivre-en-france` › **Deployments** › reprendre le déploiement précédent (`92d9d7d`, même code que mairies).
+- Par git : `git revert` des commits de code de la tranche (de `3c865ed` à `efc0a9f`, hors documents) puis `git push`. La tranche n'écrit rien chez l'utilisateur ; une adresse avec `metier=` ouverte sur l'ancienne version est simplement ignorée.
+
+## Ce que le lancement demande encore
+Voir [docs/distribution/plan.md](../../distribution/plan.md) : canal de retours ; le test de demande et de l'accroche avec les 2 testeurs suivants (échéance du 6 décembre). À regarder : la faille de Vite (serveur de développement seulement) ; le « ! » d'un nom de liste de mairie qui tombe seul à la ligne (« Le Havre ! ») ; l'anneau de focus coupé sur les cases de la mer et de la montagne ; le rang de la fiche sans espace des milliers ; `/favicon.ico` absent.
