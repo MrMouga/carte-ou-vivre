@@ -151,6 +151,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-21 | Plan validé : emploi | 7 tâches (0a données, 0b mesures et tableau jugé par Vincent, 1 filtre par l'adresse, 2 fiche et mentions, 3a catégorie, 3b niveaux, 4 second métier, téléphone et bout en bout) ; aucun paquet ; distances calculées dans le navigateur (fixture : distances données, H144) ; « deux faux » = deux métiers sur trois non crédibles (Vincent). |
 | 2026-11-23 | Tranche construite : emploi | Jusqu'à deux métiers, niveaux « Partout » · « Beaucoup » · « Le plus » (D15, changés à la démo), filtre à 30 km d'une ville principale, fiche avec métiers et chômage ; 14 critères sur 14, suite verte (Vitest 365, Playwright 423) ; table des bassins utilisée sans licence écrite, en citant sa date (H143, choix de Vincent) ; 3 métiers du tableau jugés crédibles après vérification sur le web ; 2 retouches à la démo (libellés + 3 mineurs ; élision « d'Auch »). Non poussé au moment de la démo. |
 | 2026-11-23 | Mise en ligne : emploi | https://ou-vivre-en-france.narnia-assistant.workers.dev/ — `a9a4a7d` ; bout en bout en ligne, bureau et 390 px : 44 contrôles OK, 0 écart. |
+| 2026-11-23 | Rétro | 1 leçon écrite (enquête BMO) et 4 copiées dans les leçons globales, 1 contrôle ajouté (crochet de commit : image > 600 Ko refusée dans docs/), 1 ligne CLAUDE.md, 7 retours à studio ([rétro](docs/retro/2026-11-23.md)). |
 
 ## Hypothèses à vérifier
 
@@ -224,6 +225,7 @@ Autres questions :
 - [Mise en ligne « Proches fiables » — 2026-10-16](docs/ship/2026-10-16-proches-fiables/ship.md)
 - [Plan « Proches fiables » — 2026-10-16](docs/plans/2026-10-16-proches-fiables/plan.md) · [relecture](docs/plans/2026-10-16-proches-fiables/review-plan.md) · [dossier du build](docs/plans/2026-10-16-proches-fiables/) : [progression](docs/plans/2026-10-16-proches-fiables/progress.md), [mesure de l'IGN](docs/plans/2026-10-16-proches-fiables/mesure-tache-0.md), [démo acceptée — 2026-10-16](docs/plans/2026-10-16-proches-fiables/demo.md)
 - [Spec « Proches fiables » — 2026-10-16](docs/specs/2026-10-16-proches-fiables/spec.md) · [relecture](docs/specs/2026-10-16-proches-fiables/relecture.md) · [relecture 2](docs/specs/2026-10-16-proches-fiables/relecture-2.md)
+- [Rétro — 2026-11-23](docs/retro/2026-11-23.md)
 - [Rétro — 2026-10-16](docs/retro/2026-10-16.md)
 - [Mise en ligne « Cadre de vie » — 2026-10-16](docs/ship/2026-10-15-cadre-de-vie/ship.md)
 - [Plan « Cadre de vie » — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/plan.md) · [relecture](docs/plans/2026-10-15-cadre-de-vie/review-plan.md) · [dossier du build](docs/plans/2026-10-15-cadre-de-vie/) : [progression](docs/plans/2026-10-15-cadre-de-vie/progress.md), [mesure de la montagne](docs/plans/2026-10-15-cadre-de-vie/mesure-tache-0.md), [risque](docs/plans/2026-10-15-cadre-de-vie/risque-demo.md), [démo acceptée — 2026-10-15](docs/plans/2026-10-15-cadre-de-vie/demo.md)

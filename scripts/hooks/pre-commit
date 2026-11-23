@@ -1,3 +1,22 @@
 #!/bin/sh
-# Refuse un commit qui contient un secret (clé, jeton). Installé par : cp scripts/hooks/pre-commit .git/hooks/
+# Installé par : cp scripts/hooks/pre-commit .git/hooks/
+#
+# 1. Rétro du 2026-11-23 : refuse une image de plus de 600 Ko ajoutée ou modifiée dans docs/. Les captures non réduites
+#    ont porté docs/plans à 288 Mo (269 images de plus de 600 Ko) malgré la leçon du 2026-10-14 : une règle écrite ne
+#    suffisait pas.
+LIMITE=614400
+trop=""
+for f in $(git diff --cached --name-only --diff-filter=AM -- 'docs/*.png' 'docs/*.jpg' 'docs/*.jpeg'); do
+  taille=$(git cat-file -s ":$f")
+  if [ "$taille" -gt "$LIMITE" ]; then trop="$trop
+  $f ($((taille / 1024)) Ko)"; fi
+done
+if [ -n "$trop" ]; then
+  echo "Commit refusé : image de plus de 600 Ko dans docs/ :$trop"
+  echo "Réduire, par exemple : sips -s format jpeg -s formatOptions 70 <image.png> --out <image.jpg>"
+  echo "                ou : sips -Z 1440 <image>   (puis git add à nouveau)"
+  exit 1
+fi
+
+# 2. Refuse un commit qui contient un secret (clé, jeton).
 exec gitleaks git --pre-commit --staged --redact --no-banner --verbose

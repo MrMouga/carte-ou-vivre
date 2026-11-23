@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-11-23 | Enquête Besoins en main-d'œuvre (France Travail) : lire la licence de chaque fichier, chercher les bassins à cheval, et ne lui demander que « où », pas « combien » | data, discovery, spec | — | [2026-11-23-enquete-bmo-france-travail-avant-de-s-en-servir.md](2026-11-23-enquete-bmo-france-travail-avant-de-s-en-servir.md) |
 | 2026-11-21 | Une table « 2026 » d'un producteur n'est pas forcément sur le COG 2026 : regarder dans quel sens recaler avant d'écrire la règle | data, discovery | — | [2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md](2026-11-21-table-des-bassins-sur-une-geographie-plus-ancienne.md) |
 | 2026-11-21 | Une demande de focus gardée pour « après le rendu » ne se vide que quand sa cible existe : un autre rendu peut passer avant celui qui crée l'élément | build, tests | — | [2026-11-21-focus-demande-consommee-par-un-rendu-intermediaire.md](2026-11-21-focus-demande-consommee-par-un-rendu-intermediaire.md) |
 | 2026-11-21 | Une spec qui écrit des distances dans la fixture : regarder d'abord où les tests posent les points des communes | spec, tests | — | [2026-11-21-distances-dans-la-fixture-et-points-des-tests.md](2026-11-21-distances-dans-la-fixture-et-points-des-tests.md) |
