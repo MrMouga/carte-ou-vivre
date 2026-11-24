@@ -1,6 +1,7 @@
 """Téléchargement des sources brutes dans data-raw/ (non versionné). Lectures seulement, rien n'est envoyé.
 
 Usage : python3 scripts/data/sources.py  (ne retélécharge pas un fichier déjà présent)
+        python3 -I scripts/data/sources.py --services  (seulement les sources des services : lit l'API, ne télécharge rien)
 Sources, licences et mentions : CLAUDE.md (Données).
 """
 import datetime
@@ -8,6 +9,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 import urllib.request
 
 RAW = os.path.join(os.path.dirname(__file__), '..', '..', 'data-raw')
@@ -33,6 +35,40 @@ CHOMAGE = 'chomage-zone-t1-2003-t2-2026.xlsx'
 ZE = 'ZE2020_au_01-01-2025.zip'
 MVT_2026 = 'v_mvt_commune_2026.csv'
 NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2, BMO, BASSINS, CHOMAGE, ZE, MVT_2026)
+
+# Services (tranche services, tâche 0a, 2026-11-24 ; H165, H170, H171). Jeu Insee « Données sur la localisation et l'accès
+# de la population aux équipements » (data.gouv.fr, Licence Ouverte 2.0) : 13 fichiers régionaux de métropole (14,45 Go),
+# jamais téléchargés ici ; on note l'adresse, la taille et la somme SHA-1 publiées par l'API, l'extraction
+# (services-extrait.sql) lit les fichiers à distance. Valeurs retenues = lecture de /spec (2026-11-23), écrites aussi dans
+# CLAUDE.md : une lecture différente arrête le script, et services-sources.info.json n'est pas écrit.
+SERVICES_JEU = '67fe0fe2423db9c4a05d8ced'
+SERVICES_API = f'https://www.data.gouv.fr/api/1/datasets/{SERVICES_JEU}/'
+SERVICES_INFO = 'services-sources.info.json'
+SERVICES_TOTAL_GO = 14.45  # total des 13 tailles publiées (mesures de /spec)
+SERVICES_DATES = {'2026-08-18', '2026-08-19'}  # mise en ligne (last_modified de l'API ; pas l'en-tête Last-Modified)
+_INSEE = 'https://static.data.gouv.fr/resources/donnees-sur-la-localisation-et-lacces-de-la-population-aux-equipements/'
+SERVICES_FICHIERS = {  # région → (adresse, octets, SHA-1, mise en ligne)
+    '11': (_INSEE + '20260818-130002/donnees-2025-reg11.parquet', 476082759, '433b8e257203e2294bd70c2d3425526c61bb87ed', '2026-08-18'),
+    '24': (_INSEE + '20260818-125056/donnees-2025-reg24.parquet', 825690115, '919e4a0508c85bc9bedbce82b1291361e6555c59', '2026-08-18'),
+    '27': (_INSEE + '20260818-123811/donnees-2025-reg27.parquet', 861476546, 'efa3985ab40b0200e41964c5f93b3e9c61f1fde8', '2026-08-18'),
+    '28': (_INSEE + '20260818-122409/donnees-2025-reg28.parquet', 1103079376, '7d62d28d43db25412a6bd920b767e3234308afa7', '2026-08-18'),
+    '32': (_INSEE + '20260819-074623/donnees-2025-reg32.parquet', 933951644, 'ec1617d8f85ed1439258b0d82c89af0fbde19d51', '2026-08-19'),
+    '44': (_INSEE + '20260819-073523/donnees-2025-reg44.parquet', 892529336, '1cf1bc80b8bdea934be0e0665929183eee3edd6d', '2026-08-19'),
+    '52': (_INSEE + '20260819-072500/donnees-2025-reg52.parquet', 1147553679, '9ac417261e85f1fd5349a0a64ebd974340dd589c', '2026-08-19'),
+    '53': (_INSEE + '20260818-153615/donnees-2025-reg53.parquet', 1230220434, 'af29a48805a95b72d9df3163fb8caf7404e146f9', '2026-08-18'),
+    '75': (_INSEE + '20260818-145409/donnees-2025-reg75.parquet', 2414485257, '599356d55f9d69ede4196754ae52c1c469a3a495', '2026-08-18'),
+    '76': (_INSEE + '20260818-141901/donnees-2025-reg76.parquet', 1745361059, '7303c2bb7d75046863326135de6e737e58f89460', '2026-08-18'),
+    '84': (_INSEE + '20260818-135021/donnees-2025-reg84.parquet', 1974307689, 'd5b67910164f346425256d56ddde9d221cef5049', '2026-08-18'),
+    '93': (_INSEE + '20260818-120653/donnees-2025-reg93.parquet', 788053755, 'a134da390ae256ecfea869add42cc17c021f2fa2', '2026-08-18'),
+    '94': (_INSEE + '20260818-115439/donnees-2025-reg94.parquet', 58703774, '791520bd376d7f953c99efc433bbfbd2ed261a08', '2026-08-18'),
+}
+# Horaires SNCF (« Réseau SNCF TGV, Intercités et TER », ODbL), version 2026-11-22, copiés le 2026-11-24 depuis l'essai de
+# /spec : la version en ligne change chaque jour, ne pas retélécharger (H170). Temps mairie → gares calculés une seule fois
+# avec openrouteservice (H171) : ne pas relancer.
+SNCF = 'Export_OpenData_SNCF_GTFS_NewTripId.zip'
+SNCF_SHA256 = '0abd6918c870c6495a722406bc0c477f8d49ad4639dd9f4513b3d5f9331eaa73'
+ORS = 'services-calcul/ors-grandes-lignes.jsonl'
+ORS_SHA256 = '90725176eaf96d668411435f2030911584143e0826ab3e8e288918cdb123ae04'  # égal à la copie de l'essai de /spec
 
 CEREMA = 'montagne/cerema'
 CEREMA_URL = 'https://static.data.gouv.fr/resources/application-des-dispositions-durbanisme-de-la-loi-montagne-en-france-metropolitaine/'
@@ -94,7 +130,70 @@ for dep, date in ZINF.items():
     SOURCES[f'{CEREMA}/zinf/l-loimontagne85-zinf-{dep}.7z'] = f'{CEREMA_URL}{date}/l-loimontagne85-zinf-{dep}.7z'
 
 
+def sha(path, algo='sha256'):
+    h = hashlib.new(algo)
+    with open(path, 'rb') as f:
+        while chunk := f.read(1 << 20):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def services():
+    """H165, H170, H171 : lit l'API de data.gouv.fr (sans télécharger les fichiers) et les empreintes des deux fichiers
+    déjà dans data-raw/ ; compare aux valeurs retenues ; écrit data-raw/services-sources.info.json si tout est égal."""
+    def check(cond, msg):
+        print(('  ok   ' if cond else '  ÉCHEC ') + msg)
+        if not cond:
+            raise SystemExit(1)
+
+    print(f'services : lecture de {SERVICES_API}')
+    req = urllib.request.Request(SERVICES_API, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)', 'Accept': 'application/json'})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        jeu = json.load(r)
+    check(jeu.get('id') == SERVICES_JEU and jeu.get('license') == 'lov2', f"jeu {jeu.get('id')}, licence {jeu.get('license')} (Licence Ouverte 2.0)")
+    par_titre = {}
+    for res in jeu.get('resources', []):
+        par_titre.setdefault(res.get('title'), []).append(res)
+    fichiers = []
+    for reg, (url, octets, sha1, date) in SERVICES_FICHIERS.items():
+        titre = f'donnees_2025_reg{reg}.parquet'
+        res = par_titre.get(titre, [])
+        check(len(res) == 1, f'{titre} : une seule ressource de ce nom ({len(res)})')
+        res = res[0]
+        lu = (res.get('url'), res.get('filesize'), (res.get('checksum') or {}).get('value'), (res.get('last_modified') or '')[:10])
+        print(f'  {titre} : {lu[1]} octets, SHA-1 {lu[2]}, mis en ligne le {lu[3]}')
+        check((res.get('checksum') or {}).get('type') == 'sha1', f'{titre} : somme publiée de type SHA-1')
+        check(lu == (url, octets, sha1, date), f'{titre} : adresse, taille, SHA-1 et date égales à celles retenues (/spec)')
+        fichiers.append({'region': reg, 'titre': titre, 'url': lu[0], 'octets': lu[1], 'sha1': lu[2], 'mis_en_ligne': res.get('last_modified')})
+    total = sum(f['octets'] for f in fichiers)
+    check(len(fichiers) == 13 and round(total / 1e9, 2) == SERVICES_TOTAL_GO, f'13 fichiers, {total} octets au total = {total / 1e9:.2f} Go (attendu {SERVICES_TOTAL_GO})')
+    dates = {f['mis_en_ligne'][:10] for f in fichiers}
+    check(dates == SERVICES_DATES, f'dates de mise en ligne {sorted(dates)} = {sorted(SERVICES_DATES)}')
+    autres = sorted(t for t in par_titre if t and t.startswith('donnees_2025_reg') and t[16:18] not in SERVICES_FICHIERS)
+    print(f'  hors métropole, non lus : {autres}')
+
+    locaux = {}
+    for cle, nom, attendu in (('sncf', SNCF, SNCF_SHA256), ('ors', ORS, ORS_SHA256)):
+        path = os.path.join(RAW, nom)
+        check(os.path.isfile(path), f'{nom} présent dans data-raw/ (jamais retéléchargé)')
+        empreinte = sha(path)
+        print(f'  {nom} : {os.path.getsize(path)} octets, sha256 {empreinte}')
+        check(empreinte == attendu, f'{nom} : sha256 égal à celui retenu')
+        locaux[cle] = {'fichier': nom, 'octets': os.path.getsize(path), 'sha256': empreinte}
+    locaux['sncf']['version'] = '2026-11-22'
+
+    info = {'jeu': SERVICES_JEU, 'api': SERVICES_API, 'licence': 'Licence Ouverte 2.0',
+            'lu_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
+            'total_octets': total, 'fichiers': fichiers, **locaux}
+    with open(os.path.join(RAW, SERVICES_INFO), 'w', encoding='utf-8') as f:
+        json.dump(info, f, indent=1, ensure_ascii=False)
+    print(f'  écrit : data-raw/{SERVICES_INFO}')
+
+
 def main():
+    if '--services' in sys.argv:  # seulement les sources des services (rien n'est téléchargé)
+        services()
+        return
     os.makedirs(RAW, exist_ok=True)
     for name, url in SOURCES.items():
         path = os.path.join(RAW, name)
