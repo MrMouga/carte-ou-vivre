@@ -109,7 +109,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "l'utilisateur ouvre les fiches de Portmer, Terrebasse, Quaibleu et Rhinval",
       "then": "la fiche de Portmer contient, sous la ligne du chômage et dans l'ordre, « Services en voiture », « Médecin : 4 min », « Commerce alimentaire : 3 min », « Crèche : 12 min », « École : 2 min », « Collège : 9 min », « Lycée : 14 min », « Supérieur : 18 min », « Gare : 6 min », « Gare régionale : 8 min », « Gare grandes lignes : 40 min », puis « Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie. », sans la phrase de la traversée ; Terrebasse : « Gare régionale : plus d'une heure » (61 min) ; Quaibleu : « Gare régionale : 60 min » ; Rhinval : « Médecin : pas de chiffre », « Supérieur : pas de chiffre », « Gare régionale : pas de chiffre » et « Gare grandes lignes : pas de chiffre »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -117,7 +117,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre / et lit le pied de page",
       "then": "le pied de page contient « Temps d'accès aux services : Insee, base permanente des équipements, distancier Metric-OSRM, © les contributeurs d'OpenStreetMap et du projet OSRM (équipements 2025) » et « Gares grandes lignes : horaires SNCF (licence ODbL), temps depuis la mairie calculés avec openrouteservice, © OpenStreetMap contributors », à côté des mentions des tranches précédentes, toujours présentes",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
