@@ -157,7 +157,7 @@
       "given": "Fixture « 6 communes », téléphone 390 × 844, onglet « Critères »",
       "when": "l'utilisateur fait défiler jusqu'à « Services », coche au toucher « 10 min » pour « Médecin », puis replie « Services »",
       "then": "« Services » suit « Tes proches » ; la pastille est amenée à l'écran, entièrement visible, et se coche ; l'adresse devient /?loyer=1200&services=medecin:10 ; repliée, « Services » montre « 1 choix »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",
@@ -181,7 +181,7 @@
       "given": "Fixture « 6 communes », le fichier des temps retardé, puis en erreur selon l'étape",
       "when": "l'utilisateur ouvre / et la fiche de Portmer pendant le retard, laisse arriver le fichier ; rouvre / avec le fichier en erreur, ouvre la fiche de Portmer, rétablit le fichier et touche « Réessayer » ; ouvre enfin /?loyer=1200&services=medecin:10 avec le fichier retardé",
       "then": "pendant le retard : la carte et la liste d'AC-1 de mairies sont là, les réglages de « Services » sont inactifs, le bloc de la fiche dit « Chargement des temps… » ; à l'arrivée : les réglages sont actifs et la fiche dit « Médecin : 4 min ». En erreur : la catégorie et le bloc de la fiche disent « Temps des services indisponibles. » avec « Réessayer », la liste reste celle d'AC-1 de mairies ; après « Réessayer » : la fiche dit « Médecin : 4 min ». Avec services=medecin:10 et le fichier retardé : aucune liste n'est affichée avant l'arrivée du fichier, puis la liste est celle d'AC-2",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-16",
