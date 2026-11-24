@@ -1,5 +1,5 @@
 # Tâche 0b — Les temps de chaque commune, servis
-Statut : faite · Début 12:51 · Fin 13:05 · Commits : voir `git log` (message « feat(services): tâche 0b — … »)
+Statut : faite · Début 12:51 · Fin 13:05 · Commits : 0c2427e (tâche) · suivant (numéro du commit dans le rapport)
 
 ## Ce que l'utilisateur peut faire maintenant
 Rien de visible sur le site encore (la fiche et le filtre sont les tâches 1 à 4). Pour la suite :
