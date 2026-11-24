@@ -1,0 +1,8 @@
+# Poids d'un fichier servi : le mesurer avec la compression de l'hébergeur, pas avec un rapport pris sur un autre fichier
+Étiquettes : perf, data, deploy · Tranche : services · Source : /breakdown services (`docs/plans/2026-11-24-services/plan.md`, « Le fichier des temps »)
+
+**Problème** — Savoir si le fichier des temps (`services.json`, 34 746 communes × 10 temps) restait sous la limite de 350 Ko compressés de H162.
+**Symptômes** — J'ai annoncé à Vincent environ 395 Ko envoyés, au-dessus de la limite, et il a choisi d'alléger le fichier sur ce chiffre. Le chiffre était faux : en ligne, le format prévu aurait pesé environ 315 Ko.
+**Ce qui n'a pas marché** — Reprendre le rapport mesuré sur `emploi.json` (Cloudflare envoie 265 Ko là où `gzip -9` donne 234 Ko, soit +13 %) et l'appliquer à un autre fichier. Pour un fichier fait surtout de petits nombres, le même hébergeur compresse mieux que `gzip -9` (−8 %).
+**Ce qui a marché** — Retrouver le niveau de compression de l'hébergeur sur les fichiers déjà en ligne : `curl -s -H 'Accept-Encoding: br' <url> -o /dev/null -w '%{size_download}'`, puis comparer avec `brotli -c -q N <fichier> | wc -c` pour N de 0 à 6. Le site Workers suit `brotli -q 3`, à 1–3 % près sur `reperes`, `mairies`, `achat` et `communes`. Ensuite, mesurer chaque format candidat directement en `brotli -q 3`.
+**Prévention** — Jugement : un poids « tel que le site l'envoie » se mesure en reproduisant le niveau de compression de l'hébergeur, recalé sur au moins deux fichiers en ligne. Ne jamais reporter un rapport de compression d'un fichier à un autre. Si un chiffre donné à Vincent s'avère faux après sa décision, le dire tout de suite et lui laisser la possibilité de revenir sur son choix.
