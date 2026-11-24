@@ -69,7 +69,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre / et regarde « Services »",
       "then": "l'adresse devient /?loyer=1200 ; « Services », ouverte, est la catégorie qui suit immédiatement « Tes proches » ; elle montre, dans l'ordre, « Médecin » et « Commerce alimentaire » avec « 5 min », « 10 min », « 15 min » ; « Scolarité » avec ses niveaux, groupe nommé « Niveaux de scolarité » (« Crèche », « École », « Collège », « Lycée », « Supérieur »), puis la ligne « Temps de trajet maximal » (« 5 min », « 10 min », « 20 min ») ; « Gare » avec son choix, groupe nommé « Type de gare » (« Toutes », sélectionné, « Régionale », « Grandes lignes »), puis la ligne « Temps de trajet maximal » (« 10 min », « 20 min », « 30 min ») ; rien n'est coché ; la liste est celle d'AC-1 de mairies",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -77,7 +77,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "l'utilisateur coche « 10 min » pour « Médecin » et ouvre la fiche de Terrebasse",
       "then": "l'adresse devient /?loyer=1200&services=medecin:10 ; la liste montre « 4 communes passent tes critères » puis, dans l'ordre, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 (Quaibleu à 10 min passe, Rhinval sans chiffre passe, scores inchangés) ; les raisons de la fiche de Terrebasse (23) contiennent « Médecin 18 min : au-dessus de ton plafond de 10 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -85,7 +85,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&services=medecin:10",
       "when": "l'utilisateur coche « 10 min » pour « Gare » et ouvre la fiche de Quaibleu, puis celle de Terrebasse",
       "then": "l'adresse devient /?loyer=1200&services=medecin:10,gare:10 ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 46, Grandeville (33) 31 ; les raisons de Quaibleu contiennent « Gare 30 min : au-dessus de ton plafond de 10 min » ; celles de Terrebasse contiennent, dans cet ordre, « Médecin 18 min : au-dessus de ton plafond de 10 min » et « Gare 41 min : au-dessus de ton plafond de 10 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -133,7 +133,7 @@
       "given": "Variante « cas sûrs » de la fixture, page ouverte sur /?loyer=1200&services=gare-regionale:30",
       "when": "l'utilisateur ouvre les fiches de Portmer, Montcher, Terrebasse et Quaibleu, puis passe à « Toutes », puis décoche « 30 min » et coche « 15 min » pour « Médecin » et ouvre la fiche de Terrebasse",
       "then": "avec « Régionale » : « Régionale » est sélectionné ; la liste montre « 2 communes passent tes critères » puis Rhinval (67) 52 (sans chiffre, hors des cas sûrs : elle passe), Grandeville (33) 31. Portmer dit « Gare : aucune sur l'île », « Gare régionale : aucune sur l'île » et « Gare grandes lignes : aucune sur l'île », a la raison « Gare régionale : aucune sur l'île » et la phrase « Île sans pont : un temps peut compter la traversée, sans l'attente du bateau. ». Montcher dit aussi « Gare : aucune sur l'île », sans la phrase de la traversée. Terrebasse a la raison « Gare régionale : pas de chiffre, commune sans habitant ». Quaibleu (2B) dit « Gare régionale : aucune en Corse » et « Gare grandes lignes : aucune en Corse », et a la raison « Gare régionale : aucune en Corse ». Avec « Toutes » : l'adresse devient /?loyer=1200&services=gare:30 ; la liste montre « 3 communes passent tes critères » puis Rhinval (67) 52, Grandeville (33) 31, Quaibleu (2B) 9. Avec « 15 min » pour « Médecin » : l'adresse devient /?loyer=1200&services=medecin:15 ; la liste montre « 4 communes passent tes critères » puis Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (2B) 9 ; Terrebasse a la raison « Médecin : pas de chiffre, commune sans habitant »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -141,7 +141,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&services=gare:10",
       "when": "l'utilisateur choisit « Régionale », puis « Grandes lignes », puis revient à « Toutes », puis décoche « 10 min » et choisit « Régionale »",
       "then": "avec « Régionale » : « 10 min » reste cochée, l'adresse devient /?loyer=1200&services=gare-regionale:10, la liste montre « 3 communes passent tes critères » puis Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31 ; avec « Grandes lignes » : l'adresse devient /?loyer=1200&services=gare-grandes-lignes:10, la liste montre « 2 communes passent tes critères » puis Rhinval (67) 52, Grandeville (33) 31 ; de retour sur « Toutes » : l'adresse est /?loyer=1200&services=gare:10, la liste montre « 2 communes passent tes critères » puis Portmer (17) 46, Grandeville (33) 31 ; sans temps coché, choisir « Régionale » laisse l'adresse à /?loyer=1200 et la liste celle d'AC-1 de mairies",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -149,7 +149,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre successivement /?loyer=1200&services=medecin:10,zzz:10,ecole:7,college:20,medecin:5,gare:10,gare-regionale:20,lycee:10 puis /?services=creche:10,medecin:10&metier=V1X80:10&loyer=1200 puis /?loyer=1200&services=medecin:7,medecin:10,gare:5,gare-grandes-lignes:10,lycee:10,ecole:10,ecole:5",
       "then": "la première adresse est réécrite /?loyer=1200&services=medecin:10,college:20,gare:10 (nom inconnu et minutes invalides retirés, seconde entrée du médecin retirée, gare régionale retirée car la gare est lue d'abord, lycée retiré car son temps diffère de celui du collège) ; la deuxième est réécrite /?loyer=1200&metier=V1X80:10&services=medecin:10,creche:10 ; la troisième est réécrite /?loyer=1200&services=medecin:10,ecole:10,lycee:10,gare-grandes-lignes:10 (première entrée valide gardée, ordre fixe) et « Grandes lignes » est sélectionné",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
