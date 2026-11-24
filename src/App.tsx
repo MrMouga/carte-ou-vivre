@@ -264,7 +264,13 @@ export function App() {
         monte={ajoutProche}
       />
       {/* H151 : la dernière catégorie, après « Tes proches » ; inactive tant que les temps ne sont pas arrivés (R57). */}
-      <CategorieServices reglages={reglages} onChange={setReglages} disabled={!prete || temps.etat !== 'pret'} />
+      <CategorieServices
+        reglages={reglages}
+        onChange={setReglages}
+        disabled={!prete || temps.etat !== 'pret'}
+        erreur={temps.etat === 'erreur'}
+        onReessayer={() => setEssaiServices((n) => n + 1)}
+      />
       {pied}
     </Settings>
   );

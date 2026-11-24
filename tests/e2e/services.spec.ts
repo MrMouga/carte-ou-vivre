@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import services from '../../docs/specs/2026-11-23-services/acceptance.json' with { type: 'json' };
 import { FIXTURE, ouvrir, servicesJson, servirFixture, vue, type Jeu } from './lib/carte';
-import { voirCriteres, voirListe } from './lib/feuille';
+import { amenerEnBas, voirCriteres, voirListe } from './lib/feuille';
 import { ajouter, lignes, pret } from './lib/proches';
 import { servirIgn } from './lib/ign';
 
@@ -588,4 +588,203 @@ test('H153 : un temps sans niveau est incomplet ; décocher tout revient à vide
   await expect(phraseIncomplet(page)).toBeVisible();
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 4 : l'erreur du fichier des temps dans la catégorie (R57, H168), le téléphone (R51, H48 d'interface-telephone).
+
+const INDISPONIBLES = 'Temps des services indisponibles.';
+/** Les réglages de « Services » : un temps de chaque ligne, un niveau, un type de gare. */
+const reglagesServices = (page: Page) => [
+  tempsDe(page, 'Médecin', 5),
+  tempsDe(page, 'Commerce alimentaire', 15),
+  niveau(page, 'École'),
+  tempsDe(page, 'Scolarité', 20),
+  typeGare(page, 'Régionale'),
+  tempsDe(page, 'Gare', 30),
+];
+const LISTE_AC2 = ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9'];
+
+test('AC-15 fichier des temps retardé : carte, liste et fiche « Chargement des temps… », réglages inactifs ; en erreur, catégorie et fiche disent l’erreur, « Réessayer » ; avec services=medecin:10, aucune liste avant le fichier', async ({ page }) => {
+  await servirFixture(page, { jeu: SIX_SERVICES });
+  const s = await retenirServices(page, SIX_SERVICES); // posée après servirFixture : elle gagne
+
+  // 1. Le fichier retardé : la carte et la liste d'AC-1 de mairies sont là, les réglages inactifs, la fiche attend.
+  await page.goto('/');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await expect.poll(() => s.etat.demandes).toBe(1);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  for (const b of reglagesServices(page)) await expect(b).toBeDisabled();
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+  await ficheDeListe(page, 'Portmer');
+  expect(await sousChomage(page)).toEqual(['Services en voiture', 'Chargement des temps…']);
+  // À l'arrivée : la fiche donne les temps, les réglages sont actifs.
+  await s.repondre();
+  await expect(fiche(page)).toContainText('Médecin : 4 min');
+  await retour(page);
+  await voirCriteres(page);
+  for (const b of reglagesServices(page)) await expect(b).toBeEnabled();
+
+  // 2. Rouverte avec le fichier en erreur : la catégorie et la fiche le disent, « Réessayer » ; la liste ne change pas.
+  await page.goto('/');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await expect.poll(() => s.etat.demandes).toBe(2);
+  await s.echouer();
+  const { contenu } = await categorieServices(page);
+  await expect(contenu.getByRole('alert')).toHaveText(INDISPONIBLES);
+  await expect(contenu.getByRole('button', { name: 'Réessayer' })).toBeVisible();
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+  await ficheDeListe(page, 'Portmer');
+  await expect(fiche(page).getByRole('alert')).toHaveText(INDISPONIBLES);
+  // Le fichier rétabli, « Réessayer » de la fiche : ses temps.
+  await fiche(page).getByRole('button', { name: 'Réessayer' }).click();
+  await expect.poll(() => s.etat.demandes).toBe(3);
+  await s.repondre();
+  await expect(fiche(page)).toContainText('Médecin : 4 min');
+  await expect(page.getByRole('alert')).toHaveCount(0);
+
+  // 3. Avec services=medecin:10 et le fichier retardé : aucune liste avant son arrivée, puis celle d'AC-2. Une route à
+  // part (posée en dernier, elle gagne) : la carte n'existe pas avant le fichier, `retenirServices` l'attendrait.
+  let retenue: Route | null = null;
+  await page.route('**/data/services.json', (r) => {
+    retenue = r;
+  });
+  await page.goto('/?loyer=1200&services=medecin:10');
+  await expect.poll(() => retenue != null).toBe(true);
+  await page.waitForTimeout(500);
+  await expect(page.locator('#titre-liste')).toHaveCount(0); // ni affichée, ni cachée dans un onglet
+  await retenue!.fulfill({ json: servicesJson(SIX_SERVICES) });
+  await listeEst(page, '4 communes passent tes critères', LISTE_AC2);
+  expect(adresse(page)).toBe('/?loyer=1200&services=medecin:10');
+});
+
+// Hors AC (R57, H168 ; focus décidé par Claude) : 15 s sans réponse = erreur ; la catégorie dit l'erreur sous son titre,
+// ses réglages restent affichés et inactifs ; son « Réessayer » ne relance que le fichier des temps et rend le focus au
+// titre de la catégorie (le bouton disparaît). Horloge simulée (leçon 2026-10-13-delai-long-horloge-playwright).
+test('R57 : fichier des temps sans réponse, erreur à 15 s dans la catégorie, réglages affichés et inactifs ; son « Réessayer » relance lui seul et rend le focus au titre', async ({ page }) => {
+  await page.clock.install();
+  await servirFixture(page, { jeu: SIX_SERVICES });
+  const s = await retenirServices(page, SIX_SERVICES); // la demande reste sans réponse tant que le test ne répond pas
+  const autres: string[] = [];
+  page.on('request', (r) => r.url().includes('/data/') && !r.url().endsWith('/services.json') && autres.push(r.url()));
+  await page.goto('/?loyer=1200');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await expect.poll(() => s.etat.demandes).toBe(1);
+  // Le délai a commencé un peu avant cet instant t (la demande part dès la carte prête).
+  const t = await page.evaluate(() => Date.now());
+  await page.clock.pauseAt(t + 1_000); // on est entre 1 s et 1 s + (t − départ) du délai
+  const { titre, contenu } = await categorieServices(page);
+  await voirCriteres(page);
+  await page.clock.runFor(13_000); // ≈ 14 s : encore en chargement
+  await expect(contenu.getByRole('alert')).toHaveCount(0);
+  await page.clock.runFor(2_000); // ≈ 16 s : en erreur
+  await expect(contenu.getByRole('alert')).toHaveText(INDISPONIBLES);
+  await page.clock.resume();
+  // Sous le titre, avant « Médecin » ; les réglages restent affichés, inactifs.
+  const textes = (await contenu.locator('p, span, button').allTextContents()).map((x) => nbsp(x).trim());
+  expect(textes.slice(0, 3)).toEqual([INDISPONIBLES, 'Réessayer', 'Médecin']);
+  for (const b of reglagesServices(page)) {
+    await expect(b).toBeVisible();
+    await expect(b).toBeDisabled();
+  }
+  const avant = autres.length;
+
+  await contenu.getByRole('button', { name: 'Réessayer' }).click();
+  await expect(titre).toBeFocused();
+  await expect.poll(() => s.etat.demandes).toBe(2);
+  await expect(contenu.getByRole('alert')).toHaveCount(0);
+  await expect(contenu.getByRole('button', { name: 'Réessayer' })).toHaveCount(0);
+  await s.repondre();
+  for (const b of reglagesServices(page)) await expect(b).toBeEnabled();
+  expect(autres.length).toBe(avant); // aucune autre donnée redemandée
+});
+
+// Hors AC (focus décidé par Claude) : « Réessayer » de la fiche rend le focus au titre du bloc, qui reste à l'écran.
+test('R57 : « Réessayer » de la fiche rend le focus au titre « Services en voiture »', async ({ page }) => {
+  await servirFixture(page, { jeu: SIX_SERVICES });
+  const s = await retenirServices(page, SIX_SERVICES);
+  await page.goto('/?loyer=1200');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await expect.poll(() => s.etat.demandes).toBe(1);
+  await s.echouer();
+  await ficheDeListe(page, 'Portmer');
+  await fiche(page).getByRole('button', { name: 'Réessayer' }).focus();
+  await page.keyboard.press('Enter');
+  const titreBloc = fiche(page).getByRole('heading', { level: 3, name: 'Services en voiture' });
+  await expect(titreBloc).toBeFocused();
+  await expect(titreBloc).toBeInViewport({ ratio: 1 });
+  await s.repondre();
+  await expect(fiche(page)).toContainText('Médecin : 4 min');
+  await expect(titreBloc).toBeFocused();
+});
+
+test.describe('téléphone, au toucher', () => {
+  test.use({ hasTouch: true });
+  const criteres = (page: Page) => page.getByRole('tabpanel', { name: 'Critères' });
+  const boite = async (l: { boundingBox: () => Promise<{ x: number; y: number; width: number; height: number } | null> }) => (await l.boundingBox())!;
+
+  test('AC-12 390 × 844, « Critères » : « Services » suit « Tes proches » ; « 10 min » pour « Médecin », amenée à l’écran en défilant, entière, cochée au toucher ; services=medecin:10 ; repliée « 1 choix »', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'onglet « Critères » : sous 1 024 px, fenêtre de 390 × 844 du projet mobile');
+    await ouvrir(page, '/', { jeu: SIX_SERVICES });
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+    await expect(criteres(page)).toBeVisible();
+    const titres = (await criteres(page).getByRole('heading', { level: 2 }).allTextContents()).map((x) => nbsp(x).trim());
+    expect(titres.indexOf('Services')).toBe(titres.indexOf('Tes proches') + 1);
+
+    // L'onglet défile jusqu'à « Services » et sa pastille : entière, dans l'onglet et à l'écran ; un toucher la coche.
+    const b = tempsDe(page, 'Médecin', 10);
+    await expect(b).toBeEnabled();
+    await amenerEnBas(b);
+    const c = await boite(criteres(page));
+    const p = await boite(b);
+    expect(p.y).toBeGreaterThanOrEqual(c.y);
+    expect(p.y + p.height).toBeLessThanOrEqual(Math.min(c.y + c.height, 844));
+    expect(p.x).toBeGreaterThanOrEqual(0);
+    expect(p.x + p.width).toBeLessThanOrEqual(390);
+    await page.touchscreen.tap(p.x + p.width / 2, p.y + p.height / 2);
+    await expect(b).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=medecin:10');
+
+    const { titre } = await categorieServices(page);
+    await titre.tap();
+    await expect(titre).toHaveAttribute('aria-expanded', 'false');
+    expect(nbsp(await titre.textContent())).toBe('Services1 choix');
+  });
+
+  // Hors AC (plan, tâche 4 : « une pastille touchée est amenée à l'écran, entière ») : une pastille à moitié sous le bas de
+  // l'onglet, touchée sur sa partie visible, se coche et remonte entière.
+  test('390 × 844 : une pastille à moitié cachée par le bas de l’onglet, touchée, se coche et vient entière à l’écran', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'onglet « Critères » : sous 1 024 px');
+    await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
+    const b = tempsDe(page, 'Gare', 30);
+    await expect(b).toBeEnabled();
+    // Le bas de l'onglet coupe la pastille en son milieu.
+    await b.evaluate((el) => {
+      const onglet = el.closest('[role="tabpanel"]') as HTMLElement;
+      const r = el.getBoundingClientRect();
+      onglet.scrollTop += r.bottom - r.height / 2 - onglet.getBoundingClientRect().bottom;
+    });
+    const c = await boite(criteres(page));
+    const avant = await boite(b);
+    expect(avant.y + avant.height).toBeGreaterThan(c.y + c.height); // coupée
+    await page.touchscreen.tap(avant.x + avant.width / 2, (avant.y + c.y + c.height) / 2);
+    await expect(b).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(async () => (await boite(b)).y + (await boite(b)).height).toBeLessThanOrEqual(Math.min(c.y + c.height, 844));
+    expect((await boite(b)).y).toBeGreaterThanOrEqual(c.y);
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=gare:30');
+  });
+
+  // Hors AC (H48 d'interface-telephone) : la catégorie « Services » ne pousse pas le curseur du prix hors de la feuille sur
+  // le plus petit écran visé.
+  test('375 × 548 : à l’ouverture, « Loyer maximum » entièrement visible dans la feuille ; « Services » plus bas dans l’onglet', async ({ page }, info) => {
+    test.skip(info.project.name !== 'mobile', 'fenêtre de téléphone fixée par le test');
+    await page.setViewportSize({ width: 375, height: 548 });
+    await ouvrir(page, '/', { jeu: SIX_SERVICES });
+    const f = await boite(page.getByTestId('feuille'));
+    const curseur = await boite(page.getByRole('slider', { name: 'Loyer maximum' }));
+    expect(curseur.y).toBeGreaterThanOrEqual(f.y);
+    expect(curseur.y + curseur.height).toBeLessThanOrEqual(548);
+    const { titre } = await categorieServices(page);
+    expect((await boite(titre)).y).toBeGreaterThan(curseur.y);
+  });
 });

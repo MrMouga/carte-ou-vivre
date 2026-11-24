@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import { resumeServices } from '@/domain/format';
 import type { Reglages } from '@/domain/score';
 import {
@@ -11,7 +11,9 @@ import {
   type TypeGare,
 } from '@/domain/services';
 import { cn } from '@/lib/cn';
+import { layout } from '@/theme/tokens';
 import { Categorie } from './Categorie';
+import { TempsIndisponibles } from './FicheServices';
 
 // Catégorie « Services » (spec services, R51, H151 à H154, H167, H169 ; design F : docs/design/services/decisions.md,
 // prototype `PisteA` du commit 2f300ae). La dernière catégorie, après « Tes proches », ouverte au départ. « Médecin » et
@@ -19,11 +21,31 @@ import { Categorie } from './Categorie';
 // temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare « Scolarité » et « Gare ».
 // « Scolarité » : niveaux cumulables et temps commun ; filtre quand l'un et l'autre sont cochés (tâche 3b, R53, H153).
 
-type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
+type Props = {
+  reglages: Reglages;
+  onChange: (r: Reglages) => void;
+  disabled?: boolean;
+  /** Le fichier des temps en erreur (R57) : l'erreur et « Réessayer » sous le titre, réglages affichés et inactifs. */
+  erreur?: boolean;
+  onReessayer?: () => void;
+};
 
 /** Une case : libellé entier, centré (contrat « Cases collées », « Cases séparées »). */
 const CASE =
-  'flex min-h-toucher cursor-pointer items-center justify-center p-1 text-center text-pastille text-foreground tabular-nums disabled:cursor-default disabled:opacity-50';
+  'flex min-h-toucher cursor-pointer items-center justify-center p-1 text-center text-pastille text-foreground tabular-nums disabled:cursor-default disabled:opacity-50 max-bureau:scroll-my-1';
+
+/**
+ * Sous 1 024 px, une case touchée (ou atteinte au clavier) est amenée entière à l'écran dans l'onglet « Critères » (plan,
+ * tâche 4) : Chromium ne fait pas défiler un élément focalisé déjà en partie visible (leçon
+ * 2026-10-15-rangee-qui-defile-focus-clavier). Au focus, seulement celui du clavier (`:focus-visible`) : un défilement à
+ * l'appui du doigt déplacerait la case sous lui avant le clic.
+ */
+const montrer = (el: HTMLElement) => {
+  if (innerWidth < layout['largeur-bureau']) el.scrollIntoView({ block: 'nearest' });
+};
+const auFocus = (e: React.FocusEvent<HTMLElement>) => {
+  if (e.currentTarget.matches(':focus-visible')) montrer(e.currentTarget);
+};
 
 const NIVEAUX: { cle: (typeof NIVEAUX_SCOLARITE)[number]; libelle: string }[] = [
   { cle: 'creche', libelle: 'Crèche' },
@@ -76,7 +98,11 @@ function Temps({ crans, valeur, onChange, disabled, nomId, nom, decritId, classN
             type="button"
             aria-pressed={cochee}
             disabled={disabled}
-            onClick={() => onChange(cochee ? null : m)}
+            onFocus={auFocus}
+            onClick={(e) => {
+              montrer(e.currentTarget);
+              onChange(cochee ? null : m);
+            }}
             className={cn(CASE, 'bg-card first:rounded-l-chip last:rounded-r-chip aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
           >
             {m}&nbsp;min
@@ -103,7 +129,8 @@ function Ligne({ libelle, valeur, onChange, disabled }: { libelle: string; valeu
 /** Titre visible au-dessus des temps de « Scolarité » et de « Gare » (H169). */
 const TitreTemps = () => <span className="text-secondaire text-muted-foreground">Temps de trajet maximal</span>;
 
-export function Services({ reglages, onChange, disabled = false }: Props) {
+export function Services({ reglages, onChange, disabled = false, erreur = false, onReessayer = () => {} }: Props) {
+  const titre = useRef<HTMLButtonElement>(null);
   const s = reglages.services ?? SERVICES_DEPART;
   const regler = (x: Partial<ReglageServices>) => onChange(avecServices(reglages, { ...s, ...x }));
   // Niveaux cumulables, gardés dans l'ordre des âges (H167).
@@ -115,7 +142,9 @@ export function Services({ reglages, onChange, disabled = false }: Props) {
   const idPhrase = useId();
   const decrit = incomplete ? idPhrase : undefined;
   return (
-    <Categorie titre="Services" resume={resumeServices(reglages)}>
+    <Categorie titre="Services" resume={resumeServices(reglages)} refBouton={titre}>
+      {/* R57 : en erreur, sous le titre ; les réglages restent affichés, inactifs (décidé par Claude, plan tâche 4). */}
+      {erreur && <TempsIndisponibles onReessayer={onReessayer} focusApres={titre} />}
       <div className="flex flex-col gap-2">
         <Ligne libelle="Médecin" valeur={s.medecin} onChange={(medecin) => regler({ medecin })} disabled={disabled} />
         <Ligne libelle="Commerce alimentaire" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
@@ -130,7 +159,11 @@ export function Services({ reglages, onChange, disabled = false }: Props) {
                 type="button"
                 aria-pressed={s.niveaux.includes(n.cle)}
                 disabled={disabled}
-                onClick={() => basculerNiveau(n.cle)}
+                onFocus={auFocus}
+                onClick={(e) => {
+                  montrer(e.currentTarget);
+                  basculerNiveau(n.cle);
+                }}
                 className={cn(CASE, 'flex-auto rounded-chip border border-border bg-card aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
               >
                 {n.libelle}
@@ -160,9 +193,13 @@ export function Services({ reglages, onChange, disabled = false }: Props) {
                 type="button"
                 aria-pressed={s.gare === t.cle}
                 disabled={disabled}
-                onClick={() => regler({ gare: t.cle })}
+                onFocus={auFocus}
+                onClick={(e) => {
+                  montrer(e.currentTarget);
+                  regler({ gare: t.cle });
+                }}
                 className={cn(
-                  '-mb-px flex min-h-cible cursor-pointer items-center justify-center border-b-2 text-texte-fort disabled:cursor-default disabled:opacity-50 max-bureau:min-h-toucher',
+                  '-mb-px flex min-h-cible cursor-pointer items-center justify-center border-b-2 text-texte-fort disabled:cursor-default disabled:opacity-50 max-bureau:min-h-toucher max-bureau:scroll-my-1',
                   s.gare === t.cle ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground',
                 )}
               >

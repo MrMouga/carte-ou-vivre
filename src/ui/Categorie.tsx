@@ -10,10 +10,12 @@ type Props = {
   /** Pour nommer un groupe du contenu par le seul titre (aria-labelledby). */
   idTitre?: string;
   action?: React.ReactNode;
+  /** Le bouton du titre, pour y rendre le focus (« Réessayer » de « Services », qui disparaît une fois touché). */
+  refBouton?: React.Ref<HTMLButtonElement>;
   children: React.ReactNode;
 };
 
-export function Categorie({ titre, resume, idTitre, action, children }: Props) {
+export function Categorie({ titre, resume, idTitre, action, refBouton, children }: Props) {
   const [ouverte, setOuverte] = useState(true);
   const contenu = useId();
   return (
@@ -21,6 +23,7 @@ export function Categorie({ titre, resume, idTitre, action, children }: Props) {
       <div className="flex items-center justify-between gap-2">
         <h2 className="min-w-0 flex-1">
           <button
+            ref={refBouton}
             type="button"
             aria-expanded={ouverte}
             aria-controls={contenu}
