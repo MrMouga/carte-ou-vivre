@@ -1,0 +1,16 @@
+import * as L from './qa2-lib.mjs';
+const { navigateur, journal, nbsp, W, H, fiche, ouvrir, OUT } = L;
+const p = await (await navigateur.newContext({ viewport: { width: W, height: H } })).newPage();
+await ouvrir(p, '/?loyer=1200&services=medecin:10');
+await p.getByLabel('Adresse ou ville').fill('12 rue de la République Toulouse');
+await p.getByRole('button', { name: 'Ajouter' }).click();
+await p.waitForTimeout(6000);
+journal('après Ajouter:', nbsp(await p.locator('section[aria-label="Réglages"]').innerText()).replace(/\n+/g, ' | ').match(/TES PROCHES.{0,300}/)?.[0]);
+journal('URL', new URL(p.url()).search);
+await p.screenshot({ path: `${OUT}/qa2-proches-1440.png` });
+await p.getByRole('region', { name: 'Les 10 premières' }).getByRole('listitem').first().getByRole('button').first().click();
+await fiche(p).waitFor({ timeout: 10000 }); await p.waitForTimeout(800);
+const t = nbsp(await fiche(p).innerText()).replace(/\n+/g, ' | ');
+journal('fiche', t.slice(t.indexOf('Chômage')).slice(0, 360));
+await p.screenshot({ path: `${OUT}/qa2-fiche-proches-1440.png` });
+await navigateur.close();

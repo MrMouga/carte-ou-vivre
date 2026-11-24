@@ -1,7 +1,7 @@
 # Relecture spec — services
 Statut : terminé
 
-Suite de tests (relancée par le relecteur le 2026-11-24, `npm test`) : Vitest **24 fichiers, 397 / 397 verts** ; `check-tokens : 47 fichier(s), aucune valeur arbitraire` ; Playwright **303 verts, 0 rouge au moment de clore** (environ 520 tests en tout, suite non finie : le relecteur a été arrêté par sa limite de tours ; projet [bureau] de services.spec.ts entièrement vert, projet [mobile] pas encore passé). Le journal complet sera dans le scratchpad de la session (`npmtest.log`). Le constructeur annonçait 473 verts, 0 rouge, 48 sautés : affirmation non refaite en entier ici.
+Suite de tests (relancée par le relecteur le 2026-11-24, `npm test`) : Vitest **24 fichiers, 397 / 397 verts** ; `check-tokens : 47 fichier(s), aucune valeur arbitraire` ; Playwright **469 passed, 3 failed, 48 skipped, 1 did not run (13.6m)**, sortie 1. Les 3 rouges, tous en [mobile] et tous au délai de 30 s sous charge : proches-clavier-iphone.spec.ts:82, proches-clavier-iphone.spec.ts:93, proches-mobile.spec.ts:23 (4 proches). **Relancés seuls : 5 / 5 verts (9,8 s)**. Tous les tests de services.spec.ts sont verts aux deux largeurs, AC-12 et AC-15 [mobile] compris.
 Périmètre : 450de06..ec8ad69 (29 commits).
 
 ## Verdict
@@ -44,6 +44,12 @@ Aucun.
   Conséquence : aucune. Les deux changements sont petits et justifiés.
   Correction : aucune.
 
+[Mineur] Deux tests protégés de proches sont tombés dans la suite complète alors qu'ils ne sont pas dans la liste des tests instables connus : proches-clavier-iphone.spec.ts:82 et :93 [mobile]. proches-mobile.spec.ts:23 est aussi tombé en [mobile], alors que la liste ne le connaît qu'en [bureau].
+  Où : la suite complète du relecteur (journal npmtest.log du scratchpad)
+  Preuve : les 3 tombent au délai de 30 s dans la suite complète ; relancés seuls, ils sont verts (5 / 5 en 9,8 s). Ils n'ont pas de lien visible avec services : les champs « Tes proches » au focus sur iPhone.
+  Conséquence : il n'y a pas de régression montrée, mais la liste des tests instables s'allonge, et un vrai défaut pourrait s'y cacher.
+  Correction : ajouter ces trois cas à la liste des tests instables du brief, ou les relancer trois fois seuls avant /ship.
+
 ## Couverture des critères
 | AC | Test | Statut | Note |
 |---|---|---|---|
@@ -65,7 +71,7 @@ Aucun.
 | AC-16 | scripts/data/services.test.ts:68 | couvert | g1 à g6 ; 70 min écrit « 61 ou plus » |
 | AC-17 | services.spec.ts:547 | couvert | — |
 
-Les drapeaux `passes: true` des 17 critères sont tous justifiés par un test réel. Pour AC-1 à AC-11, AC-13, AC-14, AC-16 et AC-17, ce test est vert dans ma relance ; AC-12, AC-15 et le projet [mobile] étaient encore en cours au moment de clore.
+Les drapeaux `passes: true` des 17 critères sont tous justifiés par un test réel. Les 17 tests sont verts dans ma relance complète.
 
 ## Vérifié, sans constat
 - **R53 / D7** (src/domain/services.ts:185-191) : le temps passe s'il est inférieur ou égal au temps coché ; une commune sans chiffre passe ; l'île est écartée sur les 3 gares quel que soit son temps ; la Corse est écartée sur les gares régionale et grandes lignes, avec la règle normale en « Toutes » ; une commune de population 0 est écartée sur tous les services. Le filtre ne note pas (score.ts:316-320, rien dans `notes`).
@@ -80,10 +86,9 @@ Les drapeaux `passes: true` des 17 critères sont tous justifiés par un test r�
 - **Tests protégés et critères** : seul `tests/e2e/lib/carte.ts` a changé, par ajouts seulement, comme le prévoit l'accord du plan. Dans `acceptance.json`, seuls les 17 `passes` ont changé (34 lignes), et aucun `given / when / then`.
 - **CLAUDE.md** : la source Insee, les fichiers SNCF et openrouteservice, et les mentions H164 et H172 sont ajoutés (tâche 0a, simplification).
 - **Fichiers servis** : `gares-grandes-lignes.csv` contient 61 gares (H172) ; aucune image de plus de 600 Ko dans docs/.
-- **« Ne change pas »** : dans ma relance, 303 tests Playwright des tranches précédentes et de services sont verts et aucun n'est rouge, plus Vitest 397 / 397. Le reste n'a pas pu être vu (voir plus bas).
+- **« Ne change pas »** : suite complète à 469 verts ; les 3 rouges (tests de proches au délai de 30 s) sont verts relancés seuls ; Vitest 397 / 397.
 
 ## Non jugé
-- **Fin de la suite Playwright** : environ 220 tests n'avaient pas encore tourné à la clôture (la fin du projet [bureau], le projet [mobile] dont AC-12, et [limites]). Lire la fin du journal `npmtest.log` du scratchpad de la session pour le compte final ; les tests instables connus sont listés dans le brief.
 - **Rendu visuel face au prototype F**, chemin au clavier, 375 × 548 vu à l'œil : laissés au qa-tester (`qa.md`, non lu).
 - **Tableau de crédibilité** (tâche 0c) : 9 lignes « autre côté », dont 2 sur des communes ordinaires (Les Sables-d'Olonne, Saint-Véran). Si Vincent juge ces deux lignes fausses à la démo, la tranche lui revient (credibilite-services.md:15). C'est à savoir avant la démo ; ce n'est pas un défaut de construction.
 - **Calcul des données** (extraction DuckDB, gares.py, comptes de mesures.md) : non relancé ; seules les valeurs d'AC-13 ont été relues dans le fichier servi.
