@@ -9,6 +9,7 @@ import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
 import { readPixels } from './pixels';
+import { ecrireServices, SERVICES, type TempsServices } from '../../../src/domain/services';
 
 // Fixture « 5 communes » servie à la place de public/data, et fond IGN remplacé par un style local uni (aucun appel réseau).
 export type Id = 'A' | 'B' | 'C' | 'D' | 'E';
@@ -108,6 +109,17 @@ export const emploiJson = (jeu: Jeu) => {
     ),
   };
 };
+// Temps des services (spec services, plan « Fixtures ») : servis à tous les jeux, écrits par la fonction d'écriture de la
+// page ; temps et drapeau d'île pris dans les seules communes du jeu qui portent `temps_services` / `ile_sans_pont` (jeux de
+// tests/e2e/services.spec.ts) ; les autres n'ont aucun chiffre et aucune île.
+export const servicesJson = ({ items }: Jeu) =>
+  ecrireServices(
+    items.map((it) => ({
+      code: it.code_insee,
+      temps: 'temps_services' in it ? (it.temps_services as TempsServices) : (Object.fromEntries(SERVICES.map((s) => [s.cle, null])) as TempsServices),
+      ile_sans_pont: 'ile_sans_pont' in it && it.ile_sans_pont === true,
+    })),
+  );
 // Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
 const reperesJson = ({ items }: Jeu) => ({
   champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
@@ -127,6 +139,7 @@ export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIX
   await page.route('**/data/mairies.json', (r) => r.fulfill({ json: mairiesJson(jeu) }));
   await page.route('**/data/nuances.json', (r) => r.fulfill({ json: nuancesJson() }));
   await page.route('**/data/emploi.json', (r) => r.fulfill({ json: emploiJson(jeu) }));
+  await page.route('**/data/services.json', (r) => r.fulfill({ json: servicesJson(jeu) }));
   await page.route('**/tuiles/**', (r) => {
     const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });

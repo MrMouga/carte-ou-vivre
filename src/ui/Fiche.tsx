@@ -7,6 +7,8 @@ import { avecPlusProche, ligneMetier, type Emploi } from '@/domain/emploi';
 import { cn } from '@/lib/cn';
 import type { Proche } from '@/proches/useProches';
 import { CLASSES_PALIER } from './Legend';
+import { FicheServices } from './FicheServices';
+import type { EtatServices } from '@/domain/services';
 
 type Props = {
   evaluation: Evaluation;
@@ -21,6 +23,9 @@ type Props = {
   emploi: Emploi;
   /** Métiers choisis, dans l'ordre du choix (R47) ; absent : aucun. */
   metiers?: MetierChoisi[];
+  /** Temps des services (R54, R57) et « Réessayer » du seul fichier des temps. */
+  temps: EtatServices;
+  onReessayerServices: () => void;
   onRetour: () => void;
 };
 
@@ -41,14 +46,14 @@ export function ligneProche(p: Proche, index: number): string {
 // Fiche (Figma « Fiche », frames 5:154 et 5:235) : passe (score, rang), ne passe pas (raisons), sans plafond ; commune sans
 // note (R25 d'immobilier : passe, prix inconnu, aucun autre critère qui note) : ni score ni rang, la ligne dit pourquoi.
 // Tranche proches (Figma 22:307) : sous la mer, « Tes proches » et une ligne par proche, dans tous les états de la fiche.
-export function Fiche({ evaluation: e, total, prix, proches, index, emploi, metiers = [], onRetour }: Props) {
+export function Fiche({ evaluation: e, total, prix, proches, index, emploi, metiers = [], temps, onReessayerServices, onRetour }: Props) {
   const c = e.commune;
   const estimation = estimationTexte(c, prix);
   const titre = useRef<HTMLHeadingElement>(null);
   // Le focus suit la commune choisie (la liste qui avait le focus a disparu).
   useEffect(() => titre.current?.focus(), [c.code]);
   return (
-    <section aria-labelledby="titre-fiche" className="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
+    <section aria-labelledby="titre-fiche" className="flex flex-col items-start gap-2 p-4 max-bureau:pb-2 bureau:min-h-0 bureau:overflow-y-auto bureau:rounded-panel bureau:border bureau:border-border bureau:bg-card bureau:shadow-panneau">
       <Button variant="lien" onClick={onRetour}>
         ← Les 10 premières
       </Button>
@@ -116,6 +121,8 @@ export function Fiche({ evaluation: e, total, prix, proches, index, emploi, meti
           </ul>
         </div>
       )}
+      {/* Services, R54 : sous le chômage et, quand il existe, sous « Tes proches ». */}
+      <FicheServices commune={c} temps={temps} onReessayer={onReessayerServices} />
     </section>
   );
 }

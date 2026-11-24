@@ -9,6 +9,8 @@ import { cn } from '@/lib/cn';
 // Tranche mairies (R43, H118) : la source des résultats et celle des blocs, posées avec la ligne « Mairie » de la fiche.
 // Tranche emploi (R49, H143 amendée) : France Travail (projets et bassins, date de la table) et Insee (chômage), posées avec
 // les lignes de la fiche ; le trimestre du chômage vient d'emploi.json, jamais écrit ici.
+// Tranche services (R56, H164, H172) : l'Insee (temps d'accès) et les gares grandes lignes (SNCF, openrouteservice), posées
+// avec le bloc « Services en voiture » de la fiche.
 // Logos Shom et IGN : leurs conditions d'usage n'ont pas été trouvées en ligne ; à la place, leur nom encadré
 // et un lien vers leur site (repli du plan, tâche 5b), en attendant la réponse de Vincent.
 const lien = 'underline-offset-2 hover:text-foreground hover:underline';
@@ -37,7 +39,9 @@ export function Mentions({ className, trimestre }: { className?: string; trimest
       blocs politiques : circulaire du 2 février 2026, sauf l'extrême gauche (dont La France insoumise), rangée à gauche ·
       Projets de recrutement et bassins d'emploi : France Travail, enquête Besoins en main-d'œuvre 2026 (table des bassins
       mise à jour le 17/04/2026) · Chômage : Insee, taux de chômage localisés par zone d'emploi
-      {trimestre && `, ${insecable(trimestre)}`}
+      {trimestre && `, ${insecable(trimestre)}`} · Temps d'accès aux services : Insee, base permanente des équipements,
+      distancier Metric-OSRM, © les contributeurs d'OpenStreetMap et du projet OSRM (équipements 2025) · Gares grandes lignes :
+      horaires SNCF (licence ODbL), temps depuis la mairie calculés avec openrouteservice, © OpenStreetMap contributors
     </footer>
   );
 }

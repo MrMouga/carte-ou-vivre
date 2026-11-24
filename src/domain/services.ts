@@ -60,6 +60,65 @@ export function lireServices(json: ServicesJson): Services {
   return { temps, iles: new Set(json.iles_sans_pont) };
 }
 
+// ——— Tâche 1 : la valeur d'un service pour une commune (R54), jointe par code INSEE ———
+
+/** État du fichier des temps dans la page (R57) : chargé à part, après la carte. */
+export type EtatServices = { etat: 'chargement' } | { etat: 'erreur' } | { etat: 'pret'; services: Services };
+
+const NBSP = ' ';
+const DEP_CORSE = new Set(['2A', '2B']);
+/** Les trois gares (« aucune sur l'île ») ; les deux dernières (« aucune en Corse ») (R54, D7). */
+const GARES: readonly ServiceCle[] = ['gare', 'gare_regionale', 'gare_grandes_lignes'];
+const GARES_CORSE: readonly ServiceCle[] = ['gare_regionale', 'gare_grandes_lignes'];
+
+/** Valeur d'un service pour une commune : île sans pont, Corse, temps arrondi (61 = « 61 min ou plus ») ou pas de chiffre. */
+export type ValeurService = { cas: 'ile' } | { cas: 'corse' } | { cas: 'temps'; minutes: number } | { cas: 'sans-chiffre' };
+
+/** Les 10 temps d'une commune, trouvés par son code INSEE ; une commune absente du fichier n'a aucun chiffre. */
+function tempsDe(s: Services, code: string): (number | null)[] {
+  return s.temps.get(code) ?? SERVICES.map(() => null);
+}
+
+/**
+ * R54 : la valeur d'un service pour une commune, dans cet ordre : « aucune sur l'île » (les trois gares d'une île sans
+ * pont), « aucune en Corse » (gares régionale et grandes lignes, département 2A ou 2B de communes.json), le temps lu
+ * tel quel (déjà arrondi, H156), « pas de chiffre ».
+ */
+export function valeurService(s: Services, c: { code: string; dep: string }, cle: ServiceCle): ValeurService {
+  if (s.iles.has(c.code) && GARES.includes(cle)) return { cas: 'ile' };
+  if (DEP_CORSE.has(c.dep) && GARES_CORSE.includes(cle)) return { cas: 'corse' };
+  const m = tempsDe(s, c.code)[SERVICES.findIndex((x) => x.cle === cle)];
+  return m == null ? { cas: 'sans-chiffre' } : { cas: 'temps', minutes: m };
+}
+
+/** Texte de la valeur (R54) : « 4 min » jusqu'à 60 min, « plus d'une heure » au-delà. */
+export function texteValeur(v: ValeurService): string {
+  if (v.cas === 'ile') return "aucune sur l'île";
+  if (v.cas === 'corse') return 'aucune en Corse';
+  if (v.cas === 'sans-chiffre') return 'pas de chiffre';
+  return v.minutes > 60 ? "plus d'une heure" : `${v.minutes}${NBSP}min`;
+}
+
+/** Les 10 lignes de la fiche, dans l'ordre de R54 : libellé et texte de la valeur. */
+export function lignesServices(s: Services, c: { code: string; dep: string }) {
+  return SERVICES.map(({ cle, libelle }) => ({ cle, libelle, valeur: texteValeur(valeurService(s, c, cle)) }));
+}
+
+/** R54 : la phrase de la traversée, pour une île sans pont qui a au moins un temps parmi les sept premiers services. */
+export function phraseTraversee(s: Services, c: { code: string }): boolean {
+  if (!s.iles.has(c.code)) return false;
+  // Les sept premiers de SERVICES : médecin à supérieur.
+  return tempsDe(s, c.code).slice(0, 7).some((m) => m != null);
+}
+
+/** H159 : phrase des limites, toujours affichée ; insécables avant « : » et dans « 100 000 ». */
+export const LIMITES_SERVICES =
+  "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Crèches financées par la CAF. " +
+  `Supérieur${NBSP}: universités et grandes écoles, antennes comprises. Gare régionale${NBSP}: 100${NBSP}000 voyageurs par an ou plus. ` +
+  `Gare grandes lignes${NBSP}: gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.`;
+/** H159 : phrase de la traversée. */
+export const TRAVERSEE = `Île sans pont${NBSP}: un temps peut compter la traversée, sans l'attente du bateau.`;
+
 /** Écrit `services.json` depuis des temps arrondis (au-delà de 61 min : « 61 ou plus »), dans l'ordre des lignes. */
 export function ecrireServices(lignes: { code: string; temps: TempsServices; ile_sans_pont?: boolean }[]): ServicesJson {
   const caractere = (m: number | null, code: string) => {

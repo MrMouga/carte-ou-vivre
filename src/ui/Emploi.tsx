@@ -144,7 +144,8 @@ function ChampMetier({ libelle, catalogue, exclus, onChoix, onEchap, disabled, f
     if (!enBureau()) return;
     const panneau = o.closest('section');
     const bas = panneau?.querySelector('[role="status"]')?.getBoundingClientRect().top;
-    if (bas != null && o.getBoundingClientRect().bottom > bas) panneau!.scrollBy({ top: o.getBoundingClientRect().bottom - bas });
+    // Arrondi au pixel supérieur : un panneau de hauteur fractionnaire défilerait d'une fraction en moins (tâche 1 de services).
+    if (bas != null && o.getBoundingClientRect().bottom > bas) panneau!.scrollBy({ top: Math.ceil(o.getBoundingClientRect().bottom - bas) });
   };
   return (
     <div ref={bloc} onFocus={entrer} onBlur={sortir} className="flex flex-col gap-1 max-bureau:scroll-mt-1">

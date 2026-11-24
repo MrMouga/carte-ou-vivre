@@ -22,6 +22,7 @@ import { Proches } from './ui/Proches';
 import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
+import { lireServices, type EtatServices, type ServicesJson } from './domain/services';
 
 type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi };
 const REPRISE_ADRESSE_MS = 1000;
@@ -112,6 +113,24 @@ export function App() {
       annule = true;
     };
   }, [essai]);
+  // Temps des services (R57, D14) : sans `services` dans l'adresse, demandés quand la carte est prête, avec le délai des
+  // autres données ; leur état est à part (la carte et la liste n'attendent pas) et « Réessayer » ne relance qu'eux.
+  // Chargés une fois : un rechargement de la page (« Réessayer » de la carte) garde des temps déjà arrivés.
+  const [temps, setTemps] = useState<EtatServices>({ etat: 'chargement' });
+  const [essaiServices, setEssaiServices] = useState(0);
+  const tempsPrets = temps.etat === 'pret';
+  useEffect(() => {
+    if (!prete || tempsPrets) return;
+    let annule = false;
+    setTemps({ etat: 'chargement' });
+    avecDelai(lire<ServicesJson>('/data/services.json').then(lireServices), DELAI_DONNEES_MS).then(
+      (services) => !annule && setTemps({ etat: 'pret', services }),
+      () => !annule && setTemps({ etat: 'erreur' }),
+    );
+    return () => {
+      annule = true;
+    };
+  }, [prete, tempsPrets, essaiServices]);
   const [indicateurVisible, setIndicateurVisible] = useState(false);
   const ind = useMemo(() => indicateur(setIndicateurVisible), []);
   useEffect(() => (prete || erreur ? ind.fin() : ind.debut()), [ind, prete, erreur]);
@@ -246,6 +265,8 @@ export function App() {
         index={indexChoisie!}
         emploi={donnees!.emploi}
         metiers={reglages.metiers}
+        temps={temps}
+        onReessayerServices={() => setEssaiServices((n) => n + 1)}
         onRetour={retourListe}
       />
     ) : null;
@@ -286,7 +307,8 @@ export function App() {
               </p>,
             )}
           </div>
-          {resultat && <div className="absolute right-4 top-4 w-liste">{fiche ?? liste}</div>}
+          {/* De haut en bas de l'écran sans bloquer la carte ; une fiche plus haute que l'écran y défile (bloc des services). */}
+          {resultat && <div className="pointer-events-none absolute right-4 top-4 bottom-4 flex w-liste flex-col *:pointer-events-auto">{fiche ?? liste}</div>}
         </div>
       ) : (
         <FeuilleMobile
