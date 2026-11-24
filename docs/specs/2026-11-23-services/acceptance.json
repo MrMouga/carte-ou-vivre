@@ -101,7 +101,7 @@
       "given": "L'extrait_carreaux de la fixture",
       "when": "on calcule le temps de chaque commune de l'extrait",
       "then": "commune X, commerce alimentaire : plus petit temps par carreau 2, 4, 12, 30 (c5, population 0, ignoré), moitié de 65 habitants atteinte à 4 → 4 min ; commune Y, médecin : égalité exacte à 50 sur 100 → 2 min ; commune Z, médecin : z3 sans temps ne compte pas, moitié de 20 habitants atteinte à 3 → 3 min ; commune V, médecin : k1 compte pour sa part de 10 habitants, moitié de 30 atteinte à 9 → 9 min ; commune W, lycée : plus petit temps par carreau 8 et 9, moitié de 40 habitants atteinte à 9 → 9 min ; arrondis : 0,4 → 1 min, 4,49 → 4 min, 4,5 → 5 min ; ville à arrondissements : les trois ensemble, moitié de 120 habitants atteinte à 3 → 3 min",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -165,7 +165,7 @@
       "given": "Le fichier des temps servi par le site, sur les vraies données",
       "when": "on lit ses lignes par code INSEE",
       "then": "il a une ligne pour chacune des 34 746 communes de la carte ; dans l'ordre médecin, commerce, crèche, école, collège, lycée, supérieur, gare, gare régionale, gare grandes lignes : Auch (32013) : 2, 2, 3, 2, 3, 3, 4, 4, 4, au-delà de 60 ; Bordeaux (33063) : 1, 1, 1, 1, 2, 2, 3, 5, 7, 7 ; Mende (48095) : supérieur 2, gare 3, gare régionale au-delà de 60, gare grandes lignes au-delà de 60 ; Les Sables-d'Olonne (85194) : gare grandes lignes 4 ; L'Île-d'Yeu (85113) : médecin, lycée, supérieur et les trois gares sans chiffre, commerce 3 ; les 6 communes de population 0 (55039, 55050, 55139, 55189, 55239, 55307) n'ont aucun temps",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",
@@ -189,7 +189,7 @@
       "given": "L'extrait temps_grandes_lignes de la fixture",
       "when": "on calcule le temps « Gare grandes lignes » de chaque commune de l'extrait",
       "then": "g1 : 3,46 depuis la mairie est plus court que 82 vers la nationale → 3 min ; g2 : 5,4 vers la nationale est plus court → 5 min ; g3 : sans nationale, 14,5 → 15 min ; g4 : aucun trajet depuis la mairie, 70,2 vers la nationale → 70 min, affiché « plus d'une heure » ; g5 : aucun temps → pas de chiffre ; g6 : population 0 → pas de chiffre, malgré ses temps",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-17",
