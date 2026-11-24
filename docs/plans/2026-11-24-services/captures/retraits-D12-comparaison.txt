@@ -1,0 +1,9 @@
+communes.json : 06163 = Tende (06)
+communes.json : 29238 = Roscanvel (29)
+codes : 34746 avant, 34746 après, même ordre : true
+îles sans pont identiques : true
+valeurs comparées : 347460 ; différences : 4
+  06163 Tende (06) · commerce : 61 → pas de chiffre
+  06163 Tende (06) · college : 61 → pas de chiffre
+  29238 Roscanvel (29) · creche : 61 → pas de chiffre
+  29238 Roscanvel (29) · college : 61 → pas de chiffre
