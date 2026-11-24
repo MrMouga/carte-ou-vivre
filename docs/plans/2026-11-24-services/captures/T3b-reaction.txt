@@ -1,0 +1,27 @@
+24/11/2026 15:38:24 ; version servie ffa5f406f336a82d7395ede2641118db7f72e91c ; 15 essais par sens ; 2 tours
+-- tour 1, début 15:38:24, charge 4.56 5.24 5.91
+tour 1, curseur du prix, un cran (témoin) : médiane 161 ms ; min 159 max 191 ; essais 191 176 178 176 160 160 176 160 159 160 161 176 160 161 161
+tour 1, « 5 min » pour « Médecin » : sans « 34 674 communes passent tes critères » ; avec « 14 170 communes passent tes critères » (?loyer=1200&services=medecin:5)
+tour 1, « 5 min » pour « Médecin » cochée : médiane 192 ms ; min 162 max 225 ; essais 211 192 175 162 179 177 210 176 225 195 193 193 176 176 193
+tour 1, « 5 min » pour « Médecin » décochée : médiane 227 ms ; min 224 max 243 ; essais 225 243 226 224 227 227 241 228 226 226 228 228 226 227 226
+tour 1, « 10 min » pour « Gare » en « Grandes lignes » : sans « 34 674 communes passent tes critères » ; avec « 1 007 communes passent tes critères » (?loyer=1200&services=gare-grandes-lignes:10)
+tour 1, « 10 min » pour « Gare » en « Grandes lignes » cochée : médiane 194 ms ; min 192 max 226 ; essais 226 194 192 192 194 193 225 195 210 192 192 209 209 193 192
+tour 1, « 10 min » pour « Gare » en « Grandes lignes » décochée : médiane 277 ms ; min 273 max 293 ; essais 278 276 276 277 276 277 273 293 277 278 277 275 293 276 274
+tour 1, « Ville dense », plus grand écart en ligne : sans « 34 674 communes passent tes critères » ; avec « 643 communes passent tes critères » (?loyer=1200&env=ville-dense)
+tour 1, « Ville dense », plus grand écart en ligne cochée : médiane 194 ms ; min 192 max 223 ; essais 223 193 193 194 193 192 195 193 193 194 192 201 211 195 194
+tour 1, « Ville dense », plus grand écart en ligne décochée : médiane 277 ms ; min 276 max 293 ; essais 277 277 276 277 277 277 277 277 276 293 282 293 276 277 276
+tour 1, cases de la mer 50 ↔ 100 km (H90) : médiane 159 ms ; min 142 max 202 ; essais 202 157 175 143 172 144 159 175 161 142 158 143 159 144 174
+-- tour 1, fin 15:40:04, charge 4.30 4.85 5.68
+-- tour 2, début 15:40:04, charge 4.30 4.85 5.68
+tour 2, curseur du prix, un cran (témoin) : médiane 162 ms ; min 158 max 177 ; essais 171 176 177 177 161 160 158 162 177 177 161 177 160 161 161
+tour 2, « 5 min » pour « Médecin » : sans « 34 674 communes passent tes critères » ; avec « 14 170 communes passent tes critères » (?loyer=1200&services=medecin:5)
+tour 2, « 5 min » pour « Médecin » cochée : médiane 177 ms ; min 176 max 194 ; essais 194 177 178 176 177 177 178 177 176 177 177 176 177 177 176
+tour 2, « 5 min » pour « Médecin » décochée : médiane 227 ms ; min 225 max 276 ; essais 227 225 276 227 227 228 225 226 226 228 227 228 226 226 226
+tour 2, « 10 min » pour « Gare » en « Grandes lignes » : sans « 34 674 communes passent tes critères » ; avec « 1 007 communes passent tes critères » (?loyer=1200&services=gare-grandes-lignes:10)
+tour 2, « 10 min » pour « Gare » en « Grandes lignes » cochée : médiane 195 ms ; min 193 max 225 ; essais 213 193 195 208 225 207 209 195 194 195 193 210 194 194 194
+tour 2, « 10 min » pour « Gare » en « Grandes lignes » décochée : médiane 277 ms ; min 276 max 326 ; essais 277 278 277 326 277 279 278 277 276 277 290 276 278 277 292
+tour 2, « Ville dense », plus grand écart en ligne : sans « 34 674 communes passent tes critères » ; avec « 643 communes passent tes critères » (?loyer=1200&env=ville-dense)
+tour 2, « Ville dense », plus grand écart en ligne cochée : médiane 194 ms ; min 176 max 258 ; essais 258 194 207 179 195 193 194 193 194 177 193 195 208 176 209
+tour 2, « Ville dense », plus grand écart en ligne décochée : médiane 276 ms ; min 268 max 293 ; essais 274 293 275 277 277 277 276 278 277 276 276 268 275 276 277
+tour 2, cases de la mer 50 ↔ 100 km (H90) : médiane 159 ms ; min 140 max 179 ; essais 179 140 161 143 159 143 160 143 176 141 160 143 160 143 160
+-- tour 2, fin 15:41:44, charge 3.54 4.49 5.45

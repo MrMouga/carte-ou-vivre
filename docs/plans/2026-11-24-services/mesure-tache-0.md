@@ -1,5 +1,5 @@
 # Mesures de la tâche 0 — services
-2026-11-24 · Part 0a (sources figées, extrait des carreaux, gares recalculées) par le builder de la tâche 0a ; part 0b (temps des communes, comptes, poids) par le builder de la tâche 0b, [plus bas](#part-0b--les-temps-de-chaque-commune-servis).
+2026-11-24 · Part 0a (sources figées, extrait des carreaux, gares recalculées) par le builder de la tâche 0a ; part 0b (temps des communes, comptes, poids) par le builder de la tâche 0b, [plus bas](#part-0b--les-temps-de-chaque-commune-servis) ; réaction de la carte (H163) par le builder de la tâche 3b, [en fin de fichier](#tâche-3b--réaction-de-la-carte-quand-on-coche-un-service-h163).
 
 ## Part 0a — sources retenues
 
@@ -237,3 +237,32 @@ Les Sables-d'Olonne (85194) : Médecin 2 min · Commerce alimentaire 2 min · Cr
 L'Île-d'Yeu (85113) [île sans pont] : Médecin pas de chiffre · Commerce alimentaire 3 min · Crèche 3 min · École 3 min · Collège 3 min · Lycée pas de chiffre · Supérieur pas de chiffre · Gare pas de chiffre · Gare régionale pas de chiffre · Gare grandes lignes pas de chiffre
 ```
 (Le texte « plus d'une heure » de la sonde n'est pas celui de la page : la fiche est la tâche 1. Pour L'Île-d'Yeu, la fiche dira « aucune sur l'île » pour les trois gares, R54.)
+
+## Tâche 3b — réaction de la carte quand on coche un service (H163)
+Mesurée avant de brancher « Scolarité », sur les gestes déjà construits en 3a. Script d'emploi (tâche 3b d'emploi) recopié sans changement de méthode, gestes de services ajoutés : `captures/T3b-mesure-reaction.mjs` ; sortie : [`captures/T3b-reaction.txt`](captures/T3b-reaction.txt). `npx vite preview --port 4180`, version construite ffa5f40 (fin de 3a), vraies données, 1 440 × 900, fond uni, **processeur ralenti 4 fois** (protocole DevTools), rendu logiciel ; du `keydown` (capture) à la deuxième image qui suit le changement de l'adresse ; 15 essais par sens, médiane ; 2 tours ; le témoin, « Ville dense » et la mer remesurés dans le même tour. 2026-11-24 15:38-15:41, charge 4,56 au début, 3,54 à la fin.
+
+| Geste (version ffa5f40) | Communes décolorées | Tour 1 | Tour 2 | Écart au témoin |
+|---|---:|---|---|---|
+| Témoin : curseur du prix, un cran | — | 161 ms | 162 ms | — |
+| Cases de la mer 50 ↔ 100 km (H90) | — | 159 ms | 159 ms | − 2 à − 3 ms |
+| « 5 min » pour « Médecin » cochée | 20 504 (34 674 → 14 170) | 192 ms | 177 ms | + 15 à + 31 ms |
+| « 5 min » pour « Médecin » décochée | 20 504 recolorées | 227 ms | 227 ms | + 65 à + 66 ms |
+| « 10 min » pour « Gare » en « Grandes lignes » cochée | 33 667 (34 674 → 1 007) | 194 ms | 195 ms | + 33 ms |
+| « 10 min » pour « Gare » en « Grandes lignes » décochée | 33 667 recolorées | 277 ms | 277 ms | **+ 115 à + 116 ms** |
+| « Ville dense » cochée (en ligne, référence de H163) | 34 031 (34 674 → 643) | 194 ms | 194 ms | + 32 à + 33 ms |
+| « Ville dense » décochée (en ligne, référence de H163) | 34 031 recolorées | 277 ms | 276 ms | **+ 114 à + 116 ms** |
+
+À côté, les mesures des tranches d'avant (même méthode, médianes, témoin à 160-162 ms) :
+
+| Tranche, tâche | Geste | Écart au témoin |
+|---|---|---|
+| Mairies, T0 (2026-10-18) | « Ville dense » cochée / décochée | + 17 / + 100 ms |
+| Mairies, T2 (2026-10-18, vrai filtre) | « Centre » cochée / décochée (3 passages) | + 32 à + 33 / **+ 116 à + 131 ms** |
+| Mairies, T2 | « Ville dense » décochée (3 passages) | + 116 à + 131 ms |
+| Emploi, T0b (2026-11-21) | « Ville dense » cochée / décochée | + 18 à + 30 / + 101 à + 115 ms |
+| Emploi, T3b (2026-11-21, vrai filtre) | « 10 % » des infirmiers cochée / décochée (28 458 communes) | + 16 à + 17 / + 83 ms |
+| Emploi, T3b | « Ville dense » cochée / décochée | + 16 à + 19 / + 101 à + 113 ms |
+
+**Lecture.** Le cas du plan (« 5 min » pour « Médecin », environ 20 000 communes) reste loin de la limite : + 31 ms au plus pour décolorer, + 66 ms pour recolorer. Le cas de la gare en « Grandes lignes » décolore presque toute la carte (33 667 communes, presque autant que « Ville dense ») et coûte **exactement ce que coûte « Ville dense » dans le même tour** (277 contre 277 ms, puis 277 contre 276 ms) : + 116 ms au tour 1 et + 115 ms au tour 2, quand la référence de H163 mesure + 116 et + 114 ms. L'écart d'1 ms à la limite tient au témoin (161 ou 162 ms) et reste sous la durée d'une image (16,7 ms) ; « Centre » décochée, en ligne depuis mairies, a mesuré jusqu'à + 131 ms. Le coût dépend du nombre de communes recolorées, pas du filtre : recolorer toute la carte coûte environ 7 images de plus que le témoin, quel que soit le réglage. Une scolarité active (un niveau à 5 min) décolorera moins que la gare en « Grandes lignes ». Lu comme **égal à la limite, pas au-delà** (décision du builder de 3b, écrite dans son rapport) : la scolarité est branchée.
+
+Ce que la mesure ne couvre pas : un vrai téléphone (le ralentissement × 4 en tient lieu, comme dans les tranches d'avant) ; le fond Plan IGN (fond uni, comme toutes les mesures de réaction) ; une scolarité cochée (mesurée sur les gestes de 3a, avant le branchement, comme le plan le demande).
