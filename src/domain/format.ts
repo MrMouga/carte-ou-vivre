@@ -1,5 +1,5 @@
 import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
-import { libelleService, texteValeur } from './services';
+import { estGare, estScolarite, filtresServices, libelleService, texteValeur } from './services';
 import { couverture, marque } from '../proches/etat';
 import { RAYON_KM, type LigneMetier } from './emploi';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
@@ -153,6 +153,16 @@ export const resumeVieLocale = (r: Reglages) => (r.mairies?.length ? `${r.mairie
 export const resumeEmploi = (r: Reglages) => {
   const n = r.metiers?.length ?? 0;
   return n ? `${n}${NBSP}métier${n > 1 ? 's' : ''}` : 'Peu importe';
+};
+
+/**
+ * Résumé de la catégorie « Services » repliée (H154) : « Peu importe », sinon « 1 choix », « 2 choix »… Compté sur les
+ * filtres effectifs (`filtresServices`) : une ligne qui filtre compte pour un, quel que soit son nombre de niveaux ; une
+ * scolarité incomplète ou un type de gare sans temps ne comptent pas.
+ */
+export const resumeServices = (r: Reglages) => {
+  const lignes = new Set(filtresServices(r.services).map((f) => (estScolarite(f.cle) ? 'scolarite' : estGare(f.cle) ? 'gare' : f.cle)));
+  return lignes.size ? `${lignes.size}${NBSP}choix` : 'Peu importe';
 };
 
 export const loyerTexte = (m2: number | null) =>

@@ -22,7 +22,7 @@ import {
 } from './services';
 import { evaluer, REGLAGES_DEPART, type Commune, type ProchePret } from './score';
 import { ecrireAdresse, lireAdresse, lirePrix } from './url';
-import { raisonTexte } from './format';
+import { raisonTexte, resumeServices } from './format';
 
 // Tranche services, tâche 1 : la valeur d'un service dans la fiche (R54), jointe par code INSEE. La fixture « 6 communes »
 // est servie comme dans tests/e2e/lib/carte.ts : temps et drapeau d'île de la fixture de services, département et
@@ -300,5 +300,21 @@ describe('filtre des services (R53)', () => {
     expect([...r.parCode.values()].every((e) => e.score == null)).toBe(true);
     const sans = evaluer(communes(SIX), { loyer: null, mer: null, tailles: [], services: { ...SERVICES_DEPART, medecin: 5 } });
     expect([...sans.parCode.values()].every((e) => e.passe)).toBe(true);
+  });
+});
+
+describe('H154 : résumé de « Services » repliée', () => {
+  const avec = (s: Partial<ReglageServices>) => resumeServices({ ...REGLAGES_DEPART, services: { ...SERVICES_DEPART, ...s } });
+  it('« Peu importe » sans filtre (champ absent, type de gare sans temps, scolarité incomplète)', () => {
+    expect(resumeServices(REGLAGES_DEPART)).toBe('Peu importe');
+    expect(avec({ gare: 'gare_regionale' })).toBe('Peu importe');
+    expect(avec({ niveaux: ['ecole'] })).toBe('Peu importe');
+    expect(avec({ scolarite: 10 })).toBe('Peu importe');
+  });
+  it('une ligne qui filtre compte pour un, quel que soit son nombre de niveaux ; espace insécable', () => {
+    expect(texte(avec({ medecin: 10 }))).toBe('1 choix');
+    expect(avec({ medecin: 10 })).toBe('1 choix');
+    expect(texte(avec({ niveaux: ['ecole', 'college', 'lycee'], scolarite: 10 }))).toBe('1 choix');
+    expect(texte(avec({ medecin: 5, commerce: 5, niveaux: ['creche'], scolarite: 5, gare: 'gare_grandes_lignes', tempsGare: 30 }))).toBe('4 choix');
   });
 });

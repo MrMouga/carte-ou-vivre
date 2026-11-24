@@ -1,0 +1,7 @@
+15:09:00 bureau depart /?loyer=1200
+15:09:09 390 depart /?loyer=1200
+15:09:21 bureau exemple /?loyer=1200&services=medecin:10,commerce:5,ecole:10,college:10,gare-regionale:30
+15:09:33 390 exemple /?loyer=1200&services=medecin:10,commerce:5,ecole:10,college:10,gare-regionale:30
+15:09:44 après « 10 min » pour Médecin : /?loyer=1200&services=medecin:10 · 27 895 communes passent tes critères
+15:09:45 après « Régionale » (sans temps) : /?loyer=1200&services=medecin:10 · 27 895 communes passent tes critères
+15:09:47 après « 30 min » pour Gare : /?loyer=1200&services=medecin:10,gare-regionale:30 · 21 952 communes passent tes critères

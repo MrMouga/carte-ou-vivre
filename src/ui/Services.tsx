@@ -1,0 +1,150 @@
+import { useId } from 'react';
+import { resumeServices } from '@/domain/format';
+import type { Reglages } from '@/domain/score';
+import { cransService, NIVEAUX_SCOLARITE, SERVICES_DEPART, servicesVides, type ReglageServices, type TypeGare } from '@/domain/services';
+import { cn } from '@/lib/cn';
+import { Categorie } from './Categorie';
+
+// Catégorie « Services » (spec services, R51, H151 à H154, H167, H169 ; design F : docs/design/services/decisions.md,
+// prototype `PisteA` du commit 2f300ae). La dernière catégorie, après « Tes proches », ouverte au départ. « Médecin » et
+// « Commerce alimentaire » : libellé à gauche, Cases collées à droite ; « Scolarité » : Cases séparées des niveaux, puis le
+// temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare « Scolarité » et « Gare ».
+// Tâche 3a : « Scolarité » est affichée, inactive (branchée en 3b) ; elle montre ce que l'adresse a coché (R55).
+
+type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
+
+/** Une case : libellé entier, centré (contrat « Cases collées », « Cases séparées »). */
+const CASE =
+  'flex min-h-toucher cursor-pointer items-center justify-center p-1 text-center text-pastille text-foreground tabular-nums disabled:cursor-default disabled:opacity-50';
+
+const NIVEAUX: { cle: (typeof NIVEAUX_SCOLARITE)[number]; libelle: string }[] = [
+  { cle: 'creche', libelle: 'Crèche' },
+  { cle: 'ecole', libelle: 'École' },
+  { cle: 'college', libelle: 'Collège' },
+  { cle: 'lycee', libelle: 'Lycée' },
+  { cle: 'superieur', libelle: 'Supérieur' },
+];
+const TYPES_GARE: { cle: TypeGare; libelle: string }[] = [
+  { cle: 'gare', libelle: 'Toutes' },
+  { cle: 'gare_regionale', libelle: 'Régionale' },
+  { cle: 'gare_grandes_lignes', libelle: 'Grandes lignes' },
+];
+
+/** Le champ `services` des réglages : absent quand rien n'est coché et que le type de gare est « Toutes » (plan, « Le réglage »). */
+function avecServices(r: Reglages, s: ReglageServices): Reglages {
+  const { services: _, ...reste } = r;
+  return servicesVides(s) ? reste : { ...reste, services: s };
+}
+
+/**
+ * Cases collées (contrat du système) : boutons à bascule exclusifs, comme les distances de la mer (H153, D12 de
+ * cadre-de-vie) ; cocher une case décoche l'autre, toucher la case cochée la décoche (`null` = peu importe). Le groupe est
+ * nommé par sa ligne (`nomId`, ou `nom`).
+ */
+function Temps({ crans, valeur, onChange, disabled, nomId, nom, className }: {
+  crans: readonly number[];
+  valeur: number | null;
+  onChange: (v: number | null) => void;
+  disabled: boolean;
+  nomId?: string;
+  nom?: string;
+  className?: string;
+}) {
+  return (
+    // Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus.
+    <div role="group" aria-labelledby={nomId} aria-label={nom} className={cn('grid grid-cols-3 gap-px rounded-chip border border-border bg-border', className)}>
+      {crans.map((m) => {
+        const cochee = valeur === m;
+        return (
+          <button
+            key={m}
+            type="button"
+            aria-pressed={cochee}
+            disabled={disabled}
+            onClick={() => onChange(cochee ? null : m)}
+            className={cn(CASE, 'bg-card first:rounded-l-chip last:rounded-r-chip aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
+          >
+            {m}&nbsp;min
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** « Médecin », « Commerce alimentaire » : libellé à gauche, temps à droite, sur une ligne (piste A). */
+function Ligne({ libelle, valeur, onChange, disabled }: { libelle: string; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
+  const id = useId();
+  return (
+    <div className="grid grid-cols-5 items-center gap-2">
+      <span id={id} className="col-span-2 text-pastille text-foreground">
+        {libelle}
+      </span>
+      <Temps crans={cransService('medecin')} valeur={valeur} onChange={onChange} disabled={disabled} nomId={id} className="col-span-3" />
+    </div>
+  );
+}
+
+/** Titre visible au-dessus des temps de « Scolarité » et de « Gare » (H169). */
+const TitreTemps = () => <span className="text-secondaire text-muted-foreground">Temps de trajet maximal</span>;
+
+export function Services({ reglages, onChange, disabled = false }: Props) {
+  const s = reglages.services ?? SERVICES_DEPART;
+  const regler = (x: Partial<ReglageServices>) => onChange(avecServices(reglages, { ...s, ...x }));
+  return (
+    <Categorie titre="Services" resume={resumeServices(reglages)}>
+      <div className="flex flex-col gap-2">
+        <Ligne libelle="Médecin" valeur={s.medecin} onChange={(medecin) => regler({ medecin })} disabled={disabled} />
+        <Ligne libelle="Commerce alimentaire" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
+        <div className="flex flex-col gap-2 border-t border-border pt-2">
+          <span className="text-pastille text-foreground">Scolarité</span>
+          {/* Tâche 3a : affichée et inactive, elle sera branchée en 3b (H163 mesurée d'abord). Les cases montrent ce que
+              l'adresse a coché (R55), qui filtre déjà. Pas de titre visible « Niveaux de scolarité » (design F, H169). */}
+          <div role="group" aria-label="Niveaux de scolarité" className="flex flex-wrap gap-2">
+            {NIVEAUX.map((n) => (
+              <button
+                key={n.cle}
+                type="button"
+                aria-pressed={s.niveaux.includes(n.cle)}
+                disabled
+                className={cn(CASE, 'flex-auto rounded-chip border border-border bg-card aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
+              >
+                {n.libelle}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-col gap-1">
+            <TitreTemps />
+            <Temps crans={cransService('ecole')} valeur={s.scolarite} onChange={() => {}} disabled nom="Scolarité" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 border-t border-border pt-2">
+          <span className="text-pastille text-foreground">Gare</span>
+          {/* Choix souligné à trois valeurs (contrat) : un seul type, toujours un ; changer de type garde le temps coché.
+              Pas de titre visible « Type de gare » (design F, H169) ; le groupe garde son nom (H153). */}
+          <div role="group" aria-label="Type de gare" className="grid grid-cols-3 border-b border-border">
+            {TYPES_GARE.map((t) => (
+              <button
+                key={t.cle}
+                type="button"
+                aria-pressed={s.gare === t.cle}
+                disabled={disabled}
+                onClick={() => regler({ gare: t.cle })}
+                className={cn(
+                  '-mb-px flex min-h-cible cursor-pointer items-center justify-center border-b-2 text-texte-fort disabled:cursor-default disabled:opacity-50 max-bureau:min-h-toucher',
+                  s.gare === t.cle ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground',
+                )}
+              >
+                {t.libelle}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-col gap-1">
+            <TitreTemps />
+            <Temps crans={cransService('gare')} valeur={s.tempsGare} onChange={(tempsGare) => regler({ tempsGare })} disabled={disabled} nom="Gare" />
+          </div>
+        </div>
+      </div>
+    </Categorie>
+  );
+}

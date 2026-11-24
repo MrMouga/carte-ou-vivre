@@ -19,6 +19,7 @@ import { Mentions } from './ui/Mentions';
 import { cn } from './lib/cn';
 import { useProches } from './proches/useProches';
 import { Proches } from './ui/Proches';
+import { Services as CategorieServices } from './ui/Services';
 import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
@@ -262,6 +263,8 @@ export function App() {
         onAjout={setAjoutProche}
         monte={ajoutProche}
       />
+      {/* H151 : la dernière catégorie, après « Tes proches » ; inactive tant que les temps ne sont pas arrivés (R57). */}
+      <CategorieServices reglages={reglages} onChange={setReglages} disabled={!prete || temps.etat !== 'pret'} />
       {pied}
     </Settings>
   );
