@@ -1,0 +1,5 @@
+Sortie de T3b-captures.mjs, 2026-11-24, `npx vite preview --port 4180` (version construite du code de la tâche 3b, avant son commit ; version.txt = ced0416, le commit de la mesure), vraies données.
+15:46:06 au départ · /?loyer=1200 · 34 674 communes passent tes critères · Niveaux de scolarité → (aucune description) ; Scolarité → (aucune description)
+15:46:07 après « École » et « Collège » (incomplète) · /?loyer=1200 · 34 674 communes passent tes critères · Niveaux de scolarité → Coche au moins un niveau et un temps. ; Scolarité → Coche au moins un niveau et un temps.
+15:46:11 après « 10 min » (active) · /?loyer=1200&services=ecole:10,college:10 · 20 024 communes passent tes critères · Niveaux de scolarité → (aucune description) ; Scolarité → (aucune description)
+15:46:48 bureau, lien rouvert · /?loyer=1200&services=ecole:10,college:10 · 20 024 communes passent tes critères · Niveaux de scolarité → (aucune description) ; Scolarité → (aucune description)

@@ -480,3 +480,112 @@ test('H154 : repliée, « Services » résume « Peu importe », puis « 1 choix
   await titre.click();
   expect(nbsp(await titre.textContent())).toBe('ServicesPeu importe');
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 3b : « Scolarité » branchée (R51, R53, H153, H154, H167) ; états vide, incomplète, active (details.md).
+
+/** Une case des niveaux de scolarité (groupe « Niveaux de scolarité », H153). */
+const niveau = (page: Page, nom: string) =>
+  reglagesZone(page).getByRole('group', { name: 'Niveaux de scolarité', exact: true }).getByRole('button', { name: nom, exact: true });
+const INCOMPLET = 'Coche au moins un niveau et un temps.';
+const phraseIncomplet = (page: Page) => reglagesZone(page).getByText(INCOMPLET, { exact: true });
+/** Les temps cochés d'une ligne. */
+const tempsCoches = async (page: Page, ligne: string) =>
+  (await reglagesZone(page).getByRole('group', { name: ligne, exact: true }).getByRole('button', { pressed: true }).allTextContents()).map(nbsp);
+
+test('AC-4 /?loyer=1200&services=medecin:10 : « 15 min » seule cochée, puis décochée ; « Crèche », « École » et « 5 min » : repliée « 1 choix », creche:5,ecole:5', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&services=medecin:10', { jeu: SIX_SERVICES });
+  await toucher(tempsDe(page, 'Médecin', 15));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=medecin:15');
+  expect(await tempsCoches(page, 'Médecin')).toEqual(['15 min']);
+
+  await toucher(tempsDe(page, 'Médecin', 15));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  expect(await tempsCoches(page, 'Médecin')).toEqual([]);
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+
+  await toucher(niveau(page, 'Crèche'));
+  await toucher(niveau(page, 'École'));
+  await toucher(tempsDe(page, 'Scolarité', 5));
+  const { titre } = await categorieServices(page);
+  await titre.click();
+  await expect(titre).toHaveAttribute('aria-expanded', 'false');
+  expect(nbsp(await titre.textContent())).toBe('Services1 choix');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=creche:5,ecole:5');
+});
+
+test('AC-14 /?loyer=1200, « École » et « Collège » : phrase de l’état incomplet, rien ne filtre ; « 10 min », « Lycée », puis « 20 min » filtrent', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
+  await toucher(niveau(page, 'École'));
+  await toucher(niveau(page, 'Collège'));
+  await expect(phraseIncomplet(page)).toBeVisible();
+  // H153 : reliée aux deux groupes, hors de toute zone d'annonce.
+  for (const g of ['Niveaux de scolarité', 'Scolarité'])
+    await expect(reglagesZone(page).getByRole('group', { name: g, exact: true })).toHaveAccessibleDescription(INCOMPLET);
+  expect(await phraseIncomplet(page).evaluate((e) => e.closest('[role="status"], [role="alert"], [aria-live]') == null)).toBe(true);
+  await page.waitForTimeout(300);
+  expect(adresse(page)).toBe('/?loyer=1200');
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+
+  await toucher(tempsDe(page, 'Scolarité', 10));
+  await expect(phraseIncomplet(page)).toHaveCount(0);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=ecole:10,college:10');
+  await listeEst(page, '2 communes passent tes critères', ['Portmer (17) · 46', 'Grandeville (33) · 31']);
+  await ficheDeCarte(page, 'Terrebasse');
+  expect(await raisonsFiche(page)).toContain('Collège 16 min : au-dessus de ton plafond de 10 min');
+  await retour(page);
+
+  await toucher(niveau(page, 'Lycée'));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=ecole:10,college:10,lycee:10');
+  await listeEst(page, '1 commune passe tes critères', ['Grandeville (33) · 31']);
+
+  await toucher(tempsDe(page, 'Scolarité', 20));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=ecole:20,college:20,lycee:20');
+  await listeEst(page, '4 communes passent tes critères', ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9']);
+});
+
+test('AC-17 /?loyer=1200, « Supérieur » et « 20 min » : superieur:20, raisons et fiche ; « École » en plus ; dernière adresse réécrite', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
+  await toucher(niveau(page, 'Supérieur'));
+  await toucher(tempsDe(page, 'Scolarité', 20));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=superieur:20');
+  await listeEst(page, '3 communes passent tes critères', ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31']);
+
+  await ficheDeCarte(page, 'Quaibleu');
+  expect(await raisonsFiche(page)).toContain('Supérieur 25 min : au-dessus de ton plafond de 20 min');
+  await ficheDeCarte(page, 'Terrebasse');
+  expect(await raisonsFiche(page)).toContain("Supérieur plus d'une heure : au-dessus de ton plafond de 20 min");
+  await ficheDeCarte(page, 'Portmer');
+  expect(await textesFiche(page)).toContain('Supérieur : 18 min');
+  await retour(page);
+
+  await toucher(niveau(page, 'École'));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=ecole:20,superieur:20');
+  await listeEst(page, '3 communes passent tes critères', ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31']);
+
+  await ouvrir(page, '/?loyer=1200&services=superieur:15,lycee:10,superieur:10', { jeu: SIX_SERVICES });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=lycee:10,superieur:10');
+});
+
+test('H153 : un temps sans niveau est incomplet ; décocher tout revient à vide ; retirer le dernier niveau d’une scolarité active la rend incomplète', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
+  const { titre } = await categorieServices(page);
+  await toucher(tempsDe(page, 'Scolarité', 5));
+  await expect(phraseIncomplet(page)).toBeVisible();
+  await titre.click();
+  expect(nbsp(await titre.textContent())).toBe('ServicesPeu importe'); // incomplète : ne compte pas (H154)
+  await titre.click();
+  await toucher(tempsDe(page, 'Scolarité', 5));
+  await expect(phraseIncomplet(page)).toHaveCount(0); // vide
+  for (const g of ['Niveaux de scolarité', 'Scolarité'])
+    await expect(reglagesZone(page).getByRole('group', { name: g, exact: true })).toHaveAccessibleDescription('');
+
+  await toucher(niveau(page, 'Lycée'));
+  await toucher(tempsDe(page, 'Scolarité', 10));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=lycee:10');
+  await expect(niveau(page, 'Lycée')).toHaveAttribute('aria-pressed', 'true');
+  await toucher(niveau(page, 'Lycée'));
+  await expect(phraseIncomplet(page)).toBeVisible();
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+});

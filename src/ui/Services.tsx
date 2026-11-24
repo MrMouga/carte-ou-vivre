@@ -1,7 +1,15 @@
 import { useId } from 'react';
 import { resumeServices } from '@/domain/format';
 import type { Reglages } from '@/domain/score';
-import { cransService, NIVEAUX_SCOLARITE, SERVICES_DEPART, servicesVides, type ReglageServices, type TypeGare } from '@/domain/services';
+import {
+  cransService,
+  NIVEAUX_SCOLARITE,
+  SERVICES_DEPART,
+  servicesVides,
+  type NiveauScolarite,
+  type ReglageServices,
+  type TypeGare,
+} from '@/domain/services';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
 
@@ -9,7 +17,7 @@ import { Categorie } from './Categorie';
 // prototype `PisteA` du commit 2f300ae). La dernière catégorie, après « Tes proches », ouverte au départ. « Médecin » et
 // « Commerce alimentaire » : libellé à gauche, Cases collées à droite ; « Scolarité » : Cases séparées des niveaux, puis le
 // temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare « Scolarité » et « Gare ».
-// Tâche 3a : « Scolarité » est affichée, inactive (branchée en 3b) ; elle montre ce que l'adresse a coché (R55).
+// « Scolarité » : niveaux cumulables et temps commun ; filtre quand l'un et l'autre sont cochés (tâche 3b, R53, H153).
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -41,18 +49,25 @@ function avecServices(r: Reglages, s: ReglageServices): Reglages {
  * cadre-de-vie) ; cocher une case décoche l'autre, toucher la case cochée la décoche (`null` = peu importe). Le groupe est
  * nommé par sa ligne (`nomId`, ou `nom`).
  */
-function Temps({ crans, valeur, onChange, disabled, nomId, nom, className }: {
+function Temps({ crans, valeur, onChange, disabled, nomId, nom, decritId, className }: {
   crans: readonly number[];
   valeur: number | null;
   onChange: (v: number | null) => void;
   disabled: boolean;
   nomId?: string;
   nom?: string;
+  decritId?: string;
   className?: string;
 }) {
   return (
     // Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus.
-    <div role="group" aria-labelledby={nomId} aria-label={nom} className={cn('grid grid-cols-3 gap-px rounded-chip border border-border bg-border', className)}>
+    <div
+      role="group"
+      aria-labelledby={nomId}
+      aria-label={nom}
+      aria-describedby={decritId}
+      className={cn('grid grid-cols-3 gap-px rounded-chip border border-border bg-border', className)}
+    >
       {crans.map((m) => {
         const cochee = valeur === m;
         return (
@@ -91,6 +106,14 @@ const TitreTemps = () => <span className="text-secondaire text-muted-foreground"
 export function Services({ reglages, onChange, disabled = false }: Props) {
   const s = reglages.services ?? SERVICES_DEPART;
   const regler = (x: Partial<ReglageServices>) => onChange(avecServices(reglages, { ...s, ...x }));
+  // Niveaux cumulables, gardés dans l'ordre des âges (H167).
+  const basculerNiveau = (n: NiveauScolarite) =>
+    regler({ niveaux: NIVEAUX_SCOLARITE.filter((x) => (x === n ? !s.niveaux.includes(n) : s.niveaux.includes(x))) });
+  // État « incomplète » (details.md, H153) : des niveaux sans temps, ou un temps sans niveau. Gardé dans le réglage pour
+  // le panneau, il ne filtre pas et n'est pas écrit dans l'adresse (`filtresServices`).
+  const incomplete = s.niveaux.length > 0 !== (s.scolarite != null);
+  const idPhrase = useId();
+  const decrit = incomplete ? idPhrase : undefined;
   return (
     <Categorie titre="Services" resume={resumeServices(reglages)}>
       <div className="flex flex-col gap-2">
@@ -98,15 +121,16 @@ export function Services({ reglages, onChange, disabled = false }: Props) {
         <Ligne libelle="Commerce alimentaire" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
         <div className="flex flex-col gap-2 border-t border-border pt-2">
           <span className="text-pastille text-foreground">Scolarité</span>
-          {/* Tâche 3a : affichée et inactive, elle sera branchée en 3b (H163 mesurée d'abord). Les cases montrent ce que
-              l'adresse a coché (R55), qui filtre déjà. Pas de titre visible « Niveaux de scolarité » (design F, H169). */}
-          <div role="group" aria-label="Niveaux de scolarité" className="flex flex-wrap gap-2">
+          {/* Cases séparées des niveaux (contrat), cumulables, puis le temps commun. Pas de titre visible « Niveaux de
+              scolarité » (design F, H169) ; le groupe garde son nom (H153). */}
+          <div role="group" aria-label="Niveaux de scolarité" aria-describedby={decrit} className="flex flex-wrap gap-2">
             {NIVEAUX.map((n) => (
               <button
                 key={n.cle}
                 type="button"
                 aria-pressed={s.niveaux.includes(n.cle)}
-                disabled
+                disabled={disabled}
+                onClick={() => basculerNiveau(n.cle)}
                 className={cn(CASE, 'flex-auto rounded-chip border border-border bg-card aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground')}
               >
                 {n.libelle}
@@ -115,8 +139,15 @@ export function Services({ reglages, onChange, disabled = false }: Props) {
           </div>
           <div className="flex flex-col gap-1">
             <TitreTemps />
-            <Temps crans={cransService('ecole')} valeur={s.scolarite} onChange={() => {}} disabled nom="Scolarité" />
+            <Temps crans={cransService('ecole')} valeur={s.scolarite} onChange={(scolarite) => regler({ scolarite })} disabled={disabled} nom="Scolarité" decritId={decrit} />
           </div>
+          {/* Phrase de l'état incomplet (H153) : reliée aux deux groupes par aria-describedby, dans aucune zone d'annonce
+              (plan, « Annonces aux lecteurs d'écran »). */}
+          {incomplete && (
+            <p id={idPhrase} className="text-secondaire text-muted-foreground">
+              Coche au moins un niveau et un temps.
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 border-t border-border pt-2">
           <span className="text-pastille text-foreground">Gare</span>
