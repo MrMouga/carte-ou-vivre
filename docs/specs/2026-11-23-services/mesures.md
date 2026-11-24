@@ -70,3 +70,31 @@ data.gouv.fr publie pour les 13 fichiers leur taille (14,45 Go au total) et une 
 - Population 0 : 55039, 55050, 55139, 55189, 55239, 55307 (villages détruits de la Meuse), loyers de 406 à 499 € pour 52 m².
 - Habitées sans aucun carreau : Suzan (414 €), Villefranche-le-Château (447 €), Île-de-Sein, Île-Molène.
 - Sans temps de gare, hors population 0 : L'Île-d'Yeu, Groix, Ouessant, Île-aux-Moines, Île-de-Batz, Île-de-Sein, Île-d'Houat, Île-d'Aix, Île-Molène, Hœdic, Suzan, Villefranche-le-Château.
+
+## Supérieur (mesure du 2026-11-23, D17)
+Types lus dans la [liste BPE 2025](https://www.insee.fr/fr/metadonnees/source/fichier/BPE25_liste_hierarchisee_TYPEQU.html). Communes à temps inférieur ou égal au seuil, sur 34 728 avec un temps :
+
+| Contenu | ≤ 10 min | ≤ 20 min | ≤ 30 min | ≤ 60 min |
+|---|---:|---:|---:|---:|
+| UFR seules (C501) | 1 189 | 5 475 | 11 941 | 29 840 |
+| Universités et IUT (C501, C502) | 1 830 | 7 825 | 15 875 | 32 550 |
+| **Universités et grandes écoles (famille C5, retenu)** | 2 409 | 9 402 | 18 120 | 33 211 |
+| Tout le supérieur (C4 et C5) | 5 604 | 17 980 | 27 712 | 34 446 |
+
+Famille C5 : 618 communes à 5 min ou moins, 1 517 au-delà de 60 min, 18 sans chiffre. Une antenne compte comme un établissement : Auch 4 min, Mende 2 min, Les Sables-d'Olonne 9 min, Chamonix-Mont-Blanc 58 min, Saint-Véran 94 min.
+
+## Gares grandes lignes (mesure des 2026-11-23 et 24, D18)
+- Le fichier Insee donne, par carreau, la gare la plus proche de chaque catégorie et sa commune, sans son nom : il ne permet pas de retrouver une gare TGV. Taguer les communes à TGV laisse 44 à 60 % des communes impossibles à classer à 30 min.
+- Horaires SNCF du 23/11 au 20/12/2026 (H170) : 186 gares françaises à TGV et 239 à TGV ou Intercités. Sur 105 communes à gare nationale, 17 n'ont aucun arrêt TGV (dont Clermont-Ferrand, Limoges, Brive-la-Gaillarde, Caen, Amiens) ; 87 communes à TGV n'ont pas de gare nationale (dont Les Sables-d'Olonne, Arcachon, Aix-les-Bains).
+- Gares à TGV ou Intercités selon le seuil d'arrêts par jour, et celles hors des communes à gare nationale : 1 arrêt 226 (120) ; 2 arrêts 207 (103) ; **4 arrêts 163 (61, retenu)** ; 6 arrêts 136 (37) ; 10 arrêts 102 (14).
+- Contrôle d'openrouteservice sur 5 gares : 892 trajets commune-gare comparables à l'Insee (au moins 90 % des habitants vers la commune de cette gare), dont 843 pour Bordeaux et Tarbes et 5 pour Saint-Gervais. Écart médian + 1,5 min, 87 % à moins de 5 min, plus grand écart 10,4 min ; même côté du seuil dans 99,0 % des cas à 10 min, 96,2 % à 20 min, 96,0 % à 30 min.
+- Quota : le service a refusé la 51e requête du 2026-11-23 (« Quota exceeded »). Cause : l'adresse `api.openrouteservice.org` est dépréciée et n'a plus que 10 % du quota (50 requêtes de matrice par jour), non affiché dans le tableau de bord ([annonce du 2026-08-27](https://ask.openrouteservice.org/t/reducing-the-quota-of-deprecated-api-api-openrouteservice-org/8013)) ; la nouvelle adresse est `api.heigit.org/openrouteservice/v2/matrix` ([annonce du 2026-04-28](https://ask.openrouteservice.org/t/deprecating-api-openrouteservice-org-in-favour-of-api-heigit-org/7912)), 500 requêtes par jour, même clé.
+- Calcul : 103 110 trajets vers 61 gares (3 par commune, 34 370 communes hors Corse et îles sans pont), 87 requêtes, les 2026-11-23 et 24 ; aucun trajet manquant.
+- Résultat (R52) : le temps vient de l'Insee pour 23 629 communes, d'openrouteservice pour 10 735 ; 3 398 communes passent sous 30 min grâce aux gares ajoutées. Témoins : Auch 67 (Insee), Bordeaux 7, Le Havre 6, La Rochelle 6, Les Sables-d'Olonne 4 (sa gare), Aix-les-Bains 3 (sa gare), Arcachon 54 (sa gare a 2,5 arrêts par jour, sous le seuil), Chamonix-Mont-Blanc 74 (Saint-Gervais, 0,5 arrêt par jour, n'entre pas), Mende 126 (Riom - Châtel-Guyon), Saint-Véran 141 (Modane).
+
+| Service | ≤ 5 min | ≤ 10 min | ≤ 15 min | ≤ 20 min | ≤ 30 min | ≤ 45 min | ≤ 60 min | > 60 min | Sans chiffre |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Supérieur | 618 | 2 409 | 5 491 | 9 402 | 18 120 | 28 674 | 33 211 | 1 517 | 18 |
+| Gare grandes lignes | 171 | 1 018 | 2 918 | 5 688 | 12 637 | 22 736 | 29 319 | 5 045 | 382 |
+
+- Poids du fichier à 10 temps, rangé par colonnes avec chaque code une seule fois, temps plafonnés à 61 : 1 175 Ko bruts, **349 Ko compressés (gzip -9)**, 271 Ko en brotli (qualité 11). Avec une ligne par commune et la nationale à la place des grandes lignes : 366 Ko.
