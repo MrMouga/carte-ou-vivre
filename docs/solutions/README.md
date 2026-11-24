@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-11-24 | QA d'une page à carte : donner au testeur un Chromium avec WebGL logiciel (Playwright + SwiftShader), pas studio-browse | tests, outil | — | [2026-11-24-qa-navigateur-sans-webgl-imposer-playwright-swiftshader.md](2026-11-24-qa-navigateur-sans-webgl-imposer-playwright-swiftshader.md) |
 | 2026-11-24 | Poids d'un fichier servi : le mesurer avec la compression de l'hébergeur, pas avec un rapport pris sur un autre fichier | perf, data, deploy | — | [2026-11-24-poids-servi-mesurer-la-compression-de-l-hebergeur.md](2026-11-24-poids-servi-mesurer-la-compression-de-l-hebergeur.md) |
 | 2026-11-24 | openrouteservice : l'ancienne adresse n'a plus que 10 % du quota, et le tableau de bord ne le montre pas | data, outil | — | [2026-11-24-openrouteservice-adresse-depreciee-quota-cache.md](2026-11-24-openrouteservice-adresse-depreciee-quota-cache.md) |
 | 2026-11-24 | Fichier Insee d'accès aux équipements : les lignes « en double » d'un carreau sont des parts par IRIS, à additionner, même quand leurs valeurs sont égales | data, discovery | Revu le 2026-11-24 (tâche 0b) : les popu | [2026-11-24-insee-acces-equipements-parts-par-iris.md](2026-11-24-insee-acces-equipements-parts-par-iris.md) |

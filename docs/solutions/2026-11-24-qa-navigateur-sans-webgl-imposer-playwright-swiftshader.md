@@ -1,0 +1,8 @@
+# QA d'une page à carte : donner au testeur un Chromium avec WebGL logiciel (Playwright + SwiftShader), pas studio-browse
+Étiquettes : tests, outil · Tranche : services · Source : relectures de /build services (`docs/plans/2026-11-24-services/qa.md`, `qa-2.md`)
+
+**Problème** — Faire vérifier par un agent testeur neuf toute la catégorie « Services » sur les vraies données : cocher, clavier, états de chargement et d'erreur, fiches.
+**Symptômes** — Le testeur a utilisé studio-browse : son navigateur sans écran n'avait pas WebGL, et le mode avec fenêtre a été refusé par le système. La carte ne chargeait pas (`data-carte-prete` jamais posé), le panneau restait inactif, et la moitié de la QA n'a pas pu se faire. Le rapport est arrivé à sa limite de tours.
+**Ce qui n'a pas marché** — Un brief qui ne disait pas avec quel navigateur tester une page WebGL ; la leçon du 2026-10-12 (studio-browse ne fait pas de WebGL sans fenêtre) n'était pas dans le brief.
+**Ce qui a marché** — Un second testeur à qui le brief impose un script Playwright Node, avec `chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] })` (la méthode des constructeurs, exemple : `docs/plans/2026-11-24-services/captures/T4-bout-en-bout.mjs`), `page.route` pour retarder ou faire échouer un fichier, `hasTouch` / `isMobile` pour le toucher, et un rapport écrit au fil de l'eau. QA complète en 21 appels d'outils.
+**Prévention** — Jugement, à appliquer dans chaque brief de qa-tester pour ce projet : imposer Playwright + SwiftShader, donner un script d'exemple qui marche, demander d'écrire le rapport tôt. À remonter à studio (le brief type du qa-tester).
