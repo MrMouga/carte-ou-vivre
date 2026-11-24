@@ -1,5 +1,5 @@
 # Plan — services
-2026-11-24 · brouillon · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-11-23-services/spec.md) (D1–D18) · Détails : [details.md](../../specs/2026-11-23-services/details.md) (R51–R57, H151–H172) · Critères : [acceptance.json](../../specs/2026-11-23-services/acceptance.json) (AC-1 à AC-17) · Mesures : [mesures.md](../../specs/2026-11-23-services/mesures.md) · Design : [README](../../design/services/README.md) (prototype F, pas de Figma) · Système : [contrat](../../design/system/README.md)
+2026-11-24 · validé · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-11-23-services/spec.md) (D1–D18) · Détails : [details.md](../../specs/2026-11-23-services/details.md) (R51–R57, H151–H172) · Critères : [acceptance.json](../../specs/2026-11-23-services/acceptance.json) (AC-1 à AC-17) · Mesures : [mesures.md](../../specs/2026-11-23-services/mesures.md) · Design : [README](../../design/services/README.md) (prototype F, pas de Figma) · Système : [contrat](../../design/system/README.md)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici. Le site existe : huit tranches construites et en ligne.)
 
 ## Ce que /build fera seul, et ce qu'il demandera
