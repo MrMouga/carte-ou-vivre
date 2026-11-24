@@ -1,0 +1,6 @@
+34746 communes ; îles sans pont : 17004 22016 29082 29083 29084 29155 56009 56069 56085 56086 56087 56088 56114 56152 56241 85113
+Auch (32013) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 3 min · Lycée 3 min · Supérieur 4 min · Gare 4 min · Gare régionale 4 min · Gare grandes lignes plus d’une heure
+Bordeaux (33063) : Médecin 1 min · Commerce alimentaire 1 min · Crèche 1 min · École 1 min · Collège 2 min · Lycée 2 min · Supérieur 3 min · Gare 5 min · Gare régionale 7 min · Gare grandes lignes 7 min
+Mende (48095) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 2 min · Lycée 2 min · Supérieur 2 min · Gare 3 min · Gare régionale plus d’une heure · Gare grandes lignes plus d’une heure
+Les Sables-d'Olonne (85194) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 4 min · Lycée 4 min · Supérieur 9 min · Gare 5 min · Gare régionale 5 min · Gare grandes lignes 4 min
+L'Île-d'Yeu (85113) [île sans pont] : Médecin pas de chiffre · Commerce alimentaire 3 min · Crèche 3 min · École 3 min · Collège 3 min · Lycée pas de chiffre · Supérieur pas de chiffre · Gare pas de chiffre · Gare régionale pas de chiffre · Gare grandes lignes pas de chiffre

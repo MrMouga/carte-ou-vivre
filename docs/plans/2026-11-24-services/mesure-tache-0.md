@@ -1,5 +1,5 @@
 # Mesures de la tâche 0 — services
-2026-11-24 · Part 0a (sources figées, extrait des carreaux, gares recalculées) par le builder de la tâche 0a. La part 0b (temps des communes, comptes, poids) viendra à la suite.
+2026-11-24 · Part 0a (sources figées, extrait des carreaux, gares recalculées) par le builder de la tâche 0a ; part 0b (temps des communes, comptes, poids) par le builder de la tâche 0b, [plus bas](#part-0b--les-temps-de-chaque-commune-servis).
 
 ## Part 0a — sources retenues
 
@@ -137,3 +137,103 @@ Trajets d'openrouteservice (H171)
 - Seuil appliqué sur les arrêts entiers des 28 jours (TGV + Intercités ≥ 112), sans passer par les arrondis au centième : même résultat que l'essai (61 gares, mêmes UIC).
 - Les 6 villages détruits de la Meuse (population 0) ont des trajets dans le fichier d'openrouteservice (l'essai n'excluait que la Corse et les îles) ; R52 ne leur donne aucun temps : la tâche 0b ne les lit pas.
 - `data-raw/services-gares.csv` : 61 gares, sha256 `9bb7b0987d33ebda858ad4bcd440d330d6bea06b1d9ba39d696e6a084174a3c1` (identique sur les deux passages) ; premières lignes : Toul (54528, 4,0 Intercités par jour), Neufchâteau (88321), Culmont - Chalindrey (52155).
+
+## Part 0b — les temps de chaque commune, servis
+
+Commande : `python3 -I scripts/data/services.py` (2026-11-24, 13:00:20 → 13:00:37, **17 s**). Elle lit les trois fichiers de la part 0a (contrôlés par leur sha256), `public/data/communes.json` et `scripts/data/services-retraits.csv` (en-tête seul : aucun retrait), et écrit `public/data/services.json` et `public/data/gares-grandes-lignes.csv`. Sortie complète, liste des 85 communes comprise : [`captures/T0b-sortie-services.txt`](captures/T0b-sortie-services.txt).
+
+### Ce que la lecture a montré
+- **Les lignes d'une commune se suivent** dans l'extrait (34 778 codes, aucune reprise) : chaque commune est résumée (ses 10 médianes non arrondies et sa population) dès qu'elle est lue, sans garder ses 2,3 millions de lignes en mémoire ; les arrondissements de Paris, Lyon et Marseille sont réunis à la fin. Une commune qui reparaîtrait plus loin arrête le script.
+- **Les populations des carreaux ne sont pas toutes entières** : 2 273 378 lignes à une décimale (« 3.0 »), les autres à 2, 3 ou 13 à 16 décimales (« 62.166666666666664 », « 3.3333333333333335 » : écriture de flottants ; plus petite population non nulle : 0,5). Les durées ont au plus 2 décimales. Le script lit donc les populations en entiers de 10⁻¹⁶ habitant et les durées en centièmes de minute : la médiane (« la population cumulée atteint la moitié », égalité exacte retenue, H157) et l'arrondi (H156) se font sans erreur de virgule flottante. Un nombre à plus de décimales arrête le script.
+
+### Sortie des contrôles (tous « ok »)
+```
+Fichiers de la tâche 0a
+  ok   services-carreaux.csv.gz : sha256 1b3d4fc50bec226c8cfac5ce4cbea29d6e757da8ad4b49e595f6b375f6857dc8
+  ok   services-gares.csv : sha256 9bb7b0987d33ebda858ad4bcd440d330d6bea06b1d9ba39d696e6a084174a3c1
+  ok   services-calcul/ors-grandes-lignes.jsonl : sha256 90725176eaf96d668411435f2030911584143e0826ab3e8e288918cdb123ae04
+Communes de la carte
+  ok   34746 communes, codes distincts (attendu 34746)
+  ok   population 0 : ['55039', '55050', '55139', '55189', '55239', '55307']
+  ok   H161 : les 16 îles sans pont présentes avec leurs noms (17004 Île-d'Aix, 22016 Île-de-Bréhat, 29082 Île-de-Batz, 29083 Île-de-Sein, 29084 Île-Molène, 29155 Ouessant, 56009 Bangor, 56069 Groix, 56085 Hœdic, 56086 Île-d'Houat, 56087 Île-aux-Moines, 56088 Île-d'Arz, 56114 Locmaria, 56152 Le Palais, 56241 Sauzon, 85113 L'Île-d'Yeu)
+  ok   Noirmoutier : 4 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+  ok   Ré : 10 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+  ok   Oléron : 8 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+Carreaux (services-carreaux.csv.gz)
+  ok   codes des carreaux tous sur la carte, Paris, Lyon et Marseille réunies (34736 communes ; hors carte : [])
+  ok   34736 communes avec au moins un carreau habité (attendu 34736, D2)
+  ok   les 10 sans carreau sont celles des mesures : 09304 Suzan, 26375 Villefranche-le-Château, 29083 Île-de-Sein, 29084 Île-Molène, 55039 Beaumont-en-Verdunois, 55050 Bezonvaux, 55139 Cumières-le-Mort-Homme, 55189 Fleury-devant-Douaumont, 55239 Haumont-près-Samogneux, 55307 Louvemont-Côte-du-Poivre
+Trajets depuis la mairie (ors-grandes-lignes.jsonl, H171)
+  ok   34364 communes avec 3 trajets = communes hors population 0, îles sans pont et Corse (34364)
+Temps (R52)
+  ok   services-retraits.csv : colonnes ['code', 'service', 'preuve']
+  retraits (D12, services-retraits.csv) : 0 []
+Fichier servi, relu (public/data/services.json)
+  ok   34746 codes dans l'ordre de communes.json, 10 chaînes de 34746 caractères
+  ok   caractères de l'alphabet seulement (« 0 » jamais écrit)
+  ok   chaque temps relu égal au temps calculé (61 = « 61 ou plus »)
+  ok   iles_sans_pont : 16 codes de H161
+  ok   34738 communes avec au moins un temps (attendu 34738) ; sans : 29083 Île-de-Sein, 29084 Île-Molène, 55039 Beaumont-en-Verdunois, 55050 Bezonvaux, 55139 Cumières-le-Mort-Homme, 55189 Fleury-devant-Douaumont, 55239 Haumont-près-Samogneux, 55307 Louvemont-Côte-du-Poivre
+  ok   sans temps = les sans carreau, moins Suzan et Villefranche-le-Château
+  ok   Suzan (09304) : seulement « Gare grandes lignes », depuis la mairie (61 min)
+  ok   Villefranche-le-Château (26375) : seulement « Gare grandes lignes », depuis la mairie (61 min)
+  ok   les 6 communes de population 0 sans aucun temps
+  ok   AC-13 : Auch (32013) {'medecin': 2, 'commerce': 2, 'creche': 3, 'ecole': 2, 'college': 3, 'lycee': 3, 'superieur': 4, 'gare': 4, 'gare_regionale': 4, 'gare_grandes_lignes': 61}
+  ok   AC-13 : Bordeaux (33063) {'medecin': 1, 'commerce': 1, 'creche': 1, 'ecole': 1, 'college': 2, 'lycee': 2, 'superieur': 3, 'gare': 5, 'gare_regionale': 7, 'gare_grandes_lignes': 7}
+  ok   AC-13 : Mende (48095) {'superieur': 2, 'gare': 3, 'gare_regionale': 61, 'gare_grandes_lignes': 61}
+  ok   AC-13 : Les Sables-d'Olonne (85194) {'gare_grandes_lignes': 4}
+  ok   AC-13 : L'Île-d'Yeu (85113) {'medecin': None, 'lycee': None, 'superieur': None, 'gare': None, 'gare_regionale': None, 'gare_grandes_lignes': None, 'commerce': 3}
+  ok   poids : 625730 octets bruts, 304116 octets en gzip -9 (limite 350000, H162)
+Gares grandes lignes (public/data/gares-grandes-lignes.csv)
+  ok   61 gares écrites et relues, colonnes ['uic', 'nom', 'lon', 'lat', 'tgv_jour', 'intercites_jour', 'code']
+```
+« 61 » = « 61 min ou plus » (lettre `z` du fichier), affiché « plus d'une heure ». Les 6 communes de population 0 sont contrôlées une à une (lignes « AC-13 » non affichées quand elles passent). Les 2 communes sans carreau qui gardent un temps, Suzan et Villefranche-le-Château, ont « Gare grandes lignes » à plus d'une heure (61 ou plus) : égal à l'essai de /spec.
+
+### Comptes refaits sur le fichier servi, à côté de ceux des mesures de /spec
+Communes à temps inférieur ou égal au seuil, au-delà de 60 min, sans chiffre ; valeurs lues dans `services.json` (ce que la page compare). « — » : seuil non mesuré pendant /spec.
+```
+  service              |             ≤ 5 |            ≤ 10 |            ≤ 15 |            ≤ 20 |            ≤ 30 |            ≤ 45 |            ≤ 60 |             >60 |            sans
+  medecin              |   14232 / 14232 |   27960 / 27960 |   33135 / 33135 |       34280 / — |   34643 / 34643 |       34724 / — |       34732 / — |           1 / 1 |         13 / 13
+  commerce             |   16653 / 16653 |   30113 / 30113 |   33936 / 33936 |       34577 / — |   34713 / 34713 |       34733 / — |       34735 / — |           1 / 1 |         10 / 10
+  creche               |     8128 / 8128 |   20147 / 20147 |   28806 / 28806 |       32601 / — |   34462 / 34462 |       34714 / — |       34728 / — |           1 / 1 |         17 / 17
+  ecole                |   26483 / 26483 |   33483 / 33483 |   34543 / 34543 |       34682 / — |   34724 / 34724 |       34736 / — |       34736 / — |           0 / 0 |         10 / 10
+  college              |     6682 / 6682 |   20098 / 20098 |   29848 / 29848 |       33202 / — |   34442 / 34442 |       34705 / — |       34727 / — |           3 / 3 |         16 / 16
+  lycee                |     2616 / 2616 |     8927 / 8927 |   17231 / 17231 |   24523 / 24523 |   32094 / 32094 |       34355 / — |       34638 / — |         90 / 90 |         18 / 18
+  superieur            |       618 / 618 |     2409 / 2409 |     5491 / 5491 |     9402 / 9402 |   18120 / 18120 |   28674 / 28674 |   33211 / 33211 |     1517 / 1517 |         18 / 18
+  gare                 |     4471 / 4471 |   11897 / 11897 |   19024 / 19024 |       24424 / — |   30668 / 30668 |       33866 / — |       34589 / — |       139 / 139 |         18 / 18
+  gare_regionale       |     1752 / 1752 |     6120 / 6120 |   11795 / 11795 |   17144 / 17144 |   25162 / 25162 |       31266 / — |       33465 / — |       903 / 903 |       378 / 378
+  gare_grandes_lignes  |       171 / 171 |     1018 / 1018 |     2918 / 2918 |     5688 / 5688 |   12637 / 12637 |   22736 / 22736 |   29319 / 29319 |     5045 / 5045 |       382 / 382
+« Gare grandes lignes » : d'où vient le temps retenu (information)
+  Insee (gare nationale) : 23630 ; depuis la mairie (openrouteservice) : 10734 ; passent sous 30 min grâce aux gares ajoutées : 3398
+```
+**Aucun écart sur les comptes des tables.** Contrôle plus fin (sonde jetable, information) : les 347 460 valeurs du fichier servi (34 746 communes × 10 services, plafonnées à 61 des deux côtés) sont **toutes égales** à celles de l'essai de /spec (`data-raw/services-calcul/lignes-10.csv`) : 0 écart. Les parts par IRIS additionnées (décision de la tâche 0a) redonnent donc exactement l'essai, qui les additionnait aussi.
+
+Un seul écart, dans une information et non dans un temps : la source du temps « Gare grandes lignes » donne 23 630 Insee / 10 734 mairie contre 23 629 / 10 735 dans les mesures de /spec. Portiragnes (34209) a les deux temps exactement égaux (15,64 min vers la gare nationale et depuis la mairie) : le script la compte « Insee », l'essai la départageait par le nom de la gare. Son temps (16 min) ne change pas. « 3 398 communes passent sous 30 min grâce aux gares ajoutées » : égal aux mesures.
+
+### Population des carreaux et population légale (information)
+**85 communes** de 500 habitants ou plus ont une population des carreaux à plus de 30 % de leur population légale, comme pendant /spec : 81 en dessous (de − 30 % à − 66 %), 4 au-dessus (Saint-Just 01369 + 32 %, Cantaron 06031 + 34 %, Dommartemont 54165 + 39 %, Bresson 38057 + 39 %). Liste complète, triée par écart : [`captures/T0b-sortie-services.txt`](captures/T0b-sortie-services.txt) (fin du fichier). Les plus grands écarts : Saint-Christol 84107 (475 contre 1 409, − 66 %), Montferrat 83082 (− 61 %), Rutali 2B265 (− 55 %), Gauciel 27280, Saint-Jean-Kourtzerode 57614, Valmeinier 73307 (− 53 à − 52 %).
+
+Pistes d'explication, **non vérifiées** (aucune source lue) : la population des carreaux vient de données fiscales des ménages, alors que la population légale compte aussi les personnes vivant en communauté et celles qui ne déclarent pas en France. Plusieurs communes de la liste ont un camp, une base militaire ou une prison connus — Saint-Christol (plateau d'Albion, Légion étrangère), Montferrat (camp de Canjuers), La Cavalerie (camp du Larzac), Mailly-le-Camp, Meyenheim (base aérienne), Fleury-Mérogis et Réau (prisons) — et d'autres sont frontalières de Genève (Ferney-Voltaire, Ségny, Saint-Just) où vivent des fonctionnaires internationaux. **28 des 85 sont en Corse** (Ajaccio − 34 %, Bastia − 37 %), sans explication trouvée. Aucun effet sur les temps : la médiane se calcule sur les habitants des carreaux, quelle que soit leur somme.
+
+### Poids de `public/data/services.json`
+| Mesure | Octets | Attendu (plan) |
+|---|---:|---:|
+| Brut | 625 730 | — |
+| `gzip -9` (CLI, 2026-11-24 13:01) | 304 130 (304 116 par `gzip.compress(…, 9)` dans le script) | ≈ 297 000, **limite 350 000** (H162) |
+| `brotli -q 3` (`/opt/homebrew/bin/brotli`, ce que le site envoie) | 237 933 | ≈ 234 000 |
+
+Sous la limite (87 % de 350 Ko). L'estimation du plan était faite sur une maquette du format (valeurs de l'essai, identiques) ; la cause des 2 % de plus (ordre des clés, liste des îles, autre écriture) n'est pas recherchée. sha256 `b89a46e485e0e4dca22dbb6beac4356f28d266d3e7f6e341e1c4c2c0cc092056`.
+
+`public/data/gares-grandes-lignes.csv` : les 61 gares de `services-gares.csv`, mêmes colonnes et valeurs (fins de ligne `\n` au lieu de `\r\n`), sha256 `0e8d690f0a0ee122789d77df0c6e3c9699cfd0ba8524c6ee3f2ccfec14cfac8d`.
+
+### Relecture par la fonction de la page (`lireServices` de `src/domain/services.ts`)
+Sonde jetable, `node --experimental-strip-types`, 2026-11-24 13:01 ([`captures/T0b-relecture-5-communes.txt`](captures/T0b-relecture-5-communes.txt)) :
+```
+34746 communes ; îles sans pont : 17004 22016 29082 29083 29084 29155 56009 56069 56085 56086 56087 56088 56114 56152 56241 85113
+Auch (32013) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 3 min · Lycée 3 min · Supérieur 4 min · Gare 4 min · Gare régionale 4 min · Gare grandes lignes plus d’une heure
+Bordeaux (33063) : Médecin 1 min · Commerce alimentaire 1 min · Crèche 1 min · École 1 min · Collège 2 min · Lycée 2 min · Supérieur 3 min · Gare 5 min · Gare régionale 7 min · Gare grandes lignes 7 min
+Mende (48095) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 2 min · Lycée 2 min · Supérieur 2 min · Gare 3 min · Gare régionale plus d’une heure · Gare grandes lignes plus d’une heure
+Les Sables-d'Olonne (85194) : Médecin 2 min · Commerce alimentaire 2 min · Crèche 3 min · École 2 min · Collège 4 min · Lycée 4 min · Supérieur 9 min · Gare 5 min · Gare régionale 5 min · Gare grandes lignes 4 min
+L'Île-d'Yeu (85113) [île sans pont] : Médecin pas de chiffre · Commerce alimentaire 3 min · Crèche 3 min · École 3 min · Collège 3 min · Lycée pas de chiffre · Supérieur pas de chiffre · Gare pas de chiffre · Gare régionale pas de chiffre · Gare grandes lignes pas de chiffre
+```
+(Le texte « plus d'une heure » de la sonde n'est pas celui de la page : la fiche est la tâche 1. Pour L'Île-d'Yeu, la fiche dira « aucune sur l'île » pour les trois gares, R54.)

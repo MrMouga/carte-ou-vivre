@@ -1,0 +1,140 @@
+Fichiers de la tâche 0a
+  ok   services-carreaux.csv.gz : sha256 1b3d4fc50bec226c8cfac5ce4cbea29d6e757da8ad4b49e595f6b375f6857dc8
+  ok   services-gares.csv : sha256 9bb7b0987d33ebda858ad4bcd440d330d6bea06b1d9ba39d696e6a084174a3c1
+  ok   services-calcul/ors-grandes-lignes.jsonl : sha256 90725176eaf96d668411435f2030911584143e0826ab3e8e288918cdb123ae04
+Communes de la carte
+  ok   34746 communes, codes distincts (attendu 34746)
+  ok   population 0 : ['55039', '55050', '55139', '55189', '55239', '55307']
+  ok   H161 : les 16 îles sans pont présentes avec leurs noms (17004 Île-d'Aix, 22016 Île-de-Bréhat, 29082 Île-de-Batz, 29083 Île-de-Sein, 29084 Île-Molène, 29155 Ouessant, 56009 Bangor, 56069 Groix, 56085 Hœdic, 56086 Île-d'Houat, 56087 Île-aux-Moines, 56088 Île-d'Arz, 56114 Locmaria, 56152 Le Palais, 56241 Sauzon, 85113 L'Île-d'Yeu)
+  ok   Noirmoutier : 4 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+  ok   Ré : 10 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+  ok   Oléron : 8 communes, toutes sur la carte, aucune dans la liste des îles sans pont
+Carreaux (services-carreaux.csv.gz)
+  ok   codes des carreaux tous sur la carte, Paris, Lyon et Marseille réunies (34736 communes ; hors carte : [])
+  ok   34736 communes avec au moins un carreau habité (attendu 34736, D2)
+  ok   les 10 sans carreau sont celles des mesures : 09304 Suzan, 26375 Villefranche-le-Château, 29083 Île-de-Sein, 29084 Île-Molène, 55039 Beaumont-en-Verdunois, 55050 Bezonvaux, 55139 Cumières-le-Mort-Homme, 55189 Fleury-devant-Douaumont, 55239 Haumont-près-Samogneux, 55307 Louvemont-Côte-du-Poivre
+Trajets depuis la mairie (ors-grandes-lignes.jsonl, H171)
+  ok   34364 communes avec 3 trajets = communes hors population 0, îles sans pont et Corse (34364)
+Temps (R52)
+  ok   services-retraits.csv : colonnes ['code', 'service', 'preuve']
+  retraits (D12, services-retraits.csv) : 0 []
+Fichier servi, relu (public/data/services.json)
+  ok   34746 codes dans l'ordre de communes.json, 10 chaînes de 34746 caractères
+  ok   caractères de l'alphabet seulement (« 0 » jamais écrit)
+  ok   chaque temps relu égal au temps calculé (61 = « 61 ou plus »)
+  ok   iles_sans_pont : 16 codes de H161
+  ok   34738 communes avec au moins un temps (attendu 34738) ; sans : 29083 Île-de-Sein, 29084 Île-Molène, 55039 Beaumont-en-Verdunois, 55050 Bezonvaux, 55139 Cumières-le-Mort-Homme, 55189 Fleury-devant-Douaumont, 55239 Haumont-près-Samogneux, 55307 Louvemont-Côte-du-Poivre
+  ok   sans temps = les sans carreau, moins Suzan et Villefranche-le-Château
+  ok   Suzan (09304) : seulement « Gare grandes lignes », depuis la mairie (61 min)
+  ok   Villefranche-le-Château (26375) : seulement « Gare grandes lignes », depuis la mairie (61 min)
+  ok   les 6 communes de population 0 sans aucun temps
+  ok   AC-13 : Auch (32013) {'medecin': 2, 'commerce': 2, 'creche': 3, 'ecole': 2, 'college': 3, 'lycee': 3, 'superieur': 4, 'gare': 4, 'gare_regionale': 4, 'gare_grandes_lignes': 61}
+  ok   AC-13 : Bordeaux (33063) {'medecin': 1, 'commerce': 1, 'creche': 1, 'ecole': 1, 'college': 2, 'lycee': 2, 'superieur': 3, 'gare': 5, 'gare_regionale': 7, 'gare_grandes_lignes': 7}
+  ok   AC-13 : Mende (48095) {'superieur': 2, 'gare': 3, 'gare_regionale': 61, 'gare_grandes_lignes': 61}
+  ok   AC-13 : Les Sables-d'Olonne (85194) {'gare_grandes_lignes': 4}
+  ok   AC-13 : L'Île-d'Yeu (85113) {'medecin': None, 'lycee': None, 'superieur': None, 'gare': None, 'gare_regionale': None, 'gare_grandes_lignes': None, 'commerce': 3}
+  ok   poids : 625730 octets bruts, 304116 octets en gzip -9 (limite 350000, H162)
+Gares grandes lignes (public/data/gares-grandes-lignes.csv)
+  ok   61 gares écrites et relues, colonnes ['uic', 'nom', 'lon', 'lat', 'tgv_jour', 'intercites_jour', 'code']
+Comptes refaits sur le fichier servi (nouveau / ancien des mesures de /spec ; information)
+  service              |             ≤ 5 |            ≤ 10 |            ≤ 15 |            ≤ 20 |            ≤ 30 |            ≤ 45 |            ≤ 60 |             >60 |            sans
+  medecin              |   14232 / 14232 |   27960 / 27960 |   33135 / 33135 |       34280 / — |   34643 / 34643 |       34724 / — |       34732 / — |           1 / 1 |         13 / 13
+  commerce             |   16653 / 16653 |   30113 / 30113 |   33936 / 33936 |       34577 / — |   34713 / 34713 |       34733 / — |       34735 / — |           1 / 1 |         10 / 10
+  creche               |     8128 / 8128 |   20147 / 20147 |   28806 / 28806 |       32601 / — |   34462 / 34462 |       34714 / — |       34728 / — |           1 / 1 |         17 / 17
+  ecole                |   26483 / 26483 |   33483 / 33483 |   34543 / 34543 |       34682 / — |   34724 / 34724 |       34736 / — |       34736 / — |           0 / 0 |         10 / 10
+  college              |     6682 / 6682 |   20098 / 20098 |   29848 / 29848 |       33202 / — |   34442 / 34442 |       34705 / — |       34727 / — |           3 / 3 |         16 / 16
+  lycee                |     2616 / 2616 |     8927 / 8927 |   17231 / 17231 |   24523 / 24523 |   32094 / 32094 |       34355 / — |       34638 / — |         90 / 90 |         18 / 18
+  superieur            |       618 / 618 |     2409 / 2409 |     5491 / 5491 |     9402 / 9402 |   18120 / 18120 |   28674 / 28674 |   33211 / 33211 |     1517 / 1517 |         18 / 18
+  gare                 |     4471 / 4471 |   11897 / 11897 |   19024 / 19024 |       24424 / — |   30668 / 30668 |       33866 / — |       34589 / — |       139 / 139 |         18 / 18
+  gare_regionale       |     1752 / 1752 |     6120 / 6120 |   11795 / 11795 |   17144 / 17144 |   25162 / 25162 |       31266 / — |       33465 / — |       903 / 903 |       378 / 378
+  gare_grandes_lignes  |       171 / 171 |     1018 / 1018 |     2918 / 2918 |     5688 / 5688 |   12637 / 12637 |   22736 / 22736 |   29319 / 29319 |     5045 / 5045 |       382 / 382
+« Gare grandes lignes » : d'où vient le temps retenu (information)
+  Insee (gare nationale) : 23630 ; depuis la mairie (openrouteservice) : 10734 ; passent sous 30 min grâce aux gares ajoutées : 3398
+Population des carreaux et population légale (communes de 500 habitants ou plus, écart de plus de 30 % ; information)
+  85 communes
+  84107 Saint-Christol (84) : 475 dans les carreaux, 1409 légaux (-66%)
+  83082 Montferrat (83) : 678 dans les carreaux, 1719 légaux (-61%)
+  2B265 Rutali (2B) : 238 dans les carreaux, 531 légaux (-55%)
+  27280 Gauciel (27) : 522 dans les carreaux, 1117 légaux (-53%)
+  57614 Saint-Jean-Kourtzerode (57) : 304 dans les carreaux, 647 légaux (-53%)
+  73307 Valmeinier (73) : 282 dans les carreaux, 593 légaux (-52%)
+  06094 Péone (06) : 532 dans les carreaux, 1094 légaux (-51%)
+  24515 Salagnac (24) : 342 dans les carreaux, 686 légaux (-50%)
+  76331 Grugny (76) : 508 dans les carreaux, 1004 légaux (-49%)
+  2A276 Serra-di-Ferro (2A) : 374 dans les carreaux, 727 légaux (-49%)
+  17113 La Clotte (17) : 366 dans les carreaux, 708 légaux (-48%)
+  89208 Joux-la-Ville (89) : 608 dans les carreaux, 1175 légaux (-48%)
+  45046 Boulay-les-Barres (45) : 596 dans les carreaux, 1147 légaux (-48%)
+  68205 Meyenheim (68) : 1048 dans les carreaux, 2015 légaux (-48%)
+  55443 Rouvres-en-Woëvre (55) : 318 dans les carreaux, 598 légaux (-47%)
+  22153 Moncontour (22) : 392 dans les carreaux, 738 légaux (-47%)
+  12063 La Cavalerie (12) : 1184 dans les carreaux, 2223 légaux (-47%)
+  2A228 Pietrosella (2A) : 1186 dans les carreaux, 2074 légaux (-43%)
+  2B303 San-Giuliano (2B) : 468 dans les carreaux, 812 légaux (-42%)
+  46204 Montfaucon (46) : 344 dans les carreaux, 584 légaux (-41%)
+  2A139 Lecci (2A) : 1269 dans les carreaux, 2134 légaux (-41%)
+  77384 Réau (77) : 1269 dans les carreaux, 2127 légaux (-40%)
+  04061 Colmars (04) : 348 dans les carreaux, 583 légaux (-40%)
+  24260 Mauzac-et-Grand-Castang (24) : 526 dans les carreaux, 879 légaux (-40%)
+  91235 Fleury-Mérogis (91) : 8263 dans les carreaux, 13721 légaux (-40%)
+  14242 Épron (14) : 1267 dans les carreaux, 2093 légaux (-39%)
+  2B016 Antisanti (2B) : 358 dans les carreaux, 591 légaux (-39%)
+  2B096 Corte (2B) : 4748 dans les carreaux, 7819 légaux (-39%)
+  10216 Mailly-le-Camp (10) : 1228 dans les carreaux, 2015 légaux (-39%)
+  2B087 Cervione (2B) : 1310 dans les carreaux, 2149 légaux (-39%)
+  01160 Ferney-Voltaire (01) : 7382 dans les carreaux, 12094 légaux (-39%)
+  64094 Bardos (64) : 1163 dans les carreaux, 1905 légaux (-39%)
+  2B242 Poggio-Mezzana (2B) : 546 dans les carreaux, 885 légaux (-38%)
+  2A288 Sotta (2A) : 1169 dans les carreaux, 1893 légaux (-38%)
+  2A070 Casaglione (2A) : 353 dans les carreaux, 571 légaux (-38%)
+  91602 Souzy-la-Briche (91) : 314 dans les carreaux, 503 légaux (-37%)
+  65130 Castelnau-Rivière-Basse (65) : 406 dans les carreaux, 649 légaux (-37%)
+  21008 Alise-Sainte-Reine (21) : 353 dans les carreaux, 564 légaux (-37%)
+  52469 Semoutiers-Montsaon (52) : 476 dans les carreaux, 757 légaux (-37%)
+  2B188 Olmeta-di-Tuda (2B) : 370 dans les carreaux, 583 légaux (-37%)
+  2B033 Bastia (2B) : 29741 dans les carreaux, 46867 légaux (-37%)
+  19164 Peyrelevade (19) : 524 dans les carreaux, 824 légaux (-36%)
+  09113 Ercé (09) : 384 dans les carreaux, 602 légaux (-36%)
+  21473 Ouges (21) : 900 dans les carreaux, 1402 légaux (-36%)
+  17429 Soubise (17) : 2138 dans les carreaux, 3316 légaux (-36%)
+  64533 Tardets-Sorholus (64) : 380 dans les carreaux, 589 légaux (-35%)
+  2A090 Coggia (2A) : 530 dans les carreaux, 818 légaux (-35%)
+  90094 Sevenans (90) : 446 dans les carreaux, 688 légaux (-35%)
+  73117 Fourneaux (73) : 456 dans les carreaux, 701 légaux (-35%)
+  2B346 Vescovato (2B) : 2218 dans les carreaux, 3406 légaux (-35%)
+  2A181 Ocana (2A) : 430 dans les carreaux, 657 légaux (-35%)
+  51058 Bezannes (51) : 3298 dans les carreaux, 5039 légaux (-35%)
+  2B143 Linguizzetta (2B) : 764 dans les carreaux, 1166 légaux (-34%)
+  01399 Ségny (01) : 1928 dans les carreaux, 2941 légaux (-34%)
+  2A004 Ajaccio (2A) : 50466 dans les carreaux, 76320 légaux (-34%)
+  24486 Saint-Pierre-de-Frugie (24) : 344 dans les carreaux, 520 légaux (-34%)
+  65388 Saint-Lary-Soulan (65) : 555 dans les carreaux, 837 légaux (-34%)
+  22064 Gouarec (22) : 574 dans les carreaux, 866 légaux (-34%)
+  73007 Aiton (73) : 1247 dans les carreaux, 1874 légaux (-33%)
+  2A249 Propriano (2A) : 2660 dans les carreaux, 3996 légaux (-33%)
+  30080 Chamborigaud (30) : 594 dans les carreaux, 884 légaux (-33%)
+  2A008 Albitreccia (2A) : 1232 dans les carreaux, 1833 légaux (-33%)
+  76563 Saint-Aubin-Routot (76) : 1326 dans les carreaux, 1972 légaux (-33%)
+  91468 Ormoy (91) : 2174 dans les carreaux, 3225 légaux (-33%)
+  2A272 Sartène (2A) : 2522 dans les carreaux, 3742 légaux (-33%)
+  01027 Balan (01) : 2079 dans les carreaux, 3077 légaux (-32%)
+  2A300 San-Gavino-di-Carbini (2A) : 814 dans les carreaux, 1204 légaux (-32%)
+  86167 Monts-sur-Guesnes (86) : 623 dans les carreaux, 921 légaux (-32%)
+  12248 Saint-Sernin-sur-Rance (12) : 393 dans les carreaux, 580 légaux (-32%)
+  06162 La Brigue (06) : 518 dans les carreaux, 763 légaux (-32%)
+  2B162 Moltifao (2B) : 500 dans les carreaux, 735 légaux (-32%)
+  19261 Sornac (19) : 534 dans les carreaux, 776 légaux (-31%)
+  2B298 Saint-Florent (2B) : 1168 dans les carreaux, 1694 légaux (-31%)
+  2B034 Belgodère (2B) : 576 dans les carreaux, 835 légaux (-31%)
+  60540 Rivecourt (60) : 442 dans les carreaux, 639 légaux (-31%)
+  2B185 Oletta (2B) : 1230 dans les carreaux, 1780 légaux (-31%)
+  2A130 Grosseto-Prugna (2A) : 2696 dans les carreaux, 3900 légaux (-31%)
+  64493 Saint-Palais (64) : 1526 dans les carreaux, 2204 légaux (-31%)
+  77335 Chauconin-Neufmontiers (77) : 2630 dans les carreaux, 3784 légaux (-31%)
+  2B123 Ghisonaccia (2B) : 3071 dans les carreaux, 4405 légaux (-30%)
+  48043 Châteauneuf-de-Randon (48) : 360 dans les carreaux, 516 légaux (-30%)
+  01369 Saint-Just (01) : 1252 dans les carreaux, 952 légaux (+32%)
+  06031 Cantaron (06) : 1694 dans les carreaux, 1268 légaux (+34%)
+  54165 Dommartemont (54) : 785 dans les carreaux, 566 légaux (+39%)
+  38057 Bresson (38) : 922 dans les carreaux, 663 légaux (+39%)
+écrit : public/data/services.json (625730 octets) et public/data/gares-grandes-lignes.csv
