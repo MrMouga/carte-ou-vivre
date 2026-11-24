@@ -93,7 +93,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&services=medecin:10",
       "when": "l'utilisateur coche « 15 min » pour « Médecin », puis touche « 15 min » de nouveau, puis, dans « Scolarité », coche « Crèche », « École » et « 5 min », et replie « Services »",
       "then": "après « 15 min » : seule « 15 min » est cochée pour « Médecin », l'adresse est /?loyer=1200&services=medecin:15 ; après le second toucher : aucun temps coché pour « Médecin », l'adresse est /?loyer=1200 et la liste est celle d'AC-1 de mairies ; repliée, « Services » montre « 1 choix » et l'adresse est /?loyer=1200&services=creche:5,ecole:5",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -173,7 +173,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "dans « Scolarité », l'utilisateur coche « École » et « Collège », puis « 10 min », ouvre la fiche de Terrebasse, revient, coche « Lycée », puis coche « 20 min »",
       "then": "avec les deux niveaux sans temps : la phrase « Coche au moins un niveau et un temps. » est visible, l'adresse reste /?loyer=1200 et la liste celle d'AC-1 de mairies. Avec « 10 min » : la phrase disparaît, l'adresse devient /?loyer=1200&services=ecole:10,college:10, la liste montre « 2 communes passent tes critères » puis Portmer (17) 46, Grandeville (33) 31, et les raisons de Terrebasse contiennent « Collège 16 min : au-dessus de ton plafond de 10 min ». Avec « Lycée » : l'adresse devient /?loyer=1200&services=ecole:10,college:10,lycee:10 et la liste montre « 1 commune passe tes critères » puis Grandeville (33) 31. Avec « 20 min » : l'adresse devient /?loyer=1200&services=ecole:20,college:20,lycee:20 et la liste montre « 4 communes passent tes critères » puis Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-15",
@@ -197,7 +197,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "dans « Scolarité », l'utilisateur coche « Supérieur » et « 20 min », ouvre les fiches de Quaibleu, Terrebasse et Portmer, coche « École », puis ouvre /?loyer=1200&services=superieur:15,lycee:10,superieur:10",
       "then": "avec « Supérieur » et « 20 min » : l'adresse devient /?loyer=1200&services=superieur:20 ; la liste montre « 3 communes passent tes critères » puis Rhinval (67) 52 (sans chiffre : elle passe), Portmer (17) 46, Grandeville (33) 31 ; les raisons de Quaibleu contiennent « Supérieur 25 min : au-dessus de ton plafond de 20 min », celles de Terrebasse « Supérieur plus d'une heure : au-dessus de ton plafond de 20 min » ; la fiche de Portmer dit « Supérieur : 18 min ». Avec « École » : l'adresse devient /?loyer=1200&services=ecole:20,superieur:20 et la liste ne change pas. La dernière adresse est réécrite /?loyer=1200&services=lycee:10,superieur:10 (15 min retiré, ce n'est pas un temps de scolarité)",
-      "passes": false
+      "passes": true
     }
   ]
 }
