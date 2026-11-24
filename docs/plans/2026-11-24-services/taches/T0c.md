@@ -1,5 +1,5 @@
 # Tâche 0c — Le tableau du risque, pour la démo
-Statut : faite · Début 13:05 · Fin 13:20 · Commits : voir `git log` (message « docs(services): tâche 0c — … »)
+Statut : faite · Début 13:05 · Fin 13:20 · Commits : 77f3bc4 (tâche) · suivant (numéro du commit dans le rapport)
 
 ## Ce que l'utilisateur peut faire maintenant
 Rien de visible sur le site (aucun code touché). Vincent dispose, pour la démo, de `docs/plans/2026-11-24-services/credibilite-services.md` : les 10 temps du site pour les 10 communes de « Le risque », chacun confronté au temps en voiture de l'itinéraire de l'IGN depuis la mairie, avec un drapeau « autre côté », une explication proposée par drapeau et ses cases à cocher.
