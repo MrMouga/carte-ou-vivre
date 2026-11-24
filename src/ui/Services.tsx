@@ -3,6 +3,7 @@ import { resumeServices } from '@/domain/format';
 import type { Reglages } from '@/domain/score';
 import {
   cransService,
+  libelleService,
   NIVEAUX_SCOLARITE,
   SERVICES_DEPART,
   servicesVides,
@@ -47,13 +48,7 @@ const auFocus = (e: React.FocusEvent<HTMLElement>) => {
   if (e.currentTarget.matches(':focus-visible')) montrer(e.currentTarget);
 };
 
-const NIVEAUX: { cle: (typeof NIVEAUX_SCOLARITE)[number]; libelle: string }[] = [
-  { cle: 'creche', libelle: 'Crèche' },
-  { cle: 'ecole', libelle: 'École' },
-  { cle: 'college', libelle: 'Collège' },
-  { cle: 'lycee', libelle: 'Lycée' },
-  { cle: 'superieur', libelle: 'Supérieur' },
-];
+const NIVEAUX = NIVEAUX_SCOLARITE.map((cle) => ({ cle, libelle: libelleService(cle) }));
 const TYPES_GARE: { cle: TypeGare; libelle: string }[] = [
   { cle: 'gare', libelle: 'Toutes' },
   { cle: 'gare_regionale', libelle: 'Régionale' },
@@ -114,14 +109,14 @@ function Temps({ crans, valeur, onChange, disabled, nomId, nom, decritId, classN
 }
 
 /** « Médecin », « Commerce alimentaire » : libellé à gauche, temps à droite, sur une ligne (piste A). */
-function Ligne({ libelle, valeur, onChange, disabled }: { libelle: string; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
+function Ligne({ cle, valeur, onChange, disabled }: { cle: 'medecin' | 'commerce'; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
   const id = useId();
   return (
     <div className="grid grid-cols-5 items-center gap-2">
       <span id={id} className="col-span-2 text-pastille text-foreground">
-        {libelle}
+        {libelleService(cle)}
       </span>
-      <Temps crans={cransService('medecin')} valeur={valeur} onChange={onChange} disabled={disabled} nomId={id} className="col-span-3" />
+      <Temps crans={cransService(cle)} valeur={valeur} onChange={onChange} disabled={disabled} nomId={id} className="col-span-3" />
     </div>
   );
 }
@@ -146,8 +141,8 @@ export function Services({ reglages, onChange, disabled = false, erreur = false,
       {/* R57 : en erreur, sous le titre ; les réglages restent affichés, inactifs (décidé par Claude, plan tâche 4). */}
       {erreur && <TempsIndisponibles onReessayer={onReessayer} focusApres={titre} />}
       <div className="flex flex-col gap-2">
-        <Ligne libelle="Médecin" valeur={s.medecin} onChange={(medecin) => regler({ medecin })} disabled={disabled} />
-        <Ligne libelle="Commerce alimentaire" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
+        <Ligne cle="medecin" valeur={s.medecin} onChange={(medecin) => regler({ medecin })} disabled={disabled} />
+        <Ligne cle="commerce" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
         <div className="flex flex-col gap-2 border-t border-border pt-2">
           <span className="text-pastille text-foreground">Scolarité</span>
           {/* Cases séparées des niveaux (contrat), cumulables, puis le temps commun. Pas de titre visible « Niveaux de

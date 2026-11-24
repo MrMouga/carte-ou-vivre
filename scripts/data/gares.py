@@ -19,7 +19,6 @@ Usage : python3 -I scripts/data/gares.py data-raw public/data  (s'arrête sur le
 """
 import csv
 import gzip
-import hashlib
 import io
 import json
 import math
@@ -31,7 +30,7 @@ from collections import Counter, defaultdict
 from datetime import date, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sources import ORS, ORS_SHA256, SNCF, SNCF_SHA256  # noqa: E402
+from sources import ORS, ORS_SHA256, SNCF, SNCF_SHA256, sha256  # noqa: E402
 
 DEBUT, JOURS = date(2026, 11, 23), 28  # H170
 SEUIL_PAR_JOUR = 4  # H170 : arrêts de TGV et d'Intercités par jour
@@ -54,14 +53,6 @@ def ville(code):
         if a <= code <= b:
             return v
     return code
-
-
-def sha256(path):
-    h = hashlib.sha256()
-    with open(path, 'rb') as f:
-        while chunk := f.read(1 << 20):
-            h.update(chunk)
-    return h.hexdigest()
 
 
 def lignes_gtfs(z, nom):

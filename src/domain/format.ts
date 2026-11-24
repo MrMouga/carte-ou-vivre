@@ -317,7 +317,7 @@ export function raisonTexte(r: Raison): string {
       // R53 de services ; H159 : espace insécable avant « : ».
       const nom = libelleService(r.service);
       if (r.cas !== 'temps')
-        return `${nom}${NBSP}: ${r.cas === 'ile' ? "aucune sur l'île" : r.cas === 'corse' ? 'aucune en Corse' : 'pas de chiffre, commune sans habitant'}`;
+        return `${nom}${NBSP}: ${r.cas === 'sans-habitant' ? 'pas de chiffre, commune sans habitant' : texteValeur({ cas: r.cas })}`;
       return `${nom} ${texteValeur({ cas: 'temps', minutes: r.valeur })}${NBSP}: au-dessus de ton plafond de ${r.plafond}${NBSP}min`;
     }
   }

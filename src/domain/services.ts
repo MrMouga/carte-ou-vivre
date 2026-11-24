@@ -1,7 +1,7 @@
 // Spec services : lecture et écriture de `public/data/services.json` (plan, « Le fichier des temps »).
 // Le fichier porte `codes` (les codes INSEE, dans l'ordre de communes.json), puis, pour chacun des 10 services, une chaîne
 // d'un caractère par commune, dans l'ordre de `codes` : le caractère de rang n de ALPHABET vaut n minutes, de « 1 » (1 min)
-// à « y » (rang 60, 60 min ; le plan écrit « Y », rang 34) ; « z » (rang 61) vaut « 61 min ou plus » ; « - » vaut « pas de chiffre » ; « 0 » n'est jamais écrit
+// à « y » (rang 60, 60 min) ; « z » (rang 61) vaut « 61 min ou plus » ; « - » vaut « pas de chiffre » ; « 0 » n'est jamais écrit
 // (H156 : au moins 1). Plus `iles_sans_pont` (H161). Les temps sont déjà arrondis par scripts/data/services.py (R52,
 // H156) : la page les lit, les affiche et les compare tels quels, sans rien recalculer.
 

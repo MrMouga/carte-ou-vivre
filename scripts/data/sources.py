@@ -130,8 +130,8 @@ for dep, date in ZINF.items():
     SOURCES[f'{CEREMA}/zinf/l-loimontagne85-zinf-{dep}.7z'] = f'{CEREMA_URL}{date}/l-loimontagne85-zinf-{dep}.7z'
 
 
-def sha(path, algo='sha256'):
-    h = hashlib.new(algo)
+def sha256(path):
+    h = hashlib.sha256()
     with open(path, 'rb') as f:
         while chunk := f.read(1 << 20):
             h.update(chunk)
@@ -176,7 +176,7 @@ def services():
     for cle, nom, attendu in (('sncf', SNCF, SNCF_SHA256), ('ors', ORS, ORS_SHA256)):
         path = os.path.join(RAW, nom)
         check(os.path.isfile(path), f'{nom} présent dans data-raw/ (jamais retéléchargé)')
-        empreinte = sha(path)
+        empreinte = sha256(path)
         print(f'  {nom} : {os.path.getsize(path)} octets, sha256 {empreinte}')
         check(empreinte == attendu, f'{nom} : sha256 égal à celui retenu')
         locaux[cle] = {'fichier': nom, 'octets': os.path.getsize(path), 'sha256': empreinte}

@@ -46,6 +46,8 @@ async function lire<T>(url: string): Promise<T> {
   if (!r.ok) throw new Error(`${url} : ${r.status}`);
   return (await r.json()) as T;
 }
+/** Le fichier des temps des services, lu (R57) : avec les autres données, ou à part après la carte. */
+const chargerTemps = () => lire<ServicesJson>('/data/services.json').then(lireServices);
 
 // H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE ; H122 de
 // mairies : de même pour les mairies élues en 2026 et leurs nuances ; H140 d'emploi : de même pour l'emploi, dont les
@@ -60,7 +62,7 @@ async function charger(avecServices: boolean): Promise<Donnees> {
     lire<MairiesJson>('/data/mairies.json'),
     lire<NuancesJson>('/data/nuances.json'),
     lire<EmploiJson>('/data/emploi.json'),
-    avecServices ? lire<ServicesJson>('/data/services.json').then(lireServices) : undefined,
+    avecServices ? chargerTemps() : undefined,
   ]);
   const communes = joindreEmploi(joindreBords(joindreAchats(c.communes.map(communeDeLigne), a), m, n), e);
   return { communes, reperes: r.reperes, emploi: lireEmploi(e, communes, r.reperes), services: s };
@@ -127,12 +129,13 @@ export function App() {
   // Chargés une fois : un rechargement de la page (« Réessayer » de la carte) garde des temps déjà arrivés. Avec
   // `services` dans l'adresse, ils arrivent avec les autres données (ci-dessus), et cet effet ne fait rien.
   const [essaiServices, setEssaiServices] = useState(0);
+  const reessayerServices = () => setEssaiServices((n) => n + 1);
   const tempsPrets = temps.etat === 'pret';
   useEffect(() => {
     if (!prete || tempsPrets) return;
     let annule = false;
     setTemps({ etat: 'chargement' });
-    avecDelai(lire<ServicesJson>('/data/services.json').then(lireServices), DELAI_DONNEES_MS).then(
+    avecDelai(chargerTemps(), DELAI_DONNEES_MS).then(
       (services) => !annule && setTemps({ etat: 'pret', services }),
       () => !annule && setTemps({ etat: 'erreur' }),
     );
@@ -269,7 +272,7 @@ export function App() {
         onChange={setReglages}
         disabled={!prete || temps.etat !== 'pret'}
         erreur={temps.etat === 'erreur'}
-        onReessayer={() => setEssaiServices((n) => n + 1)}
+        onReessayer={reessayerServices}
       />
       {pied}
     </Settings>
@@ -285,7 +288,7 @@ export function App() {
         emploi={donnees!.emploi}
         metiers={reglages.metiers}
         temps={temps}
-        onReessayerServices={() => setEssaiServices((n) => n + 1)}
+        onReessayerServices={reessayerServices}
         onRetour={retourListe}
       />
     ) : null;

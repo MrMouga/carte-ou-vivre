@@ -5,10 +5,10 @@
 // liste les types d'environnement cochés, comme `taille`.
 // Spec mairies, R41 : `mairie` liste les bords cochés, comme `env`, placée après `env`.
 // Spec emploi, R48 : `metier` liste les métiers choisis dans l'ordre du choix, chacun avec son niveau, placée après `mairie`.
+// Spec services, R55 : `services` liste les services filtrés, `<nom>:<minutes>`, placée après `metier`.
 import { avecMetiers, CHOIX_MER, CHOIX_MONTAGNE, type Bord, type MetierChoisi, type Niveau, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
 import { cransService, estGare, estScolarite, filtresServices, NIVEAUX_SCOLARITE, SERVICES, SERVICES_DEPART, servicesVides, type ReglageServices, type ServiceCle } from './services';
-// Spec services, R55 : `services` liste les services filtrés, `<nom>:<minutes>`, placée après `metier`.
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
 export const BORNES = {
