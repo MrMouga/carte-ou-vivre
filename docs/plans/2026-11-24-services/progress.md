@@ -36,3 +36,9 @@ Tests existants modifiés :
 - T1 : `tests/e2e/lib/carte.ts` — ajouts seulement (13 lignes, 0 retirée) : import de `services.ts`, `servicesJson(jeu)`, interception `**/data/services.json` (accord de Vincent du 2026-11-24).
 
 ## Coût
+De 12:17 à environ 18:30 le 2026-11-24, une session. Environ 2,3 millions de jetons d'agents : T0a 252 k, T0b 213 k, T0c 183 k, T1 283 k, T2 186 k, T3a 178 k, T3b 152 k, T4 241 k, simplification 132 k, conformité 190 k, QA 95 k + 89 k, retraits D12 80 k. Détours : condition d'arrêt de H163 franchie par un constructeur (3b) ; deux agents arrêtés à leur limite de tours (T1, conformité) ; première QA sans WebGL, refaite ; un commit refusé par le garde-fou des images.
+
+## Démo
+Démo acceptée par Vincent le 2026-11-24 ([demo.md](demo.md)). Son pari : « marche, mais des temps faux » — en partie confirmé : 9 temps signalés sur 100, surtout des communes extrêmes. Jugement du risque : Les Sables-d'Olonne et Saint-Véran justes ; 4 temps retirés (D12, H175) : Tende commerce et collège, Roscanvel crèche et collège — commit 2f19784, vérifié par l'orchestrateur (services.py relancé, 0 échec, sha256 33764770… ; Vitest 397/397). Décisions gardées reportées dans la spec : H173 à H176 de details.md ; texte de R51 corrigé (titres visibles retirés par H169).
+
+Terminé 2026-11-25
