@@ -35,7 +35,7 @@ Signal d'arrêt : (1) si le 08/11 la carte n'est pas en ligne avec les 5 critèr
 - Étape : en ligne — https://ou-vivre-en-france.narnia-assistant.workers.dev/ sert `a9a4a7d` (huit tranches, dont emploi), prouvé le 2026-11-23 à 12:30 (docs/ship/2026-11-23-emploi/ship.md). Hébergeur : Cloudflare Workers. À suivre : fond de carte qui ne charge pas en bureau dans le navigateur de test, pastilles qui se chevauchent ; rang de la fiche sans espace des milliers (« 33648e ») ; `/favicon.ico` absent ; garde-fou des tests protégés qui n'a pas demandé l'accord pour `carte.ts` (pour /retro).
 - Statut : active
 - Usagers hors de l'équipe : 3 (3 amis de la cible, lien envoyé, semaine du 9 au 15 novembre 2026 : [note](docs/feedback/2026-11-21-amis.md))
-- Prochaine tranche : services du quotidien, spec validée le 2026-11-23, design à faire (/ui). À suivre : la faille de Vite, serveur de développement seulement (monter Vite, avec accord) ; le « ! » d'un nom de liste de mairie qui tombe seul à la ligne (« Le Havre ! ») ; l'anneau de focus coupé sur les cases de la mer et de la montagne ; mineurs laissés de la relecture d'emploi (`docs/plans/2026-11-21-emploi/demo.md`).
+- Prochaine tranche : services du quotidien, spec validée le 2026-11-23 (révisée le 24), design validé le 2026-11-24 (piste F), plan à faire (/breakdown). À suivre : la faille de Vite, serveur de développement seulement (monter Vite, avec accord) ; le « ! » d'un nom de liste de mairie qui tombe seul à la ligne (« Le Havre ! ») ; l'anneau de focus coupé sur les cases de la mer et de la montagne ; mineurs laissés de la relecture d'emploi (`docs/plans/2026-11-21-emploi/demo.md`).
 
 ## Échéances
 
@@ -156,6 +156,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-23 | Spec validée : services | 6 filtres en temps de voiture (médecin, commerce alimentaire, école, collège, crèche, gare à deux niveaux), temps médian des habitants, filtre sans note, 7 temps dans la fiche ; sans chiffre la commune reste, sauf communes sans habitant, gare des îles sans pont et grande gare en Corse ; environ 13 comportements, au-dessus du cadre perso, accepté par Vincent. |
 | 2026-11-23 | Spec services révisée (D13 à D15) pendant /ui | Choix de Vincent : ligne « Scolarité » (crèche, école, collège, lycée cumulables, un seul temps) ; temps chargés après l'affichage de la carte, sauf lien qui filtre déjà ; trois niveaux de gare, Gare, Régionale, Nationale, alors que Claude déconseillait « Nationale » (Les Sables-d'Olonne, desservie en TGV, y est à 82 min) : la fiche dit que ces niveaux n'indiquent pas la présence d'un TGV. Fichier des temps : 329 Ko compressés, limite portée de 300 à 350 Ko. |
 | 2026-11-24 | Spec services révisée (D16 à D18) pendant /ui | Choix de Vincent : type de gare « Toutes · Régionale · Grandes lignes » ; Grandes lignes = gare nationale ou au moins 4 arrêts de TGV ou d'Intercités par jour (horaires SNCF, 61 gares ajoutées, temps depuis la mairie calculés une fois avec openrouteservice : Les Sables-d'Olonne passe de 82 à 4 min) ; cinquième niveau de scolarité « Supérieur » (universités et grandes écoles) ; 10 temps dans la fiche ; crans inchangés après mesure. Fichier des temps : 349 Ko compressés (gzip -9), sous la limite de 350 Ko. Révision sans relecteur neuf. |
+| 2026-11-24 | Design validé : services | Piste F : une ligne par service, temps en Cases collées, niveaux de scolarité en Cases séparées, type de gare en Choix souligné (un seul type à la fois, choix de Vincent), sans titres visibles « Niveaux de scolarité » ni « Type de gare » ; fiche en une colonne, temps alignés à droite ; prototype F fait foi (branche `prototype/services`). Pari de Vincent : B ; relecteur à l'aveugle : A avec le Choix souligné de B. |
 
 ## Hypothèses à vérifier
 
@@ -217,6 +218,7 @@ Autres questions :
 ## Documents
 
 - [Spec « Services du quotidien » — 2026-11-23](docs/specs/2026-11-23-services/spec.md) · [relecture](docs/specs/2026-11-23-services/relecture.md) · [mesures](docs/specs/2026-11-23-services/mesures.md)
+- [Design « Services » — 2026-11-24](docs/design/services/README.md) · [décisions](docs/design/services/decisions.md)
 - [Mise en ligne « Emploi » — 2026-11-23](docs/ship/2026-11-23-emploi/ship.md)
 - [Plan « Emploi » — 2026-11-21](docs/plans/2026-11-21-emploi/plan.md) · [relecture](docs/plans/2026-11-21-emploi/review-plan.md) · [dossier du build](docs/plans/2026-11-21-emploi/) : [progression](docs/plans/2026-11-21-emploi/progress.md) · [démo](docs/plans/2026-11-21-emploi/demo.md) · [mesures](docs/plans/2026-11-21-emploi/mesure-tache-0.md) · [crédibilité](docs/plans/2026-11-21-emploi/credibilite-metiers.md)
 - [Design « Emploi » — 2026-11-21](docs/design/emploi/README.md) · [décisions](docs/design/emploi/decisions.md)
