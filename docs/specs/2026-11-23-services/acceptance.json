@@ -125,7 +125,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&services=medecin:5",
       "when": "l'utilisateur ouvre la fiche de Rhinval, puis celle de Quaibleu",
       "then": "la liste montre « 3 communes passent tes critères » puis Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31 ; la fiche de Rhinval dit « Médecin : pas de chiffre » et n'a aucune raison pour le médecin ; les raisons de Quaibleu contiennent « Médecin 10 min : au-dessus de ton plafond de 5 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
