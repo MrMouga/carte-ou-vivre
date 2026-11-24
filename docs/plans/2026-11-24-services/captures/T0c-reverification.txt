@@ -1,0 +1,12 @@
+Tâche 0c de services — deux lignes redemandées à l'IGN après la mesure (curl, 2026-11-24 13:18:46 et 13:18:47)
+pour vérifier que les réponses gardées sont celles du service.
+
+Roscanvel · crèche (mesure : 16,98 min, 10,89 km, version 2026-11-24, 13:14:34)
+GET https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-4.5468%2C48.3151&end=-4.49314%2C48.24585&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326
+→ "resourceVersion":"2026-11-23"  "distance":10.891589  "duration":16.97768333333333
+  (même temps et même distance, sur un serveur d'une autre version)
+
+Tende · collège (mesure : 8,27 min, 4,91 km, version 2026-11-23, 13:10:53)
+GET https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.5871%2C44.05474&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326
+→ "resourceVersion":"2026-11-23"  "distance":4.909667000000001  "duration":8.26985
+  (identique)

@@ -1,0 +1,103 @@
+32013 Auch               medecin              site    2  ign    1.0 (3 :    1.0)  carreau    1.0  vers Auch  essais 7 erreurs 0
+32013 Auch               commerce             site    2  ign    0.8 (3 :    0.8)  carreau    1.0  vers Auch  essais 7 erreurs 0
+32013 Auch               creche               site    3  ign    3.6 (3 :    3.6)  carreau   3.09  vers Auch  essais 7 erreurs 0
+32013 Auch               ecole                site    2  ign    1.1 (3 :    1.1)  carreau    1.0  vers Auch  essais 7 erreurs 0
+32013 Auch               college              site    3  ign    0.8 (3 :    0.8)  carreau   1.12  vers Auch  essais 7 erreurs 0
+32013 Auch               lycee                site    3  ign    2.6 (3 :    2.6)  carreau   2.08  vers Auch  essais 7 erreurs 0
+32013 Auch               superieur            site    4  ign    1.6 (3 :    1.6)  carreau   1.34  vers Auch  essais 6 erreurs 0
+32013 Auch               gare                 site    4  ign    6.8 (3 :    6.8)  carreau   3.66  vers Auch  essais 5 erreurs 0
+32013 Auch               gare_regionale       site    4  ign    6.8 (3 :    6.8)  carreau   3.66  vers Auch  essais 5 erreurs 0
+32013 Auch               gare_grandes_lignes  site   61  ign   77.3 (3 :   77.3)  carreau  66.63  vers Toulouse  essais 5 erreurs 0
+76351 Le Havre           medecin              site    2  ign    1.2 (3 :    1.2)  carreau    1.0  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           commerce             site    1  ign    1.0 (3 :    1.0)  carreau    1.0  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           creche               site    2  ign    2.7 (3 :    2.7)  carreau   1.66  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           ecole                site    1  ign    0.8 (3 :    0.8)  carreau   1.14  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           college              site    2  ign    2.2 (3 :    2.2)  carreau   1.55  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           lycee                site    3  ign    3.6 (3 :    3.6)  carreau   2.52  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           superieur            site    4  ign    3.6 (3 :    3.6)  carreau   2.57  vers Le Havre  essais 7 erreurs 0
+76351 Le Havre           gare                 site    6  ign    6.7 (3 :    6.7)  carreau   3.52  vers Le Havre  essais 5 erreurs 0
+76351 Le Havre           gare_regionale       site    6  ign    6.7 (3 :    6.7)  carreau   3.52  vers Le Havre  essais 5 erreurs 0
+76351 Le Havre           gare_grandes_lignes  site    6  ign    6.7 (3 :    6.7)  carreau   3.52  vers Le Havre  essais 5 erreurs 0
+85194 Les Sables-d'Olonn medecin              site    2  ign    1.8 (3 :    1.8)  carreau   1.36  vers Les Sables-d'Olonne  essais 7 erreurs 0
+85194 Les Sables-d'Olonn commerce             site    2  ign    1.2 (3 :    1.2)  carreau    1.0  vers Les Sables-d'Olonne  essais 7 erreurs 0
+85194 Les Sables-d'Olonn creche               site    3  ign    3.9 (3 :    3.9)  carreau   2.82  vers Les Sables-d'Olonne  essais 6 erreurs 0
+85194 Les Sables-d'Olonn ecole                site    2  ign    2.4 (3 :    2.4)  carreau   1.22  vers Les Sables-d'Olonne  essais 7 erreurs 0
+85194 Les Sables-d'Olonn college              site    4  ign    1.6 (3 :    1.6)  carreau   1.56  vers Les Sables-d'Olonne  essais 7 erreurs 0
+85194 Les Sables-d'Olonn lycee                site    4  ign    5.4 (3 :    5.4)  carreau   3.08  vers Les Sables-d'Olonne  essais 7 erreurs 0
+85194 Les Sables-d'Olonn superieur            site    9  ign    4.1 (3 :    4.1)  carreau   4.06  vers Les Sables-d'Olonne  essais 6 erreurs 0
+85194 Les Sables-d'Olonn gare                 site    5  ign    4.1 (3 :    4.1)  carreau   2.59  vers Les Sables-d'Olonne  essais 6 erreurs 0
+85194 Les Sables-d'Olonn gare_regionale       site    5  ign    4.1 (3 :    4.1)  carreau   2.59  vers Les Sables-d'Olonne  essais 5 erreurs 0
+85194 Les Sables-d'Olonn gare_grandes_lignes  site    4  ign    4.3 (3 :    4.3)  carreau  81.89  vers Les Sables-d'Olonne  essais 5 erreurs 0
+48095 Mende              medecin              site    2  ign    1.7 (3 :    1.7)  carreau    1.0  vers Mende  essais 7 erreurs 0
+48095 Mende              commerce             site    2  ign    1.3 (3 :    1.3)  carreau    1.0  vers Mende  essais 7 erreurs 0
+48095 Mende              creche               site    3  ign    2.1 (3 :    2.1)  carreau   1.52  vers Mende  essais 6 erreurs 0
+48095 Mende              ecole                site    2  ign    0.7 (3 :    0.7)  carreau    1.0  vers Mende  essais 7 erreurs 0
+48095 Mende              college              site    2  ign    1.9 (3 :    1.9)  carreau   1.21  vers Mende  essais 6 erreurs 0
+48095 Mende              lycee                site    2  ign    2.8 (3 :    2.8)  carreau    1.0  vers Mende  essais 7 erreurs 0
+48095 Mende              superieur            site    2  ign    0.9 (3 :    0.9)  carreau    1.0  vers Mende  essais 7 erreurs 0
+48095 Mende              gare                 site    3  ign    2.6 (3 :    2.6)  carreau   1.41  vers Mende  essais 5 erreurs 0
+48095 Mende              gare_regionale       site   61  ign  110.4 (3 :  110.4)  carreau  91.56  vers Le Puy-en-Velay  essais 5 erreurs 0
+48095 Mende              gare_grandes_lignes  site   61  ign  147.6 (3 :  147.6)  carreau  136.0  vers Montpellier  essais 6 erreurs 0
+74056 Chamonix-Mont-Blan medecin              site    3  ign    0.0 (3 :    0.0)  carreau    1.0  vers Chamonix-Mont-Blanc  essais 7 erreurs 0
+74056 Chamonix-Mont-Blan commerce             site    2  ign    0.4 (3 :    0.4)  carreau    1.0  vers Chamonix-Mont-Blanc  essais 7 erreurs 0
+74056 Chamonix-Mont-Blan creche               site    2  ign    0.0 (3 :    0.0)  carreau    1.0  vers Chamonix-Mont-Blanc  essais 7 erreurs 0
+74056 Chamonix-Mont-Blan ecole                site    2  ign    0.8 (3 :    0.8)  carreau    1.0  vers Chamonix-Mont-Blanc  essais 7 erreurs 0
+74056 Chamonix-Mont-Blan college              site    4  ign    2.2 (3 :    2.2)  carreau   1.23  vers Chamonix-Mont-Blanc  essais 6 erreurs 0
+74056 Chamonix-Mont-Blan lycee                site    4  ign    2.2 (3 :    2.2)  carreau   1.23  vers Chamonix-Mont-Blanc  essais 5 erreurs 0
+74056 Chamonix-Mont-Blan superieur            site   58  ign   68.7 (3 :   68.7)  carreau  58.28  vers Samoëns  essais 6 erreurs 0
+74056 Chamonix-Mont-Blan gare                 site    2  ign    3.4 (3 :    3.4)  carreau   2.41  vers Chamonix-Mont-Blanc  essais 7 erreurs 0
+74056 Chamonix-Mont-Blan gare_regionale       site    5  ign    5.0 (3 :    5.0)  carreau   2.66  vers Chamonix-Mont-Blanc  essais 5 erreurs 0
+74056 Chamonix-Mont-Blan gare_grandes_lignes  site   61  ign   80.4 (3 :   80.4)  carreau  73.96  vers Annecy  essais 5 erreurs 0
+05157 Saint-Véran        medecin              site   17  ign   19.3 (3 :   19.3)  carreau  18.65  vers Aiguilles  essais 6 erreurs 0
+05157 Saint-Véran        commerce             site    1  ign    2.4 (3 :    2.4)  carreau    1.0  vers Saint-Véran  essais 6 erreurs 0
+05157 Saint-Véran        creche               site    5  ign    7.7 (3 :    7.7)  carreau   6.23  vers Molines-en-Queyras  essais 5 erreurs 0
+05157 Saint-Véran        ecole                site    2  ign    0.0 (3 :    0.0)  carreau    1.0  vers Saint-Véran  essais 5 erreurs 0
+05157 Saint-Véran        college              site   33  ign   34.4 (3 :   34.4)  carreau  34.72  vers Guillestre  essais 5 erreurs 0
+05157 Saint-Véran        lycee                site   55  ign   62.2 (3 :   62.2)  carreau  56.33  vers Briançon  essais 6 erreurs 0
+05157 Saint-Véran        superieur            site   61  ign  120.1 (3 :  120.1)  carreau  95.05  vers Gap  essais 6 erreurs 0
+05157 Saint-Véran        gare                 site   40  ign   44.8 (3 :   44.8)  carreau  41.52  vers Eygliers  essais 5 erreurs 0
+05157 Saint-Véran        gare_regionale       site   40  ign   44.8 (3 :   44.8)  carreau  41.52  vers Eygliers  essais 5 erreurs 0
+05157 Saint-Véran        gare_grandes_lignes  site   61  ign  173.0 (3 :  173.0)  carreau 176.99  vers Modane  essais 5 erreurs 0
+06163 Tende              medecin              site    1  ign    1.2 (3 :    1.2)  carreau    1.0  vers Tende  essais 7 erreurs 0
+06163 Tende              commerce             site   61  ign   11.2 (3 :   11.2)  carreau  224.3  vers La Brigue  essais 5 erreurs 0
+06163 Tende              creche               site    1  ign    1.3 (3 :    1.3)  carreau    1.0  vers Tende  essais 5 erreurs 0
+06163 Tende              ecole                site    1  ign    1.3 (3 :    1.3)  carreau    1.0  vers Tende  essais 6 erreurs 0
+06163 Tende              college              site   61  ign    8.3 (3 :    8.3)  carreau 237.54  vers Tende  essais 5 erreurs 0
+06163 Tende              lycee                site   61  ign   76.5 (3 :   76.5)  carreau 195.95  vers Menton  essais 6 erreurs 0
+06163 Tende              superieur            site   61  ign   80.7 (3 :   80.7)  carreau 226.87  vers Menton  essais 7 erreurs 0
+06163 Tende              gare                 site    1  ign    1.1 (3 :    1.1)  carreau    1.0  vers Tende  essais 6 erreurs 0
+06163 Tende              gare_regionale       site   61  ign   78.6 (3 :   78.6)  carreau  225.5  vers Menton  essais 6 erreurs 0
+06163 Tende              gare_grandes_lignes  site   61  ign   97.4 (3 :   97.4)  carreau 238.67  vers Nice  essais 5 erreurs 0
+04155 Prads-Haute-Bléone medecin              site   61  ign   34.2 (3 :   41.1)  carreau 109.79  vers Digne-les-Bains  essais 5 erreurs 0
+04155 Prads-Haute-Bléone commerce             site   19  ign   14.9 (3 :   14.9)  carreau  18.73  vers La Javie  essais 5 erreurs 0
+04155 Prads-Haute-Bléone creche               site   34  ign   34.8 (3 :   34.8)  carreau  34.14  vers Digne-les-Bains  essais 5 erreurs 0
+04155 Prads-Haute-Bléone ecole                site   19  ign   16.6 (3 :   16.6)  carreau  19.13  vers La Javie  essais 5 erreurs 0
+04155 Prads-Haute-Bléone college              site   34  ign   34.9 (3 :   34.9)  carreau  33.77  vers Digne-les-Bains  essais 6 erreurs 0
+04155 Prads-Haute-Bléone lycee                site   35  ign   35.3 (3 :   35.3)  carreau  34.92  vers Digne-les-Bains  essais 7 erreurs 0
+04155 Prads-Haute-Bléone superieur            site   33  ign   32.9 (3 :   32.9)  carreau  33.34  vers Digne-les-Bains  essais 6 erreurs 0
+04155 Prads-Haute-Bléone gare                 site   61  ign   94.9 (3 :   98.8)  carreau  74.96  vers La Mure-Argens  essais 6 erreurs 0
+04155 Prads-Haute-Bléone gare_regionale       site   61  ign   85.3 (3 :   90.6)  carreau  74.96  vers La Brillanne  essais 5 erreurs 0
+04155 Prads-Haute-Bléone gare_grandes_lignes  site   61  ign  177.3 (3 :  177.3)  carreau 151.85  vers Les Arcs  essais 5 erreurs 0
+29238 Roscanvel          medecin              site   10  ign   12.6 (3 :   12.6)  carreau   9.38  vers Camaret-sur-Mer  essais 6 erreurs 0
+29238 Roscanvel          commerce             site    3  ign    2.0 (3 :    2.0)  carreau    1.0  vers Roscanvel  essais 5 erreurs 0
+29238 Roscanvel          creche               site   61  ign   17.0 (3 :   85.4)  carreau  76.77  vers Crozon  essais 7 erreurs 0
+29238 Roscanvel          ecole                site    3  ign    0.6 (3 :    0.6)  carreau    1.0  vers Roscanvel  essais 5 erreurs 0
+29238 Roscanvel          college              site   61  ign   15.3 (3 :   86.0)  carreau  76.95  vers Crozon  essais 7 erreurs 0
+29238 Roscanvel          lycee                site   61  ign   67.2 (3 :   78.4)  carreau   69.7  vers Douarnenez  essais 7 erreurs 0
+29238 Roscanvel          superieur            site   61  ign   22.8 (3 :   91.1)  carreau  70.24  vers Lanvéoc  essais 7 erreurs 0
+29238 Roscanvel          gare                 site   58  ign   57.9 (3 :   57.9)  carreau  57.37  vers Loperhet  essais 5 erreurs 0
+29238 Roscanvel          gare_regionale       site   61  ign   68.2 (3 :   68.2)  carreau  64.25  vers Landerneau  essais 5 erreurs 0
+29238 Roscanvel          gare_grandes_lignes  site   61  ign   72.5 (3 :   72.5)  carreau  67.93  vers Brest  essais 5 erreurs 0
+85001 L'Aiguillon-la-Pre medecin              site    2  ign    2.3 (3 :    2.3)  carreau   1.15  vers L'Aiguillon-la-Presqu'île  essais 6 erreurs 0
+85001 L'Aiguillon-la-Pre commerce             site    2  ign    0.2 (3 :    0.2)  carreau    1.0  vers L'Aiguillon-la-Presqu'île  essais 7 erreurs 0
+85001 L'Aiguillon-la-Pre creche               site   55  ign   36.3 (3 :   36.3)  carreau  54.68  vers Luçon  essais 5 erreurs 0
+85001 L'Aiguillon-la-Pre ecole                site    2  ign    2.2 (3 :    2.2)  carreau   1.23  vers L'Aiguillon-la-Presqu'île  essais 6 erreurs 0
+85001 L'Aiguillon-la-Pre college              site   11  ign   12.0 (3 :   12.0)  carreau   9.95  vers Saint-Michel-en-l'Herm  essais 5 erreurs 0
+85001 L'Aiguillon-la-Pre lycee                site   27  ign   33.7 (3 :   33.7)  carreau  25.86  vers Luçon  essais 6 erreurs 0
+85001 L'Aiguillon-la-Pre superieur            site   51  ign   57.8 (3 :   65.0)  carreau  50.32  vers La Roche-sur-Yon  essais 6 erreurs 0
+85001 L'Aiguillon-la-Pre gare                 site   29  ign   32.1 (3 :   32.1)  carreau  27.82  vers Luçon  essais 6 erreurs 0
+85001 L'Aiguillon-la-Pre gare_regionale       site   51  ign   56.1 (3 :   56.1)  carreau  50.25  vers La Roche-sur-Yon  essais 5 erreurs 0
+85001 L'Aiguillon-la-Pre gare_grandes_lignes  site   32  ign   32.1 (3 :   32.1)  carreau  57.12  vers Luçon  essais 5 erreurs 0
+demandes IGN : 0
+contrôle E107 : {"communes_e107_bpe": 110, "communes_nationales_0a": 110, "e107_hors_nationales": [], "nationales_sans_e107": []}
+carreau de la mairie trouvé : {'32013': True, '76351': True, '85194': True, '48095': True, '74056': True, '05157': True, '06163': True, '04155': True, '29238': True, '85001': True}
