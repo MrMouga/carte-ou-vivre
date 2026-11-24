@@ -1,5 +1,5 @@
 # Tâche 0a — Les sources figées et l'extrait des carreaux
-Statut : faite · Début 12:17 · Fin 12:52 · Commits : voir `git log` (un commit `feat(services): tâche 0a — …`, rapport compris)
+Statut : faite · Début 12:17 · Fin 12:52 · Commits : 033b44e (tâche) · suivant (numéro du commit dans le rapport)
 
 ## Ce que l'utilisateur peut faire maintenant
 Rien de visible sur le site (tâche de données). Pour la suite de la tranche :
