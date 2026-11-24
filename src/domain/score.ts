@@ -12,6 +12,7 @@
 // comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
 import type { Emploi } from './emploi';
+import { filtresServices, raisonService, type RaisonService, type ReglageServices, type Services } from './services';
 
 export const SURFACE_M2 = 52;
 
@@ -107,6 +108,8 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
  * `types` : types d'environnement cochés (R27) ; absent ou vide = « Peu importe » (facultatif, comme `montagne`).
  * `mairies` : bords de mairie cochés (R38 de mairies) ; absent ou vide = « Peu importe » (facultatif, comme `types`).
  * `metiers` : métiers choisis dans l'ordre du choix, deux au plus (R48 d'emploi) ; absent = aucun (facultatif, comme `mairies`).
+ * `services` : état de la catégorie « Services » (R53, R55) ; absent quand rien n'est coché et que le type de gare est
+ * « Toutes » (facultatif, comme `metiers`).
  */
 export type Reglages = {
   loyer: number | null;
@@ -116,6 +119,7 @@ export type Reglages = {
   types?: TypeEnv[];
   mairies?: Bord[];
   metiers?: MetierChoisi[];
+  services?: ReglageServices;
 };
 
 /** Réglages avec `metiers` ; aucun métier : le champ facultatif est retiré (plan d'emploi, « Le réglage »). */
@@ -168,6 +172,8 @@ export type Raison =
   | { critere: 'proche'; nom: string; valeur: number; plafond: number; zones?: readonly number[] }
   /** Proche à vol d'oiseau (R35) : `valeur` et `plafond` en km, `valeur` telle qu'affichée (au km). */
   | { critere: 'proche-km'; nom: string; valeur: number; plafond: number }
+  /** R53 de services : un service filtré qui écarte la commune (temps au-dessus du plafond, ou un cas de D7). */
+  | RaisonService
   /** Plus produite depuis R25 (un prix inconnu passe) ; gardée pour son texte. */
   | { critere: 'loyer-inconnu' }
   | { critere: 'mer-inconnue' }
@@ -233,8 +239,11 @@ const CRITERE_PRIX = { louer: { total: 'loyer', m2: 'loyer-m2' }, acheter: { tot
 /**
  * `emploi` : données de l'emploi (emploi.ts), avec les villes principales à 30 km ou moins de chaque commune, dans l'ordre
  * de `communes` ; sans elles, les métiers ne filtrent pas.
+ * `services` : temps des services (services.ts) ; sans eux, les services ne filtrent pas.
  */
-export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = [], prix: ReglagePrix = PRIX_DEPART, emploi?: Emploi): Resultat {
+export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] = [], prix: ReglagePrix = PRIX_DEPART, emploi?: Emploi, services?: Services): Resultat {
+  // R53 de services : chaque service filtré, sans note ; rien tant que les temps ne sont pas chargés.
+  const filtresSrv = services ? filtresServices(r.services) : [];
   // Critères qui notent : prix, mer, montagne, proches prêts (état « sans plafond » si aucun, details.md de cadre-de-vie).
   const actif = r.loyer != null || r.mer != null || r.montagne != null || proches.length > 0;
   // R46 : pour chaque métier à niveau coché, les bassins de ce niveau (par index de bassin) ; un métier sans niveau, ou
@@ -303,6 +312,11 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       const v = p.temps[i];
       if (v === 0 || v > p.plafond) raisons.push({ critere: 'proche', nom: p.nom, valeur: v, plafond: p.plafond, ...(p.zones && { zones: p.zones }) });
       else notes.push(100 * (1 - v / p.plafond));
+    }
+    // H160 : les services après les proches, dans l'ordre fixe des filtres (R55).
+    for (const f of filtresSrv) {
+      const x = raisonService(services!, c, f);
+      if (x) raisons.push(x);
     }
     const passe = raisons.length === 0;
     const sansNote = passe && actif && notes.length === 0;

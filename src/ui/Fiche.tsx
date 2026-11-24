@@ -29,8 +29,11 @@ type Props = {
   onRetour: () => void;
 };
 
-/** Deux métiers peuvent écarter la même commune : la clé d'une raison de métier porte son code. */
-const cleRaison = (r: Raison) => (r.critere === 'metier' ? `metier-${r.code}` : r.critere);
+/**
+ * Deux métiers peuvent écarter la même commune : la clé d'une raison de métier porte son code ; de même, celle d'un
+ * service porte son nom (plusieurs services filtrés, R53).
+ */
+const cleRaison = (r: Raison) => (r.critere === 'metier' ? `metier-${r.code}` : r.critere === 'service' ? `service-${r.service}` : r.critere);
 
 /**
  * Ligne d'un proche dans la fiche (details.md) : « Parents de Léa : 3 h 30 en voiture », « … : calcul en cours » ;

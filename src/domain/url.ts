@@ -7,6 +7,8 @@
 // Spec emploi, R48 : `metier` liste les métiers choisis dans l'ordre du choix, chacun avec son niveau, placée après `mairie`.
 import { avecMetiers, CHOIX_MER, CHOIX_MONTAGNE, type Bord, type MetierChoisi, type Niveau, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
+import { cransService, estGare, estScolarite, filtresServices, NIVEAUX_SCOLARITE, SERVICES, SERVICES_DEPART, servicesVides, type ReglageServices, type ServiceCle } from './services';
+// Spec services, R55 : `services` liste les services filtrés, `<nom>:<minutes>`, placée après `metier`.
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
 export const BORNES = {
@@ -94,6 +96,36 @@ export function garderMetiersConnus(r: Reglages, codes: ReadonlySet<string>): Re
   return r.metiers ? avecMetiers(r, metiersConnus(r.metiers, codes)) : r;
 }
 
+const CLE_DE_NOM = new Map<string, ServiceCle>(SERVICES.map((s) => [s.adresse, s.cle]));
+const NOM_DE_CLE = new Map<ServiceCle, string>(SERVICES.map((s) => [s.cle, s.adresse]));
+
+/**
+ * R55 : `medecin:10,ecole:10,gare-regionale:20` → l'état de la catégorie. Une entrée au nom inconnu ou aux minutes
+ * invalides est retirée ; puis seule la première entrée valide est gardée pour un même service, et pour les trois niveaux
+ * de gare ensemble ; la première entrée de scolarité valide fixe le temps commun, une autre à un autre temps est retirée.
+ * `null` s'il ne reste rien.
+ */
+function lireServices(v: string | null): ReglageServices | null {
+  if (v == null) return null;
+  const s: ReglageServices = { ...SERVICES_DEPART, niveaux: [] };
+  let gareLue = false;
+  for (const morceau of v.split(',')) {
+    const [nom, min, ...reste] = morceau.split(':');
+    const cle = CLE_DE_NOM.get(nom);
+    if (!cle || reste.length || !/^\d+$/.test(min ?? '') || !cransService(cle).includes(Number(min))) continue;
+    const m = Number(min);
+    if (cle === 'medecin' || cle === 'commerce') s[cle] ??= m;
+    else if (estGare(cle)) {
+      if (!gareLue) [s.gare, s.tempsGare, gareLue] = [cle, m, true];
+    } else if (estScolarite(cle)) {
+      s.scolarite ??= m;
+      if (m === s.scolarite && !s.niveaux.includes(cle)) s.niveaux.push(cle);
+    }
+  }
+  s.niveaux = NIVEAUX_SCOLARITE.filter((n) => s.niveaux.includes(n));
+  return servicesVides(s) ? null : s;
+}
+
 /**
  * `loyer` : plafond du prix, lu dans le mode et l'unité de l'adresse (`lirePrix`). `codes` : codes des métiers connus
  * (R48), absents avant le chargement.
@@ -108,6 +140,8 @@ export function lireAdresse(search: string, codes?: ReadonlySet<string>): Reglag
   const mairies = lireListe(q.get('mairie'), ORDRE_BORDS);
   // R48 d'emploi : de même, `metiers` n'est renseigné que s'il reste un métier.
   const metiers = lireMetiers(q.get('metier'), codes);
+  // R55 de services : de même, `services` n'est renseigné que s'il reste une entrée.
+  const services = lireServices(q.get('services'));
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
     mer: lireMer(q.get('mer')),
@@ -116,12 +150,13 @@ export function lireAdresse(search: string, codes?: ReadonlySet<string>): Reglag
     ...(types.length ? { types } : {}),
     ...(mairies.length ? { mairies } : {}),
     ...(metiers.length ? { metiers } : {}),
+    ...(services ? { services } : {}),
   };
 }
 
 /**
- * Ordre de R31, R41 et R48 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `mairie`, `metier`, `bien`, `unite`,
- * `surface` ; absents si Peu importe.
+ * Ordre de R31, R41, R48 et R55 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `mairie`, `metier`, `services`,
+ * `bien`, `unite`, `surface` ; absents si Peu importe. `services` : les filtres effectifs, écrits s'il en reste un.
  */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
   const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`];
@@ -134,6 +169,8 @@ export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): str
   const mairies = ORDRE_BORDS.filter((b) => r.mairies?.includes(b));
   if (mairies.length) parts.push(`mairie=${mairies.join(',')}`);
   if (r.metiers?.length) parts.push(`metier=${r.metiers.map((m) => (m.niveau ? `${m.code}:${m.niveau}` : m.code)).join(',')}`);
+  const services = filtresServices(r.services);
+  if (services.length) parts.push(`services=${services.map((f) => `${NOM_DE_CLE.get(f.cle)}:${f.minutes}`).join(',')}`);
   if (prix.bien !== PRIX_DEPART.bien) parts.push(`bien=${prix.bien}`);
   if (prix.unite !== UNITE_DEPART[prix.mode]) parts.push(`unite=${prix.unite}`);
   if (prix.surface !== SURFACE_DEPART[prix.bien]) parts.push(`surface=${prix.surface}`);

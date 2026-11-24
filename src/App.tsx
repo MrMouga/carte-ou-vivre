@@ -22,9 +22,9 @@ import { Proches } from './ui/Proches';
 import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
-import { lireServices, type EtatServices, type ServicesJson } from './domain/services';
+import { lireServices, type EtatServices, type Services, type ServicesJson } from './domain/services';
 
-type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi };
+type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi; services?: Services };
 const REPRISE_ADRESSE_MS = 1000;
 
 /** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
@@ -48,18 +48,21 @@ async function lire<T>(url: string): Promise<T> {
 
 // H68 : les prix d'achat se chargent avec les communes (même chargement, même erreur), joints par code INSEE ; H122 de
 // mairies : de même pour les mairies élues en 2026 et leurs nuances ; H140 d'emploi : de même pour l'emploi, dont les
-// villes principales à 30 km de chaque commune sont calculées ici, une fois.
-async function charger(): Promise<Donnees> {
-  const [c, r, a, m, n, e] = await Promise.all([
+// villes principales à 30 km de chaque commune sont calculées ici, une fois. R57 de services : avec `services` dans
+// l'adresse (`avecServices`), les temps se chargent aussi ici, même chargement et même erreur, pour ne jamais montrer une
+// liste non filtrée.
+async function charger(avecServices: boolean): Promise<Donnees> {
+  const [c, r, a, m, n, e, s] = await Promise.all([
     lire<{ communes: LigneCommunes[] }>('/data/communes.json'),
     lire<{ reperes: Repere[] }>('/data/reperes.json'),
     lire<AchatJson>('/data/achat.json'),
     lire<MairiesJson>('/data/mairies.json'),
     lire<NuancesJson>('/data/nuances.json'),
     lire<EmploiJson>('/data/emploi.json'),
+    avecServices ? lire<ServicesJson>('/data/services.json').then(lireServices) : undefined,
   ]);
   const communes = joindreEmploi(joindreBords(joindreAchats(c.communes.map(communeDeLigne), a), m, n), e);
-  return { communes, reperes: r.reperes, emploi: lireEmploi(e, communes, r.reperes) };
+  return { communes, reperes: r.reperes, emploi: lireEmploi(e, communes, r.reperes), services: s };
 }
 
 export function App() {
@@ -95,15 +98,20 @@ export function App() {
   const [erreur, setErreur] = useState(false);
   const [prete, setPrete] = useState(false);
   const [fond, setFond] = useState<Fond>('ign');
+  // R57 : l'adresse d'ouverture filtre-t-elle déjà sur un service (paramètre présent, même si ses entrées sont invalides) ?
+  const [servicesOuverture] = useState(() => new URLSearchParams(location.search).has('services'));
+  // Temps des services (R57) : leur état, à part de celui des autres données.
+  const [temps, setTemps] = useState<EtatServices>({ etat: 'chargement' });
   useEffect(() => {
     let annule = false;
     setDonnees(null);
     setErreur(false);
     setPrete(false);
-    avecDelai(charger(), DELAI_DONNEES_MS).then(
+    avecDelai(charger(servicesOuverture), DELAI_DONNEES_MS).then(
       (d) => {
         if (annule) return;
         setDonnees(d);
+        if (d.services) setTemps({ etat: 'pret', services: d.services });
         // R48 : les métiers de l'adresse sont gardés tels quels jusqu'ici ; les codes inconnus partent, deux au plus restent.
         setReglages((r) => garderMetiersConnus(r, new Set(d.emploi.metiers.keys())));
       },
@@ -112,11 +120,11 @@ export function App() {
     return () => {
       annule = true;
     };
-  }, [essai]);
+  }, [essai, servicesOuverture]);
   // Temps des services (R57, D14) : sans `services` dans l'adresse, demandés quand la carte est prête, avec le délai des
   // autres données ; leur état est à part (la carte et la liste n'attendent pas) et « Réessayer » ne relance qu'eux.
-  // Chargés une fois : un rechargement de la page (« Réessayer » de la carte) garde des temps déjà arrivés.
-  const [temps, setTemps] = useState<EtatServices>({ etat: 'chargement' });
+  // Chargés une fois : un rechargement de la page (« Réessayer » de la carte) garde des temps déjà arrivés. Avec
+  // `services` dans l'adresse, ils arrivent avec les autres données (ci-dessus), et cet effet ne fait rien.
   const [essaiServices, setEssaiServices] = useState(0);
   const tempsPrets = temps.etat === 'pret';
   useEffect(() => {
@@ -202,9 +210,11 @@ export function App() {
     () => proches.proches.map((p) => ({ id: p.id, nom: p.nom, etat: p.etat, lngLat: p.depart ?? p.lieu.point })),
     [proches.proches],
   );
+  // R53 : les temps ne servent à l'évaluation que si un service est réglé ; leur arrivée seule ne recalcule rien.
+  const tempsFiltre = temps.etat === 'pret' && reglages.services ? temps.services : undefined;
   const resultat = useMemo(
-    () => (donnees ? evaluer(donnees.communes, reglages, proches.prets, prix, donnees.emploi) : null),
-    [donnees, reglages, proches.prets, prix],
+    () => (donnees ? evaluer(donnees.communes, reglages, proches.prets, prix, donnees.emploi, tempsFiltre) : null),
+    [donnees, reglages, proches.prets, prix, tempsFiltre],
   );
   const ronds = useMemo<Rond[]>(
     () =>

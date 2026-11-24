@@ -1,9 +1,9 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import services from '../../docs/specs/2026-11-23-services/acceptance.json' with { type: 'json' };
-import { FIXTURE, ouvrir, servicesJson, servirFixture, type Jeu } from './lib/carte';
+import { FIXTURE, ouvrir, servicesJson, servirFixture, vue, type Jeu } from './lib/carte';
 import { voirListe } from './lib/feuille';
-import { ajouter, pret } from './lib/proches';
+import { ajouter, lignes, pret } from './lib/proches';
 import { servirIgn } from './lib/ign';
 
 // Tranche services, sur la fixture « 6 communes » de cadre-de-vie (tuiles de tests/fixtures/tuiles-immobilier/, comme
@@ -204,6 +204,71 @@ test('fiche longue en bureau (1 440 × 700) : la phrase de la traversée de Port
   await derniere.scrollIntoViewIfNeeded();
   await expect(derniere).toBeInViewport({ ratio: 1 });
   expect((await fiche(page).boundingBox())!.height).toBeLessThanOrEqual(700 - 2 * 16);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 2 : le filtre, par l'adresse (R53, R55, R57 avec `services` dans l'adresse).
+
+/** Les lignes de la liste, « Rhinval (67) · 52 » (nom et score). */
+const nomsEtScores = async (page: Page) => (await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '));
+const ID_DE: Record<string, string> = Object.fromEntries(services.fixture.items.map((it) => [it.nom, it.id]));
+/**
+ * Ouvre la fiche d'une commune sur la carte (une commune écartée n'est pas dans la liste). L'adresse est rouverte d'abord :
+ * les points de `vue()` sont ceux de la vue d'ouverture (leçon 2026-10-19-clic-sur-la-carte-apres-un-choix-de-commune).
+ */
+async function ficheDeCarte(page: Page, nom: string) {
+  const u = new URL(page.url());
+  await ouvrir(page, u.pathname + u.search, { jeu: SIX_SERVICES });
+  const { centre } = vue(page, SIX_SERVICES);
+  await page.mouse.click(centre(ID_DE[nom]).x, centre(ID_DE[nom]).y);
+  await expect(fiche(page).getByRole('heading', { level: 2 })).toContainText(nom);
+}
+
+test('AC-8 /?loyer=1200&services=medecin:5 : Rhinval (pas de chiffre) passe sans raison du médecin ; Quaibleu écartée par le médecin', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&services=medecin:5', { jeu: SIX_SERVICES });
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await nomsEtScores(page)).toEqual(['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31']);
+
+  await ficheDeListe(page, 'Rhinval');
+  expect(await sousChomage(page)).toContain('Médecin : pas de chiffre');
+  await expect(fiche(page)).not.toContainText('Ne passe pas tes critères');
+  expect((await textesFiche(page)).filter((t) => t.startsWith('Médecin') && t.includes('plafond'))).toEqual([]);
+  await retour(page);
+
+  // Quaibleu n'est plus dans la liste : sa fiche s'ouvre sur la carte.
+  await ficheDeCarte(page, 'Quaibleu');
+  const raisons = (await fiche(page).getByRole('listitem').allTextContents()).map(nbsp);
+  expect(raisons).toContain('Médecin 10 min : au-dessus de ton plafond de 5 min');
+  expect(page.url()).toMatch(/\/\?loyer=1200&services=medecin:5$/);
+});
+
+test('R53 page « sans plafond » : /?loyer=aucun&services=medecin:5, la fiche de Terrebasse dit pourquoi elle est écartée', async ({ page }) => {
+  await ouvrir(page, '/?loyer=aucun&services=medecin:5', { jeu: SIX_SERVICES });
+  await ficheDeCarte(page, 'Terrebasse');
+  await expect(fiche(page)).toContainText('Ne passe pas tes critères');
+  expect((await fiche(page).getByRole('listitem').allTextContents()).map(nbsp)).toContain('Médecin 18 min : au-dessus de ton plafond de 5 min');
+  await retour(page);
+  await ficheDeCarte(page, 'Rhinval');
+  await expect(fiche(page)).not.toContainText('Ne passe pas tes critères');
+});
+
+test('R57 : avec `services` dans l’adresse, la page attend le fichier des temps avec les autres données (ni carte ni liste avant)', async ({ page }) => {
+  await servirFixture(page, { jeu: SIX_SERVICES });
+  let route: Route | null = null;
+  await page.route('**/data/services.json', (r) => {
+    route = r;
+  });
+  await page.goto('/?loyer=1200&services=zzz:10'); // même si aucune entrée n'est valide
+  await expect.poll(() => route != null).toBe(true);
+  await page.waitForTimeout(500);
+  await expect(page.getByTestId('carte')).toHaveCount(0);
+  await expect(liste(page)).toHaveCount(0);
+  await route!.fulfill({ json: servicesJson(SIX_SERVICES) });
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('5 communes passent tes critères');
+  expect(page.url()).toMatch(/\/\?loyer=1200$/); // R55 : réécrite sans `services`
 });
 
 test('R54 : avec un proche, le bloc « Services en voiture » vient sous « Tes proches »', async ({ page }) => {

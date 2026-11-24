@@ -1,0 +1,34 @@
+// Script jetable de la tâche 2 de services (preuve) : combien de communes passent `medecin:10` seul, sans plafond de prix,
+// calculé par la fonction d'évaluation de la page (`evaluer`) sur les vrais fichiers de public/data/. Déplacé ensuite
+// dans docs/plans/2026-11-24-services/captures/ (hors de la suite).
+import { readFileSync } from 'node:fs';
+import { it } from 'vitest';
+import { communeDeLigne, evaluer, type LigneCommunes } from '../src/domain/score';
+import { lireServices, SERVICES_DEPART, type ServicesJson } from '../src/domain/services';
+import { lireAdresse } from '../src/domain/url';
+
+it('compte medecin:10 sur les vrais fichiers', () => {
+  const lignes = (JSON.parse(readFileSync('public/data/communes.json', 'utf8')) as { communes: LigneCommunes[] }).communes;
+  const communes = lignes.map(communeDeLigne);
+  const s = lireServices(JSON.parse(readFileSync('public/data/services.json', 'utf8')) as ServicesJson);
+  const r = lireAdresse('?loyer=aucun&services=medecin:10');
+  console.log('réglages lus :', JSON.stringify(r));
+  const res = evaluer(communes, r, [], undefined, undefined, s);
+  const evals = [...res.parCode.values()];
+  const passent = evals.filter((e) => e.passe).length;
+  const i = 0; // médecin
+  const temps = communes.map((c) => s.temps.get(c.code)?.[i] ?? null);
+  const sous10 = temps.filter((m) => m != null && m <= 10).length;
+  const sansChiffre = communes.filter((c, k) => temps[k] == null);
+  const pop0 = communes.filter((c) => c.population === 0);
+  console.log(`communes : ${communes.length} ; actif (page sans plafond) : ${res.actif}`);
+  console.log(`passent medecin:10 : ${passent}`);
+  console.log(`temps du médecin ≤ 10 min : ${sous10}`);
+  console.log(`sans chiffre pour le médecin : ${sansChiffre.length} (dont population 0 : ${sansChiffre.filter((c) => c.population === 0).length})`);
+  console.log(`population 0 : ${pop0.map((c) => `${c.nom} (${c.code})`).join(', ')}`);
+  console.log(`attendu : ${sous10} + ${sansChiffre.length - sansChiffre.filter((c) => c.population === 0).length} = ${sous10 + sansChiffre.length - sansChiffre.filter((c) => c.population === 0).length}`);
+  const r2 = lireAdresse('?loyer=aucun&services=gare-regionale:30');
+  const res2 = evaluer(communes, r2, [], undefined, undefined, s);
+  const passent2 = [...res2.parCode.values()].filter((e) => e.passe).length;
+  console.log(`passent gare-regionale:30 : ${passent2} ; témoin sans services : ${[...evaluer(communes, { ...r, services: { ...SERVICES_DEPART } }, [], undefined, undefined, s).parCode.values()].filter((e) => e.passe).length}`);
+});

@@ -1,0 +1,20 @@
+
+ RUN  v5.0.3 /Users/mouga/git-repository/carte-ou-vivre
+
+stdout | scripts/T2-compte.test.ts > compte medecin:10 sur les vrais fichiers
+réglages lus : {"loyer":null,"mer":null,"tailles":[],"services":{"medecin":10,"commerce":null,"niveaux":[],"scolarite":null,"gare":"gare","tempsGare":null}}
+communes : 34746 ; actif (page sans plafond) : false
+passent medecin:10 : 27967
+temps du médecin ≤ 10 min : 27960
+sans chiffre pour le médecin : 13 (dont population 0 : 6)
+population 0 : Beaumont-en-Verdunois (55039), Bezonvaux (55050), Cumières-le-Mort-Homme (55139), Fleury-devant-Douaumont (55189), Haumont-près-Samogneux (55239), Louvemont-Côte-du-Poivre (55307)
+attendu : 27960 + 7 = 27967
+passent gare-regionale:30 : 25163 ; témoin sans services : 34746
+
+ ✓ scripts/T2-compte.test.ts > compte medecin:10 sur les vrais fichiers 79ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:24:14
+   Duration  186ms (tests 71%, transform 23%, import 5%, worker 1%)
+

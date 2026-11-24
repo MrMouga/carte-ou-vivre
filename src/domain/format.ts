@@ -1,4 +1,5 @@
 import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { libelleService, texteValeur } from './services';
 import { couverture, marque } from '../proches/etat';
 import { RAYON_KM, type LigneMetier } from './emploi';
 import { achatDe, estimationSecteur, estimationTousBiens, PRIX_DEPART, prixM2, valeurAffichee, type PrixCommune, type ReglagePrix } from './prix';
@@ -302,5 +303,12 @@ export function raisonTexte(r: Raison): string {
       return `${r.nom} ${tempsProche(r.valeur, r.zones)} : au-dessus de ton plafond de ${duree(r.plafond)}`;
     case 'proche-km':
       return `${r.nom} ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
+    case 'service': {
+      // R53 de services ; H159 : espace insécable avant « : ».
+      const nom = libelleService(r.service);
+      if (r.cas !== 'temps')
+        return `${nom}${NBSP}: ${r.cas === 'ile' ? "aucune sur l'île" : r.cas === 'corse' ? 'aucune en Corse' : 'pas de chiffre, commune sans habitant'}`;
+      return `${nom} ${texteValeur({ cas: 'temps', minutes: r.valeur })}${NBSP}: au-dessus de ton plafond de ${r.plafond}${NBSP}min`;
+    }
   }
 }

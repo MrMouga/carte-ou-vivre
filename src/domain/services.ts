@@ -119,6 +119,80 @@ export const LIMITES_SERVICES =
 /** H159 : phrase de la traversée. */
 export const TRAVERSEE = `Île sans pont${NBSP}: un temps peut compter la traversée, sans l'attente du bateau.`;
 
+// ——— Tâche 2 : le réglage, ses filtres effectifs (R55) et le filtre (R53) ———
+
+/** Niveaux de scolarité, dans l'ordre des âges (H167) : la crèche d'abord. */
+export const NIVEAUX_SCOLARITE = ['creche', 'ecole', 'college', 'lycee', 'superieur'] as const satisfies readonly ServiceCle[];
+export type NiveauScolarite = (typeof NIVEAUX_SCOLARITE)[number];
+/** Les trois niveaux de gare (« Toutes » = `gare`). */
+export type TypeGare = 'gare' | 'gare_regionale' | 'gare_grandes_lignes';
+
+/** R55 : les temps valides de chaque service, ceux des pastilles (R51). */
+export function cransService(cle: ServiceCle): readonly number[] {
+  if (cle === 'medecin' || cle === 'commerce') return [5, 10, 15];
+  if (GARES.includes(cle)) return [10, 20, 30];
+  return [5, 10, 20]; // les cinq niveaux de scolarité
+}
+export const estGare = (cle: ServiceCle): cle is TypeGare => GARES.includes(cle);
+export const estScolarite = (cle: ServiceCle): cle is NiveauScolarite => (NIVEAUX_SCOLARITE as readonly ServiceCle[]).includes(cle);
+
+/**
+ * État de la catégorie « Services » (plan, « Le réglage ») : temps coché du médecin et du commerce (`null` = aucun),
+ * niveaux de scolarité cochés et temps commun, type de gare et temps de la gare. Une scolarité incomplète (H153) ou un
+ * type de gare sans temps sont gardés ici pour le panneau, mais ne filtrent pas (`filtresServices`).
+ */
+export type ReglageServices = {
+  medecin: number | null;
+  commerce: number | null;
+  niveaux: NiveauScolarite[];
+  scolarite: number | null;
+  gare: TypeGare;
+  tempsGare: number | null;
+};
+export const SERVICES_DEPART: ReglageServices = { medecin: null, commerce: null, niveaux: [], scolarite: null, gare: 'gare', tempsGare: null };
+/** Rien de coché et le type « Toutes » : le champ `services` des réglages est alors absent. */
+export const servicesVides = (s: ReglageServices) =>
+  s.medecin == null && s.commerce == null && !s.niveaux.length && s.scolarite == null && s.gare === 'gare' && s.tempsGare == null;
+
+/** Un service filtré et son temps coché. */
+export type FiltreService = { cle: ServiceCle; minutes: number };
+
+/**
+ * La seule fonction des filtres effectifs (plan, « Le réglage ») : l'évaluation, l'adresse et le résumé replié passent
+ * par elle. Dans l'ordre fixe de R55 : médecin, commerce, chaque niveau de scolarité coché (si un temps commun est coché,
+ * H153), puis la gare de son type (si un temps est coché).
+ */
+export function filtresServices(s?: ReglageServices): FiltreService[] {
+  if (!s) return [];
+  const f: FiltreService[] = [];
+  if (s.medecin != null) f.push({ cle: 'medecin', minutes: s.medecin });
+  if (s.commerce != null) f.push({ cle: 'commerce', minutes: s.commerce });
+  if (s.scolarite != null) for (const n of NIVEAUX_SCOLARITE) if (s.niveaux.includes(n)) f.push({ cle: n, minutes: s.scolarite });
+  if (s.tempsGare != null) f.push({ cle: s.gare, minutes: s.tempsGare });
+  return f;
+}
+
+/** Raison d'un service filtré qui écarte une commune (R53) : temps au-dessus du plafond, ou un des trois cas de D7. */
+export type RaisonService =
+  | { critere: 'service'; service: ServiceCle; cas: 'temps'; valeur: number; plafond: number }
+  | { critere: 'service'; service: ServiceCle; cas: 'ile' | 'corse' | 'sans-habitant'; plafond: number };
+
+/**
+ * R53 : `null` si la commune passe ce filtre. Inférieur ou égal au temps coché : passe ; sans chiffre : passe ; ne passent
+ * jamais (D7) : une île sans pont pour les trois gares, la Corse pour les gares régionale et grandes lignes, une commune de
+ * population 0 pour tous les services. Le temps est comparé tel que lu (déjà arrondi, H156 ; 61 = « 61 min ou plus »).
+ */
+export function raisonService(s: Services, c: { code: string; dep: string; population: number | null }, { cle, minutes }: FiltreService): RaisonService | null {
+  const v = valeurService(s, c, cle);
+  if (v.cas === 'ile' || v.cas === 'corse') return { critere: 'service', service: cle, cas: v.cas, plafond: minutes };
+  if (c.population === 0) return { critere: 'service', service: cle, cas: 'sans-habitant', plafond: minutes };
+  if (v.cas === 'temps' && v.minutes > minutes) return { critere: 'service', service: cle, cas: 'temps', valeur: v.minutes, plafond: minutes };
+  return null;
+}
+
+/** Libellé d'un service (R51, R54), celui des raisons. */
+export const libelleService = (cle: ServiceCle) => SERVICES.find((x) => x.cle === cle)!.libelle;
+
 /** Écrit `services.json` depuis des temps arrondis (au-delà de 61 min : « 61 ou plus »), dans l'ordre des lignes. */
 export function ecrireServices(lignes: { code: string; temps: TempsServices; ile_sans_pont?: boolean }[]): ServicesJson {
   const caractere = (m: number | null, code: string) => {

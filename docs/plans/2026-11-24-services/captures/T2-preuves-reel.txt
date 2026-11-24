@@ -1,0 +1,7 @@
+14:30:02 adresse /?loyer=aucun&services=medecin:10 → réécrite /?loyer=aucun&services=medecin:10
+14:30:05 adresse /?services=medecin:10,zzz:5,medecin:5,gare:10,gare-regionale:20,lycee:10,ecole:5&loyer=aucun → réécrite /?loyer=aucun&services=medecin:10,lycee:10,gare:10
+14:30:09 adresse /?loyer=aucun&services=gare-regionale:30 → réécrite /?loyer=aucun&services=gare-regionale:30
+14:30:21 /?loyer=aucun&services=medecin:10 · fiche bordeaux : {"titre":"Ville dense · 268 000 habitants","passe":true,"raisons":[],"ligne":"Médecin : 1 min"}
+14:30:31 /?loyer=aucun&services=medecin:10 · fiche mende : {"titre":"Ville et périphérie · 12 000 habitants","passe":true,"raisons":[],"ligne":"Médecin : 2 min"}
+14:30:44 /?loyer=aucun&services=gare-regionale:30 · fiche mende : {"titre":"Ville et périphérie · 12 000 habitants","passe":false,"raisons":["Gare régionale plus d'une heure : au-dessus de ton plafond de 30 min"],"ligne":"Gare régionale : plus d'une heure"}
+14:31:12 /?loyer=aucun&services=gare-regionale:30 · fiche ajaccio : {"titre":"Ville dense · 76 000 habitants","passe":false,"raisons":["Gare régionale : aucune en Corse","Gare régionale : aucune en Corse","Gare grandes lignes : aucune en Corse"],"ligne":"Gare régionale : aucune en Corse"}
