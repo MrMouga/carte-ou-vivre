@@ -1,5 +1,5 @@
 # Tâche 0a — Codes postaux, et calcul des minutes préparé
-Statut : faite · Début 2026-11-25 23:42 · Fin 2026-11-26 00:17 · Commits : voir `git log --grep "tâche 0a"` (un commit, celui qui porte ce rapport)
+Statut : faite · Début 2026-11-25 23:42 · Fin 2026-11-26 00:17 · Commits : 420aa85 (la tâche) et le commit suivant (ce numéro dans le rapport)
 
 ## Ce que l'utilisateur peut faire maintenant
 Rien de visible encore à l'écran : la tâche prépare les données.
