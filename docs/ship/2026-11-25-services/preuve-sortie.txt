@@ -1,0 +1,32 @@
+00:54:49 === Bureau 1 440 × 900 ===
+00:54:56 étape 1 : / → /?loyer=1200 · catégories : Logement > Cadre de vie > Vie locale > Emploi > Tes proches > Services · réglages : {"loyer":"1 200 € par mois pour 52 m²","services":["Toutes"]}
+00:55:09   essai raté pour 32013 → Duran (32)
+00:55:21 étape 1 : fiche d’Auch : {"passe":true,"raisons":[],"services":["Médecin : 2 min","Commerce alimentaire : 2 min","Crèche : 3 min","École : 2 min","Collège : 3 min","Lycée : 3 min","Supérieur : 4 min","Gare : 4 min","Gare régionale : 4 min","Gare grandes lignes : plus d'une heure"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab"]}
+00:55:30 étape 2 : loyer Sans limite + « 10 min » pour « Médecin » → /?loyer=aucun&services=medecin:10
+00:55:31 étape 3 : « École », « Collège », « 20 min » → /?loyer=aucun&services=medecin:10,ecole:20,college:20
+00:55:32 étape 4 : « 30 min » pour « Gare », « Régionale » → /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 · réglages : {"loyer":"Sans limite","services":["10 min","École","Collège","20 min","Régionale","30 min"]}
+00:55:45 étape 2 : /?loyer=aucun&services=medecin:10 · fiche bordeaux : {"passe":true,"raisons":[],"services":["Médecin : 1 min","Commerce alimentaire : 1 min","Crèche : 1 min","École : 1 min","Collège : 2 min","Lycée : 2 min","Supérieur : 3 min","Gare : 5 min","Gare régionale : 7 min","Gare grandes lignes : 7 min"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab"]}
+00:56:00 étape 2 : /?loyer=aucun&services=medecin:10 · fiche mende : {"passe":true,"raisons":[],"services":["Médecin : 2 min","Commerce alimentaire : 2 min","Crèche : 3 min","École : 2 min","Collège : 2 min","Lycée : 2 min","Supérieur : 2 min","Gare : 3 min","Gare régionale : plus d'une heure","Gare grandes lignes : plus d'une heure"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab"]}
+00:56:16 étape 4 : /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 · fiche mende : {"passe":false,"raisons":["Gare régionale plus d'une heure : au-dessus de ton plafond de 30 min"],"services":["Médecin : 2 min","Commerce alimentaire : 2 min","Crèche : 3 min","École : 2 min","Collège : 2 min","Lycée : 2 min","Supérieur : 2 min","Gare : 3 min","Gare régionale : plus d'une heure","Gare grandes lignes : plus d'une heure"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab"]}
+00:56:56 étape 4 : /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 · fiche ajaccio : {"passe":false,"raisons":["Gare régionale : aucune en Corse","Gare régionale : aucune en Corse","Gare grandes lignes : aucune en Corse"],"services":["Médecin : 1 min","Commerce alimentaire : 1 min","Crèche : 2 min","École : 1 min","Collège : 2 min","Lycée : 2 min","Supérieur : 2 min","Gare : 3 min","Gare régionale : aucune en Corse","Gare grandes lignes : aucune en Corse"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab"]}
+00:57:42 étape 5 : fiche de L’Île-d’Yeu : {"passe":false,"raisons":["Gare régionale : aucune sur l'île","Médecin : pas de chiffre","Lycée : pas de chiffre","Supérieur : pas de chiffre","Gare : aucune sur l'île","Gare régionale : aucune sur l'île","Gare grandes lignes : aucune sur l'île"],"services":["Médecin : pas de chiffre","Commerce alimentaire : 3 min","Crèche : 3 min","École : 3 min","Collège : 3 min","Lycée : pas de chiffre","Supérieur : pas de chiffre","Gare : aucune sur l'île","Gare régionale : aucune sur l'île","Gare grandes lignes : aucune sur l'île"],"phrases":["Temps en voiture, sans embouteillages, que la moitié des hab","Île sans pont : un temps peut compter la traversée, sans l'a"]}
+00:57:53 étape 6 : onglet 1 /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 {"loyer":"Sans limite","services":["10 min","École","Collège","20 min","Régionale","30 min"]} · nouvel onglet /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 {"loyer":"Sans limite","services":["10 min","École","Collège","20 min","Régionale","30 min"]} · identiques : true
+00:57:54 étape 7 : pied de page, Insee : true · gares : true
+00:57:58 erreur : alertes ["Temps des services indisponibles."]
+00:57:59 erreur : fiche Allarmont (88) · alertes ["Temps des services indisponibles.","Temps des services indisponibles."]
+00:58:01 erreur : après « Réessayer » de la catégorie, alertes 0 · focus sur Services
+00:58:01 === Téléphone 390 × 844, au toucher ===
+00:58:06 étape 1 : / → /?loyer=1200 · catégories : Logement > Cadre de vie > Vie locale > Emploi > Tes proches > Services · réglages : {"loyer":"1 200 € par mois pour 52 m²","services":["Toutes"]}
+00:58:10   toucher « Médecin 10 » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10
+00:58:10 étape 2 : loyer Sans limite → /?loyer=aucun&services=medecin:10
+00:58:10   toucher « École » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10
+00:58:11   toucher « Collège » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10
+00:58:12   toucher « Scolarité 20 » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10,ecole:20,college:20
+00:58:12 étape 3 → /?loyer=aucun&services=medecin:10,ecole:20,college:20
+00:58:12   toucher « Gare 30 » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare:30
+00:58:13   toucher « Régionale » : coché true, entier à l'écran true → /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30
+00:58:13 étape 4 → /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 · réglages : {"loyer":"Sans limite","services":["10 min","École","Collège","20 min","Régionale","30 min"]} · même adresse qu’en bureau : true
+00:58:14   « Services » repliée : SERVICES · 3 choix
+00:58:18 étape 6 : nouvel onglet /?loyer=aucun&services=medecin:10,ecole:20,college:20,gare-regionale:30 {"loyer":"Sans limite","services":["10 min","École","Collège","20 min","Régionale","30 min"]} · identiques : true
+00:58:20 étape 7 : pied de page, Insee : true · gares : true
+00:58:28 375 × 548 : feuille y 210 · curseur 519 à 537 · entier dans la feuille et l’écran : true
