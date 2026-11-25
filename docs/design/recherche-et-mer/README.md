@@ -1,4 +1,4 @@
-2026-11-25 · brouillon (à valider)
+2026-11-25 · validé
 # Design — recherche et mer en minutes
 
 Spec : [docs/specs/2026-11-25-recherche-et-mer/](../../specs/2026-11-25-recherche-et-mer/spec.md) (amendée en /ui : D5 révisée, D9) · Temps convenu : 1 h de Vincent, 1 session · Support : prototypes en code, sans Figma, sans références, sans croquis (choix de Vincent) · Étend le [système](../system/README.md).

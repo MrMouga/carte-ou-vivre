@@ -1,0 +1,12 @@
+# Critères à recaler — mer en minutes seulement
+2026-11-25 · D5 révisée et D9 de [spec.md](spec.md) · liste faite par un script (recherche de « mer= », « km de la mer », « Mer … km », « · … km » en fin de ligne de liste, « Distance à la mer » dans les critères qui parlent de la mer) : **à vérifier critère par critère en /breakdown** (un critère peut y être par erreur, ou manquer)
+
+**58 critères, 7 tranches.** Chaque réécriture demande l'accord de Vincent (critères protégés). Valeurs en minutes : `mer_min` de la fixture (Portmer 5, Grandeville 50, Montcher 135, Terrebasse 160, Quaibleu 14, Rhinval sans temps → ≈ 7 h).
+
+- **2026-10-12-loyer-mer** (6) : AC-2 (réglage/raison) ; AC-4 (ligne de liste) ; AC-7 (fiche km) ; AC-8 (fiche km) ; AC-9 (réglage/raison) ; AC-11 (adresse mer=, ligne de liste)
+- **2026-10-13-interface-telephone** (11) : AC-1 (adresse mer=) ; AC-2 (adresse mer=) ; AC-3 (adresse mer=) ; AC-4 (adresse mer=) ; AC-5 (adresse mer=, ligne de liste) ; AC-6 (adresse mer=) ; AC-7 (adresse mer=, ligne de liste) ; AC-8 (adresse mer=) ; AC-9 (adresse mer=) ; AC-10 (adresse mer=) ; AC-11 (adresse mer=)
+- **2026-10-13-proches** (11) : AC-1 (adresse mer=, ligne de liste) ; AC-2 (adresse mer=, ligne de liste) ; AC-3 (adresse mer=, fiche km) ; AC-4 (adresse mer=, ligne de liste) ; AC-5 (adresse mer=) ; AC-7 (adresse mer=) ; AC-8 (adresse mer=) ; AC-9 (adresse mer=) ; AC-11 (adresse mer=) ; AC-14 (adresse mer=) ; AC-16 (adresse mer=)
+- **2026-10-14-cadre-de-vie** (9) : AC-1 (ligne de liste) ; AC-2 (adresse mer=, ligne de liste, réglage/raison) ; AC-3 (ligne de liste, réglage/raison) ; AC-4 (ligne de liste, réglage/raison) ; AC-5 (ligne de liste) ; AC-7 (adresse mer=, fiche km, réglage/raison) ; AC-8 (adresse mer=, ligne de liste) ; AC-9 (adresse mer=, réglage/raison) ; AC-11 (adresse mer=, ligne de liste)
+- **2026-10-14-immobilier** (10) : AC-2 (adresse mer=, ligne de liste) ; AC-3 (adresse mer=, ligne de liste) ; AC-4 (adresse mer=, ligne de liste) ; AC-5 (adresse mer=, ligne de liste) ; AC-6 (adresse mer=, ligne de liste) ; AC-7 (adresse mer=, ligne de liste) ; AC-8 (ligne de liste) ; AC-10 (ligne de liste) ; AC-13 (ligne de liste) ; AC-14 (ligne de liste)
+- **2026-10-16-proches-fiables** (9) : AC-2 (ligne de liste) ; AC-3 (ligne de liste) ; AC-4 (ligne de liste) ; AC-5 (ligne de liste) ; AC-6 (ligne de liste) ; AC-7 (ligne de liste) ; AC-8 (ligne de liste) ; AC-9 (ligne de liste) ; AC-10 (ligne de liste)
+- **2026-10-18-mairies** (2) : AC-2 (ligne de liste) ; AC-3 (ligne de liste)
