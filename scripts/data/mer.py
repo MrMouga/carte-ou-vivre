@@ -115,9 +115,11 @@ class Nearest:
         for x, y in pts:
             self.grid[(int(x // self.CELL), int(y // self.CELL))].append((x, y))
 
-    def km(self, x, y):
+    def point(self, x, y):
+        """Le point de côte le plus proche de (x, y) en Lambert-93, et sa distance en m : (m, (px, py)).
+        Le premier trouvé à distance égale (recherche par anneaux de la grille, toujours dans le même ordre)."""
         cx, cy = int(x // self.CELL), int(y // self.CELL)
-        best = float('inf')
+        best, bp = float('inf'), None
         for r in range(0, 80):
             if best < (r - 1) * self.CELL:
                 break
@@ -128,17 +130,49 @@ class Nearest:
                     for px, py in self.grid.get((gx, gy), ()):
                         d = (px - x) ** 2 + (py - y) ** 2
                         if d < best * best:
-                            best = math.sqrt(d)
-        return best / 1000
+                            best, bp = math.sqrt(d), (px, py)
+        return best, bp
+
+    def km(self, x, y):
+        return self.point(x, y)[0] / 1000
+
+
+def de_l93(x, y):
+    """Lambert-93 -> WGS84 (lon, lat), inverse de to_l93 (formules IGN, latitude par itérations)."""
+    dx, dy = x - XS, YS - y
+    r = math.hypot(dx, dy)
+    lon = LON0 + math.atan2(dx, dy) / N
+    lat_iso = -math.log(r / C) / N
+    lat = 2 * math.atan(math.exp(lat_iso)) - math.pi / 2
+    for _ in range(50):
+        s = math.sin(lat)
+        nouvelle = 2 * math.atan(((1 + E * s) / (1 - E * s)) ** (E / 2) * math.exp(lat_iso)) - math.pi / 2
+        if abs(nouvelle - lat) < 1e-12:
+            lat = nouvelle
+            break
+        lat = nouvelle
+    return math.degrees(lon), math.degrees(lat)
+
+
+def mairies():
+    """Mairies des communes de métropole : [(code, (lon, lat))] (communes-mairie.json, D18)."""
+    return [(c['code'], tuple(c['mairie']['coordinates'])) for c in json.load(open(os.path.join(RAW, 'communes-mairie.json')))
+            if c['codeDepartement'] < '97' and c.get('mairie')]
 
 
 def distances(fix_adour=True):
     near = Nearest(coast_points(fix_adour))
+    return {code: near.km(*to_l93(*m)) for code, m in mairies()}
+
+
+def points_cote(fix_adour=True):
+    """Le point de côte qui donne les km de chaque commune (D4 de recherche-et-mer), avec ces km :
+    {code: (km, (x, y) en Lambert-93, (lon, lat))}. Même recherche que `distances` : mêmes km, au bit près."""
+    near = Nearest(coast_points(fix_adour))
     out = {}
-    for c in json.load(open(os.path.join(RAW, 'communes-mairie.json'))):
-        if c['codeDepartement'] >= '97' or not c.get('mairie'):
-            continue
-        out[c['code']] = near.km(*to_l93(*c['mairie']['coordinates']))
+    for code, m in mairies():
+        metres, p = near.point(*to_l93(*m))
+        out[code] = (metres / 1000, p, de_l93(*p))
     return out
 
 

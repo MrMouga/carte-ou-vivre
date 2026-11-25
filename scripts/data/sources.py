@@ -2,6 +2,7 @@
 
 Usage : python3 scripts/data/sources.py  (ne retélécharge pas un fichier déjà présent)
         python3 -I scripts/data/sources.py --services  (seulement les sources des services : lit l'API, ne télécharge rien)
+        python3 -I scripts/data/sources.py --codes-postaux  (seulement la base des codes postaux de La Poste, et sa licence)
 Sources, licences et mentions : CLAUDE.md (Données).
 """
 import datetime
@@ -34,7 +35,14 @@ BASSINS = 'bassins-emploi-2026.xlsx'  # nom du serveur : « Bassins_d'emploi_202
 CHOMAGE = 'chomage-zone-t1-2003-t2-2026.xlsx'
 ZE = 'ZE2020_au_01-01-2025.zip'
 MVT_2026 = 'v_mvt_commune_2026.csv'
-NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2, BMO, BASSINS, CHOMAGE, ZE, MVT_2026)
+# Codes postaux (tranche recherche-et-mer, tâche 0a, 2026-11-25 ; D2, R58) : « Base officielle des codes postaux » de
+# La Poste (data.gouv.fr, jeu 545b55e1c751df52de9b6045), fichier CSV brut servi par data.laposte.fr (une ligne par code
+# INSEE × code postal × lieu-dit, ISO-8859-1, « ; »). Adresse stable, fichier remplacé à chaque mise à jour : date et
+# empreinte notées à côté, et la licence relue sur les deux sites au téléchargement (`licence_codes_postaux`).
+CODES_POSTAUX = 'laposte-hexasmal.csv'
+CODES_POSTAUX_JEU = 'https://www.data.gouv.fr/api/1/datasets/545b55e1c751df52de9b6045/'
+CODES_POSTAUX_META = 'https://data.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal'
+NOTES = (DVF, DVF_MOIS, MUNI_T1, MUNI_T2, BMO, BASSINS, CHOMAGE, ZE, MVT_2026, CODES_POSTAUX)
 
 # Services (tranche services, tâche 0a, 2026-11-24 ; H165, H170, H171). Jeu Insee « Données sur la localisation et l'accès
 # de la population aux équipements » (data.gouv.fr, Licence Ouverte 2.0) : 13 fichiers régionaux de métropole (14,45 Go),
@@ -124,6 +132,8 @@ SOURCES = {
     CHOMAGE: 'https://www.insee.fr/fr/statistiques/fichier/1893230/chomage-zone-t1-2003-t2-2026.xlsx',
     ZE: 'https://www.insee.fr/fr/statistiques/fichier/4652957/ZE2020_au_01-01-2025.zip',
     MVT_2026: 'https://www.insee.fr/fr/statistiques/fichier/8740222/v_mvt_commune_2026.csv',
+    # Codes postaux (voir CODES_POSTAUX plus haut).
+    CODES_POSTAUX: 'https://data.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/raw',
 }
 # Même jeu : zones infra-communales des communes classées en partie, une archive par département (34 départements).
 for dep, date in ZINF.items():
@@ -190,12 +200,48 @@ def services():
     print(f'  écrit : data-raw/{SERVICES_INFO}')
 
 
+def lire_api(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)', 'Accept': 'application/json'})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.load(r)
+
+
+def licence_codes_postaux():
+    """D2, tâche 0a de recherche-et-mer : la licence de la base des codes postaux, relue et datée sur data.gouv.fr et sur
+    data.laposte.fr, et la date des données, ajoutées à <fichier>.info.json. Le fichier téléchargé doit être celui que
+    décrit La Poste (même md5). Rien n'est écrit si un contrôle échoue (relu par codes_postaux.py)."""
+    path = os.path.join(RAW, CODES_POSTAUX)
+    info = json.load(open(path + '.info.json'))
+    if 'licence' in info:
+        print(f"  {CODES_POSTAUX} : licence déjà relue le {info['licence_lue_le']} ({info['licence']})")
+        return
+    jeu = lire_api(CODES_POSTAUX_JEU)
+    meta = lire_api(CODES_POSTAUX_META)
+    md5 = hashlib.md5(open(path, 'rb').read()).hexdigest()
+    lu = {'data.gouv.fr': jeu.get('license'), 'data.laposte.fr': (meta.get('license') or {}).get('title'),
+          'producteur': (jeu.get('organization') or {}).get('name'), 'md5 La Poste': (meta.get('file') or {}).get('md5'),
+          'md5 du fichier': md5, 'données mises à jour': meta.get('dataUpdatedAt'), 'lignes': meta.get('count')}
+    print(f'  {CODES_POSTAUX} : {lu}')
+    if lu['data.gouv.fr'] != 'lov2' or lu['data.laposte.fr'] != 'Licence Ouverte / Open Licence' or lu['md5 La Poste'] != md5:
+        raise SystemExit(f'ARRET : licence autre que la Licence Ouverte, ou fichier différent de celui que décrit La Poste : {lu}')
+    info.update({'licence': 'Licence Ouverte 2.0 (data.gouv.fr : lov2 ; data.laposte.fr : « Licence Ouverte / Open Licence »)',
+                 'licence_lue_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
+                 'producteur': lu['producteur'], 'donnees_mises_a_jour': lu['données mises à jour'], 'lignes': lu['lignes'],
+                 'md5': md5, 'jeu': CODES_POSTAUX_JEU, 'metadonnees': CODES_POSTAUX_META})
+    with open(path + '.info.json', 'w') as f:
+        json.dump(info, f, indent=1, ensure_ascii=False)
+    print(f'  licence relue et notée dans data-raw/{CODES_POSTAUX}.info.json')
+
+
 def main():
     if '--services' in sys.argv:  # seulement les sources des services (rien n'est téléchargé)
         services()
         return
     os.makedirs(RAW, exist_ok=True)
-    for name, url in SOURCES.items():
+    sources = SOURCES
+    if '--codes-postaux' in sys.argv:  # seulement la base des codes postaux (tâche 0a de recherche-et-mer)
+        sources = {CODES_POSTAUX: SOURCES[CODES_POSTAUX]}
+    for name, url in sources.items():
         path = os.path.join(RAW, name)
         if os.path.exists(path):
             print(f'déjà là : {name}')
@@ -216,6 +262,9 @@ def main():
             with open(path + '.info.json', 'w') as f:
                 json.dump(info, f, indent=1)
             print(f'  {name} : {info}')
+    licence_codes_postaux()
+    if '--codes-postaux' in sys.argv:
+        return
     ltm = os.path.join(RAW, 'Limite_terre_mer_France_metropolitaine')
     if not os.path.isdir(ltm):
         print('extraction de la limite terre-mer (bsdtar)')

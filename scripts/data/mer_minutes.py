@@ -1,0 +1,377 @@
+"""Temps en voiture de la mairie de chaque commune jusqu'à la mer (tranche recherche-et-mer ; D4, R61, H196).
+
+Le trajet va de la mairie (D18 de loyer-mer) au point de côte qui donne ses km (D4), trouvé par `mer.points_cote` (même
+recherche que les km de mer-km.csv, importée et non recopiée). Les temps viennent de la matrice d'openrouteservice
+(profil voiture), calculés une seule fois : ne pas relancer une fois l'envoi fini.
+
+Modes :
+  --preparer   sans réseau. Point de côte de chaque commune (contrôle : les km relus égaux à mer-km.csv), lots de
+               requêtes, nombre de requêtes et durée prévue. Écrit data-raw/mer-calcul/lots.json.
+  --envoyer    ENVOIE LES REQUÊTES (lancé par Vincent seulement ; l'agent ne l'exécute jamais). Lit lots.json, reprend
+               sans renvoyer un lot déjà écrit dans data-raw/mer-calcul/ors-mer.jsonl, attend quand le quota est
+               épuisé, refait une fois un lot en échec puis le note en échec. N'affiche ni n'écrit jamais la clé.
+    --essai    avec --envoyer : seulement le lot d'essai (Bordeaux, Caen, Mont-de-Marsan : une requête).
+    --a-blanc  avec --envoyer : dit ce qui serait envoyé, sans rien envoyer ni lire la clé (sortie : JSON).
+  --lots-extrait <fichier.json>  formation des lots sur ces seules données ({"communes": [[code, lon, lat, lon du point,
+               lat du point]]}), écrite sur la sortie standard (tests de scripts/data/mer_minutes.test.ts).
+Options des tests : --dossier <dossier> (à la place de data-raw/mer-calcul), --url <adresse>, --cle <fichier>,
+  --attentes-courtes (toutes les attentes à 0,05 s).
+
+Lots (plan, tâche 0a) : une requête de matrice a des sources (les mairies) et des destinations (les points de côte) ;
+elle calcule sources × destinations trajets (« éléments »), 3 500 au plus (restrictions de l'API hébergée :
+« Locations (origin x destination) : 3.500 (e.g. 50 x 50) per request »). Les communes d'un même point vont dans le même
+lot (coupé en lots de 3 500 communes s'il en a plus) ; les points sont pris dans l'ordre d'une courbe de Morton sur leurs
+coordonnées Lambert-93 (voisins à la suite) et ajoutés au lot tant que (communes) × (points) reste sous 3 500.
+
+Rayon d'accroche (H196) : la matrice n'a aucun paramètre de rayon (requête de matrice, code d'openrouteservice :
+locations, sources, destinations, metrics, resolve_locations, units, et deux paramètres cachés, `optimized` et
+`options`). Le rayon est un réglage du serveur, `ors.endpoints.matrix.maximum_search_radius`, 2 000 m par défaut
+(documentation de configuration, giscience.github.io/openrouteservice/run-instance/configuration/endpoints/matrix) ;
+la valeur du service hébergé n'est pas publiée. Un point sans route à moins de ce rayon n'est pas accroché : la réponse
+le donne sans `location` (null) et ses durées sont nulles (MatrixSearchContextBuilder). La réponse entière est gardée :
+lieu accroché et distance d'accroche (`snapped_distance`) de chaque source et destination.
+
+Bacs (D4) : la matrice ne peut pas les écarter en pratique. `options.avoid_features` existe (paramètre caché) mais fait
+passer la matrice en mode « flexible » (`isFlexibleMode`), limité à 25 trajets par requête sur le service hébergé
+(« Locations (with dynamic arguments) : 25 (e.g. 5 x 5) per request ») : au moins 1 390 requêtes, près de trois jours
+de quota. Les bacs restent ; le tableau de crédibilité gagne Blaye (tâche 0b).
+
+Usage : python3 -I scripts/data/mer_minutes.py --preparer
+        python3 -I scripts/data/mer_minutes.py --envoyer --essai   (Vincent : d'abord le lot d'essai)
+        python3 -I scripts/data/mer_minutes.py --envoyer           (Vincent : tous les lots, reprend s'il est relancé)
+"""
+import csv
+import datetime
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.request
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import mer  # noqa: E402
+
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+RAW = os.path.join(ROOT, 'data-raw')
+URL = 'https://api.heigit.org/openrouteservice/v2/matrix/driving-car'  # l'ancienne adresse n'a que 10 % du quota (leçon du 2026-11-24)
+CLE = os.path.expanduser('~/.config/openrouteservice/key')
+MAX_ELEMENTS = 3500  # sources × destinations par requête (API hébergée)
+MAX_REQUETES_JOUR = 500  # quota de la matrice (CLAUDE.md, ORS) ; au-delà : condition d'arrêt de la tâche 0a
+PAR_MINUTE = 40  # quota par minute (CLAUDE.md, ORS)
+RAYON_DOC_M = 2000  # maximum_search_radius par défaut (documentation de configuration) ; aucun paramètre envoyé
+ESSAI = ['33063', '14118', '40192']  # Bordeaux, Caen, Mont-de-Marsan (Landes)
+ECHECS_DE_SUITE_MAX = 3  # trois lots de suite en échec : le service est en panne, arrêt sans les noter
+
+COURTES = '--attentes-courtes' in sys.argv
+PAUSE = 0.05 if COURTES else 60 / PAR_MINUTE + 0.1  # entre deux départs réels (leçon du 2026-10-13)
+ATTENTE_ECHEC = 0.05 if COURTES else 30  # avant le nouvel essai d'un lot
+ATTENTE_DEBIT = 0.05 if COURTES else 60  # réponse 429 (trop de requêtes dans la minute)
+ATTENTE_QUOTA, ATTENTES_QUOTA_MAX = (0.05, 3) if COURTES else (1800, 52)  # quota du jour : un essai toutes les 30 min, 26 h au plus
+
+
+def option(nom, defaut=None):
+    return sys.argv[sys.argv.index(nom) + 1] if nom in sys.argv else defaut
+
+
+def dire(*morceaux):
+    """Messages pour Vincent : sur la sortie d'erreur quand la sortie standard est du JSON (--a-blanc, extraits)."""
+    print(*morceaux, file=sys.stderr if ('--a-blanc' in sys.argv or '--lots-extrait' in sys.argv) else sys.stdout, flush=True)
+
+
+# --- Formation des lots (sans réseau) ---
+
+def morton(lon, lat):
+    """Rang d'un point sur une courbe de Morton (bits entrelacés de ses coordonnées Lambert-93, au km) : des points
+    voisins ont souvent des rangs voisins."""
+    x, y = mer.to_l93(lon, lat)
+    ix, iy = max(0, int(x // 1000)), max(0, int(y // 1000))
+    r = 0
+    for b in range(16):
+        r |= ((ix >> b) & 1) << (2 * b) | ((iy >> b) & 1) << (2 * b + 1)
+    return r
+
+
+def former_lots(communes, max_elements=MAX_ELEMENTS):
+    """communes : [(code, (lon, lat) de la mairie, (lon, lat) du point de côte)]. Renvoie les lots
+    [{"id", "points": [[lon, lat]], "communes": [[code, lon, lat, indice du point]]}], chaque commune une fois,
+    communes × points ≤ max_elements dans chaque lot."""
+    par_point = {}
+    for code, m, p in sorted(communes):
+        par_point.setdefault(tuple(p), []).append((code, m))
+    ordre = sorted(par_point, key=lambda p: (morton(*p), p))
+    lots, courant = [], None
+
+    def fermer():
+        if courant and courant['communes']:
+            lots.append(courant)
+
+    for p in ordre:
+        cs = par_point[p]
+        if len(cs) > max_elements:  # un point de plus de 3 500 communes : ses propres lots, une seule destination
+            fermer()
+            courant = None
+            for k in range(0, len(cs), max_elements):
+                lots.append({'points': [list(p)], 'communes': [[c, m[0], m[1], 0] for c, m in cs[k:k + max_elements]]})
+            continue
+        if courant is None or (len(courant['communes']) + len(cs)) * (len(courant['points']) + 1) > max_elements:
+            fermer()
+            courant = {'points': [], 'communes': []}
+        j = len(courant['points'])
+        courant['points'].append(list(p))
+        courant['communes'] += [[c, m[0], m[1], j] for c, m in cs]
+    fermer()
+    for i, lot in enumerate(lots):
+        lot['id'] = f'{i + 1:04d}'
+    return [{'id': l['id'], 'points': l['points'], 'communes': l['communes']} for l in lots]
+
+
+def elements(lot):
+    return len(lot['communes']) * len(lot['points'])
+
+
+def lots_extrait(chemin):
+    ex = json.load(open(chemin, encoding='utf-8'))
+    communes = [(c[0], (c[1], c[2]), (c[3], c[4])) for c in ex['communes']]
+    json.dump(former_lots(communes, ex.get('max_elements', MAX_ELEMENTS)), sys.stdout)
+    print()
+
+
+# --- Préparation (sans réseau) ---
+
+def dossier():
+    return option('--dossier', os.path.join(RAW, 'mer-calcul'))
+
+
+def preparer():
+    debut = time.time()
+    t0 = time.time()
+    points = mer.points_cote()
+    dire(f'points de côte : {len(points)} communes, {time.time() - t0:.0f} s')
+    with open(os.path.join(RAW, 'mer-km.csv'), newline='') as f:
+        km = {r['code']: r['km'] for r in csv.DictReader(f)}
+    differents = [c for c in points if f'{points[c][0]:.3f}' != km.get(c)]
+    dire(f"  {'ok  ' if not differents and len(km) == len(points) else 'ÉCHEC'} les km du point de côte relus égaux à"
+         f' mer-km.csv ({len(km)} lignes, {len(differents)} différentes : {differents[:5]})')
+    if differents or len(km) != len(points):
+        raise SystemExit(1)
+    retour = max(abs(a - b) for c, (_, p, ll) in points.items() for a, b in zip(mer.to_l93(*ll), p))
+    dire(f'  écart du point de côte converti en degrés puis relu en Lambert-93 : {retour * 1000:.3f} mm au plus')
+    if retour > 0.01:
+        raise SystemExit('ÉCHEC : conversion Lambert-93 → degrés')
+
+    mairies = dict(mer.mairies())
+    communes = [(c, mairies[c], (round(ll[0], 6), round(ll[1], 6))) for c, (_, _, ll) in points.items()]
+    lots = former_lots(communes)
+    par_point = {}
+    for _, _, p in communes:
+        par_point[p] = par_point.get(p, 0) + 1
+    tailles = sorted(par_point.values(), reverse=True)
+    vus = sorted(c[0] for l in lots for c in l['communes'])
+    total = sum(elements(l) for l in lots)
+    dire(f'points de côte distincts : {len(par_point)} pour {len(communes)} communes ; les plus partagés : {tailles[:5]} ;'
+         f' {sum(t == 1 for t in tailles)} points d\'une seule commune')
+    dire(f'lots : {len(lots)} requêtes, {total} trajets calculés pour {len(communes)} utiles'
+         f' ({total / len(communes):.1f} par commune) ; le plus gros lot : {max(elements(l) for l in lots)} trajets ;'
+         f' le plus de points dans un lot : {max(len(l["points"]) for l in lots)}')
+    ok = vus == sorted(points) and all(elements(l) <= MAX_ELEMENTS for l in lots)
+    dire(f"  {'ok  ' if ok else 'ÉCHEC'} chaque commune dans un seul lot, aucun lot au-delà de {MAX_ELEMENTS} trajets")
+    if not ok:
+        raise SystemExit(1)
+
+    essai = {'id': 'essai', 'points': [], 'communes': []}
+    for c in ESSAI:
+        essai['communes'].append([c, *mairies[c], len(essai['points'])])
+        essai['points'].append(list(next(p for cc, _, p in communes if cc == c)))
+    requetes = len(lots) + 1
+    duree_min = requetes * PAUSE / 60
+    dire(f'envoi : {requetes} requêtes (dont le lot d\'essai), quota de {MAX_REQUETES_JOUR} par jour et {PAR_MINUTE} par'
+         f' minute ; au moins {duree_min:.0f} min au débit permis, plus le temps de calcul de chaque requête (non mesuré :'
+         f' le lot d\'essai le donne)')
+    os.makedirs(dossier(), exist_ok=True)
+    with open(os.path.join(dossier(), 'lots.json'), 'w', encoding='utf-8') as f:
+        json.dump({'prepare_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
+                   'rayon_doc_m': RAYON_DOC_M, 'max_elements': MAX_ELEMENTS, 'communes': len(communes),
+                   'points': len(par_point), 'requetes': requetes, 'essai': essai, 'lots': lots}, f)
+    dire(f'écrit : {os.path.relpath(os.path.join(dossier(), "lots.json"), ROOT)} ({time.time() - debut:.0f} s)')
+    if requetes > MAX_REQUETES_JOUR:
+        raise SystemExit(f'ARRET : {requetes} requêtes, plus d\'un jour de quota ({MAX_REQUETES_JOUR}) : choix de Vincent')
+
+
+# --- Envoi (lancé par Vincent seulement) ---
+
+def lire_resultats(chemin):
+    """Lots déjà écrits : {id: codes}."""
+    faits = {}
+    if os.path.exists(chemin):
+        with open(chemin, encoding='utf-8') as f:
+            for ligne in f:
+                if ligne.strip():
+                    r = json.loads(ligne)
+                    faits[r['lot']] = r['codes']
+    return faits
+
+
+def a_envoyer(prepares, faits):
+    """Lots à envoyer, dans l'ordre : ceux qui ne sont pas encore écrits. Un lot écrit avec d'autres communes que le lot
+    préparé du même numéro arrête tout (les lots ont changé depuis le début de l'envoi)."""
+    reste = []
+    for lot in prepares:
+        codes = [c[0] for c in lot['communes']]
+        if lot['id'] in faits:
+            if faits[lot['id']] != codes:
+                raise SystemExit(f"ARRET : le lot {lot['id']} écrit n'a pas les communes du lot préparé (lots.json a changé)")
+            continue
+        reste.append(lot)
+    return reste
+
+
+def corps(lot):
+    n = len(lot['communes'])
+    return json.dumps({'locations': [[c[1], c[2]] for c in lot['communes']] + lot['points'],
+                       'sources': list(range(n)), 'destinations': list(range(n, n + len(lot['points']))),
+                       'metrics': ['duration']}).encode('utf-8')
+
+
+def nuls(lot, reponse):
+    """(trajets commune → son point sans durée, points non accrochés, mairies non accrochées) d'une réponse."""
+    durees = reponse.get('durations') or []
+    sans = sum(1 for i, c in enumerate(lot['communes']) if i >= len(durees) or durees[i][c[3]] is None)
+    dest = sum(1 for d in reponse.get('destinations') or [] if not d or d.get('location') is None)
+    src = sum(1 for s in reponse.get('sources') or [] if not s or s.get('location') is None)
+    return sans, dest, src
+
+
+def envoyer():
+    lots_json = json.load(open(os.path.join(dossier(), 'lots.json'), encoding='utf-8'))
+    prepares = [lots_json['essai']] if '--essai' in sys.argv else lots_json['lots']
+    sortie = os.path.join(dossier(), 'ors-mer.jsonl')
+    reste = a_envoyer(prepares, lire_resultats(sortie))
+    dire(f'{len(prepares)} lots préparés, {len(prepares) - len(reste)} déjà écrits, {len(reste)} à envoyer'
+         f' ({sum(len(l["communes"]) for l in reste)} communes)')
+    if '--a-blanc' in sys.argv:
+        json.dump({'a_envoyer': [l['id'] for l in reste], 'requetes': len(reste)}, sys.stdout)
+        print()
+        return
+    if not reste:
+        dire('Rien à envoyer : tout est déjà écrit. Ne pas relancer.')
+        return
+    url = option('--url', URL)
+    cle = open(option('--cle', CLE), encoding='utf-8').read().strip()
+    masquer = (lambda t: t.replace(cle, '***')) if cle else (lambda t: t)
+    entetes = {'Authorization': cle, 'Content-Type': 'application/json', 'Accept': 'application/json'}
+    dernier_depart = [0.0]
+    envoyees = [0]
+    limite = 2 * len(reste) + 10  # garde-fou : deux essais par lot, plus quelques-uns
+
+    def demander(lot):
+        """Une réponse (dict) ou une erreur (dict) ; attend le quota sans compter d'essai."""
+        attentes = 0
+        while True:
+            if envoyees[0] >= limite:
+                raise SystemExit(f'ARRET : {envoyees[0]} requêtes envoyées, au-delà du garde-fou de {limite}')
+            attente = dernier_depart[0] + PAUSE - time.time()
+            if attente > 0:
+                time.sleep(attente)
+            dernier_depart[0] = time.time()
+            envoyees[0] += 1
+            q = urllib.request.Request(url, data=corps(lot), method='POST', headers=entetes)
+            try:
+                with urllib.request.urlopen(q, timeout=300) as r:
+                    return {'reponse': json.load(r), 'secondes': round(time.time() - dernier_depart[0], 1)}
+            except urllib.error.HTTPError as e:
+                texte = masquer(e.read(2000).decode('utf-8', 'replace'))
+                if e.code == 429:
+                    dire(f'{heure()} trop de requêtes dans la minute, nouvel essai dans {ATTENTE_DEBIT:.0f} s')
+                    time.sleep(ATTENTE_DEBIT)
+                    continue
+                if e.code == 403 and 'quota' in texte.lower():
+                    attentes += 1
+                    if attentes > ATTENTES_QUOTA_MAX:
+                        raise SystemExit('ARRET : quota toujours épuisé après 26 h ; relancer la même commande plus tard')
+                    dire(f'{heure()} quota du jour épuisé, nouvel essai dans {ATTENTE_QUOTA / 60:.0f} min')
+                    time.sleep(ATTENTE_QUOTA)
+                    continue
+                return {'erreur': {'code': e.code, 'texte': texte}}
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                return {'erreur': {'code': None, 'texte': masquer(str(e))}}
+
+    en_attente = []  # lots en échec, notés seulement quand un lot suivant réussit (une panne n'est pas notée)
+    bilan = {'lots': 0, 'trajets': 0, 'sans': 0, 'points': 0, 'mairies': 0, 'echecs': 0}
+    with open(sortie, 'a', encoding='utf-8') as s:
+        def ecrire(lot, resultat, essais):
+            ligne = {'lot': lot['id'], 'codes': [c[0] for c in lot['communes']], 'points': lot['points'],
+                     'point_de': [c[3] for c in lot['communes']], 'envoye_le': datetime.datetime.now().astimezone().isoformat(timespec='seconds'),
+                     'essais': essais, **resultat}
+            s.write(json.dumps(ligne, ensure_ascii=False) + '\n')
+            s.flush()
+
+        for lot in reste:
+            resultat, essais = demander(lot), 1
+            if 'erreur' in resultat:
+                dire(f"{heure()} lot {lot['id']} : échec ({resultat['erreur']['code']}), nouvel essai dans {ATTENTE_ECHEC:.0f} s")
+                time.sleep(ATTENTE_ECHEC)
+                resultat, essais = demander(lot), 2
+            if 'erreur' in resultat:
+                en_attente.append((lot, resultat, essais))
+                dire(f"{heure()} lot {lot['id']} : échec après un nouvel essai ({resultat['erreur']['code']} :"
+                     f" {resultat['erreur']['texte'][:200]})")
+                if len(en_attente) >= ECHECS_DE_SUITE_MAX:
+                    raise SystemExit(f'ARRET : {len(en_attente)} lots de suite en échec, le service semble en panne ;'
+                                     f' rien n\'est noté pour eux, relancer la même commande plus tard')
+                continue
+            for l, r, e in en_attente:
+                ecrire(l, r, e)
+                bilan['echecs'] += 1
+            en_attente = []
+            ecrire(lot, resultat, essais)
+            sans, dest, src = nuls(lot, resultat['reponse'])
+            for k, v in (('lots', 1), ('trajets', len(lot['communes'])), ('sans', sans), ('points', dest), ('mairies', src)):
+                bilan[k] += v
+            if lot['id'] == 'essai':
+                montrer_essai(lot, resultat)
+            elif bilan['lots'] % 20 == 0:
+                dire(f"{heure()} {bilan['lots']} lots écrits ; {bilan['sans']} trajets sans temps sur {bilan['trajets']}")
+        for l, r, e in en_attente:  # échecs des derniers lots, après au moins une réussite dans l'envoi
+            if bilan['lots']:
+                ecrire(l, r, e)
+                bilan['echecs'] += 1
+            else:
+                dire(f"lot {l['id']} : échec non noté (aucun lot n'a réussi) ; relancer la même commande plus tard")
+    part = 100 * bilan['sans'] / bilan['trajets'] if bilan['trajets'] else 0
+    dire(f"TERMINÉ : {envoyees[0]} requêtes envoyées ; {bilan['lots']} lots écrits, {bilan['echecs']} en échec ;"
+         f" trajets sans temps : {bilan['sans']} sur {bilan['trajets']} ({part:.1f} %) ; points de côte non accrochés :"
+         f" {bilan['points']} ; mairies non accrochées : {bilan['mairies']}")
+
+
+def heure():
+    return time.strftime('%d/%m %H:%M:%S')
+
+
+def montrer_essai(lot, resultat):
+    rep = resultat['reponse']
+    durees, dests, srcs = rep.get('durations') or [], rep.get('destinations') or [], rep.get('sources') or []
+    dire(f"lot d'essai : réponse en {resultat['secondes']} s")
+    for i, c in enumerate(lot['communes']):
+        d = durees[i][c[3]] if i < len(durees) else None
+        acc_m = (srcs[i] or {}).get('snapped_distance') if i < len(srcs) else None
+        acc_p = (dests[c[3]] or {}).get('snapped_distance') if c[3] < len(dests) else None
+        temps = 'sans temps (null)' if d is None else f'{d / 60:.1f} min ({d:.0f} s)'
+        dire(f'  {c[0]} : {temps} ; mairie accrochée à {acc_m} m, point de côte accroché à {acc_p} m')
+    sans = nuls(lot, rep)[0]
+    dire(f"  part de null : {sans} sur {len(lot['communes'])} trajets")
+
+
+def main():
+    if '--lots-extrait' in sys.argv:
+        lots_extrait(option('--lots-extrait'))
+    elif '--preparer' in sys.argv:
+        preparer()
+    elif '--envoyer' in sys.argv:
+        envoyer()
+    else:
+        raise SystemExit(__doc__)
+
+
+if __name__ == '__main__':
+    main()
