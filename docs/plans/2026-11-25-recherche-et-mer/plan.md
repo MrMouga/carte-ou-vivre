@@ -1,5 +1,5 @@
 # Plan — recherche et mer en minutes
-2026-11-25 · brouillon · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-11-25-recherche-et-mer/spec.md) (D1–D9, amendée en /ui : D5 révisée, D9) · Détails : [details.md](../../specs/2026-11-25-recherche-et-mer/details.md) (R58–R63, H177–H196) · Critères : [acceptance.json](../../specs/2026-11-25-recherche-et-mer/acceptance.json) (AC-1 à AC-13) · Critères à recaler : [criteres-a-recaler.md](../../specs/2026-11-25-recherche-et-mer/criteres-a-recaler.md) · Design : [README](../../design/recherche-et-mer/README.md) (piste C, minutes seules)
+2026-11-25 · validé · révisé après [review-plan.md](review-plan.md) · Spec : [spec.md](../../specs/2026-11-25-recherche-et-mer/spec.md) (D1–D9, amendée en /ui : D5 révisée, D9) · Détails : [details.md](../../specs/2026-11-25-recherche-et-mer/details.md) (R58–R63, H177–H196) · Critères : [acceptance.json](../../specs/2026-11-25-recherche-et-mer/acceptance.json) (AC-1 à AC-13) · Critères à recaler : [criteres-a-recaler.md](../../specs/2026-11-25-recherche-et-mer/criteres-a-recaler.md) · Design : [README](../../design/recherche-et-mer/README.md) (piste C, minutes seules)
 (La stack et les commandes vivent dans `CLAUDE.md`, pas ici. Le site existe : neuf tranches construites et en ligne.)
 
 ## Ce que /build fera seul, et ce qu'il demandera
