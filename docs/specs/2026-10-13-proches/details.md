@@ -1,4 +1,5 @@
 # Détails — proches
+Révisé le 2026-11-25 par D19 (tranche [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md)) : la mer en minutes est reprise là-bas ; AC-12, AC-13 et AC-15 sont remplacés.
 Révisé le 2026-10-16 par D18 (tranche [proches-fiables](../2026-10-16-proches-fiables/details.md)) : l'état **indisponible** disparaît ; R12, R13, H21, H32, H33, H37 et AC-10 sont révisés là-bas, et « proche prêt » se lit « prêt ou approximatif ».
 Révisé le 2026-10-13 après /ui : pastilles de temps (D10, R15), estimation haute (D11), pas de phrase sur l'IGN (D12), champ replié derrière « + Ajouter un proche » (D13), mer en minutes reportée (D14), plafond de 3 h (D15), précision (D16). Lire d'abord [spec.md](spec.md) (décisions D-n), puis la tranche [loyer-mer](../2026-10-12-loyer-mer/details.md), que celle-ci étend : ses règles R1 à R8 et ses hypothèses H1 à H18 restent valables, revues par D20 de loyer-mer. Ici, les règles commencent à R9 et les hypothèses à H19 ; « R1 », « H9 »… sans précision sont donc celles de loyer-mer.
 
@@ -40,7 +41,7 @@ Interactions : « Ajouter » → proche en **calcul** (ou **en attente**) et rep
 - **R11** — Plafond et score (D5). Le plafond d'un proche va de 15 min à 3 h par pas de 15 min (D15) ; il vaut 2 h à l'ajout (H19). Une commune tient un proche si la fin de sa tranche est inférieure ou égale au plafond ; pour passer, elle doit aussi tenir R1. La note d'un proche vaut 100 × (1 − fin de tranche / plafond). Le score est la moyenne des notes de tous les critères actifs : le loyer, la mer et chaque proche **prêt**. Un proche dans un autre état ne compte pas. *Pourquoi* : D5.
 - **R12** — *Révisée par D18 (proches-fiables).* Mémoire (D7). Pour chaque proche, ce navigateur garde l'adresse, le point de départ, le nom, le plafond et les temps rangés par code INSEE. À la réouverture, un proche qui était **prêt** revient **prêt**, sans nouveau calcul. Un proche qui n'était pas prêt, ou dont un code INSEE de la carte n'a pas de temps, revient **indisponible**. Les proches n'entrent jamais dans l'adresse de la page. « Retirer » efface un proche de cette mémoire ; « Effacer mes proches » les efface tous. Dès qu'un enregistrement échoue, parce que le navigateur refuse ou que sa mémoire est pleine, les proches marchent jusqu'à la fermeture de la page, et la zone dit « Tes proches ne seront pas gardés sur ce navigateur. ». *Pourquoi* : D7.
 - **R13** — *Révisée par D18 (proches-fiables).* Pannes (comme R8). Si la recherche ne répond pas, la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. ». Si le calcul d'un proche échoue ou dépasse le délai de H21 (45 s), ce proche passe **indisponible**. Dans les deux cas, la carte, les autres proches et les réglages marchent comme d'habitude. *Pourquoi* : D16 de loyer-mer, un service extérieur ne casse pas la carte.
-- **R14** — *Reportée par D14* (mer en minutes).
+- **R14** — *Reportée par D14, reprise par D19* : voir R60 à R63 de [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md).
 - **R15** — Pastilles de temps (D10). En bureau, dès qu'il y a un proche, une pastille par proche en haut de la carte, dans l'ordre d'ajout, sans action au clic. Sans commune choisie : « Parents de Léa · 4 h au plus » pour un proche **prêt**, « calcul en cours » ou « trajets indisponibles » sinon. Avec une commune choisie : son temps depuis ce proche (R10), suivi de « · au-dessus de 4 h » quand il dépasse le plafond. Pas de pastilles sous la largeur bureau (H11 de loyer-mer). *Pourquoi* : D10.
 
 ## Cas limites
@@ -76,11 +77,11 @@ Loyer-mer : AC-1 à AC-15, sur un navigateur sans proche gardé et avec la mer e
 - **H20** — Recherche : à partir de 3 caractères, 300 ms après la dernière frappe ; au plus 5 suggestions, toutes en métropole.
 - **H21** — *Révisée par D18 (proches-fiables).* Budgets : « Calcul des trajets… » et le repère apparaissent aussitôt après « Ajouter ». Un proche (12 zones, au plus 4 requêtes par seconde) se calcule en 14 à 16 s mesurées en tâche 0 ; on vise 20 s. Au-delà de 45 s depuis le début de son calcul, le proche passe **indisponible**. Changer un plafond ou retirer un proche ne relance aucun calcul. À la réouverture, les proches sont prêts dès que la carte est chargée. *Remplace* : 10 s visées, échec à 30 s (avant la mesure).
 - **H22** — Formats des temps (D11) : proches « 15 min », « 45 min », « 1 h », « 1 h 15 », « 2 h 15 », « plus de 3 h » ; plafonds : « 45 min », « 2 h », « 3 h ».
-- **H23** — *Reportée par D14* (mer en minutes).
+- **H23** — *Reportée par D14, reprise par D19* : voir R60 à R63 de [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md).
 - **H24** — Les temps sont ceux du réseau routier, sans embouteillages ni heure de départ ; l'écran dit seulement « en voiture ».
-- **H25** — *Reportée par D14* (mer en minutes).
+- **H25** — *Reportée par D14, reprise par D19* : voir R60 à R63 de [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md).
 - **H26** — *Supprimée par D12* (phrase sur l'IGN sous le champ).
-- **H27** — *Reportée par D14* (mer en minutes).
+- **H27** — *Reportée par D14, reprise par D19* : voir R60 à R63 de [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md).
 - **H28** — Les coordonnées envoyées à l'IGN sont celles que renvoie la recherche, sans arrondi.
 - **H29** — Le repère d'un proche affiche son nom en entier (30 caractères au plus, R9) ; s'il en recouvre un autre, les deux restent visibles (règle d'affichage : /ui).
 - **H30** — Un nom de proche n'est envoyé à aucun service, et ne sort jamais du navigateur.

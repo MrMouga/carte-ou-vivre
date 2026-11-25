@@ -1,0 +1,121 @@
+{
+  "slice": "2026-11-25-recherche-et-mer",
+  "fixture": {
+    "description": "Fixture inventée « 6 communes » d'emploi et de services, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, points, loyers, prix, mer en km, type d'environnement, montagne, mairie, emploi et services. Au départ (/ : prix 1 200 € pour 52 m², rien de coché), la liste est celle d'AC-1 de mairies : Terrebasse (23) 65 · 416 €, Rhinval (67) 52 · 572 €, Portmer (17) 46 · 650 €, Grandeville (33) 31 · 832 €, Quaibleu (13) 9 · 1 092 € ; Montcher (75) ne passe pas (loyer 1 560 €). Chaque commune gagne mer_min (temps en voiture jusqu'à la mer, minutes entières déjà arrondies, H191 ; null = sans temps, repli de D7) et codes_postaux (la liste de ses codes). Les mer_min de A à E sont ceux de la fixture de proches (D19 proposée pour proches) ; F, Rhinval, est sans temps. Le code 99100, inventé, est partagé par Portmer et Quaibleu. Le fichier des codes postaux peut être retardé ou mis en erreur par le test (AC-3). Rappel des km affichés : Portmer « moins d'1 km » (0,9), Grandeville 40 km (39,9), Montcher 148 km, Terrebasse 180 km, Quaibleu 7 km, Rhinval 420 km. AC-12 et AC-13 portent leurs propres communes inventées, hors de la carte, pour la règle de recherche seule.",
+    "items": [
+      { "id": "A", "code_insee": "99001", "nom": "Portmer", "dep": "17", "population": 23000, "mer_min": 5, "codes_postaux": ["17990", "99100"] },
+      { "id": "B", "code_insee": "99002", "nom": "Grandeville", "dep": "33", "population": 260000, "mer_min": 50, "codes_postaux": ["33990", "33991"] },
+      { "id": "C", "code_insee": "99003", "nom": "Montcher", "dep": "75", "population": 2100000, "mer_min": 135, "codes_postaux": ["75990"] },
+      { "id": "D", "code_insee": "99004", "nom": "Terrebasse", "dep": "23", "population": 4200, "mer_min": 160, "codes_postaux": ["23990"] },
+      { "id": "E", "code_insee": "99005", "nom": "Quaibleu", "dep": "13", "population": 85000, "mer_min": 14, "codes_postaux": ["13990", "99100"] },
+      { "id": "F", "code_insee": "99006", "nom": "Rhinval", "dep": "67", "population": 30000, "mer_min": null, "codes_postaux": ["67990"] }
+    ],
+    "services": {}
+  },
+  "criteria": [
+    {
+      "id": "AC-1",
+      "rule": "R58",
+      "given": "Fixture, page ouverte sur / en bureau (1 280 × 800), requêtes du navigateur observées",
+      "when": "l'utilisateur tape successivement dans « Chercher une commune » : « q », « QUAI », « grandé », « mo »",
+      "then": "« q » : aucune suggestion et aucun message ; « QUAI » : une seule suggestion « Quaibleu (13) » ; « grandé » : une seule suggestion « Grandeville (33) » ; « mo » : une seule suggestion « Montcher (75) » ; pendant toute la saisie, aucune requête vers un autre site que le site lui-même",
+      "passes": false
+    },
+    {
+      "id": "AC-2",
+      "rule": "R58",
+      "given": "Fixture, page ouverte sur /, codes postaux chargés",
+      "when": "l'utilisateur tape successivement « 99100 », « 339 », « 33 991 »",
+      "then": "« 99100 » : deux suggestions, dans cet ordre, « 99100 · Quaibleu (13) » puis « 99100 · Portmer (17) » ; « 339 » : une seule suggestion « 33990 · Grandeville (33) » ; « 33 991 » : une seule suggestion « 33991 · Grandeville (33) »",
+      "passes": false
+    },
+    {
+      "id": "AC-3",
+      "rule": "R58",
+      "given": "Fixture, page ouverte sur / ; puis, page rouverte, le fichier des codes postaux répond en erreur à chaque demande",
+      "when": "l'utilisateur tape « zzz » ; puis, page rouverte avec les codes en erreur, il tape « 33 », efface et tape « grand »",
+      "then": "« zzz » : « Aucune commune ne correspond. » ; codes en erreur : « 33 » montre « Codes postaux indisponibles. Cherche par nom ou réessaie dans un moment. » et aucune suggestion ; « grand » propose « Grandeville (33) »",
+      "passes": false
+    },
+    {
+      "id": "AC-4",
+      "rule": "R59",
+      "given": "Fixture, page ouverte sur / en bureau (1 280 × 800), aucune commune choisie",
+      "when": "l'utilisateur tape « mo » et choisit « Montcher (75) » au clavier (flèche bas, Entrée)",
+      "then": "la fiche de Montcher (75) est ouverte et contient « Ne passe pas tes critères » et « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » ; une fois l'animation finie, le centre et le zoom de la carte sont ceux obtenus en choisissant Montcher sur la carte depuis la même vue de départ (zoom à 0,01 près, centre à 1 px près) ; le champ affiche « Montcher (75) » ; l'adresse de la page reste /?loyer=1200",
+      "passes": false
+    },
+    {
+      "id": "AC-5",
+      "rule": "R59",
+      "given": "Fixture, page ouverte sur / à 390 × 844, feuille dans sa position de départ",
+      "when": "l'utilisateur tape « grand » et touche « Grandeville (33) »",
+      "then": "la fiche de Grandeville (33) est ouverte dans la feuille et contient « 31 » et « 4e sur 5 communes qui passent » ; « ← Les 10 premières » ramène l'onglet « Les 10 premières »",
+      "passes": false
+    },
+    {
+      "id": "AC-6",
+      "rule": "R62",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=30 (mer en km, « 30 km » cochée)",
+      "when": "l'utilisateur passe l'unité de la mer sur « min »",
+      "then": "les pastilles sont « 15 min », « 30 min », « 1 h », « 1 h 30 », « 30 min » cochée ; l'adresse devient /?loyer=1200&mer=30&mer-en=min ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 65 · 650 € · 5 min » et « 2 · Quaibleu (13) · 31 · 1 092 € · 14 min »",
+      "passes": false
+    },
+    {
+      "id": "AC-7",
+      "rule": "R60",
+      "given": "Fixture",
+      "when": "l'utilisateur ouvre successivement /?loyer=1200&mer=60&mer-en=min, /?loyer=1200&mer=50&mer-en=min, /?loyer=1200&mer-en=km&mer=30",
+      "then": "1) unité « min », « 1 h » cochée, adresse inchangée ; 2) unité « min », aucune pastille cochée (Peu importe), adresse réécrite /?loyer=1200&mer-en=min, liste « 1 · Terrebasse (23) · 65 · 416 € · 2 h 40 », « 2 · Rhinval (67) · 52 · 572 € · ≈ 7 h », « 3 · Portmer (17) · 46 · 650 € · 5 min », « 4 · Grandeville (33) · 31 · 832 € · 50 min », « 5 · Quaibleu (13) · 9 · 1 092 € · 14 min » ; 3) unité « km », « 30 km » cochée, adresse réécrite /?loyer=1200&mer=30",
+      "passes": false
+    },
+    {
+      "id": "AC-8",
+      "rule": "R61",
+      "given": "Fixture, aucun proche",
+      "when": "l'utilisateur ouvre /?loyer=1200&mer=60&mer-en=min puis choisit Terrebasse (23), puis Rhinval (67)",
+      "then": "la liste montre « 3 communes passent tes critères » puis Portmer (17) 69, Quaibleu (13) 43, Grandeville (33) 24 ; la fiche de Terrebasse contient « Ne passe pas tes critères », « Mer 2 h 40 : au-dessus de ton plafond de 1 h » et « 2 h 40 de la mer en voiture » ; celle de Rhinval contient « Mer ≈ 7 h : au-dessus de ton plafond de 1 h » et « Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km »",
+      "passes": false
+    },
+    {
+      "id": "AC-9",
+      "rule": "R63",
+      "given": "Fixture, page ouverte sur /?loyer=1200 (mer en km, Peu importe)",
+      "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
+      "then": "la fiche de Grandeville contient, dans cet ordre, « 40 km de la mer à vol d'oiseau », « 50 min de la mer en voiture » puis la ligne de la montagne ; celle de Quaibleu contient « 7 km de la mer à vol d'oiseau » et « 14 min de la mer en voiture » ; le pied de page contient « Codes postaux », « La Poste », « Temps jusqu'à la mer » et « openrouteservice »",
+      "passes": false
+    },
+    {
+      "id": "AC-10",
+      "rule": "R60",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer=30&mer-en=min ; puis sur /?loyer=1200&mer=60&mer-en=min",
+      "when": "l'utilisateur passe l'unité de la mer sur « km », chaque fois",
+      "then": "1) « 30 km » cochée, adresse /?loyer=1200&mer=30, liste « 1 · Portmer (17) · 71 · 650 € · moins d'1 km » et « 2 · Quaibleu (13) · 43 · 1 092 € · 7 km » ; 2) « 50 km » cochée, adresse /?loyer=1200&mer=50",
+      "passes": false
+    },
+    {
+      "id": "AC-11",
+      "rule": "R59",
+      "given": "Fixture, page ouverte sur /?loyer=300 (état « aucune commune »)",
+      "when": "l'utilisateur tape « grand » et choisit « Grandeville (33) »",
+      "then": "la fiche de Grandeville (33) est ouverte et contient « Ne passe pas tes critères » et « Loyer 832 € : au-dessus de ton plafond de 300 € » ; le message de l'état « aucune commune » reste celui d'aujourd'hui",
+      "passes": false
+    },
+    {
+      "id": "AC-12",
+      "rule": "R58",
+      "given": "La recherche par nom, sur ces seules communes inventées (nom, département, population) : Saint-Denis (93) 113 000 ; Les Sables-d'Olonne (85) 45 000 ; Sainte-Maxime (83) 14 000 ; Stenay (55) 2 600 ; Saint-Denis-d'Oléron (17) 1 300 ; Œuilly (51) 600",
+      "when": "on cherche « olonne », « LES SABLES », « st denis », « st », « ste max », « oeuilly », « denis », « st-denis-d'ol »",
+      "then": "« olonne » et « LES SABLES » : Les Sables-d'Olonne (85) ; « st denis » : Saint-Denis (93) puis Saint-Denis-d'Oléron (17) ; « st » : Saint-Denis (93), Sainte-Maxime (83), Stenay (55), Saint-Denis-d'Oléron (17), dans cet ordre ; « ste max » : Sainte-Maxime (83) ; « oeuilly » : Œuilly (51) ; « denis » : Saint-Denis (93) puis Saint-Denis-d'Oléron (17) ; « st-denis-d'ol » : Saint-Denis-d'Oléron (17)",
+      "passes": false
+    },
+    {
+      "id": "AC-13",
+      "rule": "R58",
+      "given": "La recherche par code, sur ces seules données inventées : 12 communes C01 (99) à C12 (99), de 12 000 à 1 000 habitants par pas de 1 000, toutes au code 99200 ; Paris (75, code INSEE 75056) et une ligne de La Poste qui rattache 75015 à l'arrondissement 75115",
+      "when": "on cherche « 99200 », « 992 », « 75015 »",
+      "then": "« 99200 » : 12 suggestions, « 99200 · C01 (99) » à « 99200 · C12 (99) » dans cet ordre, dans une liste qui défile ; « 992 » : 8 suggestions, C01 à C08 ; « 75015 » : « 75015 · Paris (75) »",
+      "passes": false
+    }
+  ]
+}

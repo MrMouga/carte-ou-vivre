@@ -77,7 +77,7 @@ Première tranche.
 - **H18** — Si le navigateur refuse de réécrire l'adresse (trop de réécritures en peu de temps, curseur glissé), la page réessaie une seconde plus tard : l'adresse peut avoir quelques secondes de retard, la page ne tombe pas. *Idem.*
 
 ## Exceptions
-- Accessibilité : les communes ne se parcourent pas une à une au clavier. L'accès au clavier passe par les réglages, la liste et la fiche. Une commune hors du top 10 ne s'atteint qu'à la souris ou au doigt, jusqu'à la recherche par nom (Pas maintenant).
+- Accessibilité : les communes ne se parcourent pas une à une au clavier. L'accès au clavier passe par les réglages, la liste et la fiche. Une commune hors du top 10 ne s'atteint qu'à la souris ou au doigt, jusqu'à la recherche par nom (Pas maintenant). Levée le 2026-11-25 par la tranche [recherche-et-mer](../2026-11-25-recherche-et-mer/details.md) : toute commune s'atteint au clavier par la recherche (R58, R59).
 
 ## Vérification de bout en bout
 Sur la version en ligne, en largeur bureau et à 390 px :

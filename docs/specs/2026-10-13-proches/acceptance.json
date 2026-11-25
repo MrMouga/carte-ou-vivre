@@ -407,7 +407,7 @@
     }
   ],
   "remplaces": {
-    "pourquoi": "D18 (spec proches, 2026-10-16) : l'état « Trajets indisponibles » disparaît ; AC-10 est remplacé par AC-4 de proches-fiables (docs/specs/2026-10-16-proches-fiables/acceptance.json). Gardé ici tel quel, pour la trace.",
+    "pourquoi": "D18 (spec proches, 2026-10-16) : l'état « Trajets indisponibles » disparaît ; AC-10 est remplacé par AC-4 de proches-fiables (docs/specs/2026-10-16-proches-fiables/acceptance.json). Gardé ici tel quel, pour la trace. D19 (spec proches, 2026-11-25) : AC-12, AC-13 et AC-15 (mer en minutes, reportés par D14) sont remplacés par AC-6, AC-8 et AC-10 de recherche-et-mer (docs/specs/2026-11-25-recherche-et-mer/acceptance.json).",
     "criteria": [
       {
         "id": "AC-10",
@@ -417,19 +417,15 @@
         "then": "la zone affiche « Trajets indisponibles depuis Nantesville (44). » avec « Réessayer » ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
         "passes": true,
         "remplace_par": "AC-4 de proches-fiables"
-      }
-    ]
-  },
-  "reportes": {
-    "pourquoi": "D14 (spec proches, 2026-10-13) : mer en minutes reportée à une tranche suivante ; critères gardés tels quels pour elle.",
-    "criteria": [
+      },
       {
         "id": "AC-12",
         "rule": "R14",
         "given": "Fixture, page ouverte sur / (réglages de départ), aucun proche",
         "when": "l'utilisateur passe la mer sur « minutes en voiture »",
         "then": "le plafond de la mer affiche 60 min ; l'adresse de la page devient /?loyer=1200&mer=60&mer-en=min ; la liste montre « 3 communes passent tes critères » puis « 1 · Portmer (17) · 69 · 650 € · 5 min », « 2 · Quaibleu (13) · 43 · 1 092 € · 14 min », « 3 · Grandeville (33) · 24 · 832 € · 50 min »",
-        "passes": false
+        "passes": false,
+        "remplace_par": "AC-6 de recherche-et-mer"
       },
       {
         "id": "AC-13",
@@ -437,7 +433,8 @@
         "given": "Fixture, aucun proche",
         "when": "l'utilisateur ouvre /?loyer=1200&mer=45&mer-en=min puis choisit Grandeville (33), puis Montcher (75)",
         "then": "le plafond de la mer affiche 45 min ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 67 et Quaibleu (13) 39 ; la fiche de Grandeville affiche « Mer 50 min : au-dessus de ton plafond de 45 min », « 40 km de la mer à vol d'oiseau » et « 50 min de la mer en voiture » ; celle de Montcher affiche « Mer 2 h 15 : au-dessus de ton plafond de 45 min »",
-        "passes": false
+        "passes": false,
+        "remplace_par": "AC-8 de recherche-et-mer"
       },
       {
         "id": "AC-15",
@@ -445,8 +442,13 @@
         "given": "Fixture, aucun proche, page ouverte sur /?loyer=1200&mer=45&mer-en=min",
         "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
         "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
-        "passes": false
+        "passes": false,
+        "remplace_par": "AC-10 de recherche-et-mer"
       }
     ]
+  },
+  "reportes": {
+    "pourquoi": "D14 (2026-10-13) puis D19 (2026-11-25) : plus aucun critère reporté ; AC-12, AC-13 et AC-15 sont dans « remplaces ».",
+    "criteria": []
   }
 }
