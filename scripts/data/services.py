@@ -1,7 +1,8 @@
 """Temps d'accès aux services de chaque commune de la carte (tranche services, R52, H156 à H158, H161, H162, H171) :
 public/data/services.json et public/data/gares-grandes-lignes.csv.
 
-Sources (tâche 0a, empreintes ci-dessous et dans docs/plans/2026-11-24-services/mesure-tache-0.md) :
+Sources (tâche 0a, empreintes ci-dessous et dans docs/plans/2026-11-24-services/mesure-tache-0.md ; extrait refait avec
+D106 le 2026-11-26, docs/plans/2026-11-26-services-revision/mesure-tache-0.md) :
 - data-raw/services-carreaux.csv.gz : extrait du fichier Insee « accès de la population aux équipements » (Licence Ouverte),
   une ligne par commune (`depcom`, codes tels que publiés : arrondissements de Paris, Lyon, Marseille), IRIS et carreau
   (`idSrc`), sa population (`pop`) et une colonne par type d'équipement de H158 (durée en minutes non arrondie, vide sans
@@ -22,7 +23,8 @@ Règles (une fonction chacune, appelée sur le vrai extrait et sur ceux des test
 - R52, D18, H171 (`temps_grandes_lignes`) : le plus petit, avant arrondi, de la médiane vers une gare nationale (E107) et du
   plus rapide des 3 trajets depuis la mairie ; si l'un manque, l'autre ; pas de chiffre pour une commune de population 0,
   une île sans pont (H161) ou une commune de Corse ;
-- R52 (`temps_commune`) : les 10 temps d'une commune ; population 0 : aucun temps ;
+- R52 (`temps_commune`) : les 11 temps d'une commune (R54, révision D19, D20 : urgences ajoutées, supermarché), plus
+  `commerce`, provisoire jusqu'à la tâche 2 de la révision ; population 0 : aucun temps ;
 - D12 (`retirer`) : les temps de services-retraits.csv deviennent « pas de chiffre ».
 Les durées et les populations sont lues en entiers (centièmes de minute, 10⁻¹⁶ habitant) : aucune erreur de virgule
 flottante dans la médiane ni dans l'arrondi.
@@ -50,16 +52,21 @@ RAW = os.path.join(ROOT, 'data-raw')
 OUT = os.path.join(ROOT, 'public', 'data')
 RETRAITS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'services-retraits.csv')
 
-# Fichiers produits par la tâche 0a (2026-11-24) : un fichier changé arrête le script.
+# Fichiers produits par la tâche 0a (2026-11-24 ; extrait refait avec D106 le 2026-11-26, tâche 0 de la révision D19,
+# D20, H208 ; l'extrait d'avant est gardé en data-raw/services-carreaux-2026-11-24.csv.gz, sha256 1b3d4fc5…7dc8) : un
+# fichier changé arrête le script.
 FICHIERS = {
-    'services-carreaux.csv.gz': '1b3d4fc50bec226c8cfac5ce4cbea29d6e757da8ad4b49e595f6b375f6857dc8',
+    'services-carreaux.csv.gz': '5a901bf31caf19035cc0817fd7c244a75f36aab2bef461032a9c9cc4a3605923',
     'services-gares.csv': '9bb7b0987d33ebda858ad4bcd440d330d6bea06b1d9ba39d696e6a084174a3c1',
     'services-calcul/ors-grandes-lignes.jsonl': '90725176eaf96d668411435f2030911584143e0826ab3e8e288918cdb123ae04',
 }
-# H158 : types d'équipement de chaque service lu dans les carreaux ; « nationale » (E107) sert à « Gare grandes lignes ».
+# H158 (révisée par D19, D20) : types d'équipement de chaque service lu dans les carreaux ; « nationale » (E107) sert à
+# « Gare grandes lignes ». `commerce` (D1 d'avant D20) est gardé provisoirement : la page d'avant la révision le lit
+# encore ; la tâche 2 de la révision le retire (plan 2026-11-26-services-revision).
 TYPES = {
     'medecin': ['D265'],
-    'commerce': ['B104', 'B105', 'B201', 'B202'],
+    'urgences': ['D106'],
+    'supermarche': ['B104', 'B105'],
     'creche': ['D502'],
     'ecole': ['C107', 'C108', 'C109'],
     'college': ['C201'],
@@ -68,9 +75,12 @@ TYPES = {
     'gare': ['E107', 'E108', 'E109'],
     'gare_regionale': ['E107', 'E108'],
     'nationale': ['E107'],
+    'commerce': ['B104', 'B105', 'B201', 'B202'],
 }
-SERVICES = ['medecin', 'commerce', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale',
-            'gare_grandes_lignes']  # ordre de la fiche (R54) et de src/domain/services.ts
+# Ordre de la fiche (R54 révisée), puis `commerce`, provisoire : la dernière chaîne écrite.
+SERVICES = ['medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare',
+            'gare_regionale', 'gare_grandes_lignes', 'commerce']
+DES_CARREAUX = [s for s in SERVICES if s != 'gare_grandes_lignes']  # services dont le temps est la médiane des carreaux
 ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS_D_UNE_HEURE = 61  # « z » : 61 min ou plus
 PAS_DE_CHIFFRE = '-'
@@ -97,19 +107,28 @@ SANS_CARREAU = POP_0 + ['29084', '29083', '09304', '26375']  # mesures de /spec 
 GL_DEPUIS_LA_MAIRIE = ['09304', '26375']  # sans carreau, gardent « Gare grandes lignes » depuis la mairie
 ATTENDU = {'communes': 34746, 'avec un carreau habité': 34736, 'avec un temps': 34738, 'gares': 61}
 LIMITE_GZIP = 350_000  # H162 : 350 Ko en gzip -9
-# AC-13 (valeurs lues dans le fichier servi ; 61 = « 61 ou plus », None = pas de chiffre).
+# AC-13 révisé par D19, D20 (valeurs lues dans le fichier servi ; 61 = « 61 ou plus », None = pas de chiffre), dans
+# l'ordre de R54 ; `commerce` : valeur d'avant la révision, gardée tant que la chaîne provisoire est écrite (tâche 2).
 AC13 = {
-    '32013': dict(zip(SERVICES, [2, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE])),
-    '33063': dict(zip(SERVICES, [1, 1, 1, 1, 2, 2, 3, 5, 7, 7])),
-    '48095': {'superieur': 2, 'gare': 3, 'gare_regionale': PLUS_D_UNE_HEURE, 'gare_grandes_lignes': PLUS_D_UNE_HEURE},
-    '85194': {'gare_grandes_lignes': 4},
-    '85113': {'medecin': None, 'lycee': None, 'superieur': None, 'gare': None, 'gare_regionale': None,
-              'gare_grandes_lignes': None, 'commerce': 3},
+    '32013': {**dict(zip(SERVICES, [2, 6, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE])), 'commerce': 2},
+    '33063': {**dict(zip(SERVICES, [1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7])), 'commerce': 1},
+    '48095': {'urgences': 4, 'superieur': 2, 'gare': 3, 'gare_regionale': PLUS_D_UNE_HEURE,
+              'gare_grandes_lignes': PLUS_D_UNE_HEURE},
+    '05157': {'urgences': 55, 'supermarche': 35},
+    '74056': {'urgences': 4, 'supermarche': 3},
+    '85194': {'urgences': 7, 'gare_grandes_lignes': 4},
+    '85113': {'medecin': None, 'urgences': None, 'lycee': None, 'superieur': None, 'gare': None,
+              'gare_regionale': None, 'gare_grandes_lignes': None, 'supermarche': 4, 'commerce': 3},
     **{c: dict.fromkeys(SERVICES) for c in POP_0},
 }
-# Comptes des mesures de /spec (docs/specs/2026-11-23-services/mesures.md), communes à temps inférieur ou égal au seuil.
+# Comptes des mesures (docs/specs/2026-11-23-services/mesures.md), communes à temps inférieur ou égal au seuil : de /spec
+# (2026-11-23) ; `urgences` : essai de /spec, sans les parts par IRIS (information, écart possible) ; `supermarche` :
+# calculés le 2026-11-26 sur l'extrait figé par cette même règle, contrôlés (SUPERMARCHE, arrêt s'ils diffèrent).
+SUPERMARCHE = {5: 9022, 10: 22329, 15: 30409, 20: 33195, 30: 34415, 45: 34690, 60: 34719, '>60': 12, 'sans': 15}
 ANCIENS = {
     'medecin': {5: 14232, 10: 27960, 15: 33135, 30: 34643, '>60': 1, 'sans': 13},
+    'urgences': {5: 851, 10: 4025, 15: 9558, 20: 16243, 30: 27415, 45: 33676, 60: 34562, '>60': 174},
+    'supermarche': SUPERMARCHE,
     'commerce': {5: 16653, 10: 30113, 15: 33936, 30: 34713, '>60': 1, 'sans': 10},
     'ecole': {5: 26483, 10: 33483, 15: 34543, 30: 34724, '>60': 0, 'sans': 10},
     'college': {5: 6682, 10: 20098, 15: 29848, 30: 34442, '>60': 3, 'sans': 16},
@@ -202,10 +221,10 @@ SANS_CARREAUX = resumer(nouvelle_commune())
 
 
 def temps_commune(commune, population=None, ile=False, corse=False, depuis_la_mairie=()):
-    """R52 : les 10 temps arrondis d'une commune ({service: minutes | None}) depuis `resumer` ; population 0 : aucun."""
+    """R52 : les temps arrondis d'une commune ({service: minutes | None}) depuis `resumer` ; population 0 : aucun."""
     if population == 0:
         return dict.fromkeys(SERVICES)
-    temps = {s: arrondi(commune['medianes'][s]) for s in SERVICES[:-1]}
+    temps = {s: arrondi(commune['medianes'][s]) for s in DES_CARREAUX}
     temps['gare_grandes_lignes'] = temps_grandes_lignes(commune['medianes']['nationale'], depuis_la_mairie,
                                                         population, ile, corse)
     return temps
@@ -395,8 +414,9 @@ def main():
 
     print('Fichier servi, relu (public/data/services.json)')
     relu = json.load(open(chemin, encoding='utf-8'))
-    check(relu['codes'] == codes and all(len(relu[s]) == len(codes) for s in SERVICES),
-          f'{len(relu["codes"])} codes dans l\'ordre de communes.json, 10 chaînes de {len(codes)} caractères')
+    check(list(relu) == ['codes', *SERVICES, 'iles_sans_pont'] and relu['codes'] == codes
+          and all(len(relu[s]) == len(codes) for s in SERVICES),
+          f'{len(relu["codes"])} codes dans l\'ordre de communes.json, {len(SERVICES)} chaînes de {len(codes)} caractères ({", ".join(s for s in relu if s in SERVICES)})')
     check(all(ch in ALPHABET[1:PLUS_D_UNE_HEURE + 1] + PAS_DE_CHIFFRE for s in SERVICES for ch in set(relu[s])),
           'caractères de l\'alphabet seulement (« 0 » jamais écrit)')
     servi = {c: {s: lire_caractere(relu[s][i]) for s in SERVICES} for i, c in enumerate(codes)}
@@ -410,14 +430,20 @@ def main():
     check(sans_temps == sorted(set(SANS_CARREAU) - set(GL_DEPUIS_LA_MAIRIE)), 'sans temps = les sans carreau, moins Suzan et Villefranche-le-Château')
     for c in GL_DEPUIS_LA_MAIRIE:
         v = servi[c]
-        check(v['gare_grandes_lignes'] is not None and all(v[s] is None for s in SERVICES[:-1]),
+        check(v['gare_grandes_lignes'] is not None and all(v[s] is None for s in DES_CARREAUX),
               f'{nom[c]} ({c}) : seulement « Gare grandes lignes », depuis la mairie ({v["gare_grandes_lignes"]} min)')
     check(all(all(v is None for v in servi[c].values()) for c in POP_0), 'les 6 communes de population 0 sans aucun temps')
     for c, attendu in AC13.items():
         lu = {s: servi[c][s] for s in attendu}
         check(lu == attendu, f'AC-13 : {nom[c]} ({c}) {lu}', muet=c in POP_0)
     brut, gz = len(contenu), len(gzip.compress(contenu, 9, mtime=0))
-    check(gz <= LIMITE_GZIP, f'poids : {brut} octets bruts, {gz} octets en gzip -9 (limite {LIMITE_GZIP}, H162)')
+    # H206 : la limite porte sur le fichier final, sans la chaîne provisoire `commerce` (plan de la révision, tâche 0).
+    final = json.dumps({k: v for k, v in sortie.items() if k != 'commerce'}, ensure_ascii=False,
+                       separators=(',', ':')).encode('utf-8')
+    brut_final, gz_final = len(final), len(gzip.compress(final, 9, mtime=0))
+    print(f'  poids écrit, avec `commerce` (provisoire) : {brut} octets bruts, {gz} octets en gzip -9 (information)')
+    check(gz_final <= LIMITE_GZIP,
+          f'poids sans `commerce` (fichier final, H206) : {brut_final} octets bruts, {gz_final} octets en gzip -9 (limite {LIMITE_GZIP}, H162)')
 
     print('Gares grandes lignes (public/data/gares-grandes-lignes.csv)')
     with open(os.path.join(RAW, 'services-gares.csv'), encoding='utf-8', newline='') as f:
@@ -438,6 +464,19 @@ def main():
     for s in SERVICES:
         cases = [f"{nouveaux[s][k]} / {ANCIENS[s].get(k, '—')}".rjust(15) for k in SEUILS]
         print('  ' + ' | '.join([s.ljust(20)] + cases))
+    check(nouveaux['supermarche'] == SUPERMARCHE,
+          f"supermarché : comptes égaux à ceux de mesures.md (révision D19, D20) {nouveaux['supermarche']}")
+
+    print('Urgences et supermarché : témoins de mesures.md, minutes avant arrondi (information)')
+    for c in ['75056', '33063', '76351', '48095', '74056', '32013', '85194', '22016', '05157', '04155', '06163', '85113']:
+        m = communes.get(c, SANS_CARREAUX)['medianes']
+        avant = {s: None if m[s] is None else m[s] / 100 for s in ('urgences', 'supermarche')}
+        print(f"  {c} {nom[c]} : urgences {avant['urgences']} → {servi[c]['urgences']} ; supermarché {avant['supermarche']} → {servi[c]['supermarche']}")
+    print('Urgences : les 10 plus grands temps hors îles sans pont, minutes avant arrondi (information, H205)')
+    pires = sorted(((communes.get(c, SANS_CARREAUX)['medianes']['urgences'], c) for c in codes
+                    if c not in ILES and servi[c]['urgences'] is not None), reverse=True)[:10]
+    for m, c in pires:
+        print(f"  {c} {nom[c]} ({dep[c]}) : {m / 100} min ; supermarché {servi[c]['supermarche']}")
 
     print('« Gare grandes lignes » : d\'où vient le temps retenu (information)')
     insee = mairie = gagne = 0

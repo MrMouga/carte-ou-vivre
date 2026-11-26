@@ -1,0 +1,4 @@
+en-tête avant : depcom,iris,idSrc,pop,D265,B104,B105,B201,B202,D502,C107,C108,C109,C201,C301,C302,C501,C502,C503,C504,C505,C509,E107,E108,E109
+en-tête après : depcom,iris,idSrc,pop,D265,D106,B104,B105,B201,B202,D502,C107,C108,C109,C201,C301,C302,C501,C502,C503,C504,C505,C509,E107,E108,E109
+colonnes ajoutées : ['D106']
+lignes comparées : 2342797 ; différentes (hors colonnes ajoutées) : 0 ; lignes en plus avant / après : 0 / 0

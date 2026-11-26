@@ -1,0 +1,1624 @@
+{
+ "d106_metropole": 679,
+ "d106_sans_coordonnees": 0,
+ "demandes_ign": 56,
+ "versions_ign": [
+  "2026-11-25",
+  "2026-11-26"
+ ],
+ "resultats": [
+  {
+   "code": "32013",
+   "nom": "Auch",
+   "service": "urgences",
+   "site": 6,
+   "mairie": [
+    0.5831,
+    43.6469
+   ],
+   "insee_carre_mairie": 4.75,
+   "carreau_mairie": "3561600_2329600",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "32013",
+    "libcom": "AUCH",
+    "nom": "CENTRE HOSPITALIER D AUCH EN GASCOGNE",
+    "siret": "26320004000016",
+    "pos": [
+     0.57597,
+     43.63117
+    ],
+    "qualite": "A",
+    "vol_km": 1.84,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=0.57597%2C43.63117&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 8.199116666666667,
+     "distance": 3.144653,
+     "version": "2026-11-25",
+     "depart_ign": "0.58291,43.646992",
+     "arrivee_ign": "0.576149,43.631523",
+     "heure": "2026-11-26 20:27:16"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "32013",
+     "libcom": "AUCH",
+     "nom": "CENTRE HOSPITALIER D AUCH EN GASCOGNE",
+     "siret": "26320004000016",
+     "pos": [
+      0.57597,
+      43.63117
+     ],
+     "qualite": "A",
+     "vol_km": 1.84,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=0.57597%2C43.63117&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 8.199116666666667,
+      "distance": 3.144653,
+      "version": "2026-11-25",
+      "depart_ign": "0.58291,43.646992",
+      "arrivee_ign": "0.576149,43.631523",
+      "heure": "2026-11-26 20:27:16"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "32107",
+     "libcom": "CONDOM",
+     "nom": "CENTRE HOSPITALIER D AUCH ANTENNE DE CONDOM",
+     "siret": "",
+     "pos": [
+      0.37926,
+      43.95642
+     ],
+     "qualite": "B",
+     "vol_km": 38.11,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=0.37926%2C43.95642&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 47.25873333333333,
+      "distance": 43.644656000000005,
+      "version": "2026-11-25",
+      "depart_ign": "0.58291,43.646992",
+      "arrivee_ign": "0.379284,43.956487",
+      "heure": "2026-11-26 20:27:17"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "47195",
+     "libcom": "NÉRAC",
+     "nom": "CH AGEN NERAC ANTENNE SMUR DE NERAC",
+     "siret": "20005309800048",
+     "pos": [
+      0.33695,
+      44.13598
+     ],
+     "qualite": "B",
+     "vol_km": 57.85,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=0.33695%2C44.13598&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 76.68599999999999,
+      "distance": 70.67091400000001,
+      "version": "2026-11-26",
+      "depart_ign": "0.58291,43.646992",
+      "arrivee_ign": "0.337081,44.135808",
+      "heure": "2026-11-26 20:27:17"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "31150",
+     "libcom": "CORNEBARRIEU",
+     "nom": "CLINIQUE DES CEDRES",
+     "siret": "49346639500024",
+     "pos": [
+      1.31063,
+      43.66034
+     ],
+     "qualite": "B",
+     "vol_km": 58.55,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=1.31063%2C43.66034&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "erreur": "HTTP 404",
+      "heure": "2026-11-26 20:27:17"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "47001",
+     "libcom": "AGEN",
+     "nom": "CLINIQUE ESQUIROL SAINT HILAIRE",
+     "siret": "43321351900047",
+     "pos": [
+      0.62878,
+      44.18647
+     ],
+     "qualite": "B",
+     "vol_km": 60.11,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.5831%2C43.6469&end=0.62878%2C44.18647&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 89.75038333333333,
+      "distance": 80.621266,
+      "version": "2026-11-26",
+      "depart_ign": "0.58291,43.646992",
+      "arrivee_ign": "0.628884,44.186597",
+      "heure": "2026-11-26 20:27:18"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "76351",
+   "nom": "Le Havre",
+   "service": "urgences",
+   "site": 5,
+   "mairie": [
+    0.1078,
+    49.4943
+   ],
+   "insee_carre_mairie": 4.61,
+   "carreau_mairie": "3606600_2979400",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "76351",
+    "libcom": "LE HAVRE",
+    "nom": "CLINIQUE LES ORMEAUX",
+    "siret": "78106102300029",
+    "pos": [
+     0.1354,
+     49.48781
+    ],
+    "qualite": "B",
+    "vol_km": 2.12,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.1354%2C49.48781&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 10.687233333333333,
+     "distance": 3.237412,
+     "version": "2026-11-25",
+     "depart_ign": "0.10783,49.494682",
+     "arrivee_ign": "0.135185,49.487771",
+     "heure": "2026-11-26 20:27:18"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "76351",
+     "libcom": "LE HAVRE",
+     "nom": "CLINIQUE LES ORMEAUX",
+     "siret": "78106102300029",
+     "pos": [
+      0.1354,
+      49.48781
+     ],
+     "qualite": "B",
+     "vol_km": 2.12,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.1354%2C49.48781&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 10.687233333333333,
+      "distance": 3.237412,
+      "version": "2026-11-25",
+      "depart_ign": "0.10783,49.494682",
+      "arrivee_ign": "0.135185,49.487771",
+      "heure": "2026-11-26 20:27:18"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "76351",
+     "libcom": "LE HAVRE",
+     "nom": "HOPITAL PRIVE DE L ESTUAIRE",
+     "siret": "36750093100038",
+     "pos": [
+      0.10289,
+      49.52854
+     ],
+     "qualite": "B",
+     "vol_km": 3.82,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.10289%2C49.52854&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 17.680266666666668,
+      "distance": 6.627741,
+      "version": "2026-11-26",
+      "depart_ign": "0.10783,49.494682",
+      "arrivee_ign": "0.102971,49.528281",
+      "heure": "2026-11-26 20:27:18"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "76447",
+     "libcom": "MONTIVILLIERS",
+     "nom": "HOPITAL JACQUES MONOD CH LE HAVRE",
+     "siret": "26760171400020",
+     "pos": [
+      0.18382,
+      49.52717
+     ],
+     "qualite": "B",
+     "vol_km": 6.59,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.18382%2C49.52717&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 20.46966666666667,
+      "distance": 10.662087999999999,
+      "version": "2026-11-26",
+      "depart_ign": "0.10783,49.494682",
+      "arrivee_ign": "0.183102,49.527027",
+      "heure": "2026-11-26 20:27:19"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "14202",
+     "libcom": "CRICQUEBŒUF",
+     "nom": "CH COTE FLEURIE SITE DE CRICQUEBOEUF",
+     "siret": "20001798600015",
+     "pos": [
+      0.12872,
+      49.38216
+     ],
+     "qualite": "B",
+     "vol_km": 12.56,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.12872%2C49.38216&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 47.304566666666666,
+      "distance": 39.227469,
+      "version": "2026-11-26",
+      "depart_ign": "0.10783,49.494682",
+      "arrivee_ign": "0.128402,49.382195",
+      "heure": "2026-11-26 20:27:19"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "76384",
+     "libcom": "LILLEBONNE",
+     "nom": "CH LILLEBONNE CHI CAUX VALLEE DE SEINE",
+     "siret": "26760173000018",
+     "pos": [
+      0.54374,
+      49.51944
+     ],
+     "qualite": "B",
+     "vol_km": 31.6,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=0.1078%2C49.4943&end=0.54374%2C49.51944&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 44.51665,
+      "distance": 37.398171999999995,
+      "version": "2026-11-26",
+      "depart_ign": "0.10783,49.494682",
+      "arrivee_ign": "0.543106,49.5192",
+      "heure": "2026-11-26 20:27:19"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "85194",
+   "nom": "Les Sables-d'Olonne",
+   "service": "urgences",
+   "site": 7,
+   "mairie": [
+    -1.7844,
+    46.4969
+   ],
+   "insee_carre_mairie": 7.11,
+   "carreau_mairie": "3419600_2669800",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "85194",
+    "libcom": "LES SABLES-D'OLONNE",
+    "nom": "CENTRE HOSPITALIER COTE DE LUMIERE",
+    "siret": "26850030300212",
+    "pos": [
+     -1.75161,
+     46.51488
+    ],
+    "qualite": "B",
+    "vol_km": 3.21,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.75161%2C46.51488&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 14.109616666666666,
+     "distance": 6.159733,
+     "version": "2026-11-25",
+     "depart_ign": "-1.784403,46.496861",
+     "arrivee_ign": "-1.752231,46.514389",
+     "heure": "2026-11-26 20:27:19"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "85194",
+     "libcom": "LES SABLES-D'OLONNE",
+     "nom": "CENTRE HOSPITALIER COTE DE LUMIERE",
+     "siret": "26850030300212",
+     "pos": [
+      -1.75161,
+      46.51488
+     ],
+     "qualite": "B",
+     "vol_km": 3.21,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.75161%2C46.51488&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 14.109616666666666,
+      "distance": 6.159733,
+      "version": "2026-11-25",
+      "depart_ign": "-1.784403,46.496861",
+      "arrivee_ign": "-1.752231,46.514389",
+      "heure": "2026-11-26 20:27:19"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "85191",
+     "libcom": "LA ROCHE-SUR-YON",
+     "nom": "CLINIQUE SAINT CHARLES",
+     "siret": "33836135500021",
+     "pos": [
+      -1.41549,
+      46.6581
+     ],
+     "qualite": "B",
+     "vol_km": 33.41,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.41549%2C46.6581&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 41.88251666666667,
+      "distance": 43.536339999999996,
+      "version": "2026-11-26",
+      "depart_ign": "-1.784403,46.496861",
+      "arrivee_ign": "-1.415495,46.658145",
+      "heure": "2026-11-26 20:27:20"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "85191",
+     "libcom": "LA ROCHE-SUR-YON",
+     "nom": "CHD SITE LA ROCHE SUR YON",
+     "siret": "26850242400016",
+     "pos": [
+      -1.41408,
+      46.66909
+     ],
+     "qualite": "B",
+     "vol_km": 34.17,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.41408%2C46.66909&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 46.131750000000004,
+      "distance": 51.892656,
+      "version": "2026-11-25",
+      "depart_ign": "-1.784403,46.496861",
+      "arrivee_ign": "-1.414063,46.669076",
+      "heure": "2026-11-26 20:27:20"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "85047",
+     "libcom": "CHALLANS",
+     "nom": "CENTRE HOSPITALIER LOIRE VENDEE OCEAN SITE DE CHALLANS",
+     "siret": "26850445300013",
+     "pos": [
+      -1.86975,
+      46.84676
+     ],
+     "qualite": "A",
+     "vol_km": 39.44,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.86975%2C46.84676&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 68.09058333333333,
+      "distance": 71.235625,
+      "version": "2026-11-26",
+      "depart_ign": "-1.784403,46.496861",
+      "arrivee_ign": "-1.869728,46.846691",
+      "heure": "2026-11-26 20:27:20"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "85128",
+     "libcom": "LUÇON",
+     "nom": "CENTRE HOSPITALIER SITE DE LUCON",
+     "siret": "26850242400180",
+     "pos": [
+      -1.1706,
+      46.45018
+     ],
+     "qualite": "B",
+     "vol_km": 47.29,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=-1.7844%2C46.4969&end=-1.1706%2C46.45018&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 78.96878333333333,
+      "distance": 59.508391,
+      "version": "2026-11-26",
+      "depart_ign": "-1.784403,46.496861",
+      "arrivee_ign": "-1.170535,46.450275",
+      "heure": "2026-11-26 20:27:21"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "48095",
+   "nom": "Mende",
+   "service": "urgences",
+   "site": 4,
+   "mairie": [
+    3.5016,
+    44.5177
+   ],
+   "insee_carre_mairie": 2.84,
+   "carreau_mairie": "3804000_2401000",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "48095",
+    "libcom": "MENDE",
+    "nom": "HOPITAL LOZERE SITE VALLEE DU LOT MENDE",
+    "siret": "26480009500012",
+    "pos": [
+     3.49042,
+     44.52244
+    ],
+    "qualite": "B",
+    "vol_km": 1.03,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=3.49042%2C44.52244&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 6.039083333333334,
+     "distance": 2.0295039999999998,
+     "version": "2026-11-25",
+     "depart_ign": "3.50157,44.517817",
+     "arrivee_ign": "3.490609,44.52244",
+     "heure": "2026-11-26 20:27:21"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "48095",
+     "libcom": "MENDE",
+     "nom": "HOPITAL LOZERE SITE VALLEE DU LOT MENDE",
+     "siret": "26480009500012",
+     "pos": [
+      3.49042,
+      44.52244
+     ],
+     "qualite": "B",
+     "vol_km": 1.03,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=3.49042%2C44.52244&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 6.039083333333334,
+      "distance": 2.0295039999999998,
+      "version": "2026-11-25",
+      "depart_ign": "3.50157,44.517817",
+      "arrivee_ign": "3.490609,44.52244",
+      "heure": "2026-11-26 20:27:21"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "12145",
+     "libcom": "MILLAU",
+     "nom": "CENTRE HOSPITALIER COMMUNAL DE MILLAU",
+     "siret": "26120014100016",
+     "pos": [
+      3.05281,
+      44.09407
+     ],
+     "qualite": "B",
+     "vol_km": 59.11,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=3.05281%2C44.09407&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 84.34303333333334,
+      "distance": 87.783852,
+      "version": "2026-11-26",
+      "depart_ign": "3.50157,44.517817",
+      "arrivee_ign": "3.053002,44.093829",
+      "heure": "2026-11-26 20:27:21"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "30007",
+     "libcom": "ALÈS",
+     "nom": "CENTRE HOSPITALIER ALES CEVENNES",
+     "siret": "26300017600010",
+     "pos": [
+      4.09653,
+      44.14742
+     ],
+     "qualite": "B",
+     "vol_km": 62.72,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=4.09653%2C44.14742&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 109.43621666666667,
+      "distance": 95.95939800000001,
+      "version": "2026-11-26",
+      "depart_ign": "3.50157,44.517817",
+      "arrivee_ign": "4.095922,44.147689",
+      "heure": "2026-11-26 20:27:22"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "30007",
+     "libcom": "ALÈS",
+     "nom": "NOUVELLE CLINIQUE BONNEFON ALES",
+     "siret": "75361648100028",
+     "pos": [
+      4.08771,
+      44.12159
+     ],
+     "qualite": "B",
+     "vol_km": 64.14,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=4.08771%2C44.12159&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 116.62986666666667,
+      "distance": 100.32457799999999,
+      "version": "2026-11-26",
+      "depart_ign": "3.50157,44.517817",
+      "arrivee_ign": "4.087618,44.121415",
+      "heure": "2026-11-26 20:27:22"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "15187",
+     "libcom": "SAINT-FLOUR",
+     "nom": "CENTRE HOSPITALIER DE SAINT FLOUR",
+     "siret": "26150013600013",
+     "pos": [
+      3.0873,
+      45.03422
+     ],
+     "qualite": "B",
+     "vol_km": 66.09,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=3.5016%2C44.5177&end=3.0873%2C45.03422&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 78.69201666666666,
+      "distance": 83.635664,
+      "version": "2026-11-25",
+      "depart_ign": "3.50157,44.517817",
+      "arrivee_ign": "3.087512,45.034172",
+      "heure": "2026-11-26 20:27:22"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "74056",
+   "nom": "Chamonix-Mont-Blanc",
+   "service": "urgences",
+   "site": 4,
+   "mairie": [
+    6.8693,
+    45.9237
+   ],
+   "insee_carre_mairie": 2.98,
+   "carreau_mairie": "4077800_2539600",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "74056",
+    "libcom": "CHAMONIX-MONT-BLANC",
+    "nom": "HOPITAUX DU MONT BLANC SITE CHAMONIX",
+    "siret": "26741108000042",
+    "pos": [
+     6.8621,
+     45.9144
+    ],
+    "qualite": "B",
+    "vol_km": 1.17,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.8621%2C45.9144&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 4.3913166666666665,
+     "distance": 1.522922,
+     "version": "2026-11-26",
+     "depart_ign": "6.869138,45.923591",
+     "arrivee_ign": "6.862112,45.914386",
+     "heure": "2026-11-26 20:27:22"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "74056",
+     "libcom": "CHAMONIX-MONT-BLANC",
+     "nom": "HOPITAUX DU MONT BLANC SITE CHAMONIX",
+     "siret": "26741108000042",
+     "pos": [
+      6.8621,
+      45.9144
+     ],
+     "qualite": "B",
+     "vol_km": 1.17,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.8621%2C45.9144&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 4.3913166666666665,
+      "distance": 1.522922,
+      "version": "2026-11-26",
+      "depart_ign": "6.869138,45.923591",
+      "arrivee_ign": "6.862112,45.914386",
+      "heure": "2026-11-26 20:27:22"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "74256",
+     "libcom": "SALLANCHES",
+     "nom": "HOPITAUX DU MONT BLANC SITE SALLANCHES",
+     "siret": "26741108000018",
+     "pos": [
+      6.64063,
+      45.93608
+     ],
+     "qualite": "B",
+     "vol_km": 17.74,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.64063%2C45.93608&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 33.852516666666666,
+      "distance": 27.730703000000002,
+      "version": "2026-11-26",
+      "depart_ign": "6.869138,45.923591",
+      "arrivee_ign": "6.640748,45.936145",
+      "heure": "2026-11-26 20:27:23"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "73054",
+     "libcom": "BOURG-SAINT-MAURICE",
+     "nom": "CENTRE HOSPITALIER DE BOURG ST MAURICE",
+     "siret": "26730006900015",
+     "pos": [
+      6.76458,
+      45.6162
+     ],
+     "qualite": "B",
+     "vol_km": 35.14,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.76458%2C45.6162&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 141.64888333333334,
+      "distance": 112.19882000000001,
+      "version": "2026-11-26",
+      "depart_ign": "6.869138,45.923591",
+      "arrivee_ign": "6.764883,45.616599",
+      "heure": "2026-11-26 20:27:23"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "73011",
+     "libcom": "ALBERTVILLE",
+     "nom": "CENTRE HOSPITALIER D ALBERTVILLE",
+     "siret": "26731109000059",
+     "pos": [
+      6.36995,
+      45.66765
+     ],
+     "qualite": "B",
+     "vol_km": 48.06,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.36995%2C45.66765&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 96.86088333333333,
+      "distance": 68.654828,
+      "version": "2026-11-26",
+      "depart_ign": "6.869138,45.923591",
+      "arrivee_ign": "6.369931,45.667676",
+      "heure": "2026-11-26 20:27:23"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "74087",
+     "libcom": "CONTAMINE-SUR-ARVE",
+     "nom": "CENTRE HOSPITALIER ALPES LEMAN",
+     "siret": "26740084400085",
+     "pos": [
+      6.32024,
+      46.14103
+     ],
+     "qualite": "B",
+     "vol_km": 48.79,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8693%2C45.9237&end=6.32024%2C46.14103&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 52.378166666666665,
+      "distance": 66.615531,
+      "version": "2026-11-25",
+      "depart_ign": "6.869138,45.923591",
+      "arrivee_ign": "6.318459,46.142234",
+      "heure": "2026-11-26 20:27:24"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "05157",
+   "nom": "Saint-Véran",
+   "service": "urgences",
+   "site": 55,
+   "mairie": [
+    6.8685,
+    44.7006
+   ],
+   "insee_carre_mairie": 56.72,
+   "carreau_mairie": "4072400_2404000",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "05046",
+    "libcom": "EMBRUN",
+    "nom": "CENTRE HOSPITALIER D EMBRUN",
+    "siret": "26050005300012",
+    "pos": [
+     6.49275,
+     44.56176
+    ],
+    "qualite": "B",
+    "vol_km": 33.5,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.49275%2C44.56176&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 64.1409,
+     "distance": 52.42946499999999,
+     "version": "2026-11-26",
+     "depart_ign": "6.868374,44.700566",
+     "arrivee_ign": "6.492796,44.561744",
+     "heure": "2026-11-26 20:27:24"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "05023",
+     "libcom": "BRIANÇON",
+     "nom": "CENTRE HOSPITALIER LES ESCARTONS A BRIANCON",
+     "siret": "26050004600016",
+     "pos": [
+      6.63282,
+      44.90641
+     ],
+     "qualite": "B",
+     "vol_km": 29.49,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.63282%2C44.90641&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 66.58081666666666,
+      "distance": 51.991086,
+      "version": "2026-11-25",
+      "depart_ign": "6.868374,44.700566",
+      "arrivee_ign": "6.632826,44.906421",
+      "heure": "2026-11-26 20:27:24"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "05046",
+     "libcom": "EMBRUN",
+     "nom": "CENTRE HOSPITALIER D EMBRUN",
+     "siret": "26050005300012",
+     "pos": [
+      6.49275,
+      44.56176
+     ],
+     "qualite": "B",
+     "vol_km": 33.5,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.49275%2C44.56176&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 64.1409,
+      "distance": 52.42946499999999,
+      "version": "2026-11-26",
+      "depart_ign": "6.868374,44.700566",
+      "arrivee_ign": "6.492796,44.561744",
+      "heure": "2026-11-26 20:27:24"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "73157",
+     "libcom": "MODANE",
+     "nom": "ANTENNE SMUR MODANE",
+     "siret": "26730013500071",
+     "pos": [
+      6.66678,
+      45.20137
+     ],
+     "qualite": "B",
+     "vol_km": 57.9,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.66678%2C45.20137&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 175.91348333333332,
+      "distance": 136.701031,
+      "version": "2026-11-25",
+      "depart_ign": "6.868374,44.700566",
+      "arrivee_ign": "6.666876,45.201172",
+      "heure": "2026-11-26 20:27:25"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "05061",
+     "libcom": "GAP",
+     "nom": "CHI DES ALPES DU SUD SITE DE GAP",
+     "siret": "26050347900016",
+     "pos": [
+      6.07335,
+      44.55644
+     ],
+     "qualite": "B",
+     "vol_km": 64.93,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.07335%2C44.55644&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 127.03455000000001,
+      "distance": 101.68975,
+      "version": "2026-11-25",
+      "depart_ign": "6.868374,44.700566",
+      "arrivee_ign": "6.073288,44.556404",
+      "heure": "2026-11-26 20:27:25"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "73248",
+     "libcom": "SAINT-JEAN-DE-MAURIENNE",
+     "nom": "CENTRE HOSPITALIER DE SAINT JEAN DE MAURIENNE",
+     "siret": "26730013500014",
+     "pos": [
+      6.34192,
+      45.27866
+     ],
+     "qualite": "B",
+     "vol_km": 76.46,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8685%2C44.7006&end=6.34192%2C45.27866&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 170.3919,
+      "distance": 134.459078,
+      "version": "2026-11-26",
+      "depart_ign": "6.868374,44.700566",
+      "arrivee_ign": "6.342027,45.27862",
+      "heure": "2026-11-26 20:27:25"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "06163",
+   "nom": "Tende",
+   "service": "urgences",
+   "site": 61,
+   "mairie": [
+    7.5934,
+    44.0892
+   ],
+   "insee_carre_mairie": 227.9,
+   "carreau_mairie": "4127800_2334000",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "06083",
+    "libcom": "MENTON",
+    "nom": "CENTRE HOSPITALIER LA PALMOSA DE MENTON",
+    "siret": "26060021800010",
+    "pos": [
+     7.48326,
+     43.76658
+    ],
+    "qualite": "B",
+    "vol_km": 36.94,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.48326%2C43.76658&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 81.80658333333334,
+     "distance": 60.223684,
+     "version": "2026-11-25",
+     "depart_ign": "7.593615,44.089186",
+     "arrivee_ign": "7.483219,43.766511",
+     "heure": "2026-11-26 20:27:26"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "06083",
+     "libcom": "MENTON",
+     "nom": "CENTRE HOSPITALIER LA PALMOSA DE MENTON",
+     "siret": "26060021800010",
+     "pos": [
+      7.48326,
+      43.76658
+     ],
+     "qualite": "B",
+     "vol_km": 36.94,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.48326%2C43.76658&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 81.80658333333334,
+      "distance": 60.223684,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.483219,43.766511",
+      "heure": "2026-11-26 20:27:26"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CLINIQUE SAINT GEORGE",
+     "siret": "96880224900019",
+     "pos": [
+      7.27847,
+      43.73332
+     ],
+     "qualite": "B",
+     "vol_km": 46.93,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.27847%2C43.73332&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 96.42875000000001,
+      "distance": 78.902461,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.277946,43.733738",
+      "heure": "2026-11-26 20:27:26"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CHU DE NICE HOPITAL PASTEUR",
+     "siret": "26060070500099",
+     "pos": [
+      7.28159,
+      43.72413
+     ],
+     "qualite": "B",
+     "vol_km": 47.66,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.28159%2C43.72413&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 90.45425,
+      "distance": 76.889539,
+      "version": "2026-11-26",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.281658,43.724131",
+      "heure": "2026-11-26 20:27:26"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CLINIQUE DU PARC IMPERIAL",
+     "siret": "44442640700011",
+     "pos": [
+      7.25184,
+      43.7029
+     ],
+     "qualite": "B",
+     "vol_km": 50.93,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.25184%2C43.7029&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 99.2442,
+      "distance": 81.53904700000001,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.251839,43.702769",
+      "heure": "2026-11-26 20:27:27"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CHU DE NICE HOPITAL DE L ARCHET",
+     "siret": "26060070500073",
+     "pos": [
+      7.22872,
+      43.69519
+     ],
+     "qualite": "B",
+     "vol_km": 52.66,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.22872%2C43.69519&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 113.80815,
+      "distance": 93.46345299999999,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.228794,43.695192",
+      "heure": "2026-11-26 20:27:27"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "06040",
+   "nom": "Châteauneuf-d'Entraunes",
+   "service": "urgences",
+   "site": 61,
+   "mairie": [
+    6.8324,
+    44.1285
+   ],
+   "insee_carre_mairie": 113.05,
+   "carreau_mairie": "4067000_2340600",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "06027",
+    "libcom": "CAGNES-SUR-MER",
+    "nom": "POLYCLINIQUE SAINT JEAN",
+    "siret": "32494775300020",
+    "pos": [
+     7.13662,
+     43.66082
+    ],
+    "qualite": "B",
+    "vol_km": 57.43,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=7.13662%2C43.66082&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 122.95236666666666,
+     "distance": 105.69109399999999,
+     "version": "2026-11-25",
+     "depart_ign": "6.832409,44.128453",
+     "arrivee_ign": "7.136611,43.66079",
+     "heure": "2026-11-26 20:27:29"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "04070",
+     "libcom": "DIGNE-LES-BAINS",
+     "nom": "CENTRE HOSPITALIER DE DIGNE LES BAINS",
+     "siret": "26040358900013",
+     "pos": [
+      6.17508,
+      44.07052
+     ],
+     "qualite": "B",
+     "vol_km": 52.88,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=6.17508%2C44.07052&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 133.53516666666667,
+      "distance": 117.8575,
+      "version": "2026-11-26",
+      "depart_ign": "6.832409,44.128453",
+      "arrivee_ign": "6.175182,44.070449",
+      "heure": "2026-11-26 20:27:27"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "05046",
+     "libcom": "EMBRUN",
+     "nom": "CENTRE HOSPITALIER D EMBRUN",
+     "siret": "26050005300012",
+     "pos": [
+      6.49275,
+      44.56176
+     ],
+     "qualite": "B",
+     "vol_km": 55.23,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=6.49275%2C44.56176&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 129.51935,
+      "distance": 113.605234,
+      "version": "2026-11-26",
+      "depart_ign": "6.832409,44.128453",
+      "arrivee_ign": "6.492796,44.561744",
+      "heure": "2026-11-26 20:27:28"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CLINIQUE SAINT GEORGE",
+     "siret": "96880224900019",
+     "pos": [
+      7.27847,
+      43.73332
+     ],
+     "qualite": "B",
+     "vol_km": 56.63,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=7.27847%2C43.73332&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 132.28273333333334,
+      "distance": 104.92429700000001,
+      "version": "2026-11-25",
+      "depart_ign": "6.832409,44.128453",
+      "arrivee_ign": "7.277946,43.733738",
+      "heure": "2026-11-26 20:27:28"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06069",
+     "libcom": "GRASSE",
+     "nom": "CENTRE HOSPITALIER DE GRASSE",
+     "siret": "26060017600010",
+     "pos": [
+      6.93022,
+      43.61933
+     ],
+     "qualite": "B",
+     "vol_km": 57.16,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=6.93022%2C43.61933&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 140.12135,
+      "distance": 117.559312,
+      "version": "2026-11-26",
+      "depart_ign": "6.832409,44.128453",
+      "arrivee_ign": "6.930553,43.619145",
+      "heure": "2026-11-26 20:27:28"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06027",
+     "libcom": "CAGNES-SUR-MER",
+     "nom": "POLYCLINIQUE SAINT JEAN",
+     "siret": "32494775300020",
+     "pos": [
+      7.13662,
+      43.66082
+     ],
+     "qualite": "B",
+     "vol_km": 57.43,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8324%2C44.1285&end=7.13662%2C43.66082&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 122.95236666666666,
+      "distance": 105.69109399999999,
+      "version": "2026-11-25",
+      "depart_ign": "6.832409,44.128453",
+      "arrivee_ign": "7.136611,43.66079",
+      "heure": "2026-11-26 20:27:29"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "06133",
+   "nom": "Sauze",
+   "service": "urgences",
+   "site": 61,
+   "mairie": [
+    6.8359,
+    44.0877
+   ],
+   "insee_carre_mairie": 110.84,
+   "carreau_mairie": "4067000_2336200",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "04070",
+    "libcom": "DIGNE-LES-BAINS",
+    "nom": "CENTRE HOSPITALIER DE DIGNE LES BAINS",
+    "siret": "26040358900013",
+    "pos": [
+     6.17508,
+     44.07052
+    ],
+    "qualite": "B",
+    "vol_km": 52.82,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=6.17508%2C44.07052&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 113.90468333333334,
+     "distance": 104.700781,
+     "version": "2026-11-25",
+     "depart_ign": "6.836012,44.087667",
+     "arrivee_ign": "6.175182,44.070449",
+     "heure": "2026-11-26 20:27:29"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "06069",
+     "libcom": "GRASSE",
+     "nom": "CENTRE HOSPITALIER DE GRASSE",
+     "siret": "26060017600010",
+     "pos": [
+      6.93022,
+      43.61933
+     ],
+     "qualite": "B",
+     "vol_km": 52.63,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=6.93022%2C43.61933&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 139.27366666666666,
+      "distance": 115.651609,
+      "version": "2026-11-25",
+      "depart_ign": "6.836012,44.087667",
+      "arrivee_ign": "6.930553,43.619145",
+      "heure": "2026-11-26 20:27:29"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "04070",
+     "libcom": "DIGNE-LES-BAINS",
+     "nom": "CENTRE HOSPITALIER DE DIGNE LES BAINS",
+     "siret": "26040358900013",
+     "pos": [
+      6.17508,
+      44.07052
+     ],
+     "qualite": "B",
+     "vol_km": 52.82,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=6.17508%2C44.07052&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 113.90468333333334,
+      "distance": 104.700781,
+      "version": "2026-11-25",
+      "depart_ign": "6.836012,44.087667",
+      "arrivee_ign": "6.175182,44.070449",
+      "heure": "2026-11-26 20:27:29"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CLINIQUE SAINT GEORGE",
+     "siret": "96880224900019",
+     "pos": [
+      7.27847,
+      43.73332
+     ],
+     "qualite": "B",
+     "vol_km": 53.01,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=7.27847%2C43.73332&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 131.43505,
+      "distance": 103.016617,
+      "version": "2026-11-25",
+      "depart_ign": "6.836012,44.087667",
+      "arrivee_ign": "7.277946,43.733738",
+      "heure": "2026-11-26 20:27:31"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06027",
+     "libcom": "CAGNES-SUR-MER",
+     "nom": "POLYCLINIQUE SAINT JEAN",
+     "siret": "32494775300020",
+     "pos": [
+      7.13662,
+      43.66082
+     ],
+     "qualite": "B",
+     "vol_km": 53.24,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=7.13662%2C43.66082&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 122.10466666666666,
+      "distance": 103.78341400000001,
+      "version": "2026-11-26",
+      "depart_ign": "6.836012,44.087667",
+      "arrivee_ign": "7.136611,43.66079",
+      "heure": "2026-11-26 20:27:31"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CHU DE NICE HOPITAL DE L ARCHET",
+     "siret": "26060070500073",
+     "pos": [
+      7.22872,
+      43.69519
+     ],
+     "qualite": "B",
+     "vol_km": 53.81,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8359%2C44.0877&end=7.22872%2C43.69519&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 127.84646666666666,
+      "distance": 101.039625,
+      "version": "2026-11-25",
+      "depart_ign": "6.836012,44.087667",
+      "arrivee_ign": "7.228794,43.695192",
+      "heure": "2026-11-26 20:27:31"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "06119",
+   "nom": "Saint-Dalmas-le-Selvage",
+   "service": "urgences",
+   "site": 61,
+   "mairie": [
+    6.8658,
+    44.2844
+   ],
+   "insee_carre_mairie": 108.62,
+   "carreau_mairie": "4070200_2357800",
+   "meilleur": {
+    "type": "D106",
+    "depcom": "06088",
+    "libcom": "NICE",
+    "nom": "CHU DE NICE HOPITAL PASTEUR",
+    "siret": "26060070500099",
+    "pos": [
+     7.28159,
+     43.72413
+    ],
+    "qualite": "B",
+    "vol_km": 70.62,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=7.28159%2C43.72413&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 109.24088333333334,
+     "distance": 97.550086,
+     "version": "2026-11-26",
+     "depart_ign": "6.865787,44.284434",
+     "arrivee_ign": "7.281658,43.724131",
+     "heure": "2026-11-26 20:27:33"
+    }
+   },
+   "essais": [
+    {
+     "type": "D106",
+     "depcom": "05046",
+     "libcom": "EMBRUN",
+     "nom": "CENTRE HOSPITALIER D EMBRUN",
+     "siret": "26050005300012",
+     "pos": [
+      6.49275,
+      44.56176
+     ],
+     "qualite": "B",
+     "vol_km": 42.76,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=6.49275%2C44.56176&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 119.32396666666666,
+      "distance": 106.42492200000001,
+      "version": "2026-11-25",
+      "depart_ign": "6.865787,44.284434",
+      "arrivee_ign": "6.492796,44.561744",
+      "heure": "2026-11-26 20:27:31"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "04070",
+     "libcom": "DIGNE-LES-BAINS",
+     "nom": "CENTRE HOSPITALIER DE DIGNE LES BAINS",
+     "siret": "26040358900013",
+     "pos": [
+      6.17508,
+      44.07052
+     ],
+     "qualite": "B",
+     "vol_km": 60.0,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=6.17508%2C44.07052&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 165.57888333333332,
+      "distance": 144.558312,
+      "version": "2026-11-26",
+      "depart_ign": "6.865787,44.284434",
+      "arrivee_ign": "6.175182,44.070449",
+      "heure": "2026-11-26 20:27:32"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CLINIQUE SAINT GEORGE",
+     "siret": "96880224900019",
+     "pos": [
+      7.27847,
+      43.73332
+     ],
+     "qualite": "B",
+     "vol_km": 69.6,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=7.27847%2C43.73332&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 112.64306666666667,
+      "distance": 93.482984,
+      "version": "2026-11-25",
+      "depart_ign": "6.865787,44.284434",
+      "arrivee_ign": "7.277946,43.733738",
+      "heure": "2026-11-26 20:27:32"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "05061",
+     "libcom": "GAP",
+     "nom": "CHI DES ALPES DU SUD SITE DE GAP",
+     "siret": "26050347900016",
+     "pos": [
+      6.07335,
+      44.55644
+     ],
+     "qualite": "B",
+     "vol_km": 69.83,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=6.07335%2C44.55644&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 135.9024,
+      "distance": 123.45311699999999,
+      "version": "2026-11-26",
+      "depart_ign": "6.865787,44.284434",
+      "arrivee_ign": "6.073288,44.556404",
+      "heure": "2026-11-26 20:27:32"
+     }
+    },
+    {
+     "type": "D106",
+     "depcom": "06088",
+     "libcom": "NICE",
+     "nom": "CHU DE NICE HOPITAL PASTEUR",
+     "siret": "26060070500099",
+     "pos": [
+      7.28159,
+      43.72413
+     ],
+     "qualite": "B",
+     "vol_km": 70.62,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=6.8658%2C44.2844&end=7.28159%2C43.72413&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 109.24088333333334,
+      "distance": 97.550086,
+      "version": "2026-11-26",
+      "depart_ign": "6.865787,44.284434",
+      "arrivee_ign": "7.281658,43.724131",
+      "heure": "2026-11-26 20:27:33"
+     }
+    }
+   ],
+   "cote": "même côté"
+  },
+  {
+   "code": "06163",
+   "nom": "Tende",
+   "service": "supermarche",
+   "site": 61,
+   "mairie": [
+    7.5934,
+    44.0892
+   ],
+   "insee_carre_mairie": 224.3,
+   "carreau_mairie": "4127800_2334000",
+   "meilleur": {
+    "type": "B105",
+    "depcom": "06023",
+    "libcom": "BREIL-SUR-ROYA",
+    "nom": "ROYA DISTRIBUTION",
+    "siret": "",
+    "pos": [
+     7.51503,
+     43.94167
+    ],
+    "qualite": "B",
+    "vol_km": 17.56,
+    "ign": {
+     "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.51503%2C43.94167&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+     "duree": 27.280199999999997,
+     "distance": 20.15382,
+     "version": "2026-11-25",
+     "depart_ign": "7.593615,44.089186",
+     "arrivee_ign": "7.515281,43.941761",
+     "heure": "2026-11-26 20:27:33"
+    }
+   },
+   "essais": [
+    {
+     "type": "B105",
+     "depcom": "06023",
+     "libcom": "BREIL-SUR-ROYA",
+     "nom": "ROYA DISTRIBUTION",
+     "siret": "",
+     "pos": [
+      7.51503,
+      43.94167
+     ],
+     "qualite": "B",
+     "vol_km": 17.56,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.51503%2C43.94167&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 27.280199999999997,
+      "distance": 20.15382,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.515281,43.941761",
+      "heure": "2026-11-26 20:27:33"
+     }
+    },
+    {
+     "type": "B105",
+     "depcom": "06103",
+     "libcom": "ROQUEBILLIÈRE",
+     "nom": "RIGUIZAC",
+     "siret": "",
+     "pos": [
+      7.31229,
+      43.99942
+     ],
+     "qualite": "B",
+     "vol_km": 24.59,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.31229%2C43.99942&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 97.63706666666667,
+      "distance": 81.665148,
+      "version": "2026-11-26",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.312168,43.999497",
+      "heure": "2026-11-26 20:27:33"
+     }
+    },
+    {
+     "type": "B105",
+     "depcom": "06136",
+     "libcom": "SOSPEL",
+     "nom": "LYS DES ALPES",
+     "siret": "",
+     "pos": [
+      7.44731,
+      43.8774
+     ],
+     "qualite": "B",
+     "vol_km": 26.29,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.44731%2C43.8774&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 48.346583333333335,
+      "distance": 39.715793,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.447272,43.877437",
+      "heure": "2026-11-26 20:27:33"
+     }
+    },
+    {
+     "type": "B105",
+     "depcom": "06127",
+     "libcom": "SAINT-MARTIN-VÉSUBIE",
+     "nom": "LES HALLES DE LA GARE",
+     "siret": "",
+     "pos": [
+      7.25476,
+      44.0706
+     ],
+     "qualite": "B",
+     "vol_km": 27.13,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.25476%2C44.0706&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 110.01346666666667,
+      "distance": 91.230148,
+      "version": "2026-11-26",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.254685,44.070704",
+      "heure": "2026-11-26 20:27:34"
+     }
+    },
+    {
+     "type": "B104",
+     "depcom": "06083",
+     "libcom": "MENTON",
+     "nom": "SOC DE DISTRIBUTION DU CAREI",
+     "siret": "",
+     "pos": [
+      7.4879,
+      43.80007
+     ],
+     "qualite": "B",
+     "vol_km": 33.24,
+     "ign": {
+      "url": "https://data.geopf.fr/navigation/itineraire?resource=bdtopo-valhalla&profile=car&optimization=fastest&start=7.5934%2C44.0892&end=7.4879%2C43.80007&geometryFormat=geojson&getSteps=false&getBbox=false&distanceUnit=kilometer&timeUnit=minute&crs=EPSG%3A4326",
+      "duree": 70.30053333333333,
+      "distance": 54.858137,
+      "version": "2026-11-25",
+      "depart_ign": "7.593615,44.089186",
+      "arrivee_ign": "7.488463,43.800197",
+      "heure": "2026-11-26 20:27:34"
+     }
+    }
+   ],
+   "cote": "même côté"
+  }
+ ]
+}

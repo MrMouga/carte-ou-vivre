@@ -1,0 +1,8 @@
+# Urgences (Insee D106, FINESS) : un nom d'hôpital ne dit pas qu'il y a un accueil ; le vérifier sur la page de l'hôpital
+Étiquettes : data, discovery · Tranche : services (révision D19, D20) · Source : tâche 0 de /build services-revision, `docs/plans/2026-11-26-services-revision/credibilite-urgences.md`
+
+**Problème** — Savoir, pour 10 communes, si le service d'urgence le plus proche (type D106 de la BPE) a un accueil ou n'est qu'une base de SMUR (H205 : 2 bases de SMUR seules → retour à Vincent).
+**Symptômes** — Le D106 de Chamonix s'appelle « HOPITAUX DU MONT BLANC SITE CHAMONIX » : rien n'annonce un SMUR. La page de l'hôpital dit pourtant « centre de soins non programmés… actuellement fermé », ouvert de jour en saison ; l'accueil de toute l'année est à Sallanches (33,9 min au lieu de 4). Seuls 49 des 679 D106 de métropole ont « SMUR » dans leur nom.
+**Ce qui n'a pas marché** — Lire le nom de la BPE ; lire la liste FINESS des activités exercées seule : elle est incomplète (rien pour le CH d'Auch ni pour Pasteur à Nice, qui ont des urgences) ; la nomenclature de ses codes refuse le téléchargement automatique (codes à déduire).
+**Ce qui a marché** — Page de l'hôpital d'abord (accueil, horaires, saison, accès par le 15), FINESS en seconde source (`QA014`, modalités déduites : `MO031` SMUR, `MO032` structure des urgences, `MO030` régulation) ; une absence dans FINESS ne prouve rien.
+**Prévention** — Règle de jugement : pour un équipement de santé, « présent dans la base » ≠ « ouvert au public » ; dire « SMUR seul » ou « pas d'accueil » seulement sur une source qui le dit en toutes lettres. Script réutilisable : `docs/plans/2026-11-26-services-revision/captures/T0-finess.py`.

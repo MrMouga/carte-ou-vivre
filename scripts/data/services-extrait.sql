@@ -36,11 +36,12 @@ SELECT count(*) AS fichiers_notes, sum(octets) AS octets,
   FROM fichiers;
 SELECT lu_le AS sources_lues_le FROM read_json('data-raw/services-sources.info.json');
 
--- Les 21 types de H158.
+-- Les 22 types de H158 (D106, urgences, ajouté par la révision D19 du 2026-11-26, H208 ; B201 et B202 gardés tant que
+-- services.py écrit la chaîne provisoire `commerce`).
 CREATE MACRO lire_region(u) AS TABLE
   SELECT depcom, iris, idSrc, pop, typeeq_id, duree, depcom_equipement
     FROM read_parquet(u)
-   WHERE typeeq_id IN ('D265', 'B104', 'B105', 'B201', 'B202', 'D502', 'C107', 'C108', 'C109', 'C201', 'C301', 'C302',
+   WHERE typeeq_id IN ('D265', 'D106', 'B104', 'B105', 'B201', 'B202', 'D502', 'C107', 'C108', 'C109', 'C201', 'C301', 'C302',
                        'C501', 'C502', 'C503', 'C504', 'C505', 'C509', 'E107', 'E108', 'E109');
 
 -- r = les lignes d'une région (remplacée à chaque région) ; les macros sont vérifiées à leur création.
@@ -55,6 +56,7 @@ CREATE MACRO carreaux_de_r() AS TABLE
          count(DISTINCT pop) AS n_pop, count(*) FILTER (WHERE pop IS NULL) AS pop_vides,
          count(*) - count(DISTINCT typeeq_id) AS lignes_en_trop,
          any_value(duree) FILTER (WHERE typeeq_id = 'D265') AS D265,
+         any_value(duree) FILTER (WHERE typeeq_id = 'D106') AS D106,
          any_value(duree) FILTER (WHERE typeeq_id = 'B104') AS B104,
          any_value(duree) FILTER (WHERE typeeq_id = 'B105') AS B105,
          any_value(duree) FILTER (WHERE typeeq_id = 'B201') AS B201,
@@ -229,14 +231,14 @@ SELECT count(*) AS communes_carreaux, count(*) FILTER (WHERE parts > 1) AS a_plu
        count(*) FILTER (WHERE durees > 1) AS parts_de_durees_differentes,
        round(sum(pop_parts)) AS pop_toutes_parts, round(sum(pop_une_part)) AS pop_une_part_par_carreau
   FROM (SELECT depcom, idSrc, count(*) AS parts, count(DISTINCT pop) AS pops, sum(pop) AS pop_parts, any_value(pop) AS pop_une_part,
-               count(DISTINCT (D265, B104, B105, B201, B202, D502, C107, C108, C109, C201, C301, C302,
+               count(DISTINCT (D265, D106, B104, B105, B201, B202, D502, C107, C108, C109, C201, C301, C302,
                                C501, C502, C503, C504, C505, C509, E107, E108, E109)) AS durees
           FROM carreaux GROUP BY depcom, idSrc);
 SELECT count(*) AS nationales_lignes, count(DISTINCT code) AS nationales_codes,
        CASE WHEN count(*) FILTER (WHERE code IS NULL) > 0 THEN error('ARRET : gare nationale sans commune') END AS controle
   FROM nationales;
 
-COPY (SELECT depcom, iris, idSrc, pop, D265, B104, B105, B201, B202, D502, C107, C108, C109, C201, C301, C302,
+COPY (SELECT depcom, iris, idSrc, pop, D265, D106, B104, B105, B201, B202, D502, C107, C108, C109, C201, C301, C302,
              C501, C502, C503, C504, C505, C509, E107, E108, E109
         FROM carreaux ORDER BY depcom, idSrc, iris)
   TO 'data-raw/services-carreaux.csv.gz' (HEADER, COMPRESSION gzip);
@@ -244,7 +246,7 @@ COPY (SELECT DISTINCT code FROM nationales ORDER BY code) TO 'data-raw/services-
 
 -- Relecture des fichiers écrits.
 SELECT count(*) AS lignes_relues, count(DISTINCT depcom) AS communes_relues, round(sum(pop)) AS pop_relue,
-       count(D265) AS avec_medecin, count(E107) AS avec_gare_nationale
+       count(D265) AS avec_medecin, count(D106) AS avec_urgences, count(E107) AS avec_gare_nationale
   FROM read_csv('data-raw/services-carreaux.csv.gz', header = true, types = {'depcom': 'VARCHAR', 'iris': 'VARCHAR', 'idSrc': 'VARCHAR'});
 SELECT count(*) AS nationales_relues FROM read_csv('data-raw/services-nationales.csv', header = true, all_varchar = true);
 SELECT strftime(get_current_timestamp(), '%H:%M:%S') AS fin_extraction;

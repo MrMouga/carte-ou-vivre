@@ -14,9 +14,19 @@ const script = fileURLToPath(new URL('./services.py', import.meta.url));
 const lancer = (option: string, fichier: string) =>
   JSON.parse(execFileSync('python3', ['-I', script, option, fichier], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
 
-// Colonnes de services-carreaux.csv (tâche 0a), sans `iris` : une ligne = une part de population.
-const TYPES = ['D265', 'B104', 'B105', 'B201', 'B202', 'D502', 'C107', 'C108', 'C109', 'C201', 'C301', 'C302',
+// Colonnes de services-carreaux.csv (tâche 0a ; D106 ajouté par la révision D19), sans `iris` : une ligne = une part
+// de population.
+const TYPES = ['D265', 'D106', 'B104', 'B105', 'B201', 'B202', 'D502', 'C107', 'C108', 'C109', 'C201', 'C301', 'C302',
   'C501', 'C502', 'C503', 'C504', 'C505', 'C509', 'E107', 'E108', 'E109'];
+// Services écrits par services.py (ordre de R54 révisée) ; `commerce` y reste provisoirement jusqu'à la tâche 2 de la
+// révision D19, D20 (plan 2026-11-26-services-revision), qui le retire du script et d'ici.
+const SERVICES_PY = ['medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare',
+  'gare_regionale', 'gare_grandes_lignes', 'commerce'];
+/** Les services du script à « pas de chiffre », sauf ceux donnés. */
+const tempsPy = (valeurs: Record<string, number>) => ({
+  ...Object.fromEntries(SERVICES_PY.map((s) => [s, null])),
+  ...valeurs,
+});
 type Carreau = { depcom: string; carreau: string; pop: number } & Record<string, unknown>;
 const ligneCsv = (c: Carreau) =>
   [c.depcom, c.carreau, String(c.pop), ...TYPES.map((t) => (c[t] === undefined || c[t] === null ? '' : String(c[t])))].join(',');
@@ -28,11 +38,11 @@ const temps = (valeurs: Partial<TempsServices>): TempsServices => ({
 });
 
 describe('scripts/data/services.py --extrait (R52)', () => {
-  it("AC-5 : commerce de X 4 min, médecin de Y 2, de Z 3, de V 9, lycée de W 9 ; arrondis 0,4 → 1, 4,49 → 4, 4,5 → 5 ; ville à arrondissements 3 min", () => {
+  it("AC-5 : supermarché de X 9 min (épicerie B202 non comptée), médecin de Y 2, de Z 3, de V 9, lycée de W 9 ; arrondis 0,4 → 1, 4,49 → 4, 4,5 → 5 ; ville à arrondissements 3 min", () => {
     const ex = acceptance.fixture.extrait_carreaux;
     // Un code de commune inventé par bloc ; `pop_du_carreau_entier` n'est pas lu (la part de la commune est `pop`).
     const blocs: [string, string][] = [
-      ['commune_X_commerce', '99101'],
+      ['commune_X_supermarche', '99101'],
       ['commune_Y_egalite_medecin', '99102'],
       ['commune_Z_carreau_sans_temps_medecin', '99103'],
       ['commune_V_carreau_a_cheval_medecin', '99104'],
@@ -52,13 +62,14 @@ describe('scripts/data/services.py --extrait (R52)', () => {
     const sortie = lancer('--extrait', fichier) as Record<string, TempsServices>;
 
     expect(sortie).toEqual({
-      '99101': temps({ commerce: 4 }),
-      '99102': temps({ medecin: 2 }),
-      '99103': temps({ medecin: 3 }),
-      '99104': temps({ medecin: 9 }),
-      '99105': temps({ lycee: 9 }),
-      ...Object.fromEntries(arrondis.map((a) => [a.code, temps({ medecin: a.attendu })])),
-      '75056': temps({ medecin: 3 }),
+      // `commerce` provisoire (B104, B105, B201, B202 : l'épicerie compte, 4 min) jusqu'à la tâche 2 de la révision.
+      '99101': tempsPy({ supermarche: 9, commerce: 4 }),
+      '99102': tempsPy({ medecin: 2 }),
+      '99103': tempsPy({ medecin: 3 }),
+      '99104': tempsPy({ medecin: 9 }),
+      '99105': tempsPy({ lycee: 9 }),
+      ...Object.fromEntries(arrondis.map((a) => [a.code, tempsPy({ medecin: a.attendu })])),
+      '75056': tempsPy({ medecin: 3 }),
     });
     expect(arrondis.map((a) => [a.brut, a.attendu])).toEqual([['0.4', 1], ['4.49', 4], ['4.5', 5]]);
   });

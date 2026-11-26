@@ -3,7 +3,8 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
-| 2026-11-26 | Amender un `acceptance.json` validé : remplacer le texte, ne pas réécrire le fichier | spec, tests, outil | — | [2026-11-26-amender-acceptance-json-sans-le-reformater.md](2026-11-26-amender-acceptance-json-sans-le-reformater.md) |
+| 2026-11-26 | Urgences (Insee D106, FINESS) : un nom d'hôpital ne dit pas qu'il y a un accueil ; le vérifier sur la page de l'hôpital | data, discovery | — | [2026-11-26-urgences-bpe-un-nom-d-hopital-n-est-pas-un-accueil.md](2026-11-26-urgences-bpe-un-nom-d-hopital-n-est-pas-un-accueil.md) |
+| 2026-11-26 | Amender un `acceptance.json` validé : remplacer le texte, ne pas réécrire le fichier | spec, tests, outil | Revu le 2026-11-26 (relecture du plan) : | [2026-11-26-amender-acceptance-json-sans-le-reformater.md](2026-11-26-amender-acceptance-json-sans-le-reformater.md) |
 | 2026-11-25 | Une nouvelle spec : prendre ses numéros (H-n) et ses valeurs de fixture dans les fichiers, pas dans l'index | spec, tests | — | [2026-11-25-spec-numeros-et-valeurs-deja-pris.md](2026-11-25-spec-numeros-et-valeurs-deja-pris.md) |
 | 2026-11-25 | Matrice d'openrouteservice : aucun rayon d'accroche à régler, et écarter les bacs la fait tomber à 25 trajets par requête | data, outil | Revu le 2026-11-26 (tâche 0b) : **un poi | [2026-11-25-openrouteservice-matrice-sans-rayon-ni-bacs.md](2026-11-25-openrouteservice-matrice-sans-rayon-ni-bacs.md) |
 | 2026-11-25 | Un changement d'affichage demandé en /ui : chiffrer son coût en tests, pas seulement en critères, avant que Vincent tranche | process, spec, tests, design | — | [2026-11-25-changement-d-unite-en-ui-compter-aussi-les-tests.md](2026-11-25-changement-d-unite-en-ui-compter-aussi-les-tests.md) |

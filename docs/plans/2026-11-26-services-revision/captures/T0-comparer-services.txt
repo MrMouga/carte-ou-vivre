@@ -1,0 +1,20 @@
+clés avant : ['codes', 'medecin', 'commerce', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes', 'iles_sans_pont']
+clés après : ['codes', 'medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes', 'commerce', 'iles_sans_pont']
+codes identiques (mêmes codes, même ordre) : True
+iles_sans_pont identiques : True
+  medecin                longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  commerce               longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  creche                 longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  ecole                  longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  college                longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  lycee                  longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  superieur              longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  gare                   longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  gare_regionale         longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  gare_grandes_lignes    longueur 34746 → 34746 ; caractères différents : 0 ; identique : True
+  nouvelle : urgences (34746 caractères)
+  nouvelle : supermarche (34746 caractères)
+toutes les chaînes d'avant identiques après : True
+poids avec commerce : 695253 octets bruts, 351117 en gzip -9
+poids sans commerce : 660493 octets bruts, 330752 en gzip -9
+écrit (sans commerce, pour brotli) : /private/tmp/claude-501/-Users-mouga-git-repository-carte-ou-vivre/89bb81e5-e604-4688-adb5-8a238c516337/scratchpad/services-sans-commerce.json
