@@ -15,13 +15,13 @@ const merCochee = (page: Page) => page.getByRole('group', { name: 'Mer à moins 
 const pastille = (page: Page, libelle: string) =>
   page.getByRole('group', { name: 'Taille de la commune' }).getByRole('button', { name: new RegExp(`^${libelle.replace(/ /g, '\\s')}$`) });
 
-test('AC-11 /?loyer=800&mer=50 : réglages 800 € et 50 km ; « 1 commune passe tes critères » puis Portmer 58', async ({ page }) => {
-  await ouvrir(page, '/?loyer=800&mer=50');
+test('AC-11 /?loyer=800&mer-min=60 : réglages 800 € et 1 h ; « 1 commune passe tes critères » puis Portmer 55', async ({ page }) => {
+  await ouvrir(page, '/?loyer=800&mer-min=60');
   expect(await valeur(page, 'Loyer maximum')).toMatch(/^800 €/);
-  expect(nbsp(await merCochee(page).textContent())).toBe('50 km');
+  expect(nbsp(await merCochee(page).textContent())).toBe('1 h');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 58 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 55 · 650 € · 5 min']);
 });
 
 test('AC-12 /?loyer=abc&mer=aucun&taille=village : 1 200 €, aucune distance à la mer cochée, aucune taille cochée ; adresse /?loyer=1200 ; liste D 65, A 46, B 31, E 9', async ({ page }) => {

@@ -5,7 +5,7 @@ import { ouvrir } from './lib/carte';
 // la bande de carte visible dit pourquoi la carte est vide.
 test('390 px, aucune commune : la raison est visible sans faire défiler', async ({ page }) => {
   test.skip(page.viewportSize()!.width >= 1024, 'en bureau, la liste est visible à côté de la carte');
-  await ouvrir(page, '/?loyer=300&mer=5');
+  await ouvrir(page, '/?loyer=300&mer-min=15'); // recherche-et-mer, règle (a) : mer=5 → mer-min=15
   const message = page.getByTestId('carte-vide');
   await expect(message).toHaveText('Aucune commune ne passe tes critères');
   await expect(message).toBeInViewport({ ratio: 1 });

@@ -7,7 +7,7 @@ const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
 const liste = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
 const lignes = async (page: Page) => (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
 
-/** Cadre-de-vie (R28, H69 ; D12 : boutons à bascule exclusifs) : la mer se choisit par les cases « Mer à moins de », plus au curseur. */
+/** Cadre-de-vie (R28, H69 ; D12 : boutons à bascule exclusifs) : la mer se choisit par les cases « Mer à moins de », plus au curseur ; en minutes (R60 de recherche-et-mer). */
 const groupe = (page: Page, nom: string) => page.getByRole('group', { name: nom });
 const choixMer = (page: Page, nom: string) => groupe(page, 'Mer à moins de').getByRole('button', { name: nom, exact: true });
 
@@ -17,26 +17,26 @@ async function regler(page: Page, nom: string, touche: string, fois = 1) {
   await apresRendu(page);
 }
 
-test('AC-4 la liste depuis /?loyer=1200&mer=50 : « 3 communes passent tes critères » puis Portmer 72, Quaibleu 48, Grandeville 25 au format de R5', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50');
+test('AC-4 la liste depuis /?loyer=1200&mer-min=60 : « 3 communes passent tes critères » puis Portmer 69, Quaibleu 43, Grandeville 24 au format de R5', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer-min=60');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 48 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 25 · 832 € · 40 km',
+    '1 · Portmer (17) · 69 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 43 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 24 · 832 € · 50 min',
   ]);
   // Ce qui se voit dans une ligne : rang, nom, chiffres, score.
-  await expect(liste(page).getByRole('button').first()).toHaveText(/1Portmer \(17\)650.€ · moins d'1.km72/);
+  await expect(liste(page).getByRole('button').first()).toHaveText(/1Portmer \(17\)650.€ · 5.min69/);
 });
 
-test('AC-5 loyer 300 € et mer 10 km : aucune commune colorée, message de liste', async ({ page }) => {
+test('AC-5 loyer 300 € et mer 15 min : aucune commune colorée, message de liste', async ({ page }) => {
   await ouvrir(page);
   await regler(page, 'Loyer maximum', 'Home');
-  await choixMer(page, '10 km').click();
+  await choixMer(page, '15 min').click();
   await apresRendu(page);
   await expect(page.getByRole('slider', { name: 'Loyer maximum' })).toHaveAttribute('aria-valuenow', '300');
-  await expect(choixMer(page, '10 km')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choixMer(page, '15 min')).toHaveAttribute('aria-pressed', 'true');
   await attendreCouleurs(page, { A: null, B: null, C: null, D: null, E: null });
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille.');
@@ -58,7 +58,7 @@ test('AC-6 loyer « Sans limite », aucune distance à la mer ni à la montagne 
 });
 
 test('zone annoncée : le compte suit les réglages (3, 1, aucune)', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
+  await ouvrir(page, '/?loyer=1200&mer-min=60'); // cadre-de-vie, règle (1) du recalage : réglage explicite ; recherche-et-mer (a)
   const status = page.getByRole('status');
   await expect(status).toHaveText('3 communes passent tes critères');
   await page.getByRole('button', { name: /^10\s000 – 50\s000\shab\.$/ }).click(); // cadre-de-vie, règle (3) : taille en chiffres
