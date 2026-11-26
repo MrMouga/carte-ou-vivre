@@ -1,4 +1,5 @@
 2026-11-24 · validé
+À revoir (2026-11-26) : révision D19, D20 de la spec — ligne « Urgences » (15 / 30 / 45 min) après « Médecin », « Supermarché » à la place de « Commerce alimentaire », 11 lignes dans la fiche ; mêmes composants (Cases collées), pas de nouvelle piste.
 # Design — services
 
 Spec : [docs/specs/2026-11-23-services/](../../specs/2026-11-23-services/spec.md) · Temps convenu : 1 h, 1 session (dépassé : deux sessions, à cause des révisions D13 à D18 de la spec) · Support : prototypes en code, sans Figma, sans références (choix de Vincent) · Étend le [système](../system/README.md) et les tranches construites (le code fait foi).

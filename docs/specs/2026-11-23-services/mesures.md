@@ -98,3 +98,12 @@ Famille C5 : 618 communes à 5 min ou moins, 1 517 au-delà de 60 min, 18 sans c
 | Gare grandes lignes | 171 | 1 018 | 2 918 | 5 688 | 12 637 | 22 736 | 29 319 | 5 045 | 382 |
 
 - Poids du fichier à 10 temps, rangé par colonnes avec chaque code une seule fois, temps plafonnés à 61 : 1 175 Ko bruts, **349 Ko compressés (gzip -9)**, 271 Ko en brotli (qualité 11). Avec une ligne par commune et la nationale à la place des grandes lignes : 366 Ko.
+
+## Révision D19, D20 (2026-11-26)
+Mesure exploratoire faite pendant /spec, à refaire en tâche 0 sur les fichiers figés (H205).
+
+- **Urgences (D106)** : temps lus dans l'essai de /spec du 2026-11-23 (`mediane.parquet` du dossier temporaire de cette session-là, 19 types, dont D106 et D307), calculé **sans** additionner les parts de carreaux par IRIS (H173 est venu après) : les valeurs peuvent bouger un peu. Sur 34 728 communes avec un temps : 851 à 5 min ou moins, 4 025 à 10, 9 558 à 15, 16 243 à 20, 27 415 à 30, 33 676 à 45, 34 562 à 60, 174 au-delà. Témoins (minutes avant arrondi) : Paris 4,4 ; Bordeaux 4,9 ; Le Havre 4,8 ; Mende 3,9 ; Chamonix-Mont-Blanc 4,2 ; Auch 6,1 ; Les Sables-d'Olonne 6,6 ; Île-de-Bréhat 12,4 ; Saint-Véran 55,4 ; Prads-Haute-Bléone 43,1 ; Tende 227,9 ; L'Île-d'Yeu sans chiffre.
+- **Supermarché (B104, B105)** : calculé le 2026-11-26 par la règle de `scripts/data/services.py` sur l'extrait figé `data-raw/services-carreaux.csv.gz` (parts additionnées) : 9 022 à 5 min ou moins, 22 329 à 10, 30 409 à 15, 33 195 à 20, 34 415 à 30, 34 690 à 45, 34 719 à 60, 12 au-delà, 15 sans chiffre. Témoins : Bordeaux 1,36 ; Auch 2,47 ; Mende 2,43 ; Les Sables-d'Olonne 2,38 ; Chamonix-Mont-Blanc 2,66 ; L'Île-d'Yeu 3,81 ; Saint-Véran 34,99 ; Tende 224,3. Hypermarché seul (écarté par D20) : 8 819 à 10 min, Chamonix-Mont-Blanc 22.
+- **Pharmacie (D307, écartée par D19)** : 13 887 à 5 min, 28 383 à 10, 33 333 à 15 (médecin : 14 232, 27 960, 33 135).
+- **Tolérance pour la tâche 0** : les valeurs d'AC-13 doivent être exactes, sinon retour à Vincent (comme pour les autres temps) ; les comptes de supermarché doivent être identiques (même extrait, même règle) ; les comptes d'urgences peuvent s'écarter de l'essai (parts par IRIS) : un écart de plus de 1 % sur un seuil de 15, 30 ou 45 min est expliqué dans la mesure de la tâche 0, sans arrêt.
+- **Poids** : `public/data/services.json` à 10 temps, mesuré le 2026-11-26 : 304 Ko en `gzip -9`, 238 Ko en `brotli -q 3` (H206).
