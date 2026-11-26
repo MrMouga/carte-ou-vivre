@@ -204,7 +204,8 @@ export function Recherche({ index, codes, onFocus, choix, onChoisir, onEffacer, 
         role="listbox"
         aria-label="Suggestions de communes"
         hidden={!ouverte}
-        // Un appui sur la barre de défilement de la liste garde aussi le focus dans le champ.
+        // Garde le focus dans le champ pendant l'appui sur une suggestion ou sur la barre de défilement : sur iPhone, il le
+        // perdrait avant le clic, et la liste se fermerait.
         onMouseDown={(e) => e.preventDefault()}
         className="flex max-h-liste-suggestions min-h-0 flex-col overflow-y-auto overscroll-contain rounded-base border border-border bg-card"
       >
@@ -214,8 +215,6 @@ export function Recherche({ index, codes, onFocus, choix, onChoisir, onEffacer, 
             id={`${idListe}-${i}`}
             role="option"
             aria-selected={i === actif}
-            // Garde le focus dans le champ pendant l'appui : sur iPhone, il le perdrait avant le clic, et la liste se fermerait.
-            onMouseDown={(e) => e.preventDefault()}
             onClick={() => choisir(c)}
             className={cn(
               'flex shrink-0 cursor-pointer flex-col justify-center border-b border-border px-2 py-1 last:border-b-0 hover:bg-background max-bureau:min-h-toucher',
