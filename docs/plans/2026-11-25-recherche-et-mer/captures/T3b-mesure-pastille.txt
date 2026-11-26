@@ -1,0 +1,26 @@
+Réaction d'une pastille → carte redessinée (H90 de cadre-de-vie : 149 à 164 ms accepté, arrêt au-delà de 164 ms).
+Version construite (vite preview), vraies données, 1 440 × 900, fond uni, CPU × 4, Chromium de Playwright sans écran
+(coque sans écran) ; au clavier (Espace sur la pastille, en alternance) ; médiane de 15 essais après un échauffement.
+Mesure : du keydown (capture) à la deuxième image qui suit le changement de l'adresse (méthode de
+docs/plans/2026-10-15-cadre-de-vie/captures/T4-mesure-reaction.txt). Script : scratchpad, preuves-t3b.mjs (hors dépôt).
+Avant (f7b6d81, tâche 0b, km) et après (e21bf0f, tâche 3b, minutes) servis côte à côte (ports 4181 et 4180), passés en
+alternance. 2026-11-26, 09:09-09:14, charge de la machine 4,0 à 6,2.
+
+Après (e21bf0f) — mer en minutes :
+  Cases « Mer à moins de » (1 h ↔ 1 h 30), depuis /?loyer=1200&mer-min=60 : médiane 122 ms ; min 110 max 133 ; essais 118 133 111 127 125 128 113 125 118 123 110 123 112 122 120
+  Cases « Mer à moins de » (1 h ↔ 1 h 30), depuis /?loyer=1200&mer-min=60 : médiane 129 ms ; min 116 max 140 ; essais 122 130 130 127 116 138 122 130 121 140 129 139 127 138 116
+  Cases « Mer à moins de » (15 min ↔ 30 min), depuis /?loyer=1200&mer-min=15 : médiane 105 ms ; min 97 max 141 ; essais 102 103 103 106 97 111 104 109 141 118 113 105 104 107 101
+  Cases « Mer à moins de » (15 min ↔ 30 min), depuis /?loyer=1200&mer-min=15 : médiane 105 ms ; min 100 max 130 ; essais 130 109 104 108 107 102 102 105 102 108 100 104 102 112 111
+  Témoin, cases « Montagne à moins de » (50 ↔ 100 km) : médiane 94 ms puis 91 ms
+
+Avant (f7b6d81) — mer en km, même geste (50 km ↔ 100 km, l'équivalent de 1 h ↔ 1 h 30 au tableau de recalage) :
+  Cases « Mer à moins de » (50 km ↔ 100 km), depuis /?loyer=1200&mer=50 : médiane 141 ms ; min 125 max 191 ; essais 137 142 138 140 125 151 169 169 141 191 131 144 126 156 131
+  Cases « Mer à moins de » (50 km ↔ 100 km), depuis /?loyer=1200&mer=50 : médiane 132 ms ; min 120 max 144 ; essais 122 135 126 136 120 133 127 134 122 144 124 132 120 134 133
+  Témoin, cases « Montagne à moins de » (50 ↔ 100 km) : médiane 109 ms puis 91 ms
+
+Lecture : la pastille de la mer en minutes (122 à 129 ms) reste sous les 164 ms de H90 et n'est pas plus lente que la
+pastille en km d'avant la tâche (132 à 141 ms), mesurée de la même façon au même moment. Les chiffres absolus sont plus
+bas que ceux de cadre-de-vie (149 à 164 ms, 2026-10-15) : autre jour, autre charge ; seule la comparaison avant / après
+au même moment a un sens.
+Essai écarté : le même script avec le Chromium complet (« channel: chromium ») donne 53 ms (mer) et 28 ms (montagne) :
+autre navigateur que la mesure de référence, non comparable.
