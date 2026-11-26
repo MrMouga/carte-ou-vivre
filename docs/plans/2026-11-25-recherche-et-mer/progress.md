@@ -12,6 +12,7 @@ Tâche 1 : faite — commit 1bf9a8d — preuve : captures/T1-*.png (01:19), T1-b
 Tâche 2 : faite — commit dc121a4 — preuve : captures/T2-*.png (02:00), T2-390-01300.png ouverte ; « 01 » médiane 2,3 ms ; indisponibles à 10,2 s (2026-11-26 02:05) — 26 min — agent : 184 k jetons — rapport : taches/T2.md. Vérifié : Vitest 435 verts, types ; Playwright 498 verts, 53 sautés (18,1 min). AC-2, AC-3, AC-13 passent. Tests existants modifiés : `tests/e2e/lib/carte.ts` (+12 lignes, 0 retirée, exception accordée) ; `recherche.test.ts` (imports élargis seulement).
 **À corriger avant la démo** (vu par l'orchestrateur sur T2-390-01300.png) : à 390 px, la liste des suggestions garde 280 px de haut et coupe 01300 à 6 communes alors que la moitié de la feuille montée reste vide ; elle doit occuper la hauteur disponible au téléphone (décision du constructeur « garde 280 px » écartée). → passe de corrections.
 Tâche 4 : faite — commit 90d2b90 — preuve : captures/T4-*.png (02:50), T4-bureau-1280x800-bas.png ouverte et conforme (2026-11-26 02:53) — 30 min — agent : 161 k jetons — rapport : taches/T4.md. Vérifié : Playwright 498 verts, 53 sautés (17,7 min), Vitest 435 ; aucun test existant modifié. Pour la QA : un trou dans la carte sous le panneau vu avec le Chromium headless de Playwright, absent avec `channel: 'chromium'` — à regarder dans un vrai navigateur.
+Tâche 3a : faite — commit 927e659 — preuve : Vitest 446 verts (11 tests ajoutés), types, construction relancés par l'orchestrateur (2026-11-26 03:15) — 4 min — agent : 111 k jetons — rapport : taches/T3a.md. Rien ne change à l'écran ; Playwright relancé après 0b. Tests existants : imports élargis seulement. À faire en 3b : la raison de la mer doit porter `dapresKm` pour le « ≈ ».
 
 ## Décisions prises à la place de Vincent
 - T0a, décidé par Claude : aucun paramètre de rayon envoyé (la matrice n'en a pas ; défaut serveur 2 000 m, distance d'accroche gardée pour 0b).
@@ -24,6 +25,7 @@ Tâche 4 : faite — commit 90d2b90 — preuve : captures/T4-*.png (02:50), T4-b
 - T1, décidé par Claude : la loupe de bureau ne fait pas grandir la ligne du titre ; celle de la tête de la feuille est à 8 px du bord droit ; une seule zone annoncée pour le champ (nombre de suggestions ou message).
 - T2, décidé par Claude : le délai de 10 s compte depuis la première demande, nouvel essai compris ; l'état des codes est gardé au niveau de la page (rouvrir la recherche ne redemande pas) ; une réponse après 10 s est ignorée, la prise de focus suivante redemande ; dans une suggestion par code, code en gris et nom en gras.
 - T4, décidé par Claude : bloc des mentions décalé de 8 px vers les bords (`-mx-2 mt-2`, comme le prototype) ; conséquence : au clavier, en bureau, les liens des mentions passent avant la liste.
+- T3a, décidé par Claude : espace insécable entre « ≈ » et le temps ; quand un temps est servi, les km ne sont pas lus.
 
 ## Retours à traiter à la démo
 
