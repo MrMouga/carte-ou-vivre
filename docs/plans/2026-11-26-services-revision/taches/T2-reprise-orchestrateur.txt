@@ -1,0 +1,28 @@
+
+Running 24 tests using 2 workers
+
+[1/24] [mobile] › tests/e2e/immobilier.spec.ts:232:1 › R21 : « Sans limite » le reste quand on change de bien
+[2/24] [mobile] › tests/e2e/cadre-de-vie.spec.ts:366:1 › D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée
+[3/24] [mobile] › tests/e2e/mairies.spec.ts:175:1 › H117 amendée : /?mairie=extreme-gauche devient /?loyer=1200, aucune pastille cochée, 5 communes ; /?mairie=extreme-gauche,gauche ne coche que « Gauche »
+[4/24] [mobile] › tests/e2e/mairies.spec.ts:187:1 › AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée dit « 2 choix », pastilles cachées ; dépliée, « Gauche » et « Sans étiquette » toujours cochées, 2 communes
+[5/24] [mobile] › tests/e2e/mairies.spec.ts:203:1 › design F : 2 lignes de 3 cases de 44 px au moins, « Sans étiquette » sur la ligne de « Droite », groupe décrit par « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille
+[6/24] [mobile] › tests/e2e/mairies.spec.ts:220:1 › H122 : pendant le chargement, les 6 pastilles sont désactivées
+[7/24] [mobile] › tests/e2e/mairies.spec.ts:244:1 › AC-5 depuis /, fiches de Portmer, Grandeville, Montcher, Terrebasse, Quaibleu et Rhinval : ligne « Mairie » de R40 sous la montagne, aucune raison « Mairie : »
+[8/24] [mobile] › tests/e2e/mairies.spec.ts:264:1 › H112 : la ligne « Mairie » a le style de la ligne de la montagne ; « 3 500 habitants » avec des espaces insécables
+[9/24] [mobile] › tests/e2e/cadre-de-vie.spec.ts:366:1 › D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée
+[10/24] [mobile] › tests/e2e/immobilier.spec.ts:232:1 › R21 : « Sans limite » le reste quand on change de bien
+[11/24] [mobile] › tests/e2e/mairies.spec.ts:175:1 › H117 amendée : /?mairie=extreme-gauche devient /?loyer=1200, aucune pastille cochée, 5 communes ; /?mairie=extreme-gauche,gauche ne coche que « Gauche »
+[12/24] [mobile] › tests/e2e/mairies.spec.ts:187:1 › AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée dit « 2 choix », pastilles cachées ; dépliée, « Gauche » et « Sans étiquette » toujours cochées, 2 communes
+[13/24] [mobile] › tests/e2e/mairies.spec.ts:203:1 › design F : 2 lignes de 3 cases de 44 px au moins, « Sans étiquette » sur la ligne de « Droite », groupe décrit par « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille
+[14/24] [mobile] › tests/e2e/mairies.spec.ts:220:1 › H122 : pendant le chargement, les 6 pastilles sont désactivées
+[15/24] [mobile] › tests/e2e/mairies.spec.ts:244:1 › AC-5 depuis /, fiches de Portmer, Grandeville, Montcher, Terrebasse, Quaibleu et Rhinval : ligne « Mairie » de R40 sous la montagne, aucune raison « Mairie : »
+[16/24] [mobile] › tests/e2e/mairies.spec.ts:264:1 › H112 : la ligne « Mairie » a le style de la ligne de la montagne ; « 3 500 habitants » avec des espaces insécables
+[17/24] [mobile] › tests/e2e/cadre-de-vie.spec.ts:366:1 › D12 : montagne « 10 km » cochée, décochée → aucune distance cochée (Peu importe), adresse sans montagne= ; « 30 km » puis « 100 km » : une seule cochée
+[18/24] [mobile] › tests/e2e/immobilier.spec.ts:232:1 › R21 : « Sans limite » le reste quand on change de bien
+[19/24] [mobile] › tests/e2e/mairies.spec.ts:175:1 › H117 amendée : /?mairie=extreme-gauche devient /?loyer=1200, aucune pastille cochée, 5 communes ; /?mairie=extreme-gauche,gauche ne coche que « Gauche »
+[20/24] [mobile] › tests/e2e/mairies.spec.ts:187:1 › AC-8 /?loyer=1200&mairie=gauche,sans-etiquette : « Vie locale » repliée dit « 2 choix », pastilles cachées ; dépliée, « Gauche » et « Sans étiquette » toujours cochées, 2 communes
+[21/24] [mobile] › tests/e2e/mairies.spec.ts:203:1 › design F : 2 lignes de 3 cases de 44 px au moins, « Sans étiquette » sur la ligne de « Droite », groupe décrit par « Moins de 3 500 habitants : le ministère ne classe pas les listes. » sous la grille
+[22/24] [mobile] › tests/e2e/mairies.spec.ts:220:1 › H122 : pendant le chargement, les 6 pastilles sont désactivées
+[23/24] [mobile] › tests/e2e/mairies.spec.ts:244:1 › AC-5 depuis /, fiches de Portmer, Grandeville, Montcher, Terrebasse, Quaibleu et Rhinval : ligne « Mairie » de R40 sous la montagne, aucune raison « Mairie : »
+[24/24] [mobile] › tests/e2e/mairies.spec.ts:264:1 › H112 : la ligne « Mairie » a le style de la ligne de la montagne ; « 3 500 habitants » avec des espaces insécables
+  24 passed (54.8s)
