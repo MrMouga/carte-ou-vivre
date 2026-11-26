@@ -155,7 +155,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Droite », puis décoche « Droite » et coche « Centre »",
       "then": "avec « Droite » : l'adresse devient /?loyer=1200&mairie=droite ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 46 · 650 € · 5 min » ; Grandeville (33), Terrebasse (23), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la fiche de Grandeville affiche « Mairie : gauche, hors des mairies choisies » et celle de Terrebasse « Mairie : sans étiquette, hors des mairies choisies ». Avec « Centre » seul : l'adresse devient /?loyer=1200&mairie=centre ; aucune commune n'est colorée ; la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -163,7 +163,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Gauche », puis aussi « Sans étiquette »",
       "then": "après le premier : la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 50 min ». Après le second : l'adresse devient /?loyer=1200&mairie=gauche,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31 ; sous « Ne passe pas tes critères », la fiche de Rhinval (67) donne la raison « Mairie : aucun résultat en 2026, hors des mairies choisies » et celle de Portmer (17) « Mairie : droite, hors des mairies choisies »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",

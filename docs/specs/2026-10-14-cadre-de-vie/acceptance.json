@@ -289,7 +289,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /",
       "then": "l'adresse devient /?loyer=1200 ; dans « Cadre de vie », aucune distance à la mer ni à la montagne n'est cochée, aucune taille ni aucun type n'est coché ; la liste montre « 5 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 65 · 416 € · 2 h 40 », « 2 · Rhinval (67) · 52 · 572 € · ≈ 7 h », « 3 · Portmer (17) · 46 · 650 € · 5 min », « 4 · Grandeville (33) · 31 · 832 € · 50 min », « 5 · Quaibleu (13) · 9 · 1 092 € · 14 min » ; Montcher (75) n'est pas colorée",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -297,7 +297,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la mer « 1 h »",
       "then": "l'adresse devient /?loyer=1200&mer-min=60 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 69 · 650 € · 5 min », « 2 · Quaibleu (13) · 43 · 1 092 € · 14 min », « 3 · Grandeville (33) · 24 · 832 € · 50 min » ; la fiche de Rhinval (67) affiche « Mer ≈ 7 h : au-dessus de ton plafond de 1 h »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -305,7 +305,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la montagne « 10 km »",
       "then": "l'adresse devient /?loyer=1200&montagne=10 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 2 h 40 » et « 2 · Rhinval (67) · 71 · 572 € · ≈ 7 h » (Terrebasse, commune de montagne, a la note 100 en montagne) ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 10 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -313,7 +313,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur choisit la montagne « 50 km »",
       "then": "l'adresse devient /?loyer=1200&montagne=50 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 83 · 416 € · 2 h 40 », « 2 · Rhinval (67) · 75 · 572 € · ≈ 7 h » et « 3 · Grandeville (33) · 15 · 832 € · 50 min » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne) ; la fiche de Portmer (17) affiche « Montagne 140 km : au-dessus de ton plafond de 50 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -321,7 +321,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche le type « Ville dense », puis aussi « Bourg et village »",
       "then": "après le premier : l'adresse devient /?loyer=1200&env=ville-dense ; la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 50 min » ; la fiche de Portmer (17) affiche « Environnement : ville et périphérie, hors des types choisis ». Après le second : l'adresse devient /?loyer=1200&env=ville-dense,bourg-et-village ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -337,7 +337,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer-min=60",
       "when": "l'utilisateur choisit Grandeville (33), puis Terrebasse (23), puis Rhinval (67)",
       "then": "la fiche de Grandeville affiche « Ville dense · 260 000 habitants », le score 24, « 3e sur 3 communes qui passent », « 50 min de la mer en voiture » et « 50 km de la montagne à vol d'oiseau » ; celle de Terrebasse « Bourg et village · 4 200 habitants », « Commune de montagne » et « Mer 2 h 40 : au-dessus de ton plafond de 1 h » ; celle de Rhinval « Ville et périphérie · 30 000 habitants » et « moins d'1 km de la montagne »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -345,7 +345,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,village",
       "then": "aucune distance à la mer ni à la montagne n'est cochée (`mer=200`, ancien lien, est ignoré, D9 de recherche-et-mer ; `montagne=0` n'est pas un choix), la taille « Moins de 10 000 hab. » et le type « Bourg et village » sont cochés ; l'adresse devient /?loyer=1200&taille=petite-commune&env=bourg-et-village ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 65 · 416 € · 2 h 40 »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -353,7 +353,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1200&mer-min=90, puis /?loyer=1200&mer-min=30",
       "then": "avec mer-min=90 : la mer est sur « 1 h 30 », l'adresse ne change pas, la liste montre « 3 communes passent tes critères » puis, dans l'ordre, Portmer (17) 70, Quaibleu (13) 47, Grandeville (33) 38. Avec mer-min=30 : la mer est sur « 30 min », l'adresse ne change pas, la liste montre « 2 communes passent tes critères » puis Portmer (17) 65 et Quaibleu (13) 31",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -369,7 +369,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1200&mer-min=90&montagne=50",
       "then": "la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 25 · 832 € · 50 min » (49,6 km affiché 50 km, égal au plafond : note 0 en montagne ; loyer 31, mer 44) ; la fiche de Grandeville affiche « 50 km de la montagne à vol d'oiseau » ; la fiche de Quaibleu (13) affiche « Montagne 62 km : au-dessus de ton plafond de 50 km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",

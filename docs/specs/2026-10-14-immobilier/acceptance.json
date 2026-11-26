@@ -279,7 +279,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer-min=60",
       "when": "l'utilisateur met la surface à 72 m²",
       "then": "l'adresse devient /?loyer=1200&mer-min=60&surface=72 ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 58 · 900 € · 5 min » et « 2 · Grandeville (33) · 10 · 1 152 € · 50 min » ; la fiche de Grandeville affiche « 1 152 € par mois pour 72 m² (16,0 €/m²) » ; celle de Quaibleu affiche « Loyer 1 512 € : au-dessus de ton plafond de 1 200 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -287,7 +287,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer-min=60&surface=72",
       "when": "l'utilisateur choisit Maison",
       "then": "la surface reste 72 m² et le plafond 1 200 € ; l'adresse devient /?loyer=1200&mer-min=60&bien=maison&surface=72 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 64 · 756 € · 5 min » et « 2 · Grandeville (33) · 19 · 936 € · 50 min » ; la fiche de Portmer affiche « 756 € par mois pour 72 m² (10,5 €/m²) » et « Estimation du secteur (communes voisines) » ; celle de Quaibleu affiche « Loyer 1 224 € : au-dessus de ton plafond de 1 200 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -295,7 +295,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer-min=60",
       "when": "l'utilisateur choisit l'unité au m², puis revient à Total",
       "then": "au m² : le libellé est « Loyer mensuel » et le plafond affiche 23 €/m², le champ surface n'est plus affiché, l'adresse est /?loyer=23&mer-min=60&unite=m2, la liste montre « 1 · Portmer (17) · 69 · 12,5 €/m² · 5 min », « 2 · Quaibleu (13) · 43 · 21,0 €/m² · 14 min », « 3 · Grandeville (33) · 24 · 16,0 €/m² · 50 min » et la fiche de Grandeville affiche « 16,0 €/m² par mois » ; de retour en Total : plafond 1 200 €, surface 52 m², adresse /?loyer=1200&mer-min=60",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -303,7 +303,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&mer-min=60",
       "when": "l'utilisateur choisit Acheter, puis Louer",
       "then": "après Acheter : l'unité passe au m², le plafond affiche 5 000 €/m², le champ surface n'est plus affiché ; l'adresse devient /?achat=5000&mer-min=60 ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 58 · 3 800 €/m² · 5 min », « 2 · Quaibleu (13) · 40 · 4 800 €/m² · 14 min », « 3 · Grandeville (33) · 14 · 4 400 €/m² · 50 min » ; la fiche de Grandeville affiche « 4 400 €/m² à l'achat » sans la ligne « Estimation du secteur ». Après Louer : unité Total, surface 52 m², plafond 1 200 €, adresse /?loyer=1200&mer-min=60",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -311,7 +311,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?achat=5000&mer-min=60",
       "when": "l'utilisateur choisit l'unité Total",
       "then": "le plafond affiche 260 000 € et la surface 52 m² ; l'adresse devient /?achat=260000&mer-min=60&unite=total ; la liste montre « 3 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 58 · 198 000 € · 5 min », « 2 · Quaibleu (13) · 40 · 250 000 € · 14 min », « 3 · Grandeville (33) · 14 · 229 000 € · 50 min » ; la fiche de Grandeville affiche « 229 000 € pour 52 m² (4 400 €/m²) »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -319,7 +319,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?achat=5000&mer-min=60",
       "when": "l'utilisateur choisit Maison",
       "then": "l'adresse devient /?achat=5000&mer-min=60&bien=maison&surface=52 ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Portmer (17) · 61 · 3 500 €/m² · 5 min » et « 2 · Quaibleu (13) · 42 · 4 600 €/m² · 14 min » ; la fiche de Portmer affiche « 3 500 €/m² à l'achat » et « Estimation du secteur (moins de 5 ventes dans la commune) » ; celle de Grandeville affiche « Achat 5 100 €/m² : au-dessus de ton plafond de 5 000 €/m² »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -327,7 +327,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=5000&montagne=100",
       "then": "la liste montre « 4 communes passent tes critères » puis « 1 · Grandeville (33) · 31 · 4 400 €/m² · 50 min », « 2 · Quaibleu (13) · 21 · 4 800 €/m² · 14 min », « 3 · Terrebasse (23) · 100 · prix inconnu · 2 h 40 », « 4 · Rhinval (67) · 99 · prix inconnu · ≈ 7 h » ; la fiche de Terrebasse affiche « Prix d'achat inconnu : trop peu de ventes dans le secteur », le score 100 et « 3e sur 4 communes qui passent » ; Portmer (17) et Montcher (75) ne sont pas colorées",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -343,7 +343,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?achat=300000&mer=aucun&bien=maison&unite=total&surface=100",
       "then": "le réglage du prix est sur Maison, Acheter, Total, surface 100 m², plafond 300 000 € ; aucune distance à la mer cochée ; l'adresse devient /?achat=300000&bien=maison&unite=total&surface=100 ; la liste montre « 1 commune passe tes critères » puis « 1 · Terrebasse (23) · 57 · 130 000 € · 2 h 40 » ; F a la couleur neutre ; la fiche de Portmer affiche « Achat 350 000 € : au-dessus de ton plafond de 300 000 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
@@ -367,7 +367,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre /?loyer=1100&mer=aucun&bien=maison",
       "then": "le réglage du prix est sur Maison, Louer, Total, surface 92 m², plafond 1 100 € ; l'adresse devient /?loyer=1100&bien=maison ; la liste montre « 2 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 46 · 598 € · 2 h 40 » et « 2 · Portmer (17) · 12 · 966 € · 5 min » ; F a la couleur neutre de la légende ; la fiche de Rhinval (67) affiche « Loyer inconnu », sans score ni rang ; celle de Grandeville affiche « Loyer 1 196 € : au-dessus de ton plafond de 1 100 € »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-14",
@@ -375,7 +375,7 @@
       "given": "Fixture « 6 communes », variante « D tous biens » : l'achat d'appartement de Terrebasse (23) vaut { m2 : 1 100, source : « tous-biens » }, tout le reste inchangé",
       "when": "l'utilisateur ouvre /?achat=5000",
       "then": "la liste montre « 4 communes passent tes critères » puis, dans l'ordre, « 1 · Terrebasse (23) · 78 · 1 100 €/m² · 2 h 40 », « 2 · Portmer (17) · 24 · 3 800 €/m² · 5 min », « 3 · Grandeville (33) · 12 · 4 400 €/m² · 50 min », « 4 · Quaibleu (13) · 4 · 4 800 €/m² · 14 min » ; la fiche de Terrebasse affiche « 1 100 €/m² à l'achat » et « Estimation tous biens (trop peu de ventes d'appartements) » ; Rhinval (67) a la couleur neutre de la légende",
-      "passes": false
+      "passes": true
     }
   ]
 }

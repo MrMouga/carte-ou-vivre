@@ -59,7 +59,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200 (mer sur Peu importe)",
       "when": "l'utilisateur coche « 30 min » dans « Mer à moins de »",
       "then": "les pastilles sont « 15 min », « 30 min », « 1 h », « 1 h 30 », « 30 min » cochée, et aucun bouton « km » ni « min » n'existe ; l'adresse devient /?loyer=1200&mer-min=30 ; la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 65 · 650 € · 5 min » et « 2 · Quaibleu (13) · 31 · 1 092 € · 14 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -67,7 +67,7 @@
       "given": "Fixture",
       "when": "l'utilisateur ouvre successivement /?loyer=1200&mer-min=60 puis /?loyer=1200&mer-min=50",
       "then": "1) « 1 h » cochée, adresse inchangée ; 2) aucune pastille de la mer cochée (Peu importe), adresse réécrite /?loyer=1200, liste « 1 · Terrebasse (23) · 65 · 416 € · 2 h 40 », « 2 · Rhinval (67) · 52 · 572 € · ≈ 7 h », « 3 · Portmer (17) · 46 · 650 € · 5 min », « 4 · Grandeville (33) · 31 · 832 € · 50 min », « 5 · Quaibleu (13) · 9 · 1 092 € · 14 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-8",
@@ -75,7 +75,7 @@
       "given": "Fixture, aucun proche",
       "when": "l'utilisateur ouvre /?loyer=1200&mer-min=60 puis choisit Terrebasse (23), puis Rhinval (67)",
       "then": "la liste montre « 3 communes passent tes critères » puis Portmer (17) 69, Quaibleu (13) 43, Grandeville (33) 24 ; la fiche de Terrebasse contient « Ne passe pas tes critères », « Mer 2 h 40 : au-dessus de ton plafond de 1 h » et « 2 h 40 de la mer en voiture » ; celle de Rhinval contient « Mer ≈ 7 h : au-dessus de ton plafond de 1 h » et « Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-9",
@@ -83,7 +83,7 @@
       "given": "Fixture, page ouverte sur /?loyer=1200 (mer sur Peu importe)",
       "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
       "then": "la fiche de Grandeville contient, dans cet ordre, « 50 min de la mer en voiture » puis la ligne de la montagne, et ne contient pas « km de la mer » ; celle de Quaibleu contient « 14 min de la mer en voiture » ; le pied de page contient « Codes postaux », « La Poste », « Temps jusqu'à la mer » et « openrouteservice »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-10",
@@ -91,7 +91,7 @@
       "given": "Fixture",
       "when": "l'utilisateur ouvre successivement /?loyer=1200&mer=30, /?loyer=1200&mer=60 et /?loyer=1200&mer=30&mer-min=15 (anciens liens, où `mer` était en km)",
       "then": "1) et 2) aucune pastille de la mer cochée (Peu importe), adresse réécrite /?loyer=1200, liste de 5 communes, Terrebasse (23) en tête ; 3) « 15 min » cochée, adresse réécrite /?loyer=1200&mer-min=15, liste « 1 · Portmer (17) · 56 · 650 € · 5 min » et « 2 · Quaibleu (13) · 8 · 1 092 € · 14 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-11",
