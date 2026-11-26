@@ -1,0 +1,391 @@
+
+> carte-ou-vivre@0.0.0 test
+> vitest run && node scripts/check-tokens.mjs && playwright test
+
+
+ RUN  v5.0.3 /Users/mouga/git-repository/carte-ou-vivre
+
+ ❯ src/domain/services.test.ts (28 tests | 19 failed) 24ms
+   ❯ valeur d’un service dans la fiche (R54) (10)
+     × AC-6 Portmer : les 10 lignes dans l’ordre de R54, sans phrase de la traversée ; phrase des limites de H159 5ms
+     × AC-6 Terrebasse « Gare régionale : plus d’une heure » (61 min), Quaibleu « Gare régionale : 60 min », Rhinval « pas de chiffre » 1ms
+     × jointure par code INSEE : une commune absente du fichier n’a aucun chiffre ; l’ordre du fichier ne compte pas 0ms
+     × île sans pont (cas sûrs, Portmer) : « aucune sur l’île » pour les trois gares, pas pour le médecin ; phrase de la traversée 1ms
+     × île sans pont sans aucun temps parmi les 7 premiers services (cas sûrs, Montcher) : « aucune sur l’île », sans phrase de la traversée 0ms
+     × île sans pont avec un temps de gare dans le fichier (Île-de-Bréhat, 9 min) : « aucune sur l’île » 0ms
+     × Corse (cas sûrs, Quaibleu en 2B) : « aucune en Corse » pour la gare régionale et grandes lignes, pas pour « Gare » 1ms
+     × population 0 (cas sûrs, Terrebasse) : « pas de chiffre » pour les 10 services 1ms
+     × libellés de R54 dans l’ordre ; « 4 min » avec une espace insécable 0ms
+   ❯ filtre des services (R53) (10)
+     × AC-8 médecin 5 min : Rhinval (pas de chiffre) passe sans raison ; Quaibleu « Médecin 10 min : au-dessus de ton plafond de 5 min » 0ms
+     × médecin à chaque cran : inférieur ou égal passe (Quaibleu, 10 min, passe à 10 min) 0ms
+     × gare à chaque cran, pour les trois types ; Terrebasse et Quaibleu au-delà d’une heure 0ms
+     × cas sûrs : île sans pont sur les trois niveaux de gare, quel que soit son temps ; pas sur le médecin 0ms
+     × cas sûrs : Corse sur régionale et grandes lignes seulement ; en « Toutes », règle normale, égalité qui passe (30 min) 0ms
+     × cas sûrs (AC-9) : avec « Régionale » 30 min, passent Grandeville et Rhinval (sans chiffre, hors des cas sûrs) 7ms
+     × cas sûrs : population 0 (Terrebasse) ne passe aucun service, « <Service> : pas de chiffre, commune sans habitant » 0ms
+     × AC-17 scolarité : chaque niveau coché est un service filtré, avec le temps commun 1ms
+     × H160 : les raisons des services viennent après celle d’un proche, dans l’ordre médecin … gare ; espace insécable avant « : » 0ms
+     × le filtre ne note pas : sans plafond, aucune note ; sans temps chargés, aucun service ne filtre 0ms
+ ❯ scripts/data/services.test.ts (4 tests | 1 failed) 128ms
+   ❯ scripts/data/services.py --extrait (R52) (1)
+     × AC-5 : commerce de X 4 min, médecin de Y 2, de Z 3, de V 9, lycée de W 9 ; arrondis 0,4 → 1, 4,49 → 4, 4,5 → 5 ; ville à arrondissements 3 min 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 20 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/data/services.test.ts > scripts/data/services.py --extrait (R52) > AC-5 : commerce de X 4 min, médecin de Y 2, de Z 3, de V 9, lycée de W 9 ; arrondis 0,4 → 1, 4,49 → 4, 4,5 → 5 ; ville à arrondissements 3 min
+TypeError: Cannot read properties of undefined (reading 'map')
+ ❯ scripts/data/services.test.ts:42:31
+     40|     ];
+     41|     const carreaux: Carreau[] = blocs.flatMap(([bloc, code]) =>
+     42|       (ex[bloc] as Carreau[]).map((c) => ({ ...c, depcom: code })));
+       |                               ^
+     43|     // Chaque arrondi : une commune d'un seul carreau de population 1.
+     44|     const arrondis = Object.keys(ex.arrondis_medecin).map((brut, i) =>…
+ ❯ scripts/data/services.test.ts:41:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > AC-6 Portmer : les 10 lignes dans l’ordre de R54, sans phrase de la traversée ; phrase des limites de H159
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:52:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > AC-6 Terrebasse « Gare régionale : plus d’une heure » (61 min), Quaibleu « Gare régionale : 60 min », Rhinval « pas de chiffre »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:75:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > jointure par code INSEE : une commune absente du fichier n’a aucun chiffre ; l’ordre du fichier ne compte pas
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99006)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ src/domain/services.test.ts:94:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > île sans pont (cas sûrs, Portmer) : « aucune sur l’île » pour les trois gares, pas pour le médecin ; phrase de la traversée
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:100:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > île sans pont sans aucun temps parmi les 7 premiers services (cas sûrs, Montcher) : « aucune sur l’île », sans phrase de la traversée
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:109:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > île sans pont avec un temps de gare dans le fichier (Île-de-Bréhat, 9 min) : « aucune sur l’île »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 22016)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ src/domain/services.test.ts:116:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > Corse (cas sûrs, Quaibleu en 2B) : « aucune en Corse » pour la gare régionale et grandes lignes, pas pour « Gare »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:121:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > population 0 (cas sûrs, Terrebasse) : « pas de chiffre » pour les 10 services
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ lignes src/domain/services.test.ts:48:46
+ ❯ src/domain/services.test.ts:132:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/20]⎯
+
+ FAIL  src/domain/services.test.ts > valeur d’un service dans la fiche (R54) > libellés de R54 dans l’ordre ; « 4 min » avec une espace insécable
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ src/domain/services.test.ts:136:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > AC-8 médecin 5 min : Rhinval (pas de chiffre) passe sans raison ; Quaibleu « Médecin 10 min : au-dessus de ton plafond de 5 min »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:208:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > médecin à chaque cran : inférieur ou égal passe (Quaibleu, 10 min, passe à 10 min)
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:216:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > gare à chaque cran, pour les trois types ; Terrebasse et Quaibleu au-delà d’une heure
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ gare src/domain/services.test.ts:221:46
+ ❯ src/domain/services.test.ts:222:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > cas sûrs : île sans pont sur les trois niveaux de gare, quel que soit son temps ; pas sur le médecin
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:237:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > cas sûrs : Corse sur régionale et grandes lignes seulement ; en « Toutes », règle normale, égalité qui passe (30 min)
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:246:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > cas sûrs (AC-9) : avec « Régionale » 30 min, passent Grandeville et Rhinval (sans chiffre, hors des cas sûrs)
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:252:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > cas sûrs : population 0 (Terrebasse) ne passe aucun service, « <Service> : pas de chiffre, commune sans habitant »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:258:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > AC-17 scolarité : chaque niveau coché est un service filtré, avec le temps commun
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ filtrer src/domain/services.test.ts:198:157
+ ❯ src/domain/services.test.ts:265:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > H160 : les raisons des services viennent après celle d’un proche, dans l’ordre médecin … gare ; espace insécable avant « : »
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ src/domain/services.test.ts:281:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/20]⎯
+
+ FAIL  src/domain/services.test.ts > filtre des services (R53) > le filtre ne note pas : sans plafond, aucune note ; sans temps chargés, aucun service ne filtre
+Error: services.json : undefined min n'est pas un temps arrondi (commune 99001)
+ ❯ caractere src/domain/services.ts:200:46
+    198|   const caractere = (m: number | null, code: string) => {
+    199|     if (m === null) return PAS_DE_CHIFFRE;
+    200|     if (!Number.isInteger(m) || m < 1) throw new Error(`services.json …
+       |                                              ^
+    201|     return ALPHABET[Math.min(m, PLUS_D_UNE_HEURE)];
+    202|   };
+ ❯ src/domain/services.ts:204:55
+ ❯ src/domain/services.ts:204:44
+ ❯ ecrireServices src/domain/services.ts:204:14
+ ❯ servi src/domain/services.test.ts:38:23
+ ❯ src/domain/services.test.ts:298:151
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/20]⎯
+
+
+ Test Files  2 failed | 25 passed (27)
+      Tests  20 failed | 436 passed (456)
+   Start at  20:00:02
+   Duration  1.63s (tests 66%, transform 17%, import 15%, worker 1%)
+
