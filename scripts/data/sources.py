@@ -148,6 +148,12 @@ def sha256(path):
     return h.hexdigest()
 
 
+def lire_api(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)', 'Accept': 'application/json'})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.load(r)
+
+
 def services():
     """H165, H170, H171 : lit l'API de data.gouv.fr (sans télécharger les fichiers) et les empreintes des deux fichiers
     déjà dans data-raw/ ; compare aux valeurs retenues ; écrit data-raw/services-sources.info.json si tout est égal."""
@@ -157,9 +163,7 @@ def services():
             raise SystemExit(1)
 
     print(f'services : lecture de {SERVICES_API}')
-    req = urllib.request.Request(SERVICES_API, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)', 'Accept': 'application/json'})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        jeu = json.load(r)
+    jeu = lire_api(SERVICES_API)
     check(jeu.get('id') == SERVICES_JEU and jeu.get('license') == 'lov2', f"jeu {jeu.get('id')}, licence {jeu.get('license')} (Licence Ouverte 2.0)")
     par_titre = {}
     for res in jeu.get('resources', []):
@@ -198,12 +202,6 @@ def services():
     with open(os.path.join(RAW, SERVICES_INFO), 'w', encoding='utf-8') as f:
         json.dump(info, f, indent=1, ensure_ascii=False)
     print(f'  écrit : data-raw/{SERVICES_INFO}')
-
-
-def lire_api(url):
-    req = urllib.request.Request(url, headers={'User-Agent': 'carte-ou-vivre (donnees ouvertes)', 'Accept': 'application/json'})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r)
 
 
 def licence_codes_postaux():
