@@ -11,6 +11,7 @@ Tâche 0c : faite — commit da833af — preuve : recalage.py relancé (61 crit�
 Tâche 1 : faite — commit 1bf9a8d — preuve : captures/T1-*.png (01:19), T1-bureau-auch-choisie.png ouverte et conforme ; frappe « sa » médiane 0,6 ms ; 375 × 548 curseur à 536,5 px ; 0 requête pendant la saisie (2026-11-26 01:19) — 37 min — agent : 295 k jetons — rapport : taches/T1.md. Vérifié : Vitest 424 verts, types, jetons ; Playwright 486 verts, 53 sautés (17,4 min). AC-1, AC-4, AC-5, AC-11, AC-12 passent. Hors liste : src/map/MapView.tsx (attribut `data-vue` pour AC-4).
 Tâche 2 : faite — commit dc121a4 — preuve : captures/T2-*.png (02:00), T2-390-01300.png ouverte ; « 01 » médiane 2,3 ms ; indisponibles à 10,2 s (2026-11-26 02:05) — 26 min — agent : 184 k jetons — rapport : taches/T2.md. Vérifié : Vitest 435 verts, types ; Playwright 498 verts, 53 sautés (18,1 min). AC-2, AC-3, AC-13 passent. Tests existants modifiés : `tests/e2e/lib/carte.ts` (+12 lignes, 0 retirée, exception accordée) ; `recherche.test.ts` (imports élargis seulement).
 **À corriger avant la démo** (vu par l'orchestrateur sur T2-390-01300.png) : à 390 px, la liste des suggestions garde 280 px de haut et coupe 01300 à 6 communes alors que la moitié de la feuille montée reste vide ; elle doit occuper la hauteur disponible au téléphone (décision du constructeur « garde 280 px » écartée). → passe de corrections.
+Tâche 4 : faite — commit 90d2b90 — preuve : captures/T4-*.png (02:50), T4-bureau-1280x800-bas.png ouverte et conforme (2026-11-26 02:53) — 30 min — agent : 161 k jetons — rapport : taches/T4.md. Vérifié : Playwright 498 verts, 53 sautés (17,7 min), Vitest 435 ; aucun test existant modifié. Pour la QA : un trou dans la carte sous le panneau vu avec le Chromium headless de Playwright, absent avec `channel: 'chromium'` — à regarder dans un vrai navigateur.
 
 ## Décisions prises à la place de Vincent
 - T0a, décidé par Claude : aucun paramètre de rayon envoyé (la matrice n'en a pas ; défaut serveur 2 000 m, distance d'accroche gardée pour 0b).
@@ -22,6 +23,7 @@ Tâche 2 : faite — commit dc121a4 — preuve : captures/T2-*.png (02:00), T2-3
 - T1, décidé par Claude : Échap dans un champ vide ferme la recherche ; la première suggestion est en surbrillance dès qu'elle apparaît ; la population des suggestions est arrondie comme dans la fiche.
 - T1, décidé par Claude : la loupe de bureau ne fait pas grandir la ligne du titre ; celle de la tête de la feuille est à 8 px du bord droit ; une seule zone annoncée pour le champ (nombre de suggestions ou message).
 - T2, décidé par Claude : le délai de 10 s compte depuis la première demande, nouvel essai compris ; l'état des codes est gardé au niveau de la page (rouvrir la recherche ne redemande pas) ; une réponse après 10 s est ignorée, la prise de focus suivante redemande ; dans une suggestion par code, code en gris et nom en gras.
+- T4, décidé par Claude : bloc des mentions décalé de 8 px vers les bords (`-mx-2 mt-2`, comme le prototype) ; conséquence : au clavier, en bureau, les liens des mentions passent avant la liste.
 
 ## Retours à traiter à la démo
 
