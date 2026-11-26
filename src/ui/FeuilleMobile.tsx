@@ -38,6 +38,10 @@ type Props = {
   onRepliee: (r: boolean) => void;
   /** Page prête : la feuille peut se replier (pas pendant le chargement ni l'erreur). */
   pret: boolean;
+  /** Loupe de la recherche (recherche-et-mer, H177) : au bout de la rangée des onglets, ou dans la tête quand une fiche est ouverte. */
+  loupe?: React.ReactNode;
+  /** Recherche ouverte : la feuille monte comme pendant l'ajout, et le champ avec ses suggestions remplace tout sous la poignée. */
+  recherche?: React.ReactNode;
 };
 
 /**
@@ -97,21 +101,24 @@ function useGlisser({ actif, repliee, onChanger }: { actif: boolean; repliee: bo
 
 const PANNEAU = 'min-h-0 flex-1 overflow-y-auto overscroll-contain';
 
-export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, criteres, liste, fiche, repliee, onRepliee, pret }: Props) {
+export function FeuilleMobile({ ref, onglet, onOnglet, ajout: ajoutChamp, compte, annonce, criteres, liste, fiche, repliee, onRepliee, pret, loupe, recherche }: Props) {
   const id = useId();
   const idOnglet = (o: Onglet) => `${id}onglet-${o}`;
   const idPanneau = (o: Onglet) => `${id}panneau-${o}`;
-  const avecFiche = fiche != null;
+  // Recherche ouverte (H177) : la feuille monte comme pendant l'ajout d'un proche, poignée seule au-dessus du champ.
+  const enRecherche = recherche != null;
+  const ajout = ajoutChamp || enRecherche;
+  const avecFiche = fiche != null && !enRecherche;
   const affiche: Onglet | null = avecFiche ? null : ajout ? 'criteres' : onglet;
 
   // Position de défilement de chaque onglet (R18) : relevée en continu, remise quand le panneau réapparaît (un panneau
-  // masqué perd la sienne).
+  // masqué perd la sienne, de même que le contenu caché pendant la recherche).
   const panneaux = useRef<Record<Onglet, HTMLDivElement | null>>({ criteres: null, liste: null });
   const positions = useRef<Record<Onglet, number>>({ criteres: 0, liste: 0 });
   useLayoutEffect(() => {
     const el = affiche && panneaux.current[affiche];
     if (el && el.scrollTop !== positions.current[affiche]) el.scrollTop = positions.current[affiche];
-  }, [affiche]);
+  }, [affiche, enRecherche]);
 
   // Motif « onglets » (H47) : flèches gauche et droite, focus et sélection ensemble ; seul l'onglet choisi est dans l'ordre de tabulation.
   const boutons = useRef<Record<Onglet, HTMLButtonElement | null>>({ criteres: null, liste: null });
@@ -182,64 +189,74 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout, compte, annonce, c
           <div className="h-rail w-poignee-feuille rounded-full bg-border" aria-hidden="true" />
         </div>
       ) : (
-        // Tête : Ouverte (≈ 47 px, poignée et compte) · Repliée (`h-barre-feuille`, poignée et compte) · Fiche (poignée seule).
-        // Un toucher et un glisser passent par `useGlisser` ; le clic ne sert qu'au clavier (`detail === 0`), sans double effet.
-        <button
-          ref={tete}
-          type="button"
-          data-prise=""
-          aria-expanded={!repliee}
-          aria-label={repliee ? 'Déplier la feuille' : 'Replier la feuille'}
-          disabled={!pret}
-          onClick={(e) => e.detail === 0 && changer(!repliee)}
-          className={cn(
-            'flex w-full shrink-0 touch-none cursor-pointer flex-col items-center gap-1 rounded-t-sheet px-4 pt-2 disabled:cursor-default',
-            repliee ? 'h-barre-feuille' : avecFiche ? 'min-h-cible' : 'pb-2',
-          )}
-        >
-          <span className="h-rail w-poignee-feuille shrink-0 rounded-full bg-border" aria-hidden="true" />
-          {(repliee || !avecFiche) && (
-            // Pendant le chargement, une espace insécable garde la hauteur de la ligne : le contenu ne saute pas à l'arrivée du compte.
-            <span data-testid="compte-feuille" aria-hidden="true" className="max-w-full truncate text-valeur tabular-nums">
-              {compte || '\u00a0'}
-            </span>
-          )}
-        </button>
+        // Tête : Ouverte (≈ 47 px, poignée et compte) · Repliée (`h-barre-feuille`, poignée et compte) · Fiche (poignée seule,
+        // et la loupe à droite, H177). Un toucher et un glisser passent par `useGlisser` ; le clic ne sert qu'au clavier
+        // (`detail === 0`), sans double effet.
+        <div className="relative shrink-0">
+          <button
+            ref={tete}
+            type="button"
+            data-prise=""
+            aria-expanded={!repliee}
+            aria-label={repliee ? 'Déplier la feuille' : 'Replier la feuille'}
+            disabled={!pret}
+            onClick={(e) => e.detail === 0 && changer(!repliee)}
+            className={cn(
+              'flex w-full shrink-0 touch-none cursor-pointer flex-col items-center gap-1 rounded-t-sheet px-4 pt-2 disabled:cursor-default',
+              repliee ? 'h-barre-feuille' : avecFiche ? 'min-h-cible' : 'pb-2',
+            )}
+          >
+            <span className="h-rail w-poignee-feuille shrink-0 rounded-full bg-border" aria-hidden="true" />
+            {(repliee || !avecFiche) && (
+              // Pendant le chargement, une espace insécable garde la hauteur de la ligne : le contenu ne saute pas à l'arrivée du compte.
+              <span data-testid="compte-feuille" aria-hidden="true" className="max-w-full truncate text-valeur tabular-nums">
+                {compte || '\u00a0'}
+              </span>
+            )}
+          </button>
+          {avecFiche && !repliee && loupe && <div className="absolute top-0 right-2">{loupe}</div>}
+        </div>
       )}
       <p role="status" className="sr-only">
         {annonce}
       </p>
-      {/* Contenu : invisible feuille repliée (fin du repli), visible dès un dépli ou un glisser (src/index.css). */}
-      <div className="feuille-contenu flex min-h-0 flex-1 flex-col">
+      {enRecherche && <div className="flex min-h-0 flex-1 flex-col px-4 pb-2">{recherche}</div>}
+      {/* Contenu : invisible feuille repliée (fin du repli), visible dès un dépli ou un glisser (src/index.css) ; caché
+          pendant la recherche, qu'il garde monté (réglages en cours, positions de défilement). */}
+      <div className={cn('feuille-contenu flex min-h-0 flex-1 flex-col', enRecherche && 'hidden')}>
         {affiche != null && !ajout && (
-          // Rail en pilule de 44 px ; chaque onglet se touche sur toute sa hauteur (44 px, H48), la pilule colorée à `space-1` du bord.
-          <div role="tablist" className="mx-4 mb-2 flex h-toucher shrink-0 gap-1 rounded-full bg-background px-1">
-            {ONGLETS.map(([o, nom]) => (
-              <button
-                key={o}
-                ref={(el) => {
-                  boutons.current[o] = el;
-                }}
-                type="button"
-                role="tab"
-                id={idOnglet(o)}
-                aria-selected={onglet === o}
-                aria-controls={idPanneau(o)}
-                tabIndex={onglet === o ? 0 : -1}
-                onClick={() => onOnglet(o)}
-                onKeyDown={(e) => clavier(e, o)}
-                className="h-full flex-1 cursor-pointer rounded-full py-1"
-              >
-                <span
-                  className={cn(
-                    'flex h-full items-center justify-center whitespace-nowrap rounded-full px-3 text-texte-fort',
-                    onglet === o ? 'bg-primary text-primary-foreground' : 'text-muted-foreground',
-                  )}
+          // Rail en pilule de 44 px ; chaque onglet se touche sur toute sa hauteur (44 px, H48), la pilule colorée à
+          // `space-1` du bord ; la loupe au bout de la rangée, hors des onglets (H177).
+          <div className="mx-4 mb-2 flex shrink-0 items-center gap-1">
+            <div role="tablist" className="flex h-toucher min-w-0 flex-1 gap-1 rounded-full bg-background px-1">
+              {ONGLETS.map(([o, nom]) => (
+                <button
+                  key={o}
+                  ref={(el) => {
+                    boutons.current[o] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={idOnglet(o)}
+                  aria-selected={onglet === o}
+                  aria-controls={idPanneau(o)}
+                  tabIndex={onglet === o ? 0 : -1}
+                  onClick={() => onOnglet(o)}
+                  onKeyDown={(e) => clavier(e, o)}
+                  className="h-full flex-1 cursor-pointer rounded-full py-1"
                 >
-                  {nom}
-                </span>
-              </button>
-            ))}
+                  <span
+                    className={cn(
+                      'flex h-full items-center justify-center whitespace-nowrap rounded-full px-3 text-texte-fort',
+                      onglet === o ? 'bg-primary text-primary-foreground' : 'text-muted-foreground',
+                    )}
+                  >
+                    {nom}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {loupe}
           </div>
         )}
         {/* Pendant l'ajout, de quoi faire défiler le champ jusqu'en haut même quand le contenu est court. */}

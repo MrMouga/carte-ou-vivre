@@ -90,7 +90,15 @@ export function MapView({ reperes, couleurs, choisie, ronds, proches, onChoisir,
         surligner(m, etat.current.choisie);
         m.triggerRepaint();
       });
+      // Vue de la carte (zoom, centre) à la fin de chaque mouvement, lue par les tests : un choix par la recherche cadre
+      // comme un choix sur la carte (R59, AC-4 de recherche-et-mer).
+      const noterVue = () => {
+        const c = m.getCenter();
+        container.current?.setAttribute('data-vue', `${m.getZoom()} ${c.lng} ${c.lat}`);
+      };
+      m.on('moveend', noterVue);
       m.on('load', () => {
+        noterVue();
         m.on('click', COMMUNES_LAYER.id, (ev) => {
           const id = ev.features?.[0]?.id;
           if (typeof id === 'number') etat.current.onChoisir(id);

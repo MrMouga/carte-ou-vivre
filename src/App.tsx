@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { MapView, type Fond } from './map/MapView';
 import { PALIERS } from './map/style';
 import { paddingCarte, type Repere } from './map/view';
@@ -24,6 +25,8 @@ import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 import { lireServices, type EtatServices, type Services, type ServicesJson } from './domain/services';
+import { indexerNoms } from './domain/recherche';
+import { BoutonLoupe, Recherche, type ChoixRecherche } from './ui/Recherche';
 
 type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi; services?: Services };
 const REPRISE_ADRESSE_MS = 1000;
@@ -186,9 +189,13 @@ export function App() {
   const [ajoutProche, setAjoutProche] = useState(false);
   const [ajoutMetier, setAjoutMetier] = useState(false);
   const ajout = ajoutProche || ajoutMetier;
+  // Recherche d'une commune (recherche-et-mer, H177) : ouverte par la loupe. En bureau, le champ prend la place du titre ;
+  // sous 1 024 px, la feuille monte comme pendant l'ajout et la recherche remplace tout sous la poignée.
+  const [rechercheOuverte, setRechercheOuverte] = useState(false);
+  const monte = ajout || (rechercheOuverte && !bureau);
   const [retour, setRetour] = useState<string | null>(null);
-  // Ni repli pendant le chargement, l'erreur ou l'ajout : la feuille y est ouverte (details.md).
-  const feuilleRepliee = !bureau && repliee && prete && !erreur && !ajout;
+  // Ni repli pendant le chargement, l'erreur, l'ajout ou la recherche : la feuille y est ouverte (details.md).
+  const feuilleRepliee = !bureau && repliee && prete && !erreur && !monte;
   // Sous 1 024 px : l'onglet affiché de la feuille, « Critères » au départ (D5) ; le retour de la fiche mène à la liste (R19).
   const [onglet, setOnglet] = useState<Onglet>('criteres');
   const retourListe = () => {
@@ -197,12 +204,41 @@ export function App() {
     setOnglet('liste');
   };
   // R19 : choisir une commune, sur la carte ou dans la liste, ouvre sa fiche et ouvre la feuille si elle était repliée.
+  // H184 : une autre commune que celle de la recherche vide le champ.
+  const [choixRecherche, setChoixRecherche] = useState<ChoixRecherche | null>(null);
   const choisir = (code: string) => {
     if (feuilleRepliee && code !== choisie) ouverture.current = true;
     setRepliee(false);
     setChoisie(code);
+    if (code !== choixRecherche?.code) setChoixRecherche(null);
   };
+  // R59 : une suggestion choisie l'est comme sur la carte ou dans la liste (même cadrage, fiche ouverte, adresse inchangée,
+  // H185). Sous 1 024 px, la recherche se ferme et la feuille montre la fiche ; en bureau, le champ reste et la montre (H184).
+  const choisirRecherche = (c: Commune) => {
+    choisir(c.code);
+    setChoixRecherche({ code: c.code, texte: nomAffiche(c) });
+    if (!bureau) setRechercheOuverte(false);
+  };
+  // La loupe : le champ est monté et placé (feuille montée au téléphone) dans ce rendu même, puis prend le focus, avant la
+  // fin du toucher (leçon 2026-10-13 « iOS clavier : champ à sa place avant le focus »).
+  const ouvrirRecherche = () => flushSync(() => setRechercheOuverte(true));
+  // « Annuler » : le focus revient à la loupe, une fois qu'elle est de nouveau affichée (la demande attend sa cible, leçon
+  // 2026-11-21 « focus demandé consommé par un rendu intermédiaire »).
+  const focusLoupe = useRef(false);
+  const annulerRecherche = () => {
+    focusLoupe.current = true;
+    setRechercheOuverte(false);
+  };
+  useEffect(() => {
+    if (!focusLoupe.current) return;
+    const loupe = [...document.querySelectorAll<HTMLButtonElement>('button[data-loupe]')].find((b) => b.getClientRects().length > 0);
+    if (!loupe) return;
+    focusLoupe.current = false;
+    loupe.focus({ preventScroll: true });
+  });
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
+  // H179 : les noms normalisés et triés une fois, à l'arrivée des données.
+  const indexNoms = useMemo(() => (donnees ? indexerNoms(donnees.communes) : null), [donnees]);
   /** Index de la commune choisie dans communes.json (ordre des repères et des temps des proches), ou null. */
   const indexChoisie = choisie == null ? null : index.get(choisie)!;
 
@@ -243,8 +279,24 @@ export function App() {
 
   // Compte annoncé aux lecteurs d'écran : l'unique zone `role=status` de la page, vide sans plafond (D17 de loyer-mer).
   const annonce = resultat?.actif ? compte(resultat.classement.length) : '';
+  // H188 : loupe et champ inactifs pendant le chargement et l'erreur de la page, comme les réglages.
+  const rechercheInactive = !prete || erreur;
+  const loupe = <BoutonLoupe onClick={ouvrirRecherche} disabled={rechercheInactive} />;
+  const recherche = rechercheOuverte ? (
+    <Recherche
+      index={indexNoms}
+      choix={choixRecherche}
+      onChoisir={choisirRecherche}
+      onEffacer={() => setChoixRecherche(null)}
+      onAnnuler={annulerRecherche}
+      disabled={rechercheInactive}
+      className={bureau ? 'shrink-0' : 'flex-1'}
+    />
+  ) : undefined;
   const reglagesUI = (pied?: React.ReactNode) => (
     <Settings
+      loupe={bureau ? <div className="-my-2">{loupe}</div> : undefined}
+      recherche={bureau ? recherche : undefined}
       reglages={reglages}
       onChange={setReglages}
       prix={prix}
@@ -310,7 +362,7 @@ export function App() {
           onErreur={() => setErreur(true)}
           onFond={setFond}
           padding={padding}
-          sansZoom={ajout}
+          sansZoom={monte}
         />
       )}
       {donnees && !erreur && <Pastilles proches={proches.proches} commune={indexChoisie} />}
@@ -356,13 +408,15 @@ export function App() {
           repliee={feuilleRepliee}
           onRepliee={setRepliee}
           pret={prete && !erreur}
+          loupe={loupe}
+          recherche={recherche}
         />
       )}
       <Status message={message} onReessayer={() => setEssai((n) => n + 1)} repliee={feuilleRepliee} />
       {/* Sous 1 024 px : la bande de carte dit pourquoi elle est vide (état « aucune commune », H12 de loyer-mer), comme
           « Fond de carte indisponible ». Déjà annoncé par le compte : caché aux lecteurs d'écran. Feuille repliée, la barre
           le dit seule (H50). */}
-      {resultat?.actif && resultat.classement.length === 0 && !choisie && !ajout && !feuilleRepliee && message == null && (
+      {resultat?.actif && resultat.classement.length === 0 && !choisie && !monte && !feuilleRepliee && message == null && (
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-4 bottom-feuille flex justify-center pb-2 bureau:hidden">
           <p data-testid="carte-vide" className="rounded-base border border-border bg-card px-2 py-1 text-secondaire">
             Aucune commune ne passe tes critères
@@ -375,7 +429,7 @@ export function App() {
         ref={pied}
         className={cn(
           'pointer-events-none absolute bottom-4 left-4 right-4 flex items-end gap-4 max-bureau:bottom-auto max-bureau:left-3 max-bureau:top-3',
-          ajout && 'max-bureau:hidden', // la bande de carte au-dessus de la feuille montée est trop basse pour la légende
+          monte && 'max-bureau:hidden', // la bande de carte au-dessus de la feuille montée est trop basse pour la légende
         )}
       >
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
