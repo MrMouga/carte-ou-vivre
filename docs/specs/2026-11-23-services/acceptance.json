@@ -69,7 +69,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre / et regarde « Services »",
       "then": "l'adresse devient /?loyer=1200 ; « Services », ouverte, est la catégorie qui suit immédiatement « Tes proches » ; elle montre, dans l'ordre, « Médecin » avec « 5 min », « 10 min », « 15 min » ; « Urgences » avec « 15 min », « 30 min », « 45 min » ; « Supermarché » avec « 5 min », « 10 min », « 15 min » ; aucun texte « Commerce alimentaire » ; « Scolarité » avec ses niveaux, groupe nommé « Niveaux de scolarité » (« Crèche », « École », « Collège », « Lycée », « Supérieur »), puis la ligne « Temps de trajet maximal » (« 5 min », « 10 min », « 20 min ») ; « Gare » avec son choix, groupe nommé « Type de gare » (« Toutes », sélectionné, « Régionale », « Grandes lignes »), puis la ligne « Temps de trajet maximal » (« 10 min », « 20 min », « 30 min ») ; rien n'est coché ; la liste est celle d'AC-1 de mairies",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -109,7 +109,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "l'utilisateur ouvre les fiches de Portmer, Terrebasse, Quaibleu et Rhinval",
       "then": "la fiche de Portmer contient, sous la ligne du chômage et dans l'ordre, « Services en voiture », « Médecin : 4 min », « Urgences : 14 min », « Supermarché : 3 min », « Crèche : 12 min », « École : 2 min », « Collège : 9 min », « Lycée : 14 min », « Supérieur : 18 min », « Gare : 6 min », « Gare régionale : 8 min », « Gare grandes lignes : 40 min », puis « Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Urgences : services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie. », sans la phrase de la traversée ; Terrebasse : « Urgences : plus d'une heure » (75 min) et « Gare régionale : plus d'une heure » (61 min) ; Quaibleu : « Gare régionale : 60 min » ; Rhinval : « Urgences : 22 min », « Supermarché : 6 min », « Médecin : pas de chiffre », « Supérieur : pas de chiffre », « Gare régionale : pas de chiffre » et « Gare grandes lignes : pas de chiffre »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-7",
@@ -205,7 +205,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200",
       "when": "l'utilisateur coche « 30 min » pour « Urgences » et ouvre la fiche de Terrebasse, puis coche « 15 min » pour « Urgences » et ouvre les fiches de Quaibleu et de Rhinval",
       "then": "avec « 30 min » : l'adresse devient /?loyer=1200&services=urgences:30 ; la liste montre « 4 communes passent tes critères » puis Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 (Quaibleu à 30 min passe, scores inchangés) ; les raisons de Terrebasse contiennent « Urgences plus d'une heure : au-dessus de ton plafond de 30 min ». Avec « 15 min » : seule « 15 min » est cochée pour « Urgences » ; l'adresse devient /?loyer=1200&services=urgences:15 ; la liste montre « 2 communes passent tes critères » puis Portmer (17) 46, Grandeville (33) 31 ; les raisons de Quaibleu contiennent « Urgences 30 min : au-dessus de ton plafond de 15 min », celles de Rhinval « Urgences 22 min : au-dessus de ton plafond de 15 min »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-19",
@@ -213,7 +213,7 @@
       "given": "Fixture « 6 communes », page ouverte sur /?loyer=1200&services=medecin:10",
       "when": "l'utilisateur coche « 5 min » pour « Supermarché » et ouvre la fiche de Rhinval, puis coche « 45 min » pour « Urgences »",
       "then": "avec « 5 min » : l'adresse devient /?loyer=1200&services=medecin:10,supermarche:5 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; les raisons de Rhinval contiennent « Supermarché 6 min : au-dessus de ton plafond de 5 min ». Avec « 45 min » : l'adresse devient /?loyer=1200&services=medecin:10,urgences:45,supermarche:5 (ordre fixe) et la liste ne change pas",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-20",
@@ -221,7 +221,7 @@
       "given": "Fixture « 6 communes »",
       "when": "l'utilisateur ouvre successivement /?loyer=1200&services=commerce:5,medecin:10 puis /?loyer=1200&services=commerce:5 puis /?loyer=1200&services=supermarche:15,urgences:10,urgences:30,supermarche:5",
       "then": "la première adresse est réécrite /?loyer=1200&services=medecin:10, aucun temps n'est coché pour « Supermarché » et la liste est celle d'AC-2 ; la deuxième est réécrite /?loyer=1200 et la liste est celle d'AC-1 de mairies ; la troisième est réécrite /?loyer=1200&services=urgences:30,supermarche:15 (10 min n'est pas un temps des urgences ; seconde entrée du supermarché retirée ; ordre fixe), « 30 min » est cochée pour « Urgences » et « 15 min » pour « Supermarché »",
-      "passes": false
+      "passes": true
     }
   ]
 }

@@ -3,6 +3,7 @@ Début : 2026-11-26 19:59 · Plan : plan.md · Suite au départ : Vitest 456 tes
 
 ## Tâches
 Tâche 0 : faite — commits ad386e7..45490a0 — preuve : mesure-tache-0.md, credibilite-urgences.md (10 « même côté », 1 base de SMUR seule : Chamonix), captures/T0-sortie-services.txt, T0-comparer-services.txt (9 chaînes + `commerce` identiques), T0-page-dev-fiche.png ; vérifié par l'orchestrateur de 20:52 à 21:06 (services.py relancé : 33 contrôles « ok », `services.json` identique, sha256 5534978e… ; AC-13 révisé exact ; poids sans `commerce` 330 752 en gzip -9 ; Vitest 437 verts / 19 rouges = départ moins AC-5 ; types : erreurs seulement dans `src/domain/services.test.ts`, non touché, réparé en tâche 1 ; build OK ; Playwright 465 verts / 48 rouges, tous `services.spec.ts`, comme au départ ; capture relue) — 38 min (limite de tours atteinte pendant sa suite Playwright, reprise seule) — agent : 319 k jetons — rapport : taches/T0.md — AC-5 passe
+Tâche 1 : faite — commits 8042bb2..ca4bc08 — preuve : captures/T1-cat-*-{1440x900,390x844}.png, T1-fiche-portmer-*.png, T1-fiche-auch-reel-1440x900.png (Urgences 6 min, Supermarché 2 min, 11 lignes), T1-reaction.txt (H163 : + 17 ms, limite + 115), T1-auch-reel.txt (`commerce:5,medecin:10` → `services=medecin:10`) ; vérifié par l'orchestrateur de 21:39 à 21:57 (Vitest 461 verts, 1 rouge = AC-13 attendu en tâche 2 ; types, jetons, build OK ; Playwright 520 verts, 0 rouge, 53 sautés ; captures T1-cat-exemple-390x844 et T1-fiche-auch-reel relues ; `carte.ts` inchangé ; tests du téléphone non modifiés) — 31 min — agent : 211 k jetons — rapport : taches/T1.md — AC-1, AC-6, AC-18, AC-19, AC-20 passent
 
 ## Décisions prises à la place de Vincent
 - T0 (constructeur, vérifié) : le contrôle de poids de `services.py` porte sur le fichier sans `commerce` (330 752 octets en gzip -9) ; avec la chaîne provisoire, le fichier servi pèse 351 117 (au-dessus de 350 000) jusqu'à la tâche 2. Coût si faux : aucun, rien n'est poussé avant la tâche 2.
@@ -11,9 +12,16 @@ Tâche 0 : faite — commits ad386e7..45490a0 — preuve : mesure-tache-0.md, cr
 - T0 : Chamonix-Mont-Blanc compté « base de SMUR seule » (1 sur 10, sous le seuil d'arrêt de 2) ; « Urgences : 4 min » (valeur d'AC-13) alors que l'accueil toute l'année est à Sallanches (34 min). À juger à la démo.
 - T0 : Tende, supermarché « plus d'une heure » pour 27 min réels (Breil-sur-Roya) : même côté des pastilles, donc pas « faux » selon H205 ; signalé sans retrait. À juger à la démo.
 - T0 : mesures.md écrit 174 communes « au-delà d'une heure » pour les urgences ; ses propres totaux donnent 166, la valeur trouvée. mesures.md n'est pas retouché (fichier de la spec).
+- T1 (constructeur, vérifié) : le test AC-13 de `scripts/data/services.test.ts` est réécrit sur le critère révisé dès la tâche 1 (et non en tâche 2), parce que l'ancien lisait `commerce` et cassait les types. Il reste rouge jusqu'à la tâche 2 pour la seule colonne `commerce`. Coût si faux : la tâche 2 le relit contre AC-13.
+- T1 : la ligne « Urgences » est ajoutée à l'aide `reglagesServices` du test d'AC-15 et R57 (« un temps de chaque ligne ») : le test vérifie une ligne de plus, son given / when / then ne change pas.
+- T1 : les trois lignes à un seul temps (Médecin, Urgences, Supermarché) sont décrites une fois (`SERVICES_SIMPLES`), pour l'ordre de R51 et R55. Sans effet visible.
+- T1 (décidé par Claude) : les captures de la catégorie montrent le haut de « Services » ; à 390 px, la Gare demande de faire défiler.
 
 ## Preuves
 Tests existants modifiés :
 - T0 : `scripts/data/services.test.ts`, test « AC-5 » : fixture `commune_X_commerce` → `commune_X_supermarche`, attendu de X `supermarche: 9` (plus `commerce: 4` provisoire), colonne D106 dans l'en-tête du CSV d'essai, titre au texte révisé — AC-5 révisé (D20), H208, accord du plan. Y, Z, V, W, arrondis et ville à arrondissements inchangés.
+- T1 : `src/domain/services.test.ts` — `commerce` → `supermarche`, libellés « Urgences » et « Supermarché », 10 → 11 lignes, « 7 premiers » → « 8 premiers » (R54), phrase des limites (H159), raisons avec les urgences (H160), ligne 175 `commerce:15` gardé → `supermarche:15` (H203) ; ajouts AC-18, AC-19, AC-20 et autres — révision D19, D20, accord du plan ; 16 vérifications retirées, 49 ajoutées (relevé de l'orchestrateur).
+- T1 : `scripts/data/services.test.ts` — aller-retour (`commerce: 1` → `urgences: 1`, 10 → 11 chaînes) et AC-13 réécrit sur le critère révisé (voir décisions).
+- T1 : `tests/e2e/services.spec.ts` — AC-1 (Urgences et Supermarché à la place de Commerce alimentaire, plus « aucun Commerce alimentaire »), AC-6 (11 lignes, phrase des limites, urgences de Terrebasse et Rhinval), R57, H154, AC-15 (libellé, ligne Urgences ajoutée) ; ajouts AC-18, AC-19, AC-20 — accord du plan.
 
 ## Coût
