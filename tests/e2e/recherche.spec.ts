@@ -159,6 +159,129 @@ test('AC-11 état « aucune commune » (/?loyer=300) : « grand », Grandeville 
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
+// Critères de la tâche 2 : la recherche par code postal (R58 partie code, H183, H187). Les codes servis sont les
+// `codes_postaux` de la fixture de recherche-et-mer, par code INSEE (tests/e2e/lib/carte.ts) ; 99100 est partagé par
+// Portmer et Quaibleu.
+const CHARGEMENT_CODES = 'Chargement des codes postaux…';
+const INDISPONIBLES = 'Codes postaux indisponibles. Cherche par nom ou réessaie dans un moment.';
+/** Le fichier des codes postaux du site : ses demandes comptées, et sa réponse décidée par le test (après la fixture). */
+async function codesPostaux(page: Page, reponse: () => 'fixture' | 'erreur' | Promise<'fixture'>) {
+  const demandes: string[] = [];
+  // Posée après celles de la fixture, cette route passe d'abord (Playwright) ; « fixture » rend la main à celle de carte.ts.
+  await page.route('**/data/codes-postaux.json', async (r) => {
+    demandes.push(r.request().url());
+    if ((await reponse()) === 'erreur') return r.fulfill({ status: 503, body: '' });
+    return r.fallback();
+  });
+  return demandes;
+}
+
+test('AC-2 : « 99100 » Quaibleu (13) puis Portmer (17), « 339 » 33990 · Grandeville (33), « 33 991 » 33991 · Grandeville (33)', async ({ page }) => {
+  await ouvrirSix(page);
+  await loupe(page).click();
+  // Codes postaux chargés (« given ») : demandés à la prise de focus, ils arrivent avant la fin de la saisie.
+  await taper(page, '99100');
+  await attendreSuggestions(page, ['99100 · Quaibleu (13)', '99100 · Portmer (17)']);
+  await taper(page, '339');
+  await attendreSuggestions(page, ['33990 · Grandeville (33)']);
+  await taper(page, '33 991');
+  await attendreSuggestions(page, ['33991 · Grandeville (33)']);
+});
+
+test('AC-3 : « zzz » aucune ; codes en erreur à chaque demande : « 33 » codes indisponibles, sans suggestion ; « grand » Grandeville (33)', async ({ page }) => {
+  await ouvrirSix(page);
+  await loupe(page).click();
+  await taper(page, 'zzz');
+  await expect(page.getByText(AUCUNE)).toBeVisible();
+  await attendreSuggestions(page, []);
+
+  // Page rouverte, le fichier des codes postaux répond en erreur à chaque demande.
+  const demandes = await codesPostaux(page, () => 'erreur');
+  await page.goto('/');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await loupe(page).click();
+  await taper(page, '33');
+  await expect(page.getByText(INDISPONIBLES)).toBeVisible();
+  await attendreSuggestions(page, []);
+  expect(demandes, 'une demande et un nouvel essai aussitôt (H187)').toHaveLength(2);
+  await taper(page, 'grand');
+  await attendreSuggestions(page, ['Grandeville (33)']);
+  await expect(page.getByText(INDISPONIBLES)).toHaveCount(0);
+});
+
+// Règles de la tâche 2 hors critère : chargement des codes (H187), libellé et liste par code (H183, R58).
+
+test('H187 : codes demandés une fois, à la première prise de focus du champ, pas à l\'ouverture de la page', async ({ page }) => {
+  // Routes posées par `ouvrir`, puis le compteur des demandes, puis la page rouverte : rien n'est demandé avant le focus.
+  await ouvrirSix(page);
+  const demandes = await codesPostaux(page, () => 'fixture');
+  await page.goto('/');
+  await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
+  await apresRendu(page);
+  expect(demandes, 'aucune demande à l\'ouverture').toHaveLength(0);
+  await loupe(page).click();
+  await taper(page, '23');
+  await attendreSuggestions(page, ['23990 · Terrebasse (23)']);
+  expect(demandes).toHaveLength(1);
+  // Recherche fermée puis rouverte : les codes déjà là servent, aucune nouvelle demande.
+  await page.getByRole('button', { name: 'Annuler' }).click();
+  await loupe(page).click();
+  await taper(page, '1799');
+  await attendreSuggestions(page, ['17990 · Portmer (17)']);
+  expect(demandes).toHaveLength(1);
+});
+
+test('H187 : « Chargement des codes postaux… » tant qu\'ils ne sont pas là ; le nom se cherche pendant ce temps ; puis les suggestions', async ({ page }) => {
+  let lacher: () => void = () => {};
+  const retenu = new Promise<'fixture'>((r) => (lacher = () => r('fixture')));
+  await ouvrirSix(page);
+  await codesPostaux(page, () => retenu);
+  await loupe(page).click();
+  // La zone annoncée du champ (aria-live, à part du compte), comme le test de H186.
+  const zone = champ(page).locator('xpath=ancestor::div[3]').locator('[aria-live="polite"]');
+  await taper(page, '33');
+  await expect(zone).toHaveText(CHARGEMENT_CODES);
+  await expect(page.getByText(CHARGEMENT_CODES)).toBeVisible();
+  await attendreSuggestions(page, []);
+  await taper(page, 'rh');
+  await attendreSuggestions(page, ['Rhinval (67)']);
+  await taper(page, '33');
+  await expect(zone).toHaveText(CHARGEMENT_CODES);
+  lacher();
+  await attendreSuggestions(page, ['33990 · Grandeville (33)']);
+  await expect(zone).toHaveText('1 suggestion');
+});
+
+test('H187 : codes indisponibles, nouvel essai à la prochaine prise de focus, qui les trouve', async ({ page }) => {
+  let enPanne = true;
+  await ouvrirSix(page);
+  const demandes = await codesPostaux(page, () => (enPanne ? 'erreur' : 'fixture'));
+  await loupe(page).click();
+  await taper(page, '99100');
+  await expect(page.getByText(INDISPONIBLES)).toBeVisible();
+  expect(demandes).toHaveLength(2);
+
+  enPanne = false;
+  // Le champ perd le focus (« Annuler »), puis le reprend (loupe) : un nouvel essai.
+  await page.getByRole('button', { name: 'Annuler' }).click();
+  await loupe(page).click();
+  await taper(page, '99100');
+  await attendreSuggestions(page, ['99100 · Quaibleu (13)', '99100 · Portmer (17)']);
+  expect(demandes).toHaveLength(3);
+});
+
+test('R58 et H183 : « 99100 », flèche bas, Entrée : Portmer (17) choisie comme par son nom', async ({ page }) => {
+  await ouvrirSix(page);
+  await loupe(page).click();
+  await taper(page, '99100');
+  await attendreSuggestions(page, ['99100 · Quaibleu (13)', '99100 · Portmer (17)']);
+  await champ(page).press('ArrowDown');
+  await champ(page).press('Enter');
+  await expect(fiche(page)).toContainText('Portmer (17)');
+  expect(adresse(page)).toBe('/?loyer=1200');
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
 // Règles de la tâche 1 hors critère : clavier et annonces (H186), champ rouvert et commune choisie ailleurs (H184),
 // « Annuler » (decisions.md), champ inactif pendant le chargement (H188), place du champ au téléphone (H177, R20).
 

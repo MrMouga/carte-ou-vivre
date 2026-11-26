@@ -5,6 +5,7 @@ import immobilier from '../../../docs/specs/2026-10-14-immobilier/acceptance.jso
 import cadreDeVie from '../../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json' with { type: 'json' };
 import mairies from '../../../docs/specs/2026-10-18-mairies/acceptance.json' with { type: 'json' };
 import emploiSpec from '../../../docs/specs/2026-11-21-emploi/acceptance.json' with { type: 'json' };
+import rechercheMer from '../../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json' with { type: 'json' };
 import metropole from '../../fixtures/metropole.json' with { type: 'json' };
 import { color, map as carte } from '../../../src/theme/tokens';
 import { paddingCarte } from '../../../src/map/view';
@@ -120,6 +121,16 @@ export const servicesJson = ({ items }: Jeu) =>
       ile_sans_pont: 'ile_sans_pont' in it && it.ile_sans_pont === true,
     })),
   );
+// Codes postaux (spec recherche-et-mer, plan « Accordé en validant ce plan », tâche 2) : `codes_postaux` de la fixture de
+// recherche-et-mer, par code INSEE, pour tous les jeux, « métropole » compris (A à E ont les mêmes codes dans tous les
+// jeux) ; une commune du jeu absente de cette fixture n'a aucun code. Écrits comme `public/data/codes-postaux.json` :
+// `{ "<code postal>": ["<code INSEE>", …] }`, communes dans l'ordre du jeu.
+const postauxParCode = new Map(rechercheMer.fixture.items.map((it) => [it.code_insee, it.codes_postaux]));
+export const codesPostauxJson = ({ items }: Jeu) => {
+  const codes: Record<string, string[]> = {};
+  for (const it of items) for (const cp of postauxParCode.get(it.code_insee) ?? []) (codes[cp] ??= []).push(it.code_insee);
+  return codes;
+};
 // Formes : tuiles du jeu ; repères : centre et cadre de chaque carré.
 const reperesJson = ({ items }: Jeu) => ({
   champs: ['lon', 'lat', 'ouest', 'sud', 'est', 'nord'],
@@ -140,6 +151,7 @@ export async function servirFixture(page: Page, { fondEnPanne = false, jeu = FIX
   await page.route('**/data/nuances.json', (r) => r.fulfill({ json: nuancesJson() }));
   await page.route('**/data/emploi.json', (r) => r.fulfill({ json: emploiJson(jeu) }));
   await page.route('**/data/services.json', (r) => r.fulfill({ json: servicesJson(jeu) }));
+  await page.route('**/data/codes-postaux.json', (r) => r.fulfill({ json: codesPostauxJson(jeu) }));
   await page.route('**/tuiles/**', (r) => {
     const tuile = new URL(new URL(r.request().url()).pathname.replace(/^\/tuiles\//, ''), jeu.tuiles);
     return existsSync(tuile) ? r.fulfill({ path: tuile.pathname }) : r.fulfill({ body: '' });

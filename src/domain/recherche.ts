@@ -1,6 +1,8 @@
 // Recherche d'une commune (spec recherche-et-mer, R58, H179 à H182). Tout se passe dans la page : les noms sont ceux de
-// communes.json, déjà chargé ; rien de ce qui est tapé ne part ailleurs (D3). La recherche par code postal (tâche 2) part de
-// l'état `code` rendu ici.
+// communes.json, déjà chargé ; rien de ce qui est tapé ne part ailleurs (D3). La recherche par code postal part de l'état
+// `code` rendu par `chercher`, dans le fichier des codes du site, demandé une fois (H187).
+
+import { avecDelai } from './chargement';
 
 /** Ce que la recherche lit d'une commune. */
 export type Cherchable = { code: string; nom: string; dep: string; population: number | null };
@@ -83,4 +85,60 @@ export function chercher<C extends Cherchable>(index: IndexNoms<C>, saisie: stri
   }
   const chiffres = s.replace(/\s/g, '');
   return /^\d{2,5}$/.test(chiffres) ? { etat: 'code', chiffres } : { etat: 'aucune' };
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Recherche par code postal (tâche 2 : R58 partie code, H183, H187).
+
+/** `public/data/codes-postaux.json` (tâche 0a) : code postal → codes INSEE de communes.json, arrondissements déjà rattachés. */
+export type CodesPostaux = Record<string, string[]>;
+
+/** Les codes postaux dans l'ordre croissant, chacun avec ses communes de la carte (un code INSEE absent est écarté). */
+export type IndexCodes<C extends Cherchable = Cherchable> = { postaux: string[]; communes: C[][] };
+
+export function indexerCodes<C extends Cherchable>(codes: CodesPostaux, communes: readonly C[]): IndexCodes<C> {
+  const parInsee = new Map(communes.map((c) => [c.code, c]));
+  const postaux = Object.keys(codes).sort();
+  return { postaux, communes: postaux.map((cp) => codes[cp].flatMap((insee) => parInsee.get(insee) ?? [])) };
+}
+
+export type ResultatCode<C extends Cherchable = Cherchable> =
+  | { etat: 'aucune' }
+  /** `complet` : code de 5 chiffres, toutes ses communes, dans une liste qui défile ; sinon 8 au plus. */
+  | { etat: 'postaux'; suggestions: { commune: C; postal: string }[]; complet: boolean };
+
+/**
+ * R58 : un début de code (2 à 4 chiffres) donne 8 communes au plus ; un code complet (5 chiffres), toutes. Chaque commune
+ * une fois, avec le plus petit de ses codes qui correspondent (H183), dans l'ordre de H182. `chiffres` vient de l'état
+ * `code` de `chercher` (espaces déjà retirées).
+ */
+export function chercherCode<C extends Cherchable>(index: IndexCodes<C>, chiffres: string): ResultatCode<C> {
+  const vues = new Map<C, string>();
+  index.postaux.forEach((cp, i) => {
+    if (!cp.startsWith(chiffres)) return;
+    // Les codes sont dans l'ordre croissant : le premier vu d'une commune est son plus petit.
+    for (const c of index.communes[i]) if (!vues.has(c)) vues.set(c, cp);
+  });
+  if (!vues.size) return { etat: 'aucune' };
+  const complet = chiffres.length === 5;
+  const triees = [...vues.keys()].sort(ordreSuggestions);
+  return {
+    etat: 'postaux',
+    suggestions: (complet ? triees : triees.slice(0, MAX_SUGGESTIONS)).map((commune) => ({ commune, postal: vues.get(commune)! })),
+    complet,
+  };
+}
+
+/** H187 : codes postaux indisponibles 10 s après la première demande sans réponse. */
+export const DELAI_CODES_MS = 10_000;
+
+/**
+ * H187 : une demande ; en cas d'erreur, un nouvel essai aussitôt ; échec après une seconde erreur ou 10 s sans réponse.
+ * Le nouvel essai à la prochaine prise de focus est à l'appelant (App).
+ */
+export function chargerCodesPostaux(lire: () => Promise<CodesPostaux>): Promise<CodesPostaux> {
+  return avecDelai(
+    lire().catch(() => lire()),
+    DELAI_CODES_MS,
+  );
 }

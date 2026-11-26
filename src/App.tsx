@@ -25,10 +25,12 @@ import { Pastilles } from './ui/Pastilles';
 import type { RepereProche } from './map/ProcheMarkers';
 import { FeuilleMobile, type Onglet } from './ui/FeuilleMobile';
 import { lireServices, type EtatServices, type Services, type ServicesJson } from './domain/services';
-import { indexerNoms } from './domain/recherche';
+import { chargerCodesPostaux, indexerCodes, indexerNoms, type CodesPostaux } from './domain/recherche';
 import { BoutonLoupe, Recherche, type ChoixRecherche } from './ui/Recherche';
 
 type Donnees = { communes: Commune[]; reperes: Repere[]; emploi: Emploi; services?: Services };
+/** Codes postaux (H187) : pas encore demandés, demandés, arrivés ou indisponibles. */
+type EtatCodes = { etat: 'attente' | 'chargement' | 'indisponible' } | { etat: 'pret'; codes: CodesPostaux };
 const REPRISE_ADRESSE_MS = 1000;
 
 /** Largeur de bureau (≥ 1 024 px) : panneaux posés sur la carte ; en dessous, la feuille mobile (D1 d'interface-telephone). */
@@ -239,6 +241,25 @@ export function App() {
   const index = useMemo(() => new Map(donnees?.communes.map((c, i) => [c.code, i])), [donnees]);
   // H179 : les noms normalisés et triés une fois, à l'arrivée des données.
   const indexNoms = useMemo(() => (donnees ? indexerNoms(donnees.communes) : null), [donnees]);
+  // H187 : les codes postaux se chargent à la première prise de focus du champ, une fois ; indisponibles, nouvel essai à la
+  // prochaine prise de focus. Leur état vit ici : fermer la recherche ne les oublie pas.
+  const [codesPostaux, setCodesPostaux] = useState<EtatCodes>({ etat: 'attente' });
+  const demandeCodes = useRef(false);
+  const demanderCodes = () => {
+    if (demandeCodes.current || codesPostaux.etat === 'pret') return;
+    demandeCodes.current = true;
+    setCodesPostaux({ etat: 'chargement' });
+    chargerCodesPostaux(() => lire<CodesPostaux>('/data/codes-postaux.json'))
+      .then(
+        (codes) => setCodesPostaux({ etat: 'pret', codes }),
+        () => setCodesPostaux({ etat: 'indisponible' }),
+      )
+      .finally(() => (demandeCodes.current = false));
+  };
+  const indexCodes = useMemo(
+    () => (donnees && codesPostaux.etat === 'pret' ? indexerCodes(codesPostaux.codes, donnees.communes) : null),
+    [donnees, codesPostaux],
+  );
   /** Index de la commune choisie dans communes.json (ordre des repères et des temps des proches), ou null. */
   const indexChoisie = choisie == null ? null : index.get(choisie)!;
 
@@ -285,6 +306,8 @@ export function App() {
   const recherche = rechercheOuverte ? (
     <Recherche
       index={indexNoms}
+      codes={indexCodes ?? (codesPostaux.etat === 'indisponible' ? 'indisponible' : 'chargement')}
+      onFocus={demanderCodes}
       choix={choixRecherche}
       onChoisir={choisirRecherche}
       onEffacer={() => setChoixRecherche(null)}

@@ -1,5 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
-import { chercher, type IndexNoms } from '@/domain/recherche';
+import { chercher, chercherCode, type IndexCodes, type IndexNoms } from '@/domain/recherche';
 import { nomAffiche, population } from '@/domain/format';
 import type { Commune } from '@/domain/score';
 import { cn } from '@/lib/cn';
@@ -13,7 +13,13 @@ import { cn } from '@/lib/cn';
 
 const NBSP = ' ';
 const LIBELLE = 'Chercher une commune';
-const MESSAGES = { aucune: 'Aucune commune ne correspond.' } as const;
+const MESSAGES = {
+  aucune: 'Aucune commune ne correspond.',
+  chargement: 'Chargement des codes postaux…',
+  indisponible: 'Codes postaux indisponibles. Cherche par nom ou réessaie dans un moment.',
+} as const;
+/** Une suggestion : la commune, et par code postal le plus petit de ses codes qui correspondent (H183). */
+type Suggestion = { commune: Commune; postal?: string };
 
 /** La commune choisie par la recherche (H184) : le champ rouvert la montre tant qu'une autre n'est pas choisie ailleurs. */
 export type ChoixRecherche = { code: string; texte: string };
@@ -49,6 +55,10 @@ export function BoutonLoupe({ onClick, disabled, className }: { onClick: () => v
 type Props = {
   /** Index des noms (calculé une fois à l'arrivée des données) ; null pendant le chargement. */
   index: IndexNoms<Commune> | null;
+  /** Codes postaux (H187) : leur index une fois arrivés, sinon leur état ; une saisie en chiffres montre le message de l'état. */
+  codes: IndexCodes<Commune> | 'chargement' | 'indisponible';
+  /** Chaque prise de focus du champ : la première demande les codes postaux, et une suivante les redemande s'ils sont indisponibles. */
+  onFocus: () => void;
   /** Commune déjà choisie par la recherche : le champ s'ouvre sur elle (H184) ; null quand une autre a été choisie ailleurs. */
   choix: ChoixRecherche | null;
   onChoisir: (c: Commune) => void;
@@ -66,7 +76,7 @@ type Props = {
  * (`useLayoutEffect`) : au téléphone, la feuille est déjà montée et le champ à sa place quand le focus arrive (leçons
  * 2026-10-13 « feuille qui monte au focus » et « iOS clavier : champ à sa place avant le focus »).
  */
-export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disabled, className }: Props) {
+export function Recherche({ index, codes, onFocus, choix, onChoisir, onEffacer, onAnnuler, disabled, className }: Props) {
   const id = useId();
   const idListe = `${id}-suggestions`;
   const champ = useRef<HTMLInputElement>(null);
@@ -89,9 +99,12 @@ export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disab
   // État « choisie » : le champ montre la commune choisie, sans suggestion.
   const estChoisie = choix != null && texte === choix.texte;
   const r = index && !estChoisie ? chercher(index, texte) : null;
-  const suggestions = r?.etat === 'suggestions' ? r.communes : [];
-  // Tâche 1 : la recherche par code postal arrive en tâche 2 ; d'ici là, des chiffres ne montrent rien (état `code`).
-  const message = r?.etat === 'aucune' ? MESSAGES.aucune : null;
+  // 2 à 5 chiffres : par code postal, une fois les codes arrivés ; avant, le message de leur état (H187).
+  const rc = r?.etat === 'code' && typeof codes === 'object' ? chercherCode(codes, r.chiffres) : null;
+  const suggestions: Suggestion[] =
+    r?.etat === 'suggestions' ? r.communes.map((commune) => ({ commune })) : rc?.etat === 'postaux' ? rc.suggestions : [];
+  const message =
+    r?.etat === 'aucune' || rc?.etat === 'aucune' ? MESSAGES.aucune : r?.etat === 'code' && typeof codes === 'string' ? MESSAGES[codes] : null;
   const ouverte = !fermee && suggestions.length > 0;
   const avecMessage = !fermee && message != null;
   const annonce = ouverte ? `${suggestions.length}${NBSP}suggestion${suggestions.length > 1 ? 's' : ''}` : avecMessage ? message : '';
@@ -135,7 +148,10 @@ export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disab
             placeholder="Nom ou code postal"
             value={texte}
             disabled={disabled}
-            onFocus={() => setFermee(false)}
+            onFocus={() => {
+              setFermee(false);
+              onFocus();
+            }}
             // Les suggestions se ferment quand le champ perd le focus (decisions.md de la tranche).
             onBlur={() => setFermee(true)}
             onChange={(e) => {
@@ -148,7 +164,7 @@ export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disab
                 if (!ouverte) setFermee(false);
                 else surligner(Math.min(actif + 1, suggestions.length - 1));
               } else if (e.key === 'ArrowUp' && ouverte) surligner(Math.max(actif - 1, 0));
-              else if (e.key === 'Enter' && ouverte && suggestions[actif]) choisir(suggestions[actif]);
+              else if (e.key === 'Enter' && ouverte && suggestions[actif]) choisir(suggestions[actif].commune);
               else if (e.key === 'Escape') {
                 if (ouverte || avecMessage) setFermee(true);
                 else if (texte) effacer();
@@ -192,7 +208,7 @@ export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disab
         onMouseDown={(e) => e.preventDefault()}
         className="flex max-h-liste-suggestions min-h-0 flex-col overflow-y-auto overscroll-contain rounded-base border border-border bg-card"
       >
-        {suggestions.map((c, i) => (
+        {suggestions.map(({ commune: c, postal }, i) => (
           <li
             key={c.code}
             id={`${idListe}-${i}`}
@@ -206,8 +222,10 @@ export function Recherche({ index, choix, onChoisir, onEffacer, onAnnuler, disab
               i === actif && 'bg-background',
             )}
           >
-            {/* Nom accessible de l'option : « Grandeville (33) » ; la population est une aide visuelle seulement. */}
+            {/* Nom accessible de l'option : « Grandeville (33) », ou par code « 33991 · Grandeville (33) » (H183) ; la
+                population est une aide visuelle seulement. */}
             <span className="text-texte text-foreground">
+              {postal && <span className="text-muted-foreground tabular-nums">{postal} · </span>}
               <span className="text-texte-fort">{c.nom}</span> ({c.dep})
             </span>
             {c.population != null && (

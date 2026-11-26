@@ -1,6 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import spec from '../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json';
-import { chercher, indexerNoms, normaliser, type Cherchable } from './recherche';
+import {
+  chargerCodesPostaux,
+  chercher,
+  chercherCode,
+  DELAI_CODES_MS,
+  indexerCodes,
+  indexerNoms,
+  normaliser,
+  type Cherchable,
+  type CodesPostaux,
+} from './recherche';
 
 // Spec recherche-et-mer, tâche 1 : la recherche par nom (R58, H179 à H182). AC-12 porte ses propres communes inventées,
 // hors de la carte (critère, « given ») ; AC-1 se rejoue aussi ici, sur la fixture de la tranche, avant le navigateur.
@@ -96,6 +106,111 @@ describe('R58 et H179 à H182 : états, nombre et ordre des suggestions', () => 
     ]);
     // « saint lieu » touche deux mots ; la commune n'apparaît qu'une fois même si deux variantes la trouvent (« st » → « saint »).
     expect(noms(communes, 'st lieu j')).toEqual(['Saint-Lieu J (99)']);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Tâche 2 : la recherche par code postal (R58 partie code, H181, H183) et le chargement des codes (H187).
+
+/** Suggestions par code, par leur libellé : « 33991 · Grandeville (33) » (H183). */
+const parCode = (communes: Cherchable[], codes: CodesPostaux, saisie: string) => {
+  const r = chercher(indexerNoms(communes), saisie);
+  if (r.etat !== 'code') return r.etat;
+  const rc = chercherCode(indexerCodes(codes, communes), r.chiffres);
+  return rc.etat === 'postaux' ? rc.suggestions.map((s) => `${s.postal} · ${nomAffiche(s.commune)}`) : rc.etat;
+};
+
+describe('AC-13 recherche par code : code complet partagé, début de code, arrondissements de Paris déjà rattachés', () => {
+  // « given » : 12 communes C01 (99) à C12 (99), de 12 000 à 1 000 habitants par pas de 1 000, toutes au code 99200 ;
+  // Paris (75, 75056) ; la ligne de La Poste 75015 → 75115 est déjà rattachée à la ville dans le fichier servi (tâche 0a,
+  // morceau a d'AC-13) : `"75015": ["75056"]`. Codes INSEE des C inventés (le critère n'en donne pas).
+  const C: Cherchable[] = Array.from({ length: 12 }, (_, i) => ({
+    code: `99${String(201 + i)}`,
+    nom: `C${String(i + 1).padStart(2, '0')}`,
+    dep: '99',
+    population: 12000 - i * 1000,
+  }));
+  const PARIS: Cherchable = { code: '75056', nom: 'Paris', dep: '75', population: 2100000 };
+  const communes = [...C].reverse().concat(PARIS); // dans le désordre : l'ordre vient de la règle, pas du fichier
+  const codes: CodesPostaux = { '75015': ['75056'], '99200': C.map((c) => c.code).reverse() };
+
+  it('AC-13 « 99200 » : 12 suggestions, « 99200 · C01 (99) » à « 99200 · C12 (99) », dans cet ordre (toutes, code complet)', () => {
+    expect(parCode(communes, codes, '99200')).toEqual(C.map((c) => `99200 · ${c.nom} (99)`));
+    const r = chercherCode(indexerCodes(codes, communes), '99200');
+    expect(r.etat === 'postaux' && r.complet).toBe(true);
+  });
+  it('AC-13 « 992 » : 8 suggestions, C01 à C08', () => {
+    expect(parCode(communes, codes, '992')).toEqual(C.slice(0, 8).map((c) => `99200 · ${c.nom} (99)`));
+    const r = chercherCode(indexerCodes(codes, communes), '992');
+    expect(r.etat === 'postaux' && r.complet).toBe(false);
+  });
+  it('AC-13 « 75015 » : « 75015 · Paris (75) »', () => {
+    expect(parCode(communes, codes, '75015')).toEqual(['75015 · Paris (75)']);
+  });
+});
+
+// AC-2 (son « then »), sur les 6 communes de la fixture de la tranche et leurs `codes_postaux`, avant le navigateur.
+const CODES_FIXTURE: CodesPostaux = {};
+for (const it of spec.fixture.items) for (const cp of it.codes_postaux) (CODES_FIXTURE[cp] ??= []).push(it.code_insee);
+
+describe('AC-2 recherche par code sur la fixture de la tranche', () => {
+  it('AC-2 « 99100 » : Quaibleu puis Portmer ; « 339 » : 33990 · Grandeville ; « 33 991 » : 33991 · Grandeville', () => {
+    expect(parCode(FIXTURE, CODES_FIXTURE, '99100')).toEqual(['99100 · Quaibleu (13)', '99100 · Portmer (17)']);
+    expect(parCode(FIXTURE, CODES_FIXTURE, '339')).toEqual(['33990 · Grandeville (33)']);
+    expect(parCode(FIXTURE, CODES_FIXTURE, '33 991')).toEqual(['33991 · Grandeville (33)']);
+  });
+});
+
+describe('R58 et H183 : recherche par code', () => {
+  it('le plus petit des codes qui correspondent est dans le libellé ; chaque commune une fois', () => {
+    // Grandeville a 33990 et 33991 : « 3399 » la trouve deux fois, une seule suggestion, au plus petit code.
+    expect(parCode(FIXTURE, CODES_FIXTURE, '3399')).toEqual(['33990 · Grandeville (33)']);
+    // « 99 » : 99100 (Quaibleu, Portmer) ; triées par population.
+    expect(parCode(FIXTURE, CODES_FIXTURE, '99')).toEqual(['99100 · Quaibleu (13)', '99100 · Portmer (17)']);
+  });
+  it('un code inconnu, ou d\'une commune absente de la carte (outre-mer, Monaco), donne « aucune »', () => {
+    expect(parCode(FIXTURE, CODES_FIXTURE, '12345')).toBe('aucune');
+    expect(parCode(FIXTURE, { ...CODES_FIXTURE, '97400': ['97411'] }, '974')).toBe('aucune');
+    expect(parCode(FIXTURE, { ...CODES_FIXTURE, '99100': ['97411', '99001'] }, '99100')).toEqual(['99100 · Portmer (17)']);
+  });
+  it('début de code (2 à 4 chiffres) : 8 au plus, dans l\'ordre de H182', () => {
+    const communes: Cherchable[] = Array.from({ length: 10 }, (_, i) => ({ code: `990${i}0`, nom: `Lieu ${i}`, dep: '99', population: 100 + i }));
+    const codes: CodesPostaux = Object.fromEntries(communes.map((c, i) => [`9930${i}`, [c.code]]));
+    expect(parCode(communes, codes, '993')).toEqual(Array.from({ length: 8 }, (_, k) => `9930${9 - k} · Lieu ${9 - k} (99)`));
+  });
+});
+
+describe('H187 : chargement des codes postaux (une demande, un nouvel essai aussitôt, indisponibles après 2 erreurs ou 10 s)', () => {
+  afterEach(() => vi.useRealTimers());
+  const CODES = { '33990': ['99002'] };
+
+  it('une demande qui répond : une seule demande', async () => {
+    const lire = vi.fn(() => Promise.resolve(CODES));
+    await expect(chargerCodesPostaux(lire)).resolves.toEqual(CODES);
+    expect(lire).toHaveBeenCalledTimes(1);
+  });
+  it('une erreur : un nouvel essai aussitôt, qui répond', async () => {
+    const lire = vi.fn().mockRejectedValueOnce(new Error('503')).mockResolvedValueOnce(CODES);
+    await expect(chargerCodesPostaux(lire)).resolves.toEqual(CODES);
+    expect(lire).toHaveBeenCalledTimes(2);
+  });
+  it('deux erreurs : indisponibles, sans troisième demande', async () => {
+    const lire = vi.fn(() => Promise.reject(new Error('503')));
+    await expect(chargerCodesPostaux(lire)).rejects.toThrow();
+    expect(lire).toHaveBeenCalledTimes(2);
+  });
+  it('sans réponse : encore en chargement à 9,9 s, indisponibles à 10 s', async () => {
+    vi.useFakeTimers();
+    let etat = 'chargement';
+    chargerCodesPostaux(() => new Promise<CodesPostaux>(() => {})).then(
+      () => (etat = 'pret'),
+      () => (etat = 'indisponible'),
+    );
+    await vi.advanceTimersByTimeAsync(9_900); // on est à 9,9 s
+    expect(etat).toBe('chargement');
+    await vi.advanceTimersByTimeAsync(100); // on est à 10 s
+    expect(etat).toBe('indisponible');
+    expect(DELAI_CODES_MS).toBe(10_000);
   });
 });
 
