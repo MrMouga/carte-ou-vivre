@@ -1,14 +1,19 @@
 // Spec services : lecture et écriture de `public/data/services.json` (plan, « Le fichier des temps »).
-// Le fichier porte `codes` (les codes INSEE, dans l'ordre de communes.json), puis, pour chacun des 10 services, une chaîne
+// Le fichier porte `codes` (les codes INSEE, dans l'ordre de communes.json), puis, pour chacun des 11 services, une chaîne
 // d'un caractère par commune, dans l'ordre de `codes` : le caractère de rang n de ALPHABET vaut n minutes, de « 1 » (1 min)
 // à « y » (rang 60, 60 min) ; « z » (rang 61) vaut « 61 min ou plus » ; « - » vaut « pas de chiffre » ; « 0 » n'est jamais écrit
 // (H156 : au moins 1). Plus `iles_sans_pont` (H161). Les temps sont déjà arrondis par scripts/data/services.py (R52,
 // H156) : la page les lit, les affiche et les compare tels quels, sans rien recalculer.
 
-/** Les 10 services, dans l'ordre de la fiche (R54) : nom dans le fichier, nom dans l'adresse (R55), libellé (R51, R54). */
+/**
+ * Les 11 services, dans l'ordre de la fiche (R54, révisée par D19 et D20) : nom dans le fichier, nom dans l'adresse (R55),
+ * libellé (R51, R54). `commerce` n'en est plus un (D20) : encore écrit dans le fichier jusqu'à la tâche 2 de la révision,
+ * il n'est pas lu ; dans l'adresse, c'est un nom inconnu (H203).
+ */
 export const SERVICES = [
   { cle: 'medecin', adresse: 'medecin', libelle: 'Médecin' },
-  { cle: 'commerce', adresse: 'commerce', libelle: 'Commerce alimentaire' },
+  { cle: 'urgences', adresse: 'urgences', libelle: 'Urgences' },
+  { cle: 'supermarche', adresse: 'supermarche', libelle: 'Supermarché' },
   { cle: 'creche', adresse: 'creche', libelle: 'Crèche' },
   { cle: 'ecole', adresse: 'ecole', libelle: 'École' },
   { cle: 'college', adresse: 'college', libelle: 'Collège' },
@@ -25,7 +30,7 @@ export type TempsServices = Record<ServiceCle, number | null>;
 export type ServicesJson = { codes: string[]; iles_sans_pont: string[] } & Record<ServiceCle, string>;
 
 export type Services = {
-  /** Code INSEE → les 10 temps dans l'ordre de SERVICES ; null : pas de chiffre ; 61 : « 61 min ou plus ». */
+  /** Code INSEE → les 11 temps dans l'ordre de SERVICES ; null : pas de chiffre ; 61 : « 61 min ou plus ». */
   temps: Map<string, (number | null)[]>;
   /** Codes INSEE des îles sans pont (H161). */
   iles: Set<string>;
@@ -36,7 +41,10 @@ export const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs
 export const PLUS_D_UNE_HEURE = 61;
 const PAS_DE_CHIFFRE = '-';
 
-/** Lit `services.json` ; une chaîne de la mauvaise longueur ou un caractère hors de l'alphabet est une erreur. */
+/**
+ * Lit `services.json` ; une chaîne de la mauvaise longueur ou un caractère hors de l'alphabet est une erreur. Seules les
+ * chaînes de SERVICES sont lues : une autre (`commerce`, jusqu'à la tâche 2 de la révision D19, D20) est ignorée.
+ */
 export function lireServices(json: ServicesJson): Services {
   const n = json.codes.length;
   const colonnes = SERVICES.map(({ cle }) => {
@@ -74,7 +82,7 @@ const GARES_CORSE: readonly ServiceCle[] = ['gare_regionale', 'gare_grandes_lign
 /** Valeur d'un service pour une commune : île sans pont, Corse, temps arrondi (61 = « 61 min ou plus ») ou pas de chiffre. */
 export type ValeurService = { cas: 'ile' } | { cas: 'corse' } | { cas: 'temps'; minutes: number } | { cas: 'sans-chiffre' };
 
-/** Les 10 temps d'une commune, trouvés par son code INSEE ; une commune absente du fichier n'a aucun chiffre. */
+/** Les 11 temps d'une commune, trouvés par son code INSEE ; une commune absente du fichier n'a aucun chiffre. */
 function tempsDe(s: Services, code: string): (number | null)[] {
   return s.temps.get(code) ?? SERVICES.map(() => null);
 }
@@ -99,21 +107,22 @@ export function texteValeur(v: ValeurService): string {
   return v.minutes > 60 ? "plus d'une heure" : `${v.minutes}${NBSP}min`;
 }
 
-/** Les 10 lignes de la fiche, dans l'ordre de R54 : libellé et texte de la valeur. */
+/** Les 11 lignes de la fiche, dans l'ordre de R54 : libellé et texte de la valeur. */
 export function lignesServices(s: Services, c: { code: string; dep: string }) {
   return SERVICES.map(({ cle, libelle }) => ({ cle, libelle, valeur: texteValeur(valeurService(s, c, cle)) }));
 }
 
-/** R54 : la phrase de la traversée, pour une île sans pont qui a au moins un temps parmi les sept premiers services. */
+/** R54 : la phrase de la traversée, pour une île sans pont qui a au moins un temps parmi les huit premiers services. */
 export function phraseTraversee(s: Services, c: { code: string }): boolean {
   if (!s.iles.has(c.code)) return false;
-  // Les sept premiers de SERVICES : médecin à supérieur.
-  return tempsDe(s, c.code).slice(0, 7).some((m) => m != null);
+  // Les huit premiers de SERVICES, tous sauf les trois gares : médecin à supérieur.
+  return tempsDe(s, c.code).slice(0, 8).some((m) => m != null);
 }
 
-/** H159 : phrase des limites, toujours affichée ; insécables avant « : » et dans « 100 000 ». */
+/** H159 (révisée par D19, D20, H204) : phrase des limites, toujours affichée ; insécables avant « : » et dans « 100 000 ». */
 export const LIMITES_SERVICES =
-  "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Crèches financées par la CAF. " +
+  "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. " +
+  `Urgences${NBSP}: services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. ` +
   `Supérieur${NBSP}: universités et grandes écoles, antennes comprises. Gare régionale${NBSP}: 100${NBSP}000 voyageurs par an ou plus. ` +
   `Gare grandes lignes${NBSP}: gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.`;
 /** H159 : phrase de la traversée. */
@@ -129,7 +138,8 @@ export type TypeGare = 'gare' | 'gare_regionale' | 'gare_grandes_lignes';
 
 /** R55 : les temps valides de chaque service, ceux des pastilles (R51). */
 export function cransService(cle: ServiceCle): readonly number[] {
-  if (cle === 'medecin' || cle === 'commerce') return [5, 10, 15];
+  if (cle === 'medecin' || cle === 'supermarche') return [5, 10, 15];
+  if (cle === 'urgences') return [15, 30, 45]; // H202
   if (GARES.includes(cle)) return [10, 20, 30];
   return [5, 10, 20]; // les cinq niveaux de scolarité
 }
@@ -137,36 +147,51 @@ export const estGare = (cle: ServiceCle): cle is TypeGare => GARES.includes(cle)
 export const estScolarite = (cle: ServiceCle): cle is NiveauScolarite => (NIVEAUX_SCOLARITE as readonly ServiceCle[]).includes(cle);
 
 /**
- * État de la catégorie « Services » (plan, « Le réglage ») : temps coché du médecin et du commerce (`null` = aucun),
- * niveaux de scolarité cochés et temps commun, type de gare et temps de la gare. Une scolarité incomplète (H153) ou un
- * type de gare sans temps sont gardés ici pour le panneau, mais ne filtrent pas (`filtresServices`).
+ * État de la catégorie « Services » (plan, « Le réglage ») : temps coché du médecin, des urgences et du supermarché
+ * (`null` = aucun), niveaux de scolarité cochés et temps commun, type de gare et temps de la gare. Une scolarité incomplète
+ * (H153) ou un type de gare sans temps sont gardés ici pour le panneau, mais ne filtrent pas (`filtresServices`).
  */
 export type ReglageServices = {
   medecin: number | null;
-  commerce: number | null;
+  urgences: number | null;
+  supermarche: number | null;
   niveaux: NiveauScolarite[];
   scolarite: number | null;
   gare: TypeGare;
   tempsGare: number | null;
 };
-export const SERVICES_DEPART: ReglageServices = { medecin: null, commerce: null, niveaux: [], scolarite: null, gare: 'gare', tempsGare: null };
+/** Les lignes à un seul temps (« Médecin », « Urgences », « Supermarché »), dans l'ordre de R51 et R55. */
+export const SERVICES_SIMPLES = ['medecin', 'urgences', 'supermarche'] as const satisfies readonly ServiceCle[];
+export type ServiceSimple = (typeof SERVICES_SIMPLES)[number];
+export const estSimple = (cle: ServiceCle): cle is ServiceSimple => (SERVICES_SIMPLES as readonly ServiceCle[]).includes(cle);
+export const SERVICES_DEPART: ReglageServices = {
+  medecin: null,
+  urgences: null,
+  supermarche: null,
+  niveaux: [],
+  scolarite: null,
+  gare: 'gare',
+  tempsGare: null,
+};
 /** Rien de coché et le type « Toutes » : le champ `services` des réglages est alors absent. */
 export const servicesVides = (s: ReglageServices) =>
-  s.medecin == null && s.commerce == null && !s.niveaux.length && s.scolarite == null && s.gare === 'gare' && s.tempsGare == null;
+  SERVICES_SIMPLES.every((k) => s[k] == null) && !s.niveaux.length && s.scolarite == null && s.gare === 'gare' && s.tempsGare == null;
 
 /** Un service filtré et son temps coché. */
 export type FiltreService = { cle: ServiceCle; minutes: number };
 
 /**
  * La seule fonction des filtres effectifs (plan, « Le réglage ») : l'évaluation, l'adresse et le résumé replié passent
- * par elle. Dans l'ordre fixe de R55 : médecin, commerce, chaque niveau de scolarité coché (si un temps commun est coché,
- * H153), puis la gare de son type (si un temps est coché).
+ * par elle. Dans l'ordre fixe de R55 : médecin, urgences, supermarché, chaque niveau de scolarité coché (si un temps
+ * commun est coché, H153), puis la gare de son type (si un temps est coché).
  */
 export function filtresServices(s?: ReglageServices): FiltreService[] {
   if (!s) return [];
   const f: FiltreService[] = [];
-  if (s.medecin != null) f.push({ cle: 'medecin', minutes: s.medecin });
-  if (s.commerce != null) f.push({ cle: 'commerce', minutes: s.commerce });
+  for (const cle of SERVICES_SIMPLES) {
+    const minutes = s[cle];
+    if (minutes != null) f.push({ cle, minutes });
+  }
   if (s.scolarite != null) for (const n of NIVEAUX_SCOLARITE) if (s.niveaux.includes(n)) f.push({ cle: n, minutes: s.scolarite });
   if (s.tempsGare != null) f.push({ cle: s.gare, minutes: s.tempsGare });
   return f;

@@ -1,0 +1,19 @@
+26/11/2026 21:17:20 ; version servie 8042bb2fd241be4fe7abe39ed524fb76ec35bbcd ; 15 essais par sens ; 2 tours
+-- tour 1, début 21:17:20, charge 6.17 5.43 5.52
+tour 1, curseur du prix, un cran (témoin) : médiane 176 ms ; min 174 max 202 ; essais 202 175 179 175 177 177 193 174 174 176 175 175 178 175 176
+tour 1, « 30 min » pour « Urgences » : sans « 34 674 communes passent tes critères » ; avec « 27 359 communes passent tes critères » (?loyer=1200&services=urgences:30)
+tour 1, « 30 min » pour « Urgences » cochée : médiane 190 ms ; min 173 max 206 ; essais 186 177 190 174 192 192 175 190 173 206 190 193 204 173 176
+tour 1, « 30 min » pour « Urgences » décochée : médiane 193 ms ; min 190 max 209 ; essais 207 209 193 191 192 208 208 195 208 193 192 194 192 193 190
+tour 1, « Ville dense », plus grand écart en ligne : sans « 34 674 communes passent tes critères » ; avec « 643 communes passent tes critères » (?loyer=1200&env=ville-dense)
+tour 1, « Ville dense », plus grand écart en ligne cochée : médiane 193 ms ; min 190 max 239 ; essais 239 211 191 193 209 191 191 190 192 193 192 210 194 226 207
+tour 1, « Ville dense », plus grand écart en ligne décochée : médiane 292 ms ; min 276 max 309 ; essais 290 307 277 276 301 289 277 292 292 292 294 288 309 289 292
+-- tour 1, fin 21:18:23, charge 5.38 5.35 5.48
+-- tour 2, début 21:18:23, charge 5.38 5.35 5.48
+tour 2, curseur du prix, un cran (témoin) : médiane 176 ms ; min 159 max 192 ; essais 187 175 177 178 176 176 192 175 176 177 162 173 159 178 175
+tour 2, « 30 min » pour « Urgences » : sans « 34 674 communes passent tes critères » ; avec « 27 359 communes passent tes critères » (?loyer=1200&services=urgences:30)
+tour 2, « 30 min » pour « Urgences » cochée : médiane 175 ms ; min 140 max 207 ; essais 207 175 174 174 161 175 175 179 173 174 177 140 175 171 177
+tour 2, « 30 min » pour « Urgences » décochée : médiane 193 ms ; min 174 max 208 ; essais 191 194 194 208 192 193 191 193 191 189 177 194 193 193 174
+tour 2, « Ville dense », plus grand écart en ligne : sans « 34 674 communes passent tes critères » ; avec « 643 communes passent tes critères » (?loyer=1200&env=ville-dense)
+tour 2, « Ville dense », plus grand écart en ligne cochée : médiane 192 ms ; min 190 max 216 ; essais 216 192 192 190 191 194 190 191 192 194 193 192 191 190 211
+tour 2, « Ville dense », plus grand écart en ligne décochée : médiane 277 ms ; min 273 max 292 ; essais 291 275 292 276 279 290 275 276 273 273 292 292 277 277 276
+-- tour 2, fin 21:19:25, charge 5.86 5.47 5.51

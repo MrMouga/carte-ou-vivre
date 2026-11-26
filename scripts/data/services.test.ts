@@ -31,7 +31,7 @@ type Carreau = { depcom: string; carreau: string; pop: number } & Record<string,
 const ligneCsv = (c: Carreau) =>
   [c.depcom, c.carreau, String(c.pop), ...TYPES.map((t) => (c[t] === undefined || c[t] === null ? '' : String(c[t])))].join(',');
 
-/** Les 10 services à « pas de chiffre », sauf ceux donnés. */
+/** Les 11 services à « pas de chiffre », sauf ceux donnés. */
 const temps = (valeurs: Partial<TempsServices>): TempsServices => ({
   ...(Object.fromEntries(SERVICES.map((s) => [s.cle, null])) as TempsServices),
   ...valeurs,
@@ -92,8 +92,9 @@ describe('scripts/data/services.py --grandes-lignes (R52)', () => {
 describe('public/data/services.json (R52, vraies données)', () => {
   const PLUS_D_UNE_HEURE = 61; // « 61 ou plus » : au-delà de 60
 
-  it("AC-13 : une ligne par commune de la carte ; Auch, Bordeaux, Mende, Les Sables-d'Olonne, L'Île-d'Yeu et les 6 communes de population 0", () => {
-    const servi = lireServices(lireJson('../../public/data/services.json') as ServicesJson);
+  it("AC-13 : une ligne par commune de la carte ; Auch, Bordeaux, Mende, Saint-Véran, Chamonix-Mont-Blanc, Les Sables-d'Olonne, L'Île-d'Yeu et les 6 communes de population 0 ; aucune colonne commerce", () => {
+    const json = lireJson('../../public/data/services.json') as ServicesJson;
+    const servi = lireServices(json);
     const valeurs = (code: string) => {
       const t = servi.temps.get(code);
       if (!t) throw new Error(`commune ${code} absente du fichier`);
@@ -105,24 +106,33 @@ describe('public/data/services.json (R52, vraies données)', () => {
     expect(servi.temps.size).toBe(34746);
     expect(codes.every((c) => servi.temps.has(c))).toBe(true);
 
-    expect(Object.values(valeurs('32013'))).toEqual([2, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE]);
-    expect(Object.values(valeurs('33063'))).toEqual([1, 1, 1, 1, 2, 2, 3, 5, 7, 7]);
+    // Ordre de R54 révisée : médecin, urgences, supermarché, crèche, école, collège, lycée, supérieur, gare, gare
+    // régionale, gare grandes lignes.
+    expect(Object.values(valeurs('32013'))).toEqual([2, 6, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE]);
+    expect(Object.values(valeurs('33063'))).toEqual([1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7]);
     const mende = valeurs('48095');
-    expect([mende.superieur, mende.gare, mende.gare_regionale, mende.gare_grandes_lignes]).toEqual([2, 3, PLUS_D_UNE_HEURE, PLUS_D_UNE_HEURE]);
-    expect(valeurs('85194').gare_grandes_lignes).toBe(4);
+    expect([mende.urgences, mende.superieur, mende.gare, mende.gare_regionale, mende.gare_grandes_lignes]).toEqual([4, 2, 3, PLUS_D_UNE_HEURE, PLUS_D_UNE_HEURE]);
+    const veran = valeurs('05157');
+    expect([veran.urgences, veran.supermarche]).toEqual([55, 35]);
+    const chamonix = valeurs('74056');
+    expect([chamonix.urgences, chamonix.supermarche]).toEqual([4, 3]);
+    const sables = valeurs('85194');
+    expect([sables.urgences, sables.gare_grandes_lignes]).toEqual([7, 4]);
     const yeu = valeurs('85113');
-    expect([yeu.medecin, yeu.lycee, yeu.superieur, yeu.gare, yeu.gare_regionale, yeu.gare_grandes_lignes]).toEqual([null, null, null, null, null, null]);
-    expect(yeu.commerce).toBe(3);
+    expect([yeu.medecin, yeu.urgences, yeu.lycee, yeu.superieur, yeu.gare, yeu.gare_regionale, yeu.gare_grandes_lignes]).toEqual(Array(7).fill(null));
+    expect(yeu.supermarche).toBe(4);
     for (const code of ['55039', '55050', '55139', '55189', '55239', '55307']) {
-      expect(Object.values(valeurs(code)), code).toEqual(Array(10).fill(null));
+      expect(Object.values(valeurs(code)), code).toEqual(Array(11).fill(null));
     }
+    // Aucune colonne commerce (D20) : rouge tant que la tâche 2 de la révision n'a pas régénéré le fichier.
+    expect(Object.keys(json)).not.toContain('commerce');
   });
 });
 
 describe('src/domain/services.ts — alphabet du fichier des temps', () => {
   it('aller-retour : 60 → 60, 61 → 61, 75 → 61 (« 61 ou plus »), pas de chiffre → null', () => {
     const lignes = [
-      { code: '99001', temps: temps({ medecin: 60, commerce: 1 }) },
+      { code: '99001', temps: temps({ medecin: 60, urgences: 1 }) },
       { code: '99002', temps: temps({ medecin: 61 }) },
       { code: '99003', temps: temps({ medecin: 75 }), ile_sans_pont: true },
       { code: '99004', temps: temps({}) },
@@ -130,13 +140,13 @@ describe('src/domain/services.ts — alphabet du fichier des temps', () => {
     const json = ecrireServices(lignes);
     expect(json.codes).toEqual(['99001', '99002', '99003', '99004']);
     expect(json.medecin).toBe('yzz-'); // rang 60 de l'alphabet : « y » ; rang 61 : « z »
-    expect(json.commerce).toBe('1---');
+    expect(json.urgences).toBe('1---');
     expect(json.iles_sans_pont).toEqual(['99003']);
     const lu = lireServices(json);
     expect(lu.temps.get('99001')?.slice(0, 2)).toEqual([60, 1]);
     expect(lu.temps.get('99002')?.[0]).toBe(61);
     expect(lu.temps.get('99003')?.[0]).toBe(61);
-    expect(lu.temps.get('99004')).toEqual(Array(10).fill(null));
+    expect(lu.temps.get('99004')).toEqual(Array(11).fill(null));
     expect([...lu.iles]).toEqual(['99003']);
   });
 });

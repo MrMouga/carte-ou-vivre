@@ -6,9 +6,11 @@ import {
   libelleService,
   NIVEAUX_SCOLARITE,
   SERVICES_DEPART,
+  SERVICES_SIMPLES,
   servicesVides,
   type NiveauScolarite,
   type ReglageServices,
+  type ServiceSimple,
   type TypeGare,
 } from '@/domain/services';
 import { cn } from '@/lib/cn';
@@ -17,8 +19,9 @@ import { Categorie } from './Categorie';
 import { TempsIndisponibles } from './FicheServices';
 
 // Catégorie « Services » (spec services, R51, H151 à H154, H167, H169 ; design F : docs/design/services/decisions.md,
-// prototype `PisteA` du commit 2f300ae). La dernière catégorie, après « Tes proches », ouverte au départ. « Médecin » et
-// « Commerce alimentaire » : libellé à gauche, Cases collées à droite ; « Scolarité » : Cases séparées des niveaux, puis le
+// prototype `PisteA` du commit 2f300ae ; révisé le 2026-11-26, D19, D20). La dernière catégorie, après « Tes proches »,
+// ouverte au départ. « Médecin », « Urgences » et « Supermarché » : libellé à gauche, Cases collées à droite ; « Scolarité » :
+// Cases séparées des niveaux, puis le
 // temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare « Scolarité » et « Gare ».
 // « Scolarité » : niveaux cumulables et temps commun ; filtre quand l'un et l'autre sont cochés (tâche 3b, R53, H153).
 
@@ -108,8 +111,8 @@ function Temps({ crans, valeur, onChange, disabled, nomId, nom, decritId, classN
   );
 }
 
-/** « Médecin », « Commerce alimentaire » : libellé à gauche, temps à droite, sur une ligne (piste A). */
-function Ligne({ cle, valeur, onChange, disabled }: { cle: 'medecin' | 'commerce'; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
+/** « Médecin », « Urgences », « Supermarché » : libellé à gauche, temps à droite, sur une ligne (piste A ; révision D19, D20). */
+function Ligne({ cle, valeur, onChange, disabled }: { cle: ServiceSimple; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
   const id = useId();
   return (
     <div className="grid grid-cols-5 items-center gap-2">
@@ -141,8 +144,9 @@ export function Services({ reglages, onChange, disabled = false, erreur = false,
       {/* R57 : en erreur, sous le titre ; les réglages restent affichés, inactifs (décidé par Claude, plan tâche 4). */}
       {erreur && <TempsIndisponibles onReessayer={onReessayer} focusApres={titre} />}
       <div className="flex flex-col gap-2">
-        <Ligne cle="medecin" valeur={s.medecin} onChange={(medecin) => regler({ medecin })} disabled={disabled} />
-        <Ligne cle="commerce" valeur={s.commerce} onChange={(commerce) => regler({ commerce })} disabled={disabled} />
+        {SERVICES_SIMPLES.map((cle) => (
+          <Ligne key={cle} cle={cle} valeur={s[cle]} onChange={(v) => regler({ [cle]: v })} disabled={disabled} />
+        ))}
         <div className="flex flex-col gap-2 border-t border-border pt-2">
           <span className="text-pastille text-foreground">Scolarité</span>
           {/* Cases séparées des niveaux (contrat), cumulables, puis le temps commun. Pas de titre visible « Niveaux de

@@ -48,10 +48,11 @@ const lu = (s: Services, c: { code: string; dep: string }) => lignesServices(s, 
 const lignes = (items: Item[], id: Id) => lu(servi(items), commune(items, id));
 
 describe('valeur d’un service dans la fiche (R54)', () => {
-  it('AC-6 Portmer : les 10 lignes dans l’ordre de R54, sans phrase de la traversée ; phrase des limites de H159', () => {
+  it('AC-6 Portmer : les 11 lignes dans l’ordre de R54, sans phrase de la traversée ; phrase des limites de H159', () => {
     expect(lignes(SIX, 'A')).toEqual([
       'Médecin : 4 min',
-      'Commerce alimentaire : 3 min',
+      'Urgences : 14 min',
+      'Supermarché : 3 min',
       'Crèche : 12 min',
       'École : 2 min',
       'Collège : 9 min',
@@ -62,8 +63,9 @@ describe('valeur d’un service dans la fiche (R54)', () => {
       'Gare grandes lignes : 40 min',
     ]);
     expect(phraseTraversee(servi(SIX), commune(SIX, 'A'))).toBe(false);
+    expect(LIMITES_SERVICES).toContain('Urgences : services'); // H159 : insécable avant « : »
     expect(texte(LIMITES_SERVICES)).toBe(
-      "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.",
+      "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Urgences : services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.",
     );
     // H159 : insécables avant « : » et dans « 100 000 ».
     expect(LIMITES_SERVICES).toContain('Supérieur :');
@@ -71,23 +73,34 @@ describe('valeur d’un service dans la fiche (R54)', () => {
     expect(LIMITES_SERVICES).toContain('100 000');
   });
 
-  it('AC-6 Terrebasse « Gare régionale : plus d’une heure » (61 min), Quaibleu « Gare régionale : 60 min », Rhinval « pas de chiffre »', () => {
-    expect(lignes(SIX, 'D')[8]).toBe("Gare régionale : plus d'une heure");
-    expect(lignes(SIX, 'D')[6]).toBe("Supérieur : plus d'une heure"); // 70 min
-    expect(lignes(SIX, 'E')[8]).toBe('Gare régionale : 60 min');
-    expect(lignes(SIX, 'E')[9]).toBe("Gare grandes lignes : plus d'une heure"); // 75 min
+  it('AC-6 Terrebasse « Urgences : plus d’une heure » (75 min) et « Gare régionale : plus d’une heure » (61 min), Quaibleu « Gare régionale : 60 min », Rhinval « pas de chiffre »', () => {
+    expect(lignes(SIX, 'D')[1]).toBe("Urgences : plus d'une heure");
+    expect(lignes(SIX, 'D')[9]).toBe("Gare régionale : plus d'une heure");
+    expect(lignes(SIX, 'D')[7]).toBe("Supérieur : plus d'une heure"); // 70 min
+    expect(lignes(SIX, 'E')[9]).toBe('Gare régionale : 60 min');
+    expect(lignes(SIX, 'E')[10]).toBe("Gare grandes lignes : plus d'une heure"); // 75 min
     const rhinval = lignes(SIX, 'F');
     for (const l of ['Médecin : pas de chiffre', 'Supérieur : pas de chiffre', 'Gare régionale : pas de chiffre', 'Gare grandes lignes : pas de chiffre'])
       expect(rhinval).toContain(l);
-    expect(rhinval[1]).toBe('Commerce alimentaire : 6 min');
+    expect(rhinval.slice(1, 3)).toEqual(['Urgences : 22 min', 'Supermarché : 6 min']);
   });
 
-  it('60 min et 61 min : « 60 min » puis « plus d’une heure », sans recalcul', () => {
-    const s = servi([{ ...SIX[0], temps_services: { ...SIX[0].temps_services, medecin: 60, commerce: 61 } }]);
+  it('60 min et 61 min : « 60 min » puis « plus d’une heure », sans recalcul ; urgences au-delà de 60 min', () => {
+    const s = servi([{ ...SIX[0], temps_services: { ...SIX[0].temps_services, medecin: 60, urgences: 61 } }]);
     const c = { code: SIX[0].code_insee, dep: '17' };
     expect(valeurService(s, c, 'medecin')).toEqual({ cas: 'temps', minutes: 60 });
-    expect(valeurService(s, c, 'commerce')).toEqual({ cas: 'temps', minutes: 61 });
-    expect(lu(s, c).slice(0, 2)).toEqual(['Médecin : 60 min', "Commerce alimentaire : plus d'une heure"]);
+    expect(valeurService(s, c, 'urgences')).toEqual({ cas: 'temps', minutes: 61 });
+    expect(lu(s, c).slice(0, 2)).toEqual(['Médecin : 60 min', "Urgences : plus d'une heure"]);
+    // Terrebasse : 75 min d'urgences s'écrivent « 61 ou plus » et se lisent « plus d'une heure ».
+    expect(valeurService(servi(SIX), commune(SIX, 'D'), 'urgences')).toEqual({ cas: 'temps', minutes: 61 });
+    expect(lu(servi([{ ...SIX[0], temps_services: { ...SIX[0].temps_services, urgences: 60 } }]), c)[1]).toBe('Urgences : 60 min');
+  });
+
+  it('le fichier servi peut encore porter `commerce` (jusqu’à la tâche 2 de la révision) : ignoré, les 11 temps sont lus', () => {
+    const json = ecrireServices(SIX.map((it) => ({ code: it.code_insee, temps: it.temps_services, ile_sans_pont: it.ile_sans_pont })));
+    const s = lireServices({ ...json, commerce: '1-----' } as typeof json);
+    expect(s.temps.get('99001')).toEqual([4, 14, 3, 12, 2, 9, 14, 18, 6, 8, 40]);
+    expect('commerce' in json).toBe(false);
   });
 
   it('jointure par code INSEE : une commune absente du fichier n’a aucun chiffre ; l’ordre du fichier ne compte pas', () => {
@@ -98,18 +111,28 @@ describe('valeur d’un service dans la fiche (R54)', () => {
 
   it('île sans pont (cas sûrs, Portmer) : « aucune sur l’île » pour les trois gares, pas pour le médecin ; phrase de la traversée', () => {
     const l = lignes(CAS_SURS, 'A');
-    expect(l.slice(7)).toEqual(["Gare : aucune sur l'île", "Gare régionale : aucune sur l'île", "Gare grandes lignes : aucune sur l'île"]);
+    expect(l.slice(8)).toEqual(["Gare : aucune sur l'île", "Gare régionale : aucune sur l'île", "Gare grandes lignes : aucune sur l'île"]);
     expect(l[0]).toBe('Médecin : 4 min');
     expect(valeurService(servi(CAS_SURS), commune(CAS_SURS, 'A'), 'gare')).toEqual({ cas: 'ile' });
     expect(phraseTraversee(servi(CAS_SURS), commune(CAS_SURS, 'A'))).toBe(true);
     expect(texte(TRAVERSEE)).toBe("Île sans pont : un temps peut compter la traversée, sans l'attente du bateau.");
   });
 
-  it('île sans pont sans aucun temps parmi les 7 premiers services (cas sûrs, Montcher) : « aucune sur l’île », sans phrase de la traversée', () => {
+  it('île sans pont sans aucun temps parmi les 8 premiers services (cas sûrs, Montcher) : « aucune sur l’île », sans phrase de la traversée', () => {
     const l = lignes(CAS_SURS, 'C');
     expect(l[0]).toBe('Médecin : pas de chiffre');
-    expect(l[7]).toBe("Gare : aucune sur l'île");
+    expect(l[8]).toBe("Gare : aucune sur l'île");
     expect(phraseTraversee(servi(CAS_SURS), commune(CAS_SURS, 'C'))).toBe(false);
+  });
+
+  it('R54 révisée : la phrase de la traversée compte les huit premiers services, dont les urgences et le supermarché', () => {
+    const vide = CAS_SURS.find((it) => it.id === 'C')!.temps_services;
+    const ile = (t: Partial<TempsServices>) => servi([{ ...CAS_SURS[2], temps_services: { ...vide, ...t } }]);
+    const c = commune(CAS_SURS, 'C');
+    expect(phraseTraversee(ile({ urgences: 40 }), c)).toBe(true);
+    expect(phraseTraversee(ile({ supermarche: 4 }), c)).toBe(true);
+    expect(phraseTraversee(ile({ superieur: 30 }), c)).toBe(true);
+    expect(phraseTraversee(ile({ gare: 9 }), c)).toBe(false); // les gares ne comptent pas
   });
 
   it('île sans pont avec un temps de gare dans le fichier (Île-de-Bréhat, 9 min) : « aucune sur l’île »', () => {
@@ -119,7 +142,7 @@ describe('valeur d’un service dans la fiche (R54)', () => {
 
   it('Corse (cas sûrs, Quaibleu en 2B) : « aucune en Corse » pour la gare régionale et grandes lignes, pas pour « Gare »', () => {
     const l = lignes(CAS_SURS, 'E');
-    expect(l.slice(7)).toEqual(['Gare : 30 min', 'Gare régionale : aucune en Corse', 'Gare grandes lignes : aucune en Corse']);
+    expect(l.slice(8)).toEqual(['Gare : 30 min', 'Gare régionale : aucune en Corse', 'Gare grandes lignes : aucune en Corse']);
     expect(l[0]).toBe('Médecin : 10 min');
     // Lu dans le département (communes.json), jamais dans le code.
     const s = servi(SIX);
@@ -128,7 +151,7 @@ describe('valeur d’un service dans la fiche (R54)', () => {
     expect(phraseTraversee(servi(CAS_SURS), commune(CAS_SURS, 'E'))).toBe(false);
   });
 
-  it('population 0 (cas sûrs, Terrebasse) : « pas de chiffre » pour les 10 services', () => {
+  it('population 0 (cas sûrs, Terrebasse) : « pas de chiffre » pour les 11 services', () => {
     expect(lignes(CAS_SURS, 'D').map((l) => l.endsWith(': pas de chiffre'))).toEqual(SERVICES.map(() => true));
   });
 
@@ -137,7 +160,7 @@ describe('valeur d’un service dans la fiche (R54)', () => {
     expect(l.map((x) => x.libelle)).toEqual(SERVICES.map((s) => s.libelle));
     expect(l[0].valeur).toBe('4 min');
     const cles: ServiceCle[] = SERVICES.map((s) => s.cle);
-    expect(cles).toEqual(['medecin', 'commerce', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes']);
+    expect(cles).toEqual(['medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes']);
   });
 });
 
@@ -164,15 +187,40 @@ describe('adresse des services (R55)', () => {
   it('AC-11 troisième adresse : première entrée valide gardée, ordre fixe ; « Grandes lignes » est le type de gare', () => {
     const a = '/?loyer=1200&services=medecin:7,medecin:10,gare:5,gare-grandes-lignes:10,lycee:10,ecole:10,ecole:5';
     expect(reecrite(a)).toBe('/?loyer=1200&services=medecin:10,ecole:10,lycee:10,gare-grandes-lignes:10');
-    expect(lireAdresse(a.slice(1)).services).toEqual({ medecin: 10, commerce: null, niveaux: ['ecole', 'lycee'], scolarite: 10, gare: 'gare_grandes_lignes', tempsGare: 10 });
+    expect(lireAdresse(a.slice(1)).services).toEqual({ medecin: 10, urgences: null, supermarche: null, niveaux: ['ecole', 'lycee'], scolarite: 10, gare: 'gare_grandes_lignes', tempsGare: 10 });
   });
 
   it('AC-17 dernière adresse : 15 min retiré (pas un temps de scolarité), le lycée fixe le temps commun', () => {
     expect(reecrite('/?loyer=1200&services=superieur:15,lycee:10,superieur:10')).toBe('/?loyer=1200&services=lycee:10,superieur:10');
   });
 
+  it('AC-20 : `commerce` est un nom inconnu (H203) ; 10 min n’est pas un temps des urgences ; seconde entrée du supermarché retirée ; ordre fixe', () => {
+    expect(reecrite('/?loyer=1200&services=commerce:5,medecin:10')).toBe('/?loyer=1200&services=medecin:10');
+    expect(lireAdresse('?loyer=1200&services=commerce:5,medecin:10').services).toEqual({ ...SERVICES_DEPART, medecin: 10 });
+    expect(reecrite('/?loyer=1200&services=commerce:5')).toBe('/?loyer=1200');
+    expect('services' in lireAdresse('?loyer=1200&services=commerce:5')).toBe(false);
+    const a = '/?loyer=1200&services=supermarche:15,urgences:10,urgences:30,supermarche:5';
+    expect(reecrite(a)).toBe('/?loyer=1200&services=urgences:30,supermarche:15');
+    expect(lireAdresse(a.slice(1)).services).toEqual({ ...SERVICES_DEPART, urgences: 30, supermarche: 15 });
+  });
+
+  it('AC-19 : ordre fixe médecin, urgences, supermarché, puis scolarité et gare ; crans des urgences 15, 30, 45 (H202)', () => {
+    expect(ecrireAdresse({ ...REGLAGES_DEPART, services: { ...SERVICES_DEPART, medecin: 10, supermarche: 5 } })).toBe('/?loyer=1200&services=medecin:10,supermarche:5');
+    expect(ecrireAdresse({ ...REGLAGES_DEPART, services: { ...SERVICES_DEPART, medecin: 10, urgences: 45, supermarche: 5 } })).toBe(
+      '/?loyer=1200&services=medecin:10,urgences:45,supermarche:5',
+    );
+    expect(reecrite('/?loyer=1200&services=gare:10,ecole:5,supermarche:5,urgences:45,medecin:10')).toBe(
+      '/?loyer=1200&services=medecin:10,urgences:45,supermarche:5,ecole:5,gare:10',
+    );
+    expect(filtresServices({ ...SERVICES_DEPART, supermarche: 5, urgences: 45, medecin: 10 }).map((x) => x.cle)).toEqual(['medecin', 'urgences', 'supermarche']);
+    for (const m of [15, 30, 45]) expect(reecrite(`/?loyer=1200&services=urgences:${m}`)).toBe(`/?loyer=1200&services=urgences:${m}`);
+    for (const m of [5, 10, 20, 60]) expect(reecrite(`/?loyer=1200&services=urgences:${m}`)).toBe('/?loyer=1200');
+    for (const m of [5, 10, 15]) expect(reecrite(`/?loyer=1200&services=supermarche:${m}`)).toBe(`/?loyer=1200&services=supermarche:${m}`);
+    expect(reecrite('/?loyer=1200&services=supermarche:20')).toBe('/?loyer=1200');
+  });
+
   it('`services` avant `bien` ; une adresse sans `services`, ou dont aucune entrée n’est valide, ne renvoie pas le champ', () => {
-    expect(reecrite('/?bien=maison&services=commerce:15&loyer=1200')).toBe('/?loyer=1200&services=commerce:15&bien=maison');
+    expect(reecrite('/?bien=maison&services=supermarche:15&loyer=1200')).toBe('/?loyer=1200&services=supermarche:15&bien=maison');
     expect('services' in lireAdresse('?loyer=1200')).toBe(false);
     expect('services' in lireAdresse('?loyer=1200&services=zzz:10,medecin:7,gare:5')).toBe(false);
     expect(reecrite('/?loyer=1200&services=zzz:10')).toBe('/?loyer=1200');
@@ -254,11 +302,28 @@ describe('filtre des services (R53)', () => {
   });
 
   it('cas sûrs : population 0 (Terrebasse) ne passe aucun service, « <Service> : pas de chiffre, commune sans habitant »', () => {
-    const tous: Partial<ReglageServices> = { medecin: 15, commerce: 15, niveaux: [...NIVEAUX_SCOLARITE], scolarite: 20, gare: 'gare', tempsGare: 30 };
+    const tous: Partial<ReglageServices> = { medecin: 15, urgences: 45, supermarche: 15, niveaux: [...NIVEAUX_SCOLARITE], scolarite: 20, gare: 'gare', tempsGare: 30 };
     const f = filtrer(CAS_SURS, tous);
     expect(f.passent).not.toContain('Terrebasse');
-    expect(f.raisons('D')).toEqual(SERVICES.slice(0, 8).map((s) => `${s.libelle} : pas de chiffre, commune sans habitant`));
+    expect(f.raisons('D')).toEqual(SERVICES.slice(0, 9).map((s) => `${s.libelle} : pas de chiffre, commune sans habitant`));
     expect(filtrer(CAS_SURS, { medecin: 15 }).raisons('D')).toEqual(['Médecin : pas de chiffre, commune sans habitant']);
+  });
+
+  it('AC-18 urgences : 30 min garde Quaibleu (30 min, égalité) et écarte Terrebasse (plus d’une heure) ; 15 min écarte Quaibleu et Rhinval', () => {
+    const a = filtrer(SIX, { urgences: 30 });
+    expect(a.passent).toEqual(['Portmer', 'Grandeville', 'Montcher', 'Quaibleu', 'Rhinval']);
+    expect(a.raisons('D')).toEqual(["Urgences plus d'une heure : au-dessus de ton plafond de 30 min"]);
+    const b = filtrer(SIX, { urgences: 15 });
+    expect(b.passent).toEqual(['Portmer', 'Grandeville', 'Montcher']);
+    expect(b.raisons('E')).toEqual(['Urgences 30 min : au-dessus de ton plafond de 15 min']);
+    expect(b.raisons('F')).toEqual(['Urgences 22 min : au-dessus de ton plafond de 15 min']);
+  });
+
+  it('AC-19 supermarché : 5 min avec le médecin à 10 min écarte Rhinval (6 min) ; 45 min d’urgences ne change rien', () => {
+    const a = filtrer(SIX, { medecin: 10, supermarche: 5 });
+    expect(a.passent).toEqual(['Portmer', 'Grandeville', 'Montcher', 'Quaibleu']);
+    expect(a.raisons('F')).toEqual(['Supermarché 6 min : au-dessus de ton plafond de 5 min']);
+    expect(filtrer(SIX, { medecin: 10, urgences: 45, supermarche: 5 }).passent).toEqual(a.passent);
   });
 
   it('AC-17 scolarité : chaque niveau coché est un service filtré, avec le temps commun', () => {
@@ -274,7 +339,7 @@ describe('filtre des services (R53)', () => {
     const proche: ProchePret = { nom: 'Nantesville (44)', plafond: 15, temps: Uint16Array.from([30, 30, 30, 30, 30, 30]) };
     const r = evaluer(
       communes(SIX),
-      { loyer: null, mer: null, tailles: [], services: { medecin: 5, commerce: 5, niveaux: ['superieur', 'creche'], scolarite: 5, gare: 'gare', tempsGare: 10 } },
+      { loyer: null, mer: null, tailles: [], services: { medecin: 5, urgences: 15, supermarche: 5, niveaux: ['superieur', 'creche'], scolarite: 5, gare: 'gare', tempsGare: 10 } },
       [proche],
       undefined,
       undefined,
@@ -283,14 +348,15 @@ describe('filtre des services (R53)', () => {
     expect(r.raisons.map((x) => texte(raisonTexte(x)))).toEqual([
       'Nantesville (44) 30 min : au-dessus de ton plafond de 15 min',
       'Médecin 18 min : au-dessus de ton plafond de 5 min',
-      'Commerce alimentaire 8 min : au-dessus de ton plafond de 5 min',
+      "Urgences plus d'une heure : au-dessus de ton plafond de 15 min",
+      'Supermarché 8 min : au-dessus de ton plafond de 5 min',
       'Crèche 34 min : au-dessus de ton plafond de 5 min',
       "Supérieur plus d'une heure : au-dessus de ton plafond de 5 min",
       'Gare 41 min : au-dessus de ton plafond de 10 min',
     ]);
     // H159 : insécables avant « : » et dans « 18 min », « 5 min » (le texte lu ci-dessus les remet en espaces).
     expect(raisonTexte(r.raisons[1])).toBe('Médecin 18 min : au-dessus de ton plafond de 5 min');
-    expect(raisonTexte(r.raisons[4])).toBe("Supérieur plus d'une heure : au-dessus de ton plafond de 5 min");
+    expect(raisonTexte(r.raisons[5])).toBe("Supérieur plus d'une heure : au-dessus de ton plafond de 5 min");
     expect(r.score).toBeNull();
   });
 
@@ -315,6 +381,7 @@ describe('H154 : résumé de « Services » repliée', () => {
     expect(texte(avec({ medecin: 10 }))).toBe('1 choix');
     expect(avec({ medecin: 10 })).toBe('1 choix');
     expect(texte(avec({ niveaux: ['ecole', 'college', 'lycee'], scolarite: 10 }))).toBe('1 choix');
-    expect(texte(avec({ medecin: 5, commerce: 5, niveaux: ['creche'], scolarite: 5, gare: 'gare_grandes_lignes', tempsGare: 30 }))).toBe('4 choix');
+    expect(texte(avec({ medecin: 5, supermarche: 5, niveaux: ['creche'], scolarite: 5, gare: 'gare_grandes_lignes', tempsGare: 30 }))).toBe('4 choix');
+    expect(texte(avec({ medecin: 5, urgences: 30, supermarche: 5, niveaux: ['creche'], scolarite: 5, gare: 'gare_grandes_lignes', tempsGare: 30 }))).toBe('5 choix');
   });
 });

@@ -1,0 +1,36 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [bureau] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:32:1 › catégorie à 5 lignes : départ et exemple (Urgences 30 min, Supermarché 5 min)
+[bureau] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:32:1 › catégorie à 5 lignes : départ et exemple (Urgences 30 min, Supermarché 5 min)
+cat-depart 1440x900 : /?loyer=1200 ; lignes : Médecin | Urgences | Supermarché | Scolarité | Temps de trajet maximal | Gare | Temps de trajet maximal
+
+  cochés : Type de gare Toutes
+
+cat-exemple 1440x900 : /?loyer=1200&services=urgences:30,supermarche:5 ; lignes : Médecin | Urgences | Supermarché | Scolarité | Temps de trajet maximal | Gare | Temps de trajet maximal
+
+  cochés : Urgences 30 min ; Supermarché 5 min ; Type de gare Toutes
+
+[2/4] [bureau] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:39:1 › fiche de Portmer à 11 lignes
+[bureau] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:39:1 › fiche de Portmer à 11 lignes
+fiche Portmer 1440x900 : Médecin : 4 min | Urgences : 14 min | Supermarché : 3 min | Crèche : 12 min | École : 2 min | Collège : 9 min | Lycée : 14 min | Supérieur : 18 min | Gare : 6 min | Gare régionale : 8 min | Gare grandes lignes : 40 min
+
+  limites entièrement à l'écran : oui ; Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Urgences : services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.
+
+[3/4] [mobile] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:32:1 › catégorie à 5 lignes : départ et exemple (Urgences 30 min, Supermarché 5 min)
+[mobile] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:32:1 › catégorie à 5 lignes : départ et exemple (Urgences 30 min, Supermarché 5 min)
+cat-depart 390x844 : /?loyer=1200 ; lignes : Médecin | Urgences | Supermarché | Scolarité | Temps de trajet maximal | Gare | Temps de trajet maximal
+
+  cochés : Type de gare Toutes
+
+cat-exemple 390x844 : /?loyer=1200&services=urgences:30,supermarche:5 ; lignes : Médecin | Urgences | Supermarché | Scolarité | Temps de trajet maximal | Gare | Temps de trajet maximal
+
+  cochés : Urgences 30 min ; Supermarché 5 min ; Type de gare Toutes
+
+[4/4] [mobile] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:39:1 › fiche de Portmer à 11 lignes
+[mobile] › docs/plans/2026-11-26-services-revision/captures/T1-captures.spec.ts:39:1 › fiche de Portmer à 11 lignes
+fiche Portmer 390x844 : Médecin : 4 min | Urgences : 14 min | Supermarché : 3 min | Crèche : 12 min | École : 2 min | Collège : 9 min | Lycée : 14 min | Supérieur : 18 min | Gare : 6 min | Gare régionale : 8 min | Gare grandes lignes : 40 min
+
+  limites entièrement à l'écran : oui ; Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Urgences : services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.
+
+  4 passed (9.2s)

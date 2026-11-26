@@ -112,3 +112,16 @@ Sortie : [captures/T0-comparer-services.txt](captures/T0-comparer-services.txt) 
 - **Types** : les 2 mêmes erreurs qu'au départ, dans `src/domain/services.test.ts` (non touché). **Jetons** : « 49 fichier(s), aucune valeur arbitraire ». **Construction** (`npm run build`) : « built in 1.81s ».
 - **Playwright** (`npx playwright test`, 14,0 min) : 462 verts, 51 rouges, 53 sautés, 1 non lancé ; sortie : [taches/T0-playwright.txt](taches/T0-playwright.txt). Dans `services.spec.ts`, **les mêmes 48 qu'au départ** (mêmes titres, bureau et mobile). Les 3 autres, dans `proches-fiables.spec.ts` (l. 610, 628, 716, bureau : recalcul pendant une panne de l'IGN, tests de minutage), sont tombés pendant que je lisais les fichiers FINESS (113 Mo) sur la même machine ; relancés seuls, 3 fois chacun : **9 verts sur 9** (leçon du 2026-10-15 : machine saturée).
 - **Page réelle** (`npm run dev`, 20:50) : `/data/services.json` servi avec les 12 chaînes (`commerce` présent, dernière) ; `/?loyer=1200&services=medecin:5` ouvre sans erreur, « 14 170 communes passent tes critères » ; la fiche de Bréménil (54097) dit « Médecin : 5 min », « Commerce alimentaire : 4 min », … « Gare grandes lignes : plus d'une heure », égal au fichier ([captures/T0-page-dev-fiche.png](captures/T0-page-dev-fiche.png)). Navigateur sans fenêtre : la carte n'y dessine pas (« La carte n'a pas pu se charger », limite connue du WebGL sans fenêtre), la liste et la fiche oui.
+
+## Tâche 1 — réaction de la carte quand on coche « Urgences » (H163), 2026-11-26 21:17-21:19
+Méthode de la tâche 3b d'origine (`docs/plans/2026-11-24-services/captures/T3b-mesure-reaction.mjs`), script copié : [captures/T1-mesure-reaction.mjs](captures/T1-mesure-reaction.mjs) ; sortie : [captures/T1-reaction.txt](captures/T1-reaction.txt). Version construite du code de la tâche 1 avant son commit (`npm run build`, servie par `npx vite preview --port 4180` ; `version.txt` dit 8042bb2, le dernier commit), vraies données (`services.json` à 12 chaînes, `commerce` ignoré), 1 440 × 900, fond uni, processeur ralenti 4 fois, rendu logiciel ; du keydown à la deuxième image après le changement d'adresse ; médiane de 15 essais par sens ; 2 tours ; charge de la machine 5,4 à 6,2. Les cases de la mer en km du script d'origine sont retirées (`mer=` n'est plus lu). Aucun Playwright lancé pendant la mesure.
+
+| Geste | Communes qui passent | Tour 1 | Tour 2 | Écart au témoin |
+|---|---:|---:|---:|---|
+| Curseur du prix, un cran (témoin) | — | 176 ms | 176 ms | — |
+| « 30 min » pour « Urgences » : cochée | 27 359 | 190 ms | 175 ms | + 14 / − 1 ms |
+| « 30 min » pour « Urgences » : **décochée** | 34 674 | 193 ms | 193 ms | **+ 17 / + 17 ms** |
+| « Ville dense » (référence de la limite) : cochée | 643 | 193 ms | 192 ms | + 17 / + 16 ms |
+| « Ville dense » : décochée | 34 674 | 292 ms | 277 ms | + 116 / + 101 ms |
+
+**Résultat : + 17 ms au plus pour les urgences, sous la limite de + 115 ms.** « Ville dense » décochée, déjà en ligne, redonne l'écart de la limite (+ 101 à + 116 ms, comme en 3b d'origine : + 114 à + 116). 27 359 communes à 30 min d'urgences ou moins avec un plafond de 1 200 € (le compte du fichier sans plafond est plus haut).

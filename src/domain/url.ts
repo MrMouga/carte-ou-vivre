@@ -9,7 +9,7 @@
 // Spec services, R55 : `services` liste les services filtrés, `<nom>:<minutes>`, placée après `metier`.
 import { avecMetiers, CHOIX_MER, CHOIX_MONTAGNE, type Bord, type MetierChoisi, type Niveau, type Reglages, type Taille, type TypeEnv } from './score';
 import { bornesPrix, plafondDepart, PRIX_DEPART, SURFACE_DEPART, surfaceValide, UNITE_DEPART, type Mode, type ReglagePrix } from './prix';
-import { cransService, estGare, estScolarite, filtresServices, NIVEAUX_SCOLARITE, SERVICES, SERVICES_DEPART, servicesVides, type ReglageServices, type ServiceCle } from './services';
+import { cransService, estGare, estScolarite, estSimple, filtresServices, NIVEAUX_SCOLARITE, SERVICES, SERVICES_DEPART, servicesVides, type ReglageServices, type ServiceCle } from './services';
 
 /** H2 : plage et pas du plafond du prix ; `aucun` = « Sans limite ». Il dépend de son réglage (H57, `bornesPrix`). */
 export const BORNES = {
@@ -94,8 +94,8 @@ const CLE_DE_NOM = new Map<string, ServiceCle>(SERVICES.map((s) => [s.adresse, s
 const NOM_DE_CLE = new Map<ServiceCle, string>(SERVICES.map((s) => [s.cle, s.adresse]));
 
 /**
- * R55 : `medecin:10,ecole:10,gare-regionale:20` → l'état de la catégorie. Une entrée au nom inconnu ou aux minutes
- * invalides est retirée ; puis seule la première entrée valide est gardée pour un même service, et pour les trois niveaux
+ * R55 : `medecin:10,ecole:10,gare-regionale:20` → l'état de la catégorie. Une entrée au nom inconnu (dont `commerce`
+ * depuis D20, H203 : retirée sans message) ou aux minutes invalides est retirée ; puis seule la première entrée valide est gardée pour un même service, et pour les trois niveaux
  * de gare ensemble ; la première entrée de scolarité valide fixe le temps commun, une autre à un autre temps est retirée.
  * `null` s'il ne reste rien.
  */
@@ -108,7 +108,7 @@ function lireServices(v: string | null): ReglageServices | null {
     const cle = CLE_DE_NOM.get(nom);
     if (!cle || reste.length || !/^\d+$/.test(min ?? '') || !cransService(cle).includes(Number(min))) continue;
     const m = Number(min);
-    if (cle === 'medecin' || cle === 'commerce') s[cle] ??= m;
+    if (estSimple(cle)) s[cle] ??= m;
     else if (estGare(cle)) {
       if (!gareLue) [s.gare, s.tempsGare, gareLue] = [cle, m, true];
     } else if (estScolarite(cle)) {

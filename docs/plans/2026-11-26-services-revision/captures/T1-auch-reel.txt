@@ -1,0 +1,3 @@
+21:22:34 fiche Auch (32) : Médecin : 2 min | Urgences : 6 min | Supermarché : 2 min | Crèche : 3 min | École : 2 min | Collège : 3 min | Lycée : 3 min | Supérieur : 4 min | Gare : 4 min | Gare régionale : 4 min | Gare grandes lignes : plus d'une heure
+21:22:34 « Urgences : 6 min » : oui ; « Supermarché : 2 min » : oui
+21:22:38 ancien lien commerce:5,medecin:10 → ?loyer=1200&services=medecin:10 ; 27 895 communes passent tes critères

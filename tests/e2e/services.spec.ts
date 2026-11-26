@@ -21,7 +21,7 @@ const nbsp = (t: string | null) => (t ?? '').replace(/ /g, ' ');
 const fiche = (page: Page) => page.getByRole('region', { name: /\(\w+\)$/ }); // \w : départements 2A et 2B
 const liste = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
 const LIMITES =
-  "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.";
+  "Temps en voiture, sans embouteillages, que la moitié des habitants ne dépasse pas ; les trajets en bus ou à pied ne sont pas comptés. Médecins généralistes libéraux seulement, sans savoir s'ils prennent de nouveaux patients. Urgences : services d'urgence et SMUR, sans savoir s'ils accueillent sans appel au 15. Supermarchés et hypermarchés seulement. Crèches financées par la CAF. Supérieur : universités et grandes écoles, antennes comprises. Gare régionale : 100 000 voyageurs par an ou plus. Gare grandes lignes : gare nationale, ou au moins 4 arrêts de TGV ou d'Intercités par jour ; son temps part parfois de la mairie.";
 const TRAVERSEE = "Île sans pont : un temps peut compter la traversée, sans l'attente du bateau.";
 
 /** Ouvre la fiche de `nom` depuis la liste (390 px : son onglet), puis attend qu'elle soit affichée. */
@@ -46,7 +46,7 @@ async function sousChomage(page: Page) {
 // ---------------------------------------------------------------------------------------------------------------------
 // Tâche 1 : la fiche (R54, H159) et le pied de page (R56).
 
-test('AC-6 /?loyer=1200 : fiches de Portmer (10 temps dans l’ordre sous le chômage, phrase des limites, sans traversée), Terrebasse, Quaibleu et Rhinval', async ({ page }) => {
+test('AC-6 /?loyer=1200 : fiches de Portmer (11 temps dans l’ordre sous le chômage, phrase des limites, sans traversée), Terrebasse, Quaibleu et Rhinval', async ({ page }) => {
   await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
 
   await ficheDeListe(page, 'Portmer');
@@ -54,7 +54,8 @@ test('AC-6 /?loyer=1200 : fiches de Portmer (10 temps dans l’ordre sous le ch�
   expect(await sousChomage(page)).toEqual([
     'Services en voiture',
     'Médecin : 4 min',
-    'Commerce alimentaire : 3 min',
+    'Urgences : 14 min',
+    'Supermarché : 3 min',
     'Crèche : 12 min',
     'École : 2 min',
     'Collège : 9 min',
@@ -72,7 +73,9 @@ test('AC-6 /?loyer=1200 : fiches de Portmer (10 temps dans l’ordre sous le ch�
   await retour(page);
 
   await ficheDeListe(page, 'Terrebasse');
-  expect(await sousChomage(page)).toContain("Gare régionale : plus d'une heure");
+  const terrebasse = await sousChomage(page);
+  expect(terrebasse).toContain("Urgences : plus d'une heure"); // 75 min
+  expect(terrebasse).toContain("Gare régionale : plus d'une heure"); // 61 min
   await retour(page);
 
   await ficheDeListe(page, 'Quaibleu');
@@ -81,7 +84,7 @@ test('AC-6 /?loyer=1200 : fiches de Portmer (10 temps dans l’ordre sous le ch�
 
   await ficheDeListe(page, 'Rhinval');
   const rhinval = await sousChomage(page);
-  for (const l of ['Médecin : pas de chiffre', 'Supérieur : pas de chiffre', 'Gare régionale : pas de chiffre', 'Gare grandes lignes : pas de chiffre'])
+  for (const l of ['Urgences : 22 min', 'Supermarché : 6 min', 'Médecin : pas de chiffre', 'Supérieur : pas de chiffre', 'Gare régionale : pas de chiffre', 'Gare grandes lignes : pas de chiffre'])
     expect(rhinval).toContain(l);
 });
 
@@ -285,6 +288,7 @@ test('R54 : avec un proche, le bloc « Services en voiture » vient sous « Tes 
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Tâche 3a : la catégorie « Services » (R51, H151 à H154, H169), médecin, commerce et gare branchés ; scolarité affichée.
+// Révision D19, D20 : « Commerce alimentaire » devient « Supermarché », « Urgences » s'ajoute après « Médecin ».
 
 const adresse = (page: Page) => new URL(page.url()).pathname + new URL(page.url()).search;
 const reglagesZone = (page: Page) => page.getByRole('region', { name: 'Réglages' });
@@ -324,7 +328,7 @@ const CAS_SURS = {
   }),
 } as unknown as Jeu;
 
-test('AC-1 / : « Services », ouverte, suit « Tes proches » ; Médecin, Commerce alimentaire, Scolarité et Gare dans l’ordre, groupes nommés, « Toutes » sélectionné, rien de coché ; liste d’AC-1 de mairies', async ({ page }) => {
+test('AC-1 / : « Services », ouverte, suit « Tes proches » ; Médecin, Urgences, Supermarché, Scolarité et Gare dans l’ordre, groupes nommés, « Toutes » sélectionné, rien de coché, aucun « Commerce alimentaire » ; liste d’AC-1 de mairies', async ({ page }) => {
   await ouvrir(page, '/', { jeu: SIX_SERVICES });
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   const titres = (await reglagesZone(page).getByRole('heading', { level: 2 }).allTextContents()).map((t) => nbsp(t).trim());
@@ -336,7 +340,8 @@ test('AC-1 / : « Services », ouverte, suit « Tes proches » ; Médecin, Comme
   const textes = (await contenu.locator('span, button').allTextContents()).map((t) => nbsp(t).trim());
   expect(textes).toEqual([
     'Médecin', '5 min', '10 min', '15 min',
-    'Commerce alimentaire', '5 min', '10 min', '15 min',
+    'Urgences', '15 min', '30 min', '45 min',
+    'Supermarché', '5 min', '10 min', '15 min',
     'Scolarité', 'Crèche', 'École', 'Collège', 'Lycée', 'Supérieur', 'Temps de trajet maximal', '5 min', '10 min', '20 min',
     'Gare', 'Toutes', 'Régionale', 'Grandes lignes', 'Temps de trajet maximal', '10 min', '20 min', '30 min',
   ]);
@@ -344,7 +349,8 @@ test('AC-1 / : « Services », ouverte, suit « Tes proches » ; Médecin, Comme
   const groupes = await contenu.getByRole('group').evaluateAll((els) =>
     els.map((g) => g.getAttribute('aria-label') ?? document.getElementById(g.getAttribute('aria-labelledby')!)!.textContent),
   );
-  expect(groupes).toEqual(['Médecin', 'Commerce alimentaire', 'Niveaux de scolarité', 'Scolarité', 'Type de gare', 'Gare']);
+  expect(groupes).toEqual(['Médecin', 'Urgences', 'Supermarché', 'Niveaux de scolarité', 'Scolarité', 'Type de gare', 'Gare']);
+  await expect(page.getByText('Commerce alimentaire')).toHaveCount(0);
   expect(await contenu.getByRole('group', { name: 'Niveaux de scolarité' }).getByRole('button').allTextContents()).toEqual(['Crèche', 'École', 'Collège', 'Lycée', 'Supérieur']);
   // Rien de coché ; « Toutes » sélectionné.
   await expect(typeGare(page, 'Toutes')).toHaveAttribute('aria-pressed', 'true');
@@ -445,37 +451,92 @@ test('AC-11 trois adresses mal écrites, réécrites selon R55 ; la troisième s
   await expect(typeGare(page, 'Toutes')).toHaveAttribute('aria-pressed', 'false');
 });
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Révision D19, D20 (plan 2026-11-26-services-revision, tâche 1) : « Urgences » et « Supermarché ».
+
+test('AC-18 /?loyer=1200, « 30 min » pour « Urgences » : urgences:30, 4 communes, raison de Terrebasse ; puis « 15 min » : urgences:15, 2 communes, raisons de Quaibleu et de Rhinval', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
+  await toucher(tempsDe(page, 'Urgences', 30));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=urgences:30');
+  await listeEst(page, '4 communes passent tes critères', ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9']);
+  await ficheDeCarte(page, 'Terrebasse');
+  expect(await raisonsFiche(page)).toContain("Urgences plus d'une heure : au-dessus de ton plafond de 30 min");
+  await retour(page);
+
+  await toucher(tempsDe(page, 'Urgences', 15));
+  expect(await tempsCoches(page, 'Urgences')).toEqual(['15 min']);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=urgences:15');
+  await listeEst(page, '2 communes passent tes critères', ['Portmer (17) · 46', 'Grandeville (33) · 31']);
+  await ficheDeCarte(page, 'Quaibleu');
+  expect(await raisonsFiche(page)).toContain('Urgences 30 min : au-dessus de ton plafond de 15 min');
+  await ficheDeCarte(page, 'Rhinval');
+  expect(await raisonsFiche(page)).toContain('Urgences 22 min : au-dessus de ton plafond de 15 min');
+});
+
+test('AC-19 /?loyer=1200&services=medecin:10, « 5 min » pour « Supermarché » : medecin:10,supermarche:5, 3 communes, raison de Rhinval ; puis « 45 min » pour « Urgences » : ordre fixe, liste inchangée', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&services=medecin:10', { jeu: SIX_SERVICES });
+  await toucher(tempsDe(page, 'Supermarché', 5));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=medecin:10,supermarche:5');
+  const trois = ['Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9'];
+  await listeEst(page, '3 communes passent tes critères', trois);
+  await ficheDeCarte(page, 'Rhinval');
+  expect(await raisonsFiche(page)).toContain('Supermarché 6 min : au-dessus de ton plafond de 5 min');
+  await retour(page);
+
+  await toucher(tempsDe(page, 'Urgences', 45));
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=medecin:10,urgences:45,supermarche:5');
+  await listeEst(page, '3 communes passent tes critères', trois);
+});
+
+test('AC-20 anciens liens `commerce` et adresse mal écrite : réécrites selon R55 (H203), sans casser la page', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&services=commerce:5,medecin:10', { jeu: SIX_SERVICES });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=medecin:10');
+  await voirCriteres(page);
+  expect(await tempsCoches(page, 'Supermarché')).toEqual([]);
+  await listeEst(page, '4 communes passent tes critères', ['Rhinval (67) · 52', 'Portmer (17) · 46', 'Grandeville (33) · 31', 'Quaibleu (13) · 9']);
+
+  await ouvrir(page, '/?loyer=1200&services=commerce:5', { jeu: SIX_SERVICES });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await listeEst(page, '5 communes passent tes critères', LISTE_AC1_MAIRIES);
+
+  await ouvrir(page, '/?loyer=1200&services=supermarche:15,urgences:10,urgences:30,supermarche:5', { jeu: SIX_SERVICES });
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=urgences:30,supermarche:15');
+  await voirCriteres(page);
+  expect(await tempsCoches(page, 'Urgences')).toEqual(['30 min']);
+  expect(await tempsCoches(page, 'Supermarché')).toEqual(['15 min']);
+});
+
 test('R57 : la catégorie « Services » est inactive tant que les temps ne sont pas arrivés', async ({ page }) => {
   await servirFixture(page, { jeu: SIX_SERVICES });
   const s = await retenirServices(page, SIX_SERVICES);
   await page.goto('/?loyer=1200');
   await expect(page.getByTestId('carte')).toHaveAttribute('data-carte-prete', '1');
   await expect.poll(() => s.etat.demandes).toBe(1);
-  for (const b of [tempsDe(page, 'Médecin', 5), tempsDe(page, 'Commerce alimentaire', 15), typeGare(page, 'Régionale'), tempsDe(page, 'Gare', 30)])
+  for (const b of [tempsDe(page, 'Médecin', 5), tempsDe(page, 'Supermarché', 15), typeGare(page, 'Régionale'), tempsDe(page, 'Gare', 30)])
     await expect(b).toBeDisabled();
   await s.repondre();
-  for (const b of [tempsDe(page, 'Médecin', 5), tempsDe(page, 'Commerce alimentaire', 15), typeGare(page, 'Régionale'), tempsDe(page, 'Gare', 30)])
+  for (const b of [tempsDe(page, 'Médecin', 5), tempsDe(page, 'Supermarché', 15), typeGare(page, 'Régionale'), tempsDe(page, 'Gare', 30)])
     await expect(b).toBeEnabled();
 });
 
 test('H154 : repliée, « Services » résume « Peu importe », puis « 1 choix », « 2 choix » ; une pastille cochée se décoche', async ({ page }) => {
   await ouvrir(page, '/?loyer=1200', { jeu: SIX_SERVICES });
   const { titre } = await categorieServices(page);
-  await toucher(tempsDe(page, 'Commerce alimentaire', 5));
-  await toucher(tempsDe(page, 'Commerce alimentaire', 15)); // une à la fois
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=commerce:15');
-  await expect(tempsDe(page, 'Commerce alimentaire', 5)).toHaveAttribute('aria-pressed', 'false');
+  await toucher(tempsDe(page, 'Supermarché', 5));
+  await toucher(tempsDe(page, 'Supermarché', 15)); // une à la fois
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=supermarche:15');
+  await expect(tempsDe(page, 'Supermarché', 5)).toHaveAttribute('aria-pressed', 'false');
   await toucher(typeGare(page, 'Grandes lignes'));
   await toucher(tempsDe(page, 'Gare', 20));
   await titre.click();
   expect(nbsp(await titre.textContent())).toBe('Services2 choix');
   await titre.click();
   await toucher(tempsDe(page, 'Gare', 20)); // décochée
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=commerce:15');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&services=supermarche:15');
   await titre.click();
   expect(nbsp(await titre.textContent())).toBe('Services1 choix');
   await titre.click();
-  await toucher(tempsDe(page, 'Commerce alimentaire', 15));
+  await toucher(tempsDe(page, 'Supermarché', 15));
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   await titre.click();
   expect(nbsp(await titre.textContent())).toBe('ServicesPeu importe');
@@ -597,7 +658,8 @@ const INDISPONIBLES = 'Temps des services indisponibles.';
 /** Les réglages de « Services » : un temps de chaque ligne, un niveau, un type de gare. */
 const reglagesServices = (page: Page) => [
   tempsDe(page, 'Médecin', 5),
-  tempsDe(page, 'Commerce alimentaire', 15),
+  tempsDe(page, 'Urgences', 45),
+  tempsDe(page, 'Supermarché', 15),
   niveau(page, 'École'),
   tempsDe(page, 'Scolarité', 20),
   typeGare(page, 'Régionale'),
