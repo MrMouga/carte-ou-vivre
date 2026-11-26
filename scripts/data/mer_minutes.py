@@ -12,10 +12,15 @@ Modes :
                épuisé, refait une fois un lot en échec puis le note en échec. N'affiche ni n'écrit jamais la clé.
     --essai    avec --envoyer : seulement le lot d'essai (Bordeaux, Caen, Mont-de-Marsan : une requête).
     --a-blanc  avec --envoyer : dit ce qui serait envoyé, sans rien envoyer ni lire la clé (sortie : JSON).
+  --calculer   sans réseau (tâche 0b). Lit lots.json et ors-mer.jsonl (arrêt si leur empreinte n'est plus celle
+               retenue, EMPREINTES), et scripts/data/mer-retraits.csv (D8 : colonnes `code`, `preuve`). Écrit
+               data-raw/mer-min.csv : une ligne par commune, `mer_min` = minutes entières, arrondies une seule fois,
+               moitié vers le haut (H191), vide pour une commune sans temps, avec sa cause (H196, CAUSES).
+               Arrêts : un trajet manquant dans ors-mer.jsonl ; plus de 2 % des communes sans temps.
   --lots-extrait <fichier.json>  formation des lots sur ces seules données ({"communes": [[code, lon, lat, lon du point,
                lat du point]]}), écrite sur la sortie standard (tests de scripts/data/mer_minutes.test.ts).
-Options des tests : --dossier <dossier> (à la place de data-raw/mer-calcul), --url <adresse>, --cle <fichier>,
-  --attentes-courtes (toutes les attentes à 0,05 s).
+Options des tests : --dossier <dossier> (à la place de data-raw/mer-calcul ; sans contrôle d'empreinte), --url <adresse>,
+  --cle <fichier>, --attentes-courtes (toutes les attentes à 0,05 s), --retraits <csv>, --sortie <csv>.
 
 Lots (plan, tâche 0a) : une requête de matrice a des sources (les mairies) et des destinations (les points de côte) ;
 elle calcule sources × destinations trajets (« éléments »), 3 500 au plus (restrictions de l'API hébergée :
@@ -39,9 +44,13 @@ de quota. Les bacs restent ; le tableau de crédibilité gagne Blaye (tâche 0b)
 Usage : python3 -I scripts/data/mer_minutes.py --preparer
         python3 -I scripts/data/mer_minutes.py --envoyer --essai   (Vincent : d'abord le lot d'essai)
         python3 -I scripts/data/mer_minutes.py --envoyer           (Vincent : tous les lots, reprend s'il est relancé)
+        python3 -I scripts/data/mer_minutes.py --calculer          (fait le 2026-11-26 ; l'envoi ne se relance pas)
 """
+import collections
 import csv
 import datetime
+import decimal
+import hashlib
 import json
 import os
 import sys
@@ -62,6 +71,20 @@ PAR_MINUTE = 40  # quota par minute (CLAUDE.md, ORS)
 RAYON_DOC_M = 2000  # maximum_search_radius par défaut (documentation de configuration) ; aucun paramètre envoyé
 ESSAI = ['33063', '14118', '40192']  # Bordeaux, Caen, Mont-de-Marsan (Landes)
 ECHECS_DE_SUITE_MAX = 3  # trois lots de suite en échec : le service est en panne, arrêt sans les noter
+
+# Tâche 0b : fichiers de l'envoi lancé par Vincent le 2026-11-26 (91 lots et le lot d'essai, 0 en échec). Ne pas relancer.
+EMPREINTES = {'lots.json': '411deeae1f32f4ced732ad8defe867189e3cc270706390258e0d04c8c1834cfd',
+              'ors-mer.jsonl': '13b9f73ee16363e389f283d0a1dfb0ed56c72dba6714ec662780a8b5c705ae21'}
+RETRAITS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mer-retraits.csv')
+SANS_TEMPS_MAX = 0.02  # plus de 2 % des communes sans temps : arrêt (plan, tâche 0b ; une autre méthode = choix de Vincent)
+# Causes d'une commune sans temps (H196), dans l'ordre où elles sont cherchées.
+CAUSES = {
+    'retrait': 'temps retiré, jugé faux sur un itinéraire en ligne (D8, mer-retraits.csv)',
+    'echec': 'calcul en échec après un nouvel essai',
+    'pas-de-route-pres-du-point': 'aucune route près du point de côte (point non accroché)',
+    'pas-de-route-pres-de-la-mairie': 'aucune route près de la mairie (mairie non accrochée)',
+    'pas-de-route-jusqu-au-point': 'aucune route de la mairie jusqu\'au point (les deux accrochés, durée nulle)',
+}
 
 COURTES = '--attentes-courtes' in sys.argv
 PAUSE = 0.05 if COURTES else 60 / PAR_MINUTE + 0.1  # entre deux départs réels (leçon du 2026-10-13)
@@ -362,6 +385,156 @@ def montrer_essai(lot, resultat):
     dire(f"  part de null : {sans} sur {len(lot['communes'])} trajets")
 
 
+# --- Calcul des minutes (tâche 0b, sans réseau) ---
+
+def minutes(secondes):
+    """H191 : durée en minutes entières, arrondie une seule fois, moitié vers le haut (1 770 s = 29,5 min → 30 ;
+    24 s = 0,4 min → 0, « moins d'1 min »). En décimal exact : aucune erreur de virgule flottante à la moitié."""
+    m = decimal.Decimal(str(secondes)) / 60
+    return int(m.to_integral_value(rounding=decimal.ROUND_HALF_UP))
+
+
+def controle(cond, msg):
+    if not cond:
+        raise SystemExit(f'  ÉCHEC {msg}')
+    dire(f'  ok   {msg}')
+
+
+def sha256(chemin):
+    sha = hashlib.sha256()
+    with open(chemin, 'rb') as f:
+        while morceau := f.read(1 << 20):
+            sha.update(morceau)
+    return sha.hexdigest()
+
+
+def lire_retraits(chemin, codes):
+    """D8 : {code: preuve} de mer-retraits.csv. Chaque ligne : une commune de la carte, une seule fois, avec sa preuve."""
+    with open(chemin, encoding='utf-8', newline='') as f:
+        lecteur = csv.DictReader(f)
+        controle(lecteur.fieldnames == ['code', 'preuve'], f'{os.path.basename(chemin)} : colonnes {lecteur.fieldnames}')
+        retraits = {}
+        for r in lecteur:
+            controle(r['code'] in codes and r['code'] not in retraits and (r['preuve'] or '').strip() != '',
+                     f"retrait {r['code']} : commune de la carte, une seule fois, preuve écrite")
+            retraits[r['code']] = r['preuve'].strip()
+    return retraits
+
+
+def calculer():
+    d = dossier()
+    reel = '--dossier' not in sys.argv
+    if reel:
+        for nom, attendu in EMPREINTES.items():
+            s = sha256(os.path.join(d, nom))
+            controle(s == attendu, f'{nom} : sha256 {s} (empreinte retenue : envoi du 2026-11-26)')
+    else:
+        dire(f'dossier de test {d} : empreintes non contrôlées')
+    prepares = json.load(open(os.path.join(d, 'lots.json'), encoding='utf-8'))
+    resultats, doubles = {}, []
+    with open(os.path.join(d, 'ors-mer.jsonl'), encoding='utf-8') as f:
+        for texte in f:
+            if texte.strip():
+                r = json.loads(texte)
+                if r['lot'] in resultats:
+                    doubles.append(r['lot'])
+                resultats[r['lot']] = r
+    essai = resultats.pop('essai', None)
+    manquants, incoherents, lignes = [], [], {}
+    for lot in prepares['lots']:
+        r = resultats.pop(lot['id'], None)
+        codes = [c[0] for c in lot['communes']]
+        if r is None:
+            manquants.append(f"lot {lot['id']} absent ({len(codes)} communes)")
+            continue
+        if r['codes'] != codes or r['point_de'] != [c[3] for c in lot['communes']] or r['points'] != lot['points']:
+            manquants.append(f"lot {lot['id']} écrit avec d'autres communes ou d'autres points que le lot préparé")
+            continue
+        rep = r.get('reponse')
+        if rep is not None:
+            durees, srcs, dests = rep.get('durations'), rep.get('sources'), rep.get('destinations')
+            if (durees is None or srcs is None or dests is None or len(durees) != len(codes) or len(srcs) != len(codes)
+                    or len(dests) != len(lot['points']) or any(len(rangee) != len(lot['points']) for rangee in durees)):
+                manquants.append(f"lot {lot['id']} : réponse incomplète (durées, mairies ou points manquants)")
+                continue
+        for i, (code, lon, lat, j) in enumerate(lot['communes']):
+            ligne = {'code': code, 'mer_min': None, 'cause': None, 'secondes': None, 'accroche_mairie_m': None,
+                     'accroche_point_m': None, 'mairie_lon': lon, 'mairie_lat': lat,
+                     'point_lon': lot['points'][j][0], 'point_lat': lot['points'][j][1]}
+            if rep is None:
+                ligne['cause'] = 'echec'
+            else:
+                duree, src, dst = durees[i][j], srcs[i] or {}, dests[j] or {}
+                mairie_ok, point_ok = src.get('location') is not None, dst.get('location') is not None
+                ligne['accroche_mairie_m'], ligne['accroche_point_m'] = src.get('snapped_distance'), dst.get('snapped_distance')
+                if duree is None:
+                    ligne['cause'] = ('pas-de-route-pres-du-point' if not point_ok else
+                                      'pas-de-route-pres-de-la-mairie' if not mairie_ok else 'pas-de-route-jusqu-au-point')
+                elif not (mairie_ok and point_ok) or duree < 0:
+                    incoherents.append(code)
+                else:
+                    ligne['secondes'], ligne['mer_min'] = duree, minutes(duree)
+            if code in lignes:
+                manquants.append(f'commune {code} dans deux lots')
+            lignes[code] = ligne
+    if resultats:
+        manquants.append(f'lots écrits mais pas préparés : {sorted(resultats)[:5]}')
+    if doubles:
+        manquants.append(f'lots écrits deux fois : {doubles[:5]}')
+    controle(not manquants, f'aucun trajet manquant dans ors-mer.jsonl ({len(lignes)} communes dans'
+                            f" {len(prepares['lots'])} lots) : {manquants[:5]}")
+    controle(not incoherents, f'aucune durée pour un point ou une mairie non accrochés : {incoherents[:5]}')
+    if reel:
+        with open(os.path.join(RAW, 'mer-km.csv'), newline='') as f:
+            km = {r['code'] for r in csv.DictReader(f)}
+        controle(set(lignes) == km, f'les {len(lignes)} communes des lots sont celles de mer-km.csv ({len(km)})')
+    if essai and 'reponse' in essai:
+        for i, code in enumerate(essai['codes']):
+            a, b = essai['reponse']['durations'][i][essai['point_de'][i]], lignes.get(code, {}).get('secondes')
+            dire(f'  info lot d\'essai, {code} : {a} s ; dans son lot : {b} s')
+
+    retraits = lire_retraits(option('--retraits', RETRAITS), set(lignes))
+    for code in retraits:
+        lignes[code]['mer_min'], lignes[code]['cause'] = None, 'retrait'
+    dire(f'  retraits (D8, mer-retraits.csv) : {len(retraits)} {sorted(retraits)}')
+
+    sans = [l for l in lignes.values() if l['mer_min'] is None]
+    par_cause = collections.Counter(l['cause'] for l in sans)
+    part = len(sans) / len(lignes)
+    dire(f'communes sans temps : {len(sans)} sur {len(lignes)} ({100 * part:.2f} %)')
+    for cause, texte in CAUSES.items():
+        dire(f'  {cause} : {par_cause.get(cause, 0)} ({texte}) {sorted(l["code"] for l in sans if l["cause"] == cause)}')
+    if part > SANS_TEMPS_MAX:
+        raise SystemExit(f'ARRET : {len(sans)} communes sans temps sur {len(lignes)} ({100 * part:.2f} %), au-delà de'
+                         f' {100 * SANS_TEMPS_MAX:.0f} % : une autre méthode de calcul est un choix de Vincent ; rien n\'est écrit')
+
+    avec = [l['mer_min'] for l in lignes.values() if l['mer_min'] is not None]
+    tranches = [('moins d\'1 min (0)', 0, 0), ('1 à 15 min', 1, 15), ('16 à 30 min', 16, 30), ('31 min à 1 h', 31, 60),
+                ('1 h 01 à 1 h 30', 61, 90), ('au-delà d\'1 h 30', 91, 10 ** 6)]
+    dire('répartition des temps : ' + ' ; '.join(f'{nom} {sum(lo <= m <= hi for m in avec)}' for nom, lo, hi in tranches)
+         + f' ; le plus long : {max(avec)} min')
+    acc_p = sorted(l['accroche_point_m'] for l in lignes.values() if l['accroche_point_m'] is not None)
+    acc_m = sorted(l['accroche_mairie_m'] for l in lignes.values() if l['accroche_mairie_m'] is not None)
+    if acc_p and acc_m:
+        dire(f'accroche des points de côte : médiane {acc_p[len(acc_p) // 2]:.0f} m, au plus {acc_p[-1]:.0f} m,'
+             f' {sum(a > 1000 for a in acc_p)} communes au-delà de 1 000 m ; des mairies : médiane'
+             f' {acc_m[len(acc_m) // 2]:.0f} m, au plus {acc_m[-1]:.0f} m')
+    for code in ESSAI:
+        if code in lignes:
+            l = lignes[code]
+            dire(f"  info {code} : {l['secondes']} s → {l['mer_min']} min")
+
+    sortie = option('--sortie', os.path.join(RAW, 'mer-min.csv'))
+    champs = ['code', 'mer_min', 'cause', 'secondes', 'accroche_mairie_m', 'accroche_point_m', 'mairie_lon', 'mairie_lat',
+              'point_lon', 'point_lat']
+    with open(sortie, 'w', encoding='utf-8', newline='') as f:
+        w = csv.writer(f)
+        w.writerow(champs)
+        for code in sorted(lignes):
+            w.writerow(['' if lignes[code][c] is None else lignes[code][c] for c in champs])
+    dire(f'écrit : {sortie} ({len(lignes)} lignes)')
+
+
 def main():
     if '--lots-extrait' in sys.argv:
         lots_extrait(option('--lots-extrait'))
@@ -369,6 +542,8 @@ def main():
         preparer()
     elif '--envoyer' in sys.argv:
         envoyer()
+    elif '--calculer' in sys.argv:
+        calculer()
     else:
         raise SystemExit(__doc__)
 

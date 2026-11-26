@@ -90,15 +90,16 @@ export type TypeEnv = 'ville-dense' | 'ville-et-peripherie' | 'bourg-et-village'
 
 /**
  * Une ligne de `public/data/communes.json`, colonnes dans l'ordre de `champs` : celles de loyer-mer, puis celles
- * d'immobilier (loyer des maisons), puis celles de cadre-de-vie (`type_env`, `montagne_km`), absentes d'un jeu plus ancien.
+ * d'immobilier (loyer des maisons), puis celles de cadre-de-vie (`type_env`, `montagne_km`), puis celle de
+ * recherche-et-mer (`mer_min`, R61), absentes d'un jeu plus ancien.
  */
 export type LigneCommunes = [
   string, string, string, number | null, number | null, boolean, number | null, number | null, boolean | null,
-  (TypeEnv | null)?, (number | null)?,
+  (TypeEnv | null)?, (number | null)?, (number | null)?,
 ];
 
-export function communeDeLigne([code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison, typeEnv, montagneKm]: LigneCommunes): Commune {
-  return { code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison, typeEnv: typeEnv ?? null, montagneKm: montagneKm ?? null };
+export function communeDeLigne([code, nom, dep, population, loyerM2, estimationPropre, merKm, loyerM2Maison, estimationPropreMaison, typeEnv, montagneKm, merMin]: LigneCommunes): Commune {
+  return { code, nom, dep, population, loyerM2, estimationPropre, merKm, merMin: merMin ?? null, loyerM2Maison, estimationPropreMaison, typeEnv: typeEnv ?? null, montagneKm: montagneKm ?? null };
 }
 
 export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'grande-ville';

@@ -117,3 +117,92 @@ Depuis le dossier du projet, `/Users/mouga/git-repository/carte-ou-vivre` :
    python3 -I scripts/data/mer_minutes.py --envoyer
    ```
    Il affiche un repère tous les 20 lots, et finit par « TERMINÉ : … trajets sans temps : … ». S'il s'arrête (coupure, quota, panne), relancer **la même commande** : il reprend là où il en était. Une fois « TERMINÉ » affiché, **ne plus le relancer** (« Rien à envoyer »).
+
+## Part 0b — les minutes reçues, comptées et servies
+2026-11-26, 03:15 à 03:40, par le builder de la tâche 0b. Aucune requête envoyée : tout est relu dans le fichier de l'envoi de Vincent.
+
+### L'envoi
+- Lancé par Vincent le 2026-11-26 : le lot d'essai, puis les 91 lots, de 01:05 à 01:08 (heure d'envoi notée dans chaque ligne). **0 lot en échec**, chaque lot envoyé une seule fois.
+- `data-raw/mer-calcul/ors-mer.jsonl` : 6 047 637 octets, 92 lignes, sha256 `13b9f73ee16363e389f283d0a1dfb0ed56c72dba6714ec662780a8b5c705ae21` ; `lots.json` : sha256 `411deeae1f32f4ced732ad8defe867189e3cc270706390258e0d04c8c1834cfd`. Les deux empreintes sont écrites dans `mer_minutes.py` (`EMPREINTES`) et dans `CLAUDE.md` : `--calculer` s'arrête si l'une change.
+- Ce que dit la réponse : openrouteservice 10.1.1, routes OpenStreetMap du 22/11/2026, graphe du 24/11/2026, profil `driving-car`.
+- Le lot d'essai et les lots donnent **le même temps** aux trois communes de l'essai (Bordeaux 3 368,44 s, Caen 1 059,51 s, Mont-de-Marsan 5 027,47 s, dans les deux requêtes).
+
+### Sortie des contrôles de `mer_minutes.py --calculer`
+Commande : `python3 -I scripts/data/mer_minutes.py --calculer` (sans réseau ; 2026-11-26, 03:24 ; copie : `captures/T0b-sortie-calculer.txt`).
+```
+  ok   lots.json : sha256 411deeae1f32f4ced732ad8defe867189e3cc270706390258e0d04c8c1834cfd (empreinte retenue : envoi du 2026-11-26)
+  ok   ors-mer.jsonl : sha256 13b9f73ee16363e389f283d0a1dfb0ed56c72dba6714ec662780a8b5c705ae21 (empreinte retenue : envoi du 2026-11-26)
+  ok   aucun trajet manquant dans ors-mer.jsonl (34746 communes dans 91 lots) : []
+  ok   aucune durée pour un point ou une mairie non accrochés : []
+  ok   les 34746 communes des lots sont celles de mer-km.csv (34746)
+  info lot d'essai, 33063 : 3368.44 s ; dans son lot : 3368.44 s
+  info lot d'essai, 14118 : 1059.51 s ; dans son lot : 1059.51 s
+  info lot d'essai, 40192 : 5027.47 s ; dans son lot : 5027.47 s
+  ok   mer-retraits.csv : colonnes ['code', 'preuve']
+  retraits (D8, mer-retraits.csv) : 0 []
+communes sans temps : 42 sur 34746 (0.12 %)
+  retrait : 0 (temps retiré, jugé faux sur un itinéraire en ligne (D8, mer-retraits.csv)) []
+  echec : 0 (calcul en échec après un nouvel essai) []
+  pas-de-route-pres-du-point : 12 (aucune route près du point de côte (point non accroché)) ['13004', '17004', '29083', '29084', '30034', '30089', '30116', '30117', '30135', '30166', '30179', '56085']
+  pas-de-route-pres-de-la-mairie : 0 (aucune route près de la mairie (mairie non accrochée)) []
+  pas-de-route-jusqu-au-point : 30 (aucune route de la mairie jusqu'au point (les deux accrochés, durée nulle)) ['12009', '33038', '33134', '33348', '33383', '33540', '34055', '34083', '34191', '34211', '34336', '40026', '40031', '40046', '40075', '40108', '40117', '40142', '40143', '40156', '40163', '40217', '40227', '40229', '40257', '40275', '40276', '40313', '40319', '40332']
+répartition des temps : moins d'1 min (0) 34 ; 1 à 15 min 1576 ; 16 à 30 min 1618 ; 31 min à 1 h 3175 ; 1 h 01 à 1 h 30 3704 ; au-delà d'1 h 30 24597 ; le plus long : 1269 min
+accroche des points de côte : médiane 22 m, au plus 1723 m, 2094 communes au-delà de 1 000 m ; des mairies : médiane 14 m, au plus 1460 m
+  info 33063 : 3368.44 s → 56 min
+  info 14118 : 1059.51 s → 18 min
+  info 40192 : 5027.47 s → 84 min
+écrit : …/data-raw/mer-min.csv (34746 lignes)
+```
+
+### Communes sans temps, par cause (H196)
+**42 sur 34 746, soit 0,12 %** (condition d'arrêt : plus de 2 %). Le site les comptera d'après leurs km (D7), écrits avec « ≈ ».
+
+| Cause | Communes | Ce que c'est |
+|---|---:|---|
+| Aucune route près du point de côte | 12 | **4 îles sans voiture** : Île-d'Aix, Île-de-Sein, Île-Molène, Hœdic (ni la mairie ni le point ne sont accrochés : aucune route à moins de 2 km). **8 communes de Camargue** et du Gard (Arles, Bellegarde, Comps, Fournès, Fourques, Jonquières-Saint-Vincent, Meynes, Montfrin), dont le point de côte, entre les étangs, n'a aucune route à moins de 2 km. |
+| Aucune route près de la mairie | 0 | Les 4 mairies non accrochées sont celles des 4 îles, déjà comptées à la ligne du dessus (la cause du point est cherchée d'abord). |
+| Aucune route de la mairie jusqu'au point | 30 | Le point de côte est accroché à une voie qui n'est reliée à rien (piste de la forêt des Landes, du Médoc, ou de la côte de l'Hérault) : 12 points pour 30 communes. **Landes** : 19 communes sur 9 points, dont Biscarrosse, Parentis-en-Born, Tartas, Castets. **Médoc** : 5 sur 2 points, dont Vendays-Montalivet. **Hérault** : 6 sur un même point, dont Villeneuve-lès-Béziers, et Arnac-sur-Dourdou (Aveyron). Ce ne sont pas des îles. |
+| Calcul en échec | 0 | Aucun lot en échec. |
+| Retrait (D8) | 0 | `mer-retraits.csv` est vide : les retraits viendront du jugement de Vincent sur `credibilite-mer.md`. |
+
+### Les deux bouts du rapport minutes / km
+Parmi les communes de 1 km (affiché) à moins de 50 km, une commune par point de côte (décidé par Claude : sous 1 km le rapport n'a pas de sens, et sans « une par point » les 5 plus petits seraient 5 voisines sur la même voie rapide). Sortie de `captures/T0b-credibilite.py` (copie : `captures/T0b-sortie-credibilite.txt`) :
+```
+plus grands rapports minutes / km (1 à 50 km, un par point) :
+  06006 Aspremont : 10.14 km, 1269 min, 125.15 min/km, point accroché à 11.17 m
+  76660 Sandouville : 1.57 km, 28 min, 17.83 min/km, point accroché à 6.18 m
+  76489 Oudalle : 2.51 km, 40 min, 15.94 min/km, point accroché à 4.81 m
+  06150 La Turbie : 2.09 km, 17 min, 8.13 min/km, point accroché à 11.45 m
+  2B030 Barrettali : 1.6 km, 13 min, 8.12 min/km, point accroché à 16.46 m
+plus petits :
+  50137 La Colombe : 24.56 km, 17 min, 0.69 min/km, point accroché à 5.34 m
+  56165 Ploërmel : 38.99 km, 32 min, 0.82 min/km, point accroché à 7.75 m
+  59401 Méteren : 38.61 km, 32 min, 0.83 min/km, point accroché à 25.58 m
+  76705 Tourville-la-Rivière : 46.84 km, 39 min, 0.83 min/km, point accroché à 12.91 m
+  61303 Nécy : 46.24 km, 39 min, 0.84 min/km, point accroché à 174.77 m
+```
+- **Aspremont (06006) a un temps faux à coup sûr : 1 269 min (21 h 09) pour 10 km.** Son point de côte, à Nice, est accroché à une voie que le calcul ne rejoint qu'au prix d'un immense détour : dans la même requête, les 59 communes mettent toutes 20 h 44 à 22 h 47 pour ce point, et Aspremont 25 à 49 min pour les 24 autres points de côte. C'est aussi le temps le plus long de toute la carte. Il n'est pas retiré ici : le retrait (D8) est le jugement de Vincent, à la démo ou avant (`credibilite-mer.md`).
+- Le plus grand rapport ensuite est un détour d'estuaire (Seine, en face du Havre : Sandouville, Oudalle), puis des routes de montagne au-dessus de la mer (La Turbie, Barrettali).
+- **Aucun temps n'est plus court que la route ne le permet** : aucune commune d'1 km ou plus sous 0,5 min par km à vol d'oiseau (soit 120 km/h en ligne droite). Sur toute la carte, le plus petit rapport est 0,66 min/km (Côte-d'Or, vers la Méditerranée par l'autoroute) ; dans la fenêtre de 1 à 50 km, 0,69 (La Colombe, Manche, par l'A84). Le bac n'apparaît pas comme un temps trop court : à Blaye, c'est l'inverse (ci-dessous).
+- Rapport médian, de 20 km et plus : 0,97 min par km ; 98 % des communes entre 0,71 et 1,90.
+
+### Points de côte accrochés loin, et Blaye
+- La matrice accroche le point de côte à la route la plus proche dans un rayon d'environ 2 km (mesure de la tâche 0a). Accroche médiane 22 m ; **2 094 communes** ont un point accroché à plus d'1 km (1 723 m au plus). Leur temps va jusqu'à la route la plus proche du point, pas jusqu'au point.
+- C'est la cause probable d'un écart repéré : **Hourtin (33203), 58 min pour 9 km**, quand la même requête donne 16 min de sa mairie à d'autres points de côte. Son point est accroché à 1,4 km, et ce point est à 58 min ou plus de chacune des 89 communes de la requête. Ajouté au tableau de crédibilité (décidé par Claude).
+- **Blaye (33058)** : 129 min (2 h 09) pour 41 km. Son point de côte est sur la côte atlantique du Médoc, de l'autre côté de l'estuaire (qui n'est pas la mer à cet endroit). Hypothèse non vérifiée : le calcul ne prend pas le bac Blaye – Lamarque, ou le compte lent. Ses voisines sur la rive droite ont 123 à 140 min.
+
+### Le fichier servi : `mer_min` à la fin de `communes.json`
+Commande : `python3 -I scripts/data/communes.py` (2026-11-26, 03:22), contrôles ajoutés. Fichier régénéré et mesuré ; **pas encore committé** au 2026-11-26 03:45 : un test hors critère de `src/domain/score.test.ts` lit la liste des colonnes, et le changer demande un accord (question de `taches/T0b.md`).
+```
+Contrôles de la mer en minutes (mer-min.csv, recherche-et-mer)
+  ok   chaque commune a sa ligne dans mer-min.csv, aucune en trop (34746 lignes ; absentes : [])
+  ok   mer_min : minutes entières, 0 ou plus, ou null
+  ok   chaque commune sans temps a sa cause (H196)
+  ok   42 communes sans temps (0.12 %, au plus 2 %) : {'pas-de-route-jusqu-au-point': 30, 'pas-de-route-pres-du-point': 12}
+  ok   Bordeaux (33063) : 56 min de la mer (tâche 0b : 56)
+  ok   Caen (14118) : 18 min de la mer (tâche 0b : 18)
+  ok   Mont-de-Marsan (40192) : 84 min de la mer (tâche 0b : 84)
+```
+- **Rien d'autre ne change** : les 11 colonnes d'avant sont identiques sur les 34 746 lignes (comparées une à une avec la copie d'avant), et `achat.json` est le même octet pour octet.
+- **Poids ajouté : 54 834 octets, soit 54,8 Ko en `brotli -q 3`** (876 811 → 931 645 octets ; `brotli -c -q 3 public/data/communes.json | wc -c`), sous la limite de 60 Ko (H195 ; en Ko de 1 000 octets, le plus strict). Les minutes arrivent donc avec les autres données de la commune, à l'ouverture.
+- **Bordeaux : 56 min** (3 368,44 s, soit 56,14 min ; « C'est réussi si » de la spec : « Mer à moins de 30 min » écarte Bordeaux), 39 km. **Caen : 18 min** (1 059,51 s, soit 17,66 min), 10 km : Caen passe « 30 min ». Relus dans le fichier servi : `["33063","Bordeaux",…,"ville-dense",172.78,56]`.

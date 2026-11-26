@@ -1,0 +1,22 @@
+  ok   lots.json : sha256 411deeae1f32f4ced732ad8defe867189e3cc270706390258e0d04c8c1834cfd (empreinte retenue : envoi du 2026-11-26)
+  ok   ors-mer.jsonl : sha256 13b9f73ee16363e389f283d0a1dfb0ed56c72dba6714ec662780a8b5c705ae21 (empreinte retenue : envoi du 2026-11-26)
+  ok   aucun trajet manquant dans ors-mer.jsonl (34746 communes dans 91 lots) : []
+  ok   aucune durée pour un point ou une mairie non accrochés : []
+  ok   les 34746 communes des lots sont celles de mer-km.csv (34746)
+  info lot d'essai, 33063 : 3368.44 s ; dans son lot : 3368.44 s
+  info lot d'essai, 14118 : 1059.51 s ; dans son lot : 1059.51 s
+  info lot d'essai, 40192 : 5027.47 s ; dans son lot : 5027.47 s
+  ok   mer-retraits.csv : colonnes ['code', 'preuve']
+  retraits (D8, mer-retraits.csv) : 0 []
+communes sans temps : 42 sur 34746 (0.12 %)
+  retrait : 0 (temps retiré, jugé faux sur un itinéraire en ligne (D8, mer-retraits.csv)) []
+  echec : 0 (calcul en échec après un nouvel essai) []
+  pas-de-route-pres-du-point : 12 (aucune route près du point de côte (point non accroché)) ['13004', '17004', '29083', '29084', '30034', '30089', '30116', '30117', '30135', '30166', '30179', '56085']
+  pas-de-route-pres-de-la-mairie : 0 (aucune route près de la mairie (mairie non accrochée)) []
+  pas-de-route-jusqu-au-point : 30 (aucune route de la mairie jusqu'au point (les deux accrochés, durée nulle)) ['12009', '33038', '33134', '33348', '33383', '33540', '34055', '34083', '34191', '34211', '34336', '40026', '40031', '40046', '40075', '40108', '40117', '40142', '40143', '40156', '40163', '40217', '40227', '40229', '40257', '40275', '40276', '40313', '40319', '40332']
+répartition des temps : moins d'1 min (0) 34 ; 1 à 15 min 1576 ; 16 à 30 min 1618 ; 31 min à 1 h 3175 ; 1 h 01 à 1 h 30 3704 ; au-delà d'1 h 30 24597 ; le plus long : 1269 min
+accroche des points de côte : médiane 22 m, au plus 1723 m, 2094 communes au-delà de 1 000 m ; des mairies : médiane 14 m, au plus 1460 m
+  info 33063 : 3368.44 s → 56 min
+  info 14118 : 1059.51 s → 18 min
+  info 40192 : 5027.47 s → 84 min
+écrit : /Users/mouga/git-repository/carte-ou-vivre/scripts/data/../../data-raw/mer-min.csv (34746 lignes)

@@ -23,7 +23,12 @@ Cadre de vie (tranche cadre-de-vie, tâche 1, 2026-10-15) : `type_env`, niveau d
 (montagne.py, R29), en km à deux décimales (tronqués, pour que le km affiché soit celui de la distance mesurée), 0 = commune
 de montagne (classée en tout ou partie, ou mairie dans la zone).
 
-Prérequis : python3 scripts/data/sources.py, puis python3 scripts/data/mer.py et python3 scripts/data/montagne.py
+Mer en minutes (tranche recherche-et-mer, tâche 0b, 2026-11-26) : `mer_min`, temps en voiture de la mairie au point de côte
+des km (R61, D4), en minutes entières déjà arrondies une seule fois (H191), lu dans data-raw/mer-min.csv
+(mer_minutes.py --calculer) ; null = sans temps (H196), compté par le site d'après ses km (D7).
+
+Prérequis : python3 scripts/data/sources.py, puis python3 scripts/data/mer.py et python3 scripts/data/montagne.py, et
+python3 -I scripts/data/mer_minutes.py --calculer
 Usage : python3 scripts/data/communes.py  (s'arrête sur le premier contrôle qui échoue)
 """
 import collections
@@ -43,9 +48,13 @@ OUT = os.path.join(ROOT, 'public', 'data')
 
 PLM = {'75056': '751', '69123': '6938', '13055': '132'}  # commune → préfixe des codes d'arrondissement
 DECIMALES = 4  # décimales gardées dans les formes (≈ 10 m)
-# Colonnes ajoutées à la fin (immobilier, puis cadre-de-vie) : le site lit les lignes par position.
+# Colonnes ajoutées à la fin (immobilier, puis cadre-de-vie, puis recherche-et-mer) : le site lit les lignes par position.
 CHAMPS = ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km',
-          'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km']
+          'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km', 'mer_min']
+# Mesures de la tâche 0b de recherche-et-mer (2026-11-26, envoi d'openrouteservice du même jour) : temps relus dans le
+# fichier servi, et communes sans temps (H196 ; 2 % au plus, condition d'arrêt du plan).
+MER_MIN_MESURES = {'33063': 56, '14118': 18, '40192': 84}
+SANS_TEMPS_MER_MAX = 0.02
 CHAMPS_ACHAT = ['code', 'appartement_m2', 'appartement_source', 'maison_m2', 'maison_source']
 BIENS = ('appartement', 'maison')
 TOUS_BIENS = 'apt_maison'  # colonnes « appartements et maisons » des fichiers DVF (D12 d'immobilier)
@@ -339,6 +348,8 @@ def main():
     dens7 = densite()
     with open(os.path.join(RAW, 'montagne-km.csv')) as f:
         montagne = {r['code']: (float(r['km']), r['classement']) for r in csv.DictReader(f)}
+    with open(os.path.join(RAW, 'mer-min.csv'), encoding='utf-8') as f:
+        mer_min = {r['code']: (None if r['mer_min'] == '' else int(r['mer_min']), r['cause']) for r in csv.DictReader(f)}
 
     codes = sorted(com)
     rows = []
@@ -352,7 +363,8 @@ def main():
                      None if code not in mer else km_mer(mer[code]),
                      None if m2_mai is None else round(m2_mai, 4), propre_mai,
                      NIVEAU.get(dens7.get(code)),
-                     km_montagne(montagne.get(code))])
+                     km_montagne(montagne.get(code)),
+                     mer_min[code][0] if code in mer_min else None])
         ligne = [code]
         for bien in BIENS:
             prix_, source, regle = achat(donnees_achat, code, com[code]['DEP'], bien)
@@ -417,6 +429,19 @@ def main():
         check(by[code][9] == attendu, f'{by[code][1]} ({code}) : {by[code][9]} (attendu {attendu})')
     for code in PLM:
         print(f'  info {by[code][1]} ({code}) : {by[code][9]}, {by[code][10]} km de la montagne')
+
+    print('Contrôles de la mer en minutes (mer-min.csv, recherche-et-mer)')
+    absentes = [c for c in codes if c not in mer_min]
+    check(not absentes and len(mer_min) == len(codes), f'chaque commune a sa ligne dans mer-min.csv, aucune en trop'
+                                                       f' ({len(mer_min)} lignes ; absentes : {absentes[:5]})')
+    check(all(r[11] is None or (isinstance(r[11], int) and r[11] >= 0) for r in rows), 'mer_min : minutes entières, 0 ou plus, ou null')
+    sans_temps = [r[0] for r in rows if r[11] is None]
+    check(all(mer_min[c][1] for c in sans_temps), 'chaque commune sans temps a sa cause (H196)')
+    check(len(sans_temps) <= SANS_TEMPS_MER_MAX * len(rows),
+          f'{len(sans_temps)} communes sans temps ({100 * len(sans_temps) / len(rows):.2f} %, au plus 2 %) :'
+          f" {dict(collections.Counter(mer_min[c][1] for c in sans_temps))}")
+    for code, attendu in MER_MIN_MESURES.items():
+        check(by[code][11] == attendu, f'{by[code][1]} ({code}) : {by[code][11]} min de la mer (tâche 0b : {attendu})')
 
     print("Contrôles des prix d'achat")
     ach = {a[0]: a for a in achats}
