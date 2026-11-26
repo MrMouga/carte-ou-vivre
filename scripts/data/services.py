@@ -23,8 +23,8 @@ Règles (une fonction chacune, appelée sur le vrai extrait et sur ceux des test
 - R52, D18, H171 (`temps_grandes_lignes`) : le plus petit, avant arrondi, de la médiane vers une gare nationale (E107) et du
   plus rapide des 3 trajets depuis la mairie ; si l'un manque, l'autre ; pas de chiffre pour une commune de population 0,
   une île sans pont (H161) ou une commune de Corse ;
-- R52 (`temps_commune`) : les 11 temps d'une commune (R54, révision D19, D20 : urgences ajoutées, supermarché), plus
-  `commerce`, provisoire jusqu'à la tâche 2 de la révision ; population 0 : aucun temps ;
+- R52 (`temps_commune`) : les 11 temps d'une commune (R54, révision D19, D20 : urgences ajoutées, supermarché à la
+  place du commerce alimentaire) ; population 0 : aucun temps ;
 - D12 (`retirer`) : les temps de services-retraits.csv deviennent « pas de chiffre ».
 Les durées et les populations sont lues en entiers (centièmes de minute, 10⁻¹⁶ habitant) : aucune erreur de virgule
 flottante dans la médiane ni dans l'arrondi.
@@ -61,8 +61,8 @@ FICHIERS = {
     'services-calcul/ors-grandes-lignes.jsonl': '90725176eaf96d668411435f2030911584143e0826ab3e8e288918cdb123ae04',
 }
 # H158 (révisée par D19, D20) : types d'équipement de chaque service lu dans les carreaux ; « nationale » (E107) sert à
-# « Gare grandes lignes ». `commerce` (D1 d'avant D20) est gardé provisoirement : la page d'avant la révision le lit
-# encore ; la tâche 2 de la révision le retire (plan 2026-11-26-services-revision).
+# « Gare grandes lignes ». `commerce` (D1 d'avant D20 : B104, B105, B201, B202) n'est plus écrit (tâche 2 de la
+# révision, plan 2026-11-26-services-revision).
 TYPES = {
     'medecin': ['D265'],
     'urgences': ['D106'],
@@ -75,11 +75,10 @@ TYPES = {
     'gare': ['E107', 'E108', 'E109'],
     'gare_regionale': ['E107', 'E108'],
     'nationale': ['E107'],
-    'commerce': ['B104', 'B105', 'B201', 'B202'],
 }
-# Ordre de la fiche (R54 révisée), puis `commerce`, provisoire : la dernière chaîne écrite.
+# Ordre de la fiche (R54 révisée).
 SERVICES = ['medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare',
-            'gare_regionale', 'gare_grandes_lignes', 'commerce']
+            'gare_regionale', 'gare_grandes_lignes']
 DES_CARREAUX = [s for s in SERVICES if s != 'gare_grandes_lignes']  # services dont le temps est la médiane des carreaux
 ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 PLUS_D_UNE_HEURE = 61  # « z » : 61 min ou plus
@@ -108,17 +107,17 @@ GL_DEPUIS_LA_MAIRIE = ['09304', '26375']  # sans carreau, gardent « Gare grande
 ATTENDU = {'communes': 34746, 'avec un carreau habité': 34736, 'avec un temps': 34738, 'gares': 61}
 LIMITE_GZIP = 350_000  # H162 : 350 Ko en gzip -9
 # AC-13 révisé par D19, D20 (valeurs lues dans le fichier servi ; 61 = « 61 ou plus », None = pas de chiffre), dans
-# l'ordre de R54 ; `commerce` : valeur d'avant la révision, gardée tant que la chaîne provisoire est écrite (tâche 2).
+# l'ordre de R54.
 AC13 = {
-    '32013': {**dict(zip(SERVICES, [2, 6, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE])), 'commerce': 2},
-    '33063': {**dict(zip(SERVICES, [1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7])), 'commerce': 1},
+    '32013': dict(zip(SERVICES, [2, 6, 2, 3, 2, 3, 3, 4, 4, 4, PLUS_D_UNE_HEURE])),
+    '33063': dict(zip(SERVICES, [1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7])),
     '48095': {'urgences': 4, 'superieur': 2, 'gare': 3, 'gare_regionale': PLUS_D_UNE_HEURE,
               'gare_grandes_lignes': PLUS_D_UNE_HEURE},
     '05157': {'urgences': 55, 'supermarche': 35},
     '74056': {'urgences': 4, 'supermarche': 3},
     '85194': {'urgences': 7, 'gare_grandes_lignes': 4},
     '85113': {'medecin': None, 'urgences': None, 'lycee': None, 'superieur': None, 'gare': None,
-              'gare_regionale': None, 'gare_grandes_lignes': None, 'supermarche': 4, 'commerce': 3},
+              'gare_regionale': None, 'gare_grandes_lignes': None, 'supermarche': 4},
     **{c: dict.fromkeys(SERVICES) for c in POP_0},
 }
 # Comptes des mesures (docs/specs/2026-11-23-services/mesures.md), communes à temps inférieur ou égal au seuil : de /spec
@@ -129,7 +128,6 @@ ANCIENS = {
     'medecin': {5: 14232, 10: 27960, 15: 33135, 30: 34643, '>60': 1, 'sans': 13},
     'urgences': {5: 851, 10: 4025, 15: 9558, 20: 16243, 30: 27415, 45: 33676, 60: 34562, '>60': 174},
     'supermarche': SUPERMARCHE,
-    'commerce': {5: 16653, 10: 30113, 15: 33936, 30: 34713, '>60': 1, 'sans': 10},
     'ecole': {5: 26483, 10: 33483, 15: 34543, 30: 34724, '>60': 0, 'sans': 10},
     'college': {5: 6682, 10: 20098, 15: 29848, 30: 34442, '>60': 3, 'sans': 16},
     'creche': {5: 8128, 10: 20147, 15: 28806, 30: 34462, '>60': 1, 'sans': 17},
@@ -437,13 +435,7 @@ def main():
         lu = {s: servi[c][s] for s in attendu}
         check(lu == attendu, f'AC-13 : {nom[c]} ({c}) {lu}', muet=c in POP_0)
     brut, gz = len(contenu), len(gzip.compress(contenu, 9, mtime=0))
-    # H206 : la limite porte sur le fichier final, sans la chaîne provisoire `commerce` (plan de la révision, tâche 0).
-    final = json.dumps({k: v for k, v in sortie.items() if k != 'commerce'}, ensure_ascii=False,
-                       separators=(',', ':')).encode('utf-8')
-    brut_final, gz_final = len(final), len(gzip.compress(final, 9, mtime=0))
-    print(f'  poids écrit, avec `commerce` (provisoire) : {brut} octets bruts, {gz} octets en gzip -9 (information)')
-    check(gz_final <= LIMITE_GZIP,
-          f'poids sans `commerce` (fichier final, H206) : {brut_final} octets bruts, {gz_final} octets en gzip -9 (limite {LIMITE_GZIP}, H162)')
+    check(gz <= LIMITE_GZIP, f'poids écrit (H206) : {brut} octets bruts, {gz} octets en gzip -9 (limite {LIMITE_GZIP}, H162)')
 
     print('Gares grandes lignes (public/data/gares-grandes-lignes.csv)')
     with open(os.path.join(RAW, 'services-gares.csv'), encoding='utf-8', newline='') as f:

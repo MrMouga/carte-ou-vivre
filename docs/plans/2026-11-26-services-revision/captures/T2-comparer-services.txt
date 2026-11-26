@@ -1,0 +1,16 @@
+clés avant : ['codes', 'medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes', 'commerce', 'iles_sans_pont']
+clés après : ['codes', 'medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare', 'gare_regionale', 'gare_grandes_lignes', 'iles_sans_pont']
+  codes : identique = True
+  medecin : identique = True
+  urgences : identique = True
+  supermarche : identique = True
+  creche : identique = True
+  ecole : identique = True
+  college : identique = True
+  lycee : identique = True
+  superieur : identique = True
+  gare : identique = True
+  gare_regionale : identique = True
+  gare_grandes_lignes : identique = True
+  iles_sans_pont : identique = True
+retirées : ['commerce']

@@ -7,8 +7,7 @@
 
 /**
  * Les 11 services, dans l'ordre de la fiche (R54, révisée par D19 et D20) : nom dans le fichier, nom dans l'adresse (R55),
- * libellé (R51, R54). `commerce` n'en est plus un (D20) : encore écrit dans le fichier jusqu'à la tâche 2 de la révision,
- * il n'est pas lu ; dans l'adresse, c'est un nom inconnu (H203).
+ * libellé (R51, R54). `commerce` n'en est plus un (D20) : absent du fichier ; dans l'adresse, c'est un nom inconnu (H203).
  */
 export const SERVICES = [
   { cle: 'medecin', adresse: 'medecin', libelle: 'Médecin' },
@@ -43,7 +42,7 @@ const PAS_DE_CHIFFRE = '-';
 
 /**
  * Lit `services.json` ; une chaîne de la mauvaise longueur ou un caractère hors de l'alphabet est une erreur. Seules les
- * chaînes de SERVICES sont lues : une autre (`commerce`, jusqu'à la tâche 2 de la révision D19, D20) est ignorée.
+ * chaînes de SERVICES sont lues : une autre serait ignorée.
  */
 export function lireServices(json: ServicesJson): Services {
   const n = json.codes.length;

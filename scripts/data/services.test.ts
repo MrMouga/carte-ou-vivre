@@ -18,10 +18,10 @@ const lancer = (option: string, fichier: string) =>
 // de population.
 const TYPES = ['D265', 'D106', 'B104', 'B105', 'B201', 'B202', 'D502', 'C107', 'C108', 'C109', 'C201', 'C301', 'C302',
   'C501', 'C502', 'C503', 'C504', 'C505', 'C509', 'E107', 'E108', 'E109'];
-// Services écrits par services.py (ordre de R54 révisée) ; `commerce` y reste provisoirement jusqu'à la tâche 2 de la
-// révision D19, D20 (plan 2026-11-26-services-revision), qui le retire du script et d'ici.
+// Services écrits par services.py (ordre de R54 révisée ; `commerce` n'en est plus un depuis la tâche 2 de la révision
+// D19, D20). Les colonnes B201 et B202 de l'extrait restent lues sans être comptées (épicerie, D20).
 const SERVICES_PY = ['medecin', 'urgences', 'supermarche', 'creche', 'ecole', 'college', 'lycee', 'superieur', 'gare',
-  'gare_regionale', 'gare_grandes_lignes', 'commerce'];
+  'gare_regionale', 'gare_grandes_lignes'];
 /** Les services du script à « pas de chiffre », sauf ceux donnés. */
 const tempsPy = (valeurs: Record<string, number>) => ({
   ...Object.fromEntries(SERVICES_PY.map((s) => [s, null])),
@@ -62,8 +62,7 @@ describe('scripts/data/services.py --extrait (R52)', () => {
     const sortie = lancer('--extrait', fichier) as Record<string, TempsServices>;
 
     expect(sortie).toEqual({
-      // `commerce` provisoire (B104, B105, B201, B202 : l'épicerie compte, 4 min) jusqu'à la tâche 2 de la révision.
-      '99101': tempsPy({ supermarche: 9, commerce: 4 }),
+      '99101': tempsPy({ supermarche: 9 }),
       '99102': tempsPy({ medecin: 2 }),
       '99103': tempsPy({ medecin: 3 }),
       '99104': tempsPy({ medecin: 9 }),
@@ -124,7 +123,7 @@ describe('public/data/services.json (R52, vraies données)', () => {
     for (const code of ['55039', '55050', '55139', '55189', '55239', '55307']) {
       expect(Object.values(valeurs(code)), code).toEqual(Array(11).fill(null));
     }
-    // Aucune colonne commerce (D20) : rouge tant que la tâche 2 de la révision n'a pas régénéré le fichier.
+    // Aucune colonne commerce (D20).
     expect(Object.keys(json)).not.toContain('commerce');
   });
 });

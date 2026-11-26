@@ -125,3 +125,14 @@ Méthode de la tâche 3b d'origine (`docs/plans/2026-11-24-services/captures/T3b
 | « Ville dense » : décochée | 34 674 | 292 ms | 277 ms | + 116 / + 101 ms |
 
 **Résultat : + 17 ms au plus pour les urgences, sous la limite de + 115 ms.** « Ville dense » décochée, déjà en ligne, redonne l'écart de la limite (+ 101 à + 116 ms, comme en 3b d'origine : + 114 à + 116). 27 359 communes à 30 min d'urgences ou moins avec un plafond de 1 200 € (le compte du fichier sans plafond est plus haut).
+
+## Tâche 2 — le fichier final, sans `commerce` (2026-11-26, 22:00)
+`services.py` n'écrit plus `commerce` (ni dans `TYPES`, `SERVICES`, `AC13`, `ANCIENS`) ; la ligne `06163,commerce` de `services-retraits.csv` est retirée (H209) ; le contrôle de poids porte sur le fichier écrit. Sortie entière : [captures/T2-services-py.txt](captures/T2-services-py.txt).
+- Contrôles : **tous « ok »**, dont les 7 lignes d'AC-13 et les comptes du supermarché ; retraits appliqués : 3 (Tende collège, Roscanvel crèche et collège).
+- Chaîne par chaîne contre le fichier du commit `0343998` (12 chaînes) : `codes`, les 11 chaînes et `iles_sans_pont` **identiques** ; seule `commerce` disparaît ([captures/T2-comparer-services.txt](captures/T2-comparer-services.txt)).
+
+| Fichier | Brut | `gzip -9` | `brotli -q 3` |
+|---|---:|---:|---:|
+| **Servi après la tâche 2 (11 chaînes)** | 660 493 | **330 752** | **263 624** |
+
+`gzip -9` : `services.py` (330 752 ; la commande `gzip -9 -c` donne 330 766, avec le nom du fichier) ; `brotli -q 3` : commande `brotli`. Égal au poids final prévu en tâche 0. **Sous la limite de 350 000 octets (H206).**
