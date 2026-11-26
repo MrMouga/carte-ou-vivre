@@ -41,8 +41,8 @@ async function nantesville(page: Page) {
   await pret(page, 'Nantesville (44)');
 }
 
-test('AC-1 depuis /?loyer=1200&mer=50, ajouter « 1 rue Test 44000 Nantesville » : nom proposé, calcul, puis plafond 2 h ; Portmer seule passe (65) ; adresse inchangée', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50');
+test('AC-1 depuis /?loyer=1200&mer-min=60, ajouter « 1 rue Test 44000 Nantesville » : nom proposé, calcul, puis plafond 2 h ; Portmer seule passe (63) ; adresse inchangée', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer-min=60');
   await servirIgn(page);
   await zone(page).getByRole('textbox', { name: 'Adresse ou ville' }).fill('1 rue Test');
   await zone(page).getByRole('button', { name: '1 rue Test, 44000 Nantesville' }).click();
@@ -57,13 +57,13 @@ test('AC-1 depuis /?loyer=1200&mer=50, ajouter « 1 rue Test 44000 Nantesville �
 
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 63 · 650 € · 5 min']);
   await attendreCouleurs(page, { A: 'score-4', B: null, E: null });
-  expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe('/?loyer=1200&mer=50');
+  expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe('/?loyer=1200&mer-min=60');
 });
 
-test('AC-2 depuis /?loyer=1200&mer=50, plafond de Nantesville (44) sur 2 h 15 : Portmer 66, Grandeville 17 ; Quaibleu non colorée ; aucun nouveau calcul', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50');
+test('AC-2 depuis /?loyer=1200&mer-min=60, plafond de Nantesville (44) sur 2 h 15 : Portmer 64, Grandeville 16 ; Quaibleu non colorée ; aucun nouveau calcul', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer-min=60');
   const demandes = await servirIgn(page);
   await nantesville(page);
   const zones = demandes.zones.length;
@@ -72,13 +72,13 @@ test('AC-2 depuis /?loyer=1200&mer=50, plafond de Nantesville (44) sur 2 h 15 : 
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 64 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
   await attendreCouleurs(page, { E: null });
   expect(demandes.zones.length).toBe(zones);
 });
 
-test('AC-4 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15, puis Toulouseville (31) ajouté et réglé à 2 h 45 : Portmer 50, Grandeville 26', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50');
+test('AC-4 depuis /?loyer=1200&mer-min=60, Nantesville (44) à 2 h 15, puis Toulouseville (31) ajouté et réglé à 2 h 45 : Portmer 48, Grandeville 25', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer-min=60');
   await servirIgn(page);
   await nantesville(page);
   await regler(page, 'Plafond de Nantesville (44)', 'ArrowRight');
@@ -90,7 +90,7 @@ test('AC-4 depuis /?loyer=1200&mer=50, Nantesville (44) à 2 h 15, puis Toulouse
 
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 50 · 650 € · moins d'1 km", '2 · Grandeville (33) · 26 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 48 · 650 € · 5 min', '2 · Grandeville (33) · 25 · 832 € · 50 min']);
 });
 
 test('AC-6 loyer « Sans limite », aucune distance à la mer cochée, Nantesville (44) à 2 h 15 : Portmer 56 (40–60), Grandeville 0 (0–20) ; pas de message « Fixe un loyer… »', async ({ page }) => {
@@ -104,7 +104,7 @@ test('AC-6 loyer « Sans limite », aucune distance à la mer cochée, Nantesvil
 
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 56 · 650 € · moins d'1 km", '2 · Grandeville (33) · 0 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 56 · 650 € · 5 min', '2 · Grandeville (33) · 0 · 832 € · 50 min']);
   await attendreCouleurs(page, { A: 'score-3', B: 'score-1', C: null, D: null, E: null });
   await expect(page.getByText('Fixe un loyer ou une distance à la mer pour classer les communes.')).toHaveCount(0);
 });
@@ -147,8 +147,8 @@ test('recherche : rien sous 3 caractères ; un nom vide reprend la commune ; un 
   expect([...demandes.recherches, ...demandes.zones].some((u) => decodeURIComponent(u).includes('Parents'))).toBe(false);
 });
 
-test('« Retirer » sur un proche prêt : il disparaît, la liste revient sans calcul (72, 48, 25 depuis /?loyer=1200&mer=50)', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50'); // cadre-de-vie, règle (1) du recalage : réglage explicite
+test('« Retirer » sur un proche prêt : il disparaît, la liste revient sans calcul (69, 43, 24 depuis /?loyer=1200&mer-min=60)', async ({ page }) => {
+  await ouvrir(page, '/?loyer=1200&mer-min=60'); // cadre-de-vie, règle (1) du recalage : réglage explicite
   const demandes = await servirIgn(page);
   await nantesville(page);
   const zones = demandes.zones.length;
@@ -157,9 +157,9 @@ test('« Retirer » sur un proche prêt : il disparaît, la liste revient sans c
   await expect(zone(page).getByRole('listitem')).toHaveCount(0);
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 48 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 25 · 832 € · 40 km',
+    '1 · Portmer (17) · 69 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 43 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 24 · 832 € · 50 min',
   ]);
   await voirCriteres(page); // 390 px : les réglages sont dans leur onglet (interface-telephone)
   await expect(zone(page).getByRole('textbox', { name: 'Adresse ou ville' })).toBeVisible();

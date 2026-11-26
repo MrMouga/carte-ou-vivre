@@ -16,10 +16,10 @@ const CALCUL_44 = 'Calcul des trajets depuis Nantesville (44)…';
 const KM = "À vol d'oiseau : l'IGN ne répond pas.";
 
 /**
- * Ferme la page et rouvre « /?loyer=1200&mer=50 » dans le même navigateur (recalage de cadre-de-vie : réglage explicite) ;
- * rend la nouvelle page et ses demandes au faux service.
+ * Ferme la page et rouvre « /?loyer=1200&mer-min=60 » dans le même navigateur (recalage de cadre-de-vie : réglage
+ * explicite ; recherche-et-mer, règle (a)) ; rend la nouvelle page et ses demandes au faux service.
  */
-const DEPART = '/?loyer=1200&mer=50';
+const DEPART = '/?loyer=1200&mer-min=60';
 async function rouvrir(page: Page, options: OptionsIgn = {}, avantOuverture?: (p: Page) => Promise<unknown>) {
   const contexte = page.context();
   await page.close();
@@ -33,7 +33,7 @@ async function rouvrir(page: Page, options: OptionsIgn = {}, avantOuverture?: (p
   return { page: p, demandes };
 }
 
-test('AC-7 depuis /?loyer=1200&mer=50, 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ', async ({ page }) => {
+test('AC-7 depuis /?loyer=1200&mer-min=60, 5 proches prêts : plus de champ, « 5 proches au maximum… » ; après « Retirer » Lilleville (59), le lien revient et ouvre le champ', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page);
@@ -52,7 +52,7 @@ test('AC-7 depuis /?loyer=1200&mer=50, 5 proches prêts : plus de champ, « 5 pr
   await expect(champ(page)).toBeFocused();
 });
 
-test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loyer=1200&mer=50 rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 66, Grandeville 17', async ({ page }) => {
+test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loyer=1200&mer-min=60 rouvert, il est prêt à 2 h 15 sans calcul ; Portmer 64, Grandeville 16', async ({ page }) => {
   await ouvrir(page, DEPART);
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
@@ -66,13 +66,13 @@ test('AC-8 Nantesville (44) prêt à 2 h 15 et gardé : page fermée puis /?loye
   await expect(zone(p)).not.toContainText('Calcul des trajets');
   await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(p)).toContainText('2 communes passent tes critères');
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 64 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
   await p.waitForTimeout(500);
   expect(demandes.zones).toEqual([]);
-  expect(new URL(p.url()).pathname + new URL(p.url()).search).toBe('/?loyer=1200&mer=50');
+  expect(new URL(p.url()).pathname + new URL(p.url()).search).toBe('/?loyer=1200&mer-min=60');
 });
 
-test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis /?loyer=1200&mer=50 rouvert, état vide ; 3 communes, 72, 48, 25', async ({ page }) => {
+test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proches » puis /?loyer=1200&mer-min=60 rouvert, état vide ; 3 communes, 69, 43, 24', async ({ page }) => {
   await ouvrir(page, DEPART);
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
@@ -95,7 +95,7 @@ test('AC-9 Nantesville (44) et Toulouseville (31) gardés : « Effacer mes proch
   expect(await lignes(p)).toEqual(SANS_PROCHE);
 });
 
-test('AC-11 depuis /?loyer=1200&mer=50, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes', async ({ page }) => {
+test('AC-11 depuis /?loyer=1200&mer-min=60, recherche d’adresse en panne : « Recherche d’adresse indisponible. Réessaie dans un moment. », « Ajouter » inactif ; 3 communes', async ({ page }) => {
   await ouvrir(page, DEPART);
   const demandes = await servirIgn(page, { recherche: 'panne' });
   await champ(page).fill('1 rue Test');
@@ -235,7 +235,7 @@ test('aucune adresse en bureau, avec un proche : le panneau défile, « Ajouter 
   await expect(champ(page)).toBeInViewport(); // le champ reste visible lui aussi
 });
 
-test('R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 65)', async ({ page }) => {
+test('R12 mémoire refusée (le stockage lève une erreur) : message sous le titre, le proche marche quand même (Portmer 63)', async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {
       throw new DOMException('mémoire pleine', 'QuotaExceededError');
@@ -248,7 +248,7 @@ test('R12 mémoire refusée (le stockage lève une erreur) : message sous le tit
   await expect(zone(page)).toContainText('Tes proches ne seront pas gardés sur ce navigateur.');
   await pret(page, 'Nantesville (44)');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 63 · 650 € · 5 min']); // moitié exacte 62,5 (recalage.md)
 });
 
 // Recalage (proches-fiables R37, tâche 4) : même départ et même réouverture ; le proche n'est plus « indisponible », il est
@@ -271,7 +271,9 @@ test('R12 empreinte des codes INSEE qui ne correspond plus : le proche gardé es
   await expect(zone(p)).not.toContainText(/trajets indisponibles/i);
   expect(demandes.zones).toHaveLength(12);
   await voirListe(p); // 390 px : la liste est dans son onglet (interface-telephone)
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
+  // Recherche-et-mer (recalage.md, décidé par Claude) : ce communes.json, écrit par le test, n'a pas de `mer_min` ; la page
+  // compte la mer d'après les km (D7) : Portmer « ≈ 1 min », 65.
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 65 · 650 € · ≈ 1 min']);
 });
 
 // Recalage (proches-fiables R37, tâche 4) : même départ ; à la réouverture le proche est calculé (12 zones), puis prêt.
