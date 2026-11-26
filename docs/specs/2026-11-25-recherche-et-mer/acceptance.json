@@ -27,7 +27,7 @@
       "given": "Fixture, page ouverte sur /, codes postaux chargés",
       "when": "l'utilisateur tape successivement « 99100 », « 339 », « 33 991 »",
       "then": "« 99100 » : deux suggestions, dans cet ordre, « 99100 · Quaibleu (13) » puis « 99100 · Portmer (17) » ; « 339 » : une seule suggestion « 33990 · Grandeville (33) » ; « 33 991 » : une seule suggestion « 33991 · Grandeville (33) »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-3",
@@ -35,7 +35,7 @@
       "given": "Fixture, page ouverte sur / ; puis, page rouverte, le fichier des codes postaux répond en erreur à chaque demande",
       "when": "l'utilisateur tape « zzz » ; puis, page rouverte avec les codes en erreur, il tape « 33 », efface et tape « grand »",
       "then": "« zzz » : « Aucune commune ne correspond. » ; codes en erreur : « 33 » montre « Codes postaux indisponibles. Cherche par nom ou réessaie dans un moment. » et aucune suggestion ; « grand » propose « Grandeville (33) »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-4",
@@ -115,7 +115,7 @@
       "given": "La recherche par code, sur ces seules données inventées : 12 communes C01 (99) à C12 (99), de 12 000 à 1 000 habitants par pas de 1 000, toutes au code 99200 ; Paris (75, code INSEE 75056) et une ligne de La Poste qui rattache 75015 à l'arrondissement 75115",
       "when": "on cherche « 99200 », « 992 », « 75015 »",
       "then": "« 99200 » : 12 suggestions, « 99200 · C01 (99) » à « 99200 · C12 (99) » dans cet ordre, dans une liste qui défile ; « 992 » : 8 suggestions, C01 à C08 ; « 75015 » : « 75015 · Paris (75) »",
-      "passes": false
+      "passes": true
     }
   ]
 }
