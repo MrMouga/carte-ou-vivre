@@ -398,10 +398,15 @@ export function App() {
             className="pointer-events-none absolute left-4 top-4 bottom-(--bas-reglages) flex w-reglages flex-col *:pointer-events-auto"
           >
             {reglagesUI(
-              // Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond.
-              <p role="status" className="sticky bottom-0 -mx-4 border-t border-border bg-card p-4 text-texte-fort">
-                {annonce}
-              </p>,
+              <>
+                {/* Les mentions (R63 de recherche-et-mer, piste C) : au bas du panneau, avant le compte, plus sur la carte. Le
+                    texte aligné sur celui des catégories (`-mx-2` compense le rembourrage du bloc). */}
+                <Mentions className="-mx-2 mt-2" trimestre={donnees?.emploi.trimestre} />
+                {/* Compte annoncé aux lecteurs d'écran (D17) ; absent sans plafond. */}
+                <p role="status" className="sticky bottom-0 -mx-4 border-t border-border bg-card p-4 text-texte-fort">
+                  {annonce}
+                </p>
+              </>,
             )}
           </div>
           {/* De haut en bas de l'écran sans bloquer la carte ; une fiche plus haute que l'écran y défile (bloc des services). */}
@@ -446,8 +451,8 @@ export function App() {
           </p>
         </div>
       )}
-      {/* Après la feuille, pour qu'au clavier les réglages et la liste passent avant les mentions. Légende puis mentions,
-          en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, la légende seule, en haut à gauche. */}
+      {/* La légende, en bas à gauche, sans passer sous le zoom ni la liste ; à 390 px, en haut à gauche. Les mentions n'y
+          sont plus (recherche-et-mer, R63) : au bas du panneau de réglages en bureau, au bas des onglets au téléphone. */}
       <div
         ref={pied}
         className={cn(
@@ -457,7 +462,6 @@ export function App() {
       >
         <div className="flex min-w-0 flex-1 flex-col items-start gap-2 *:pointer-events-auto">
           <Legend sansPlafond={resultat?.actif === false} fondIndisponible={fond === 'secours'} />
-          <Mentions className="max-bureau:hidden" trimestre={donnees?.emploi.trimestre} />
         </div>
         <div className="w-bouton-icone shrink-0 max-bureau:hidden" />
         <div className="w-liste shrink-0 max-bureau:hidden" />

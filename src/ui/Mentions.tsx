@@ -11,6 +11,8 @@ import { cn } from '@/lib/cn';
 // les lignes de la fiche ; le trimestre du chômage vient d'emploi.json, jamais écrit ici.
 // Tranche services (R56, H164, H172) : l'Insee (temps d'accès) et les gares grandes lignes (SNCF, openrouteservice), posées
 // avec le bloc « Services en voiture » de la fiche.
+// Tranche recherche-et-mer (R63) : La Poste (codes postaux, date du fichier de la tâche 0a) et openrouteservice (temps jusqu'à
+// la mer). En bureau, le bloc est au bas du panneau de réglages, avant le compte collé (piste C de /ui), plus sur la carte.
 // Logos Shom et IGN : leurs conditions d'usage n'ont pas été trouvées en ligne ; à la place, leur nom encadré
 // et un lien vers leur site (repli du plan, tâche 5b), en attendant la réponse de Vincent.
 const lien = 'underline-offset-2 hover:text-foreground hover:underline';
@@ -41,7 +43,9 @@ export function Mentions({ className, trimestre }: { className?: string; trimest
       mise à jour le 17/04/2026) · Chômage : Insee, taux de chômage localisés par zone d'emploi
       {trimestre && `, ${insecable(trimestre)}`} · Temps d'accès aux services : Insee, base permanente des équipements,
       distancier Metric-OSRM, © les contributeurs d'OpenStreetMap et du projet OSRM (équipements 2025) · Gares grandes lignes :
-      horaires SNCF (licence ODbL), temps depuis la mairie calculés avec openrouteservice, © OpenStreetMap contributors
+      horaires SNCF (licence ODbL), temps depuis la mairie calculés avec openrouteservice, © OpenStreetMap contributors · Codes
+      postaux : La Poste, base officielle des codes postaux (fichier du 17/11/2026) · Temps jusqu'à la mer : calculés avec
+      openrouteservice, © OpenStreetMap contributors
     </footer>
   );
 }
