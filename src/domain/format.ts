@@ -226,7 +226,7 @@ export function merFiche(c: Pick<Commune, 'merKm' | 'merMin'>): string {
   return `${dureeMer(t.minutes)} de la mer en voiture`;
 }
 
-/** Fiche, sous la mer (R30 de cadre-de-vie) : 0 = classée (R29), « moins d'1 km » sous 1 km comme pour la mer. */
+/** Fiche, sous la mer (R30 de cadre-de-vie) : 0 = classée (R29), « moins d'1 km » sous 1 km. */
 export const montagneFiche = (k: number | null | undefined) =>
   k == null
     ? 'Distance à la montagne inconnue'
@@ -257,7 +257,7 @@ export function mairieFiche(c: Pick<Commune, 'bord' | 'nuance' | 'liste'>): stri
  * Fiche, sous « Mairie » (R47 d'emploi) : la ligne d'un métier choisi, libellé à part (design F : en `texte-fort`), lue
  * « <libellé> : <reste> ». « Grandeville, à 28 km, parmi les 25 % de bassins qui recrutent le plus · 626 recrutements
  * prévus en 2026 » ; « bassin de Montcher, 1 027 recrutements prévus en 2026 » ; « bassin de …, pas de chiffre publié
- * pour ce métier ». La distance comme la mer : « à moins d'1 km », « à n km » (arrondi), « sur place ».
+ * pour ce métier ». La distance comme la montagne : « à moins d'1 km », « à n km » (arrondi), « sur place ».
  */
 export function metierFiche(l: LigneMetier): { libelle: string; reste: string } {
   const projets = (n: number) => `${entier(n)}${NBSP}recrutements prévus en${NBSP}2026`;

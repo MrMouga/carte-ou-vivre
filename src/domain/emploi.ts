@@ -1,7 +1,7 @@
 // Spec emploi : lecture de `public/data/emploi.json` (tâche 0), jointure par code INSEE (H140, H142), distances aux villes
 // principales des bassins (R46, H136, H144) et « le plus proche » des raisons.
 // Distances (plan, « Distances ») : de mairie à mairie (points de reperes.json, dans l'ordre de communes.json), `distanceKm`
-// de src/proches/distance.ts, comparées et écrites au km comme la mer (`kmCompare`) ; la ville principale elle-même : 0 km.
+// de src/proches/distance.ts, comparées et écrites au km comme la montagne (`kmCompare`) ; la ville principale elle-même : 0 km.
 // Le jeu de test peut les donner telles quelles (`distances_km`, H144) : elles remplacent alors le calcul.
 import { distanceKm } from '../proches/distance';
 import { dansNiveau, ecartNiveaux, kmCompare, type Commune, type MetierChoisi, type Niveau, type Raison } from './score';
@@ -45,7 +45,7 @@ export type Emploi = {
    * d'1 km ; Infinity sans ville principale. Une seule fonction, quelle que soit la source (calcul ou jeu de test).
    */
   distance: (i: number, k: number) => number;
-  /** La même distance avant l'arrondi (fiche, R47 : « à moins d'1 km » ou « à n km », comme la mer) ; jeu de test : ses km. */
+  /** La même distance avant l'arrondi (fiche, R47 : « à moins d'1 km » ou « à n km », comme la montagne) ; jeu de test : ses km. */
   distanceBrute: (i: number, k: number) => number;
   /**
    * Villes principales à 30 km ou moins de chaque commune (R46), à plat : celles de la commune `i` sont
@@ -176,7 +176,7 @@ function bassinPlusProche(e: Emploi, i: number, code: string, niveau: Niveau) {
 /**
  * Ligne d'un métier choisi dans la fiche de la commune `i` (R47). `niveau` : le métier a un niveau coché et la commune
  * passe son filtre (R46) : la ville principale la plus proche du niveau (égalité : H136), sa distance (`surPlace` pour la
- * ville elle-même ; sinon km avant l'arrondi, comme la mer), le niveau le plus étroit de ce bassin et ses projets.
+ * ville elle-même ; sinon km avant l'arrondi, comme la montagne), le niveau le plus étroit de ce bassin et ses projets.
  * `bassin` : sinon, le bassin de la commune, nommé par sa ville principale (H135), et ses projets (null : pas de chiffre
  * publié, D7). Null : métier inconnu, ou commune sans bassin (jeu de test « métropole »).
  */
