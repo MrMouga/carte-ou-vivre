@@ -19,7 +19,7 @@
       "given": "Fixture, page ouverte sur / en bureau (1 280 × 800), requêtes du navigateur observées",
       "when": "l'utilisateur tape successivement dans « Chercher une commune » : « q », « QUAI », « grandé », « mo »",
       "then": "« q » : aucune suggestion et aucun message ; « QUAI » : une seule suggestion « Quaibleu (13) » ; « grandé » : une seule suggestion « Grandeville (33) » ; « mo » : une seule suggestion « Montcher (75) » ; pendant toute la saisie, aucune requête vers un autre site que le site lui-même",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-2",
@@ -43,7 +43,7 @@
       "given": "Fixture, page ouverte sur / en bureau (1 280 × 800), aucune commune choisie",
       "when": "l'utilisateur tape « mo » et choisit « Montcher (75) » au clavier (flèche bas, Entrée)",
       "then": "la fiche de Montcher (75) est ouverte et contient « Ne passe pas tes critères » et « Loyer 1 560 € : au-dessus de ton plafond de 1 200 € » ; une fois l'animation finie, le centre et le zoom de la carte sont ceux obtenus en choisissant Montcher sur la carte depuis la même vue de départ (zoom à 0,01 près, centre à 1 px près) ; le champ affiche « Montcher (75) » ; l'adresse de la page reste /?loyer=1200",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-5",
@@ -51,7 +51,7 @@
       "given": "Fixture, page ouverte sur / à 390 × 844, feuille dans sa position de départ",
       "when": "l'utilisateur tape « grand » et touche « Grandeville (33) »",
       "then": "la fiche de Grandeville (33) est ouverte dans la feuille et contient « 31 » et « 4e sur 5 communes qui passent » ; « ← Les 10 premières » ramène l'onglet « Les 10 premières »",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
@@ -99,7 +99,7 @@
       "given": "Fixture, page ouverte sur /?loyer=300 (état « aucune commune »)",
       "when": "l'utilisateur tape « grand » et choisit « Grandeville (33) »",
       "then": "la fiche de Grandeville (33) est ouverte et contient « Ne passe pas tes critères » et « Loyer 832 € : au-dessus de ton plafond de 300 € » ; le message de l'état « aucune commune » reste celui d'aujourd'hui",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-12",
@@ -107,7 +107,7 @@
       "given": "La recherche par nom, sur ces seules communes inventées (nom, département, population) : Saint-Denis (93) 113 000 ; Les Sables-d'Olonne (85) 45 000 ; Sainte-Maxime (83) 14 000 ; Stenay (55) 2 600 ; Saint-Denis-d'Oléron (17) 1 300 ; Œuilly (51) 600",
       "when": "on cherche « olonne », « LES SABLES », « st denis », « st », « ste max », « oeuilly », « denis », « st-denis-d'ol »",
       "then": "« olonne » et « LES SABLES » : Les Sables-d'Olonne (85) ; « st denis » : Saint-Denis (93) puis Saint-Denis-d'Oléron (17) ; « st » : Saint-Denis (93), Sainte-Maxime (83), Stenay (55), Saint-Denis-d'Oléron (17), dans cet ordre ; « ste max » : Sainte-Maxime (83) ; « oeuilly » : Œuilly (51) ; « denis » : Saint-Denis (93) puis Saint-Denis-d'Oléron (17) ; « st-denis-d'ol » : Saint-Denis-d'Oléron (17)",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-13",

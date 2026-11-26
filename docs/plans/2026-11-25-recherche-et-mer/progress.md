@@ -7,7 +7,8 @@ Ordre du plan : 0a → 0c → arrêt (envoi openrouteservice par Vincent, accord
 Tâche 0a : faite — commits 420aa85..65ddb54 — preuve : mesure-tache-0.md (contrôles des codes, 92 requêtes prévues), codes-postaux.json relu (75015 → 75056, 33000 → 33063, 01300 → 22 communes), 109 738 octets en brotli -q 3, aucun ors-mer.jsonl (rien d'envoyé) (2026-11-26 00:20) — 35 min — agent : 220 k jetons — rapport : taches/T0a.md. Vérifié : Vitest 411 verts, types, construction ; Playwright 473 verts, 48 sautés (17,1 min), comme au départ.
 Tâche 0c : faite — commit da833af — preuve : recalage.py relancé (61 critères changés, 0 reste en km, 27 fichiers de tests, 1 moitié exacte), Portmer 62,5 → 63 recalculé à la main (2026-11-26 00:45) — 21 min — agent : 415 k jetons — rapport : taches/T0c.md. Aucun code, test ni acceptance.json touché.
 **Arrêt prévu** (2026-11-26 00:45) : envoi openrouteservice par Vincent ; accord sur recalage.md (3 choix soumis).
-**Accord de Vincent** (2026-11-26) : recalage.md validé tel quel (correspondance 10 → 15, 30 → 30, 50 → 60, 100 → 90 min) ; cadre-de-vie AC-9 réécrit (`mer-min=90` puis `mer-min=30`) ; test « empreinte » de proches-etats laissé sans minutes (« ≈ 1 min »). Envoi openrouteservice : lancé par Vincent, en attente de « TERMINÉ ».
+**Accord de Vincent** (2026-11-26) : recalage.md validé tel quel (correspondance 10 → 15, 30 → 30, 50 → 60, 100 → 90 min) ; cadre-de-vie AC-9 réécrit (`mer-min=90` puis `mer-min=30`) ; test « empreinte » de proches-etats laissé sans minutes (« ≈ 1 min »). Envoi openrouteservice : **lancé par l'agent à la demande explicite de Vincent** (« Je suis sur mobile je peux pas. Lance le à ma place », 2026-11-26), exception à la règle « POST lancés par Vincent » pour ce seul envoi. Lot d'essai : Bordeaux 56,1 min, Caen 17,7 min, Mont-de-Marsan 83,8 min, 0 null sur 3, réponse en 0,3 s. Envoi complet lancé ensuite : **TERMINÉ le 2026-11-26 à 01:08** — 91 requêtes, 91 lots écrits, 0 en échec ; 42 trajets sans temps sur 34 746 (0,1 %) ; 11 points de côte et 4 mairies non accrochés ; `data-raw/mer-calcul/ors-mer.jsonl` (6 047 637 octets). Ne plus relancer.
+Tâche 1 : faite — commit 1bf9a8d — preuve : captures/T1-*.png (01:19), T1-bureau-auch-choisie.png ouverte et conforme ; frappe « sa » médiane 0,6 ms ; 375 × 548 curseur à 536,5 px ; 0 requête pendant la saisie (2026-11-26 01:19) — 37 min — agent : 295 k jetons — rapport : taches/T1.md. Vérifié : Vitest 424 verts, types, jetons ; Playwright 486 verts, 53 sautés (17,4 min). AC-1, AC-4, AC-5, AC-11, AC-12 passent. Hors liste : src/map/MapView.tsx (attribut `data-vue` pour AC-4).
 
 ## Décisions prises à la place de Vincent
 - T0a, décidé par Claude : aucun paramètre de rayon envoyé (la matrice n'en a pas ; défaut serveur 2 000 m, distance d'accroche gardée pour 0b).
@@ -15,6 +16,9 @@ Tâche 0c : faite — commit da833af — preuve : recalage.py relancé (61 crit�
 - T0a, décidé par Claude : lot d'essai Bordeaux, Caen, Mont-de-Marsan.
 - T0a, décidé par Claude : un lot en échec n'est noté qu'après la réussite d'un lot suivant (une panne du service ne rend pas des communes « sans temps »).
 - T0a, décidé par Claude : `sources.py --codes-postaux` ne télécharge que ce fichier.
+- T1, décidé par Claude : en bureau, le champ reste ouvert après un choix et montre la commune (AC-4, prototype C) ; au téléphone, la recherche se ferme sur la fiche.
+- T1, décidé par Claude : Échap dans un champ vide ferme la recherche ; la première suggestion est en surbrillance dès qu'elle apparaît ; la population des suggestions est arrondie comme dans la fiche.
+- T1, décidé par Claude : la loupe de bureau ne fait pas grandir la ligne du titre ; celle de la tête de la feuille est à 8 px du bord droit ; une seule zone annoncée pour le champ (nombre de suggestions ou message).
 
 ## Retours à traiter à la démo
 
