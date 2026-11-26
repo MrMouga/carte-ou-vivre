@@ -103,7 +103,7 @@ test('AC-2 depuis /, « Droite » : /?loyer=1200&mairie=droite, Portmer 46 seule
   await attendreCouleurs<Six>(page, { B: null, D: null, E: null, F: null }, { jeu: SIX });
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 46 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 46 · 650 € · 5 min']);
   await ficheDeCarte(page, 'B', 'Grandeville (33)');
   expect(await texteFiche(page)).toContain('Mairie : gauche, hors des mairies choisies');
   await rouvrir(page);
@@ -127,7 +127,7 @@ test('AC-3 depuis /, « Gauche » : Grandeville 31 seule ; puis « Sans étiquet
   await pastille(page, 'Gauche').click();
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 31 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 31 · 832 € · 50 min']);
 
   await voirCriteres(page);
   await pastille(page, 'Sans étiquette').click();

@@ -12,7 +12,7 @@ import proches from '../../docs/specs/2026-10-13-proches/acceptance.json' with {
 // Faux service IGN de la fixture (tests/e2e/lib/ign.ts), pannes par zone de la fixture de proches-fiables ; chaque zone
 // répond 1 s après sa demande (`delaiZoneMs: 1000`), une erreur aussi.
 
-const DEPART = '/?loyer=1200&mer=50';
+const DEPART = '/?loyer=1200&mer-min=60';
 const ZONE_1_S = { delaiZoneMs: 1000 } as const;
 const nbsp = (t: string | null) => (t ?? '').replace(/\u00a0/g, ' ');
 const fiche = (page: Page) => page.getByRole('region', { name: /\(\d+\)$/ });
@@ -32,7 +32,7 @@ async function retour(page: Page) {
   await apresRendu(page);
 }
 
-test('AC-1 depuis /?loyer=1200&mer=50, panne « zone-135-une-fois » : Nantesville (44) prêt à 2 h, sans « Temps approximatifs » ni « Recalculer avec l’IGN » ; fiche de Grandeville « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » ; zone de 135 min demandée deux fois, les 11 autres une fois', async ({ page }) => {
+test('AC-1 depuis /?loyer=1200&mer-min=60, panne « zone-135-une-fois » : Nantesville (44) prêt à 2 h, sans « Temps approximatifs » ni « Recalculer avec l’IGN » ; fiche de Grandeville « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » ; zone de 135 min demandée deux fois, les 11 autres une fois', async ({ page }) => {
   await ouvrir(page, DEPART);
   const demandes = await servirIgn(page, { ...ZONE_1_S, panne: 'zone-135-une-fois' });
   await ajouter(page, 'Nantesville'); // nom proposé gardé
@@ -73,7 +73,7 @@ async function suiteAC2(page: Page) {
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '150');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 66 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
 
   await choisirSurLaCarte(page, 'B');
   await expect(fiche(page)).toContainText('Grandeville (33)');
@@ -89,13 +89,13 @@ async function suiteAC2(page: Page) {
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '135');
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 64 · 650 € · 5 min']);
   await choisirSurLaCarte(page, 'B');
   await expect(fiche(page)).toContainText('Grandeville (33)');
   expect(await texteFiche(page)).toContain("Nantesville (44) jusqu'à 2 h 30 : au-dessus de ton plafond de 2 h 15");
 }
 
-test('AC-2 (a) depuis /?loyer=1200&mer=50, panne « zone-135-toujours » : calcul fini avant 45 s ; « Temps approximatifs », « Recalculer avec l’IGN » ; à 2 h 30, Portmer 68, Grandeville 17, « jusqu’à 2 h 30 » ; à 2 h 15, Portmer 66 seule', async ({ page }) => {
+test('AC-2 (a) depuis /?loyer=1200&mer-min=60, panne « zone-135-toujours » : calcul fini avant 45 s ; « Temps approximatifs », « Recalculer avec l’IGN » ; à 2 h 30, Portmer 66, Grandeville 16, « jusqu’à 2 h 30 » ; à 2 h 15, Portmer 64 seule', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page, { ...ZONE_1_S, panne: 'zone-135-toujours' });
@@ -107,7 +107,7 @@ test('AC-2 (a) depuis /?loyer=1200&mer=50, panne « zone-135-toujours » : calcu
   await suiteAC2(page);
 });
 
-test('AC-2 (b) depuis /?loyer=1200&mer=50, panne « zone-135-muette » (horloge simulée) : pas fini à 44 s du calcul, fini à 45 s ; puis comme le cas (a)', async ({ page }) => {
+test('AC-2 (b) depuis /?loyer=1200&mer-min=60, panne « zone-135-muette » (horloge simulée) : pas fini à 44 s du calcul, fini à 45 s ; puis comme le cas (a)', async ({ page }) => {
   test.setTimeout(60_000);
   await page.clock.install();
   await ouvrir(page, DEPART);
@@ -138,7 +138,7 @@ test('AC-2 (b) depuis /?loyer=1200&mer=50, panne « zone-135-muette » (horloge 
   await suiteAC2(page);
 });
 
-test('AC-3 depuis /?loyer=1200&mer=50, panne « zone-180-toujours » : « Au-delà de 2 h 45 : l’IGN n’a pas répondu. », plafond au plus 2 h 45 ; à 2 h, Portmer 65 seule ; Quaibleu « plus de 2 h 45 : au-dessus de ton plafond de 2 h »', async ({ page }) => {
+test('AC-3 depuis /?loyer=1200&mer-min=60, panne « zone-180-toujours » : « Au-delà de 2 h 45 : l’IGN n’a pas répondu. », plafond au plus 2 h 45 ; à 2 h, Portmer 63 seule ; Quaibleu « plus de 2 h 45 : au-dessus de ton plafond de 2 h »', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page, { ...ZONE_1_S, panne: 'zone-180-toujours' });
@@ -160,13 +160,13 @@ test('AC-3 depuis /?loyer=1200&mer=50, panne « zone-180-toujours » : « Au-del
   await expect(plafond(page, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '120');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km"]);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 63 · 650 € · 5 min']);
   await choisirSurLaCarte(page, 'E');
   await expect(fiche(page)).toContainText('Quaibleu (13)');
   expect(await texteFiche(page)).toContain('Nantesville (44) plus de 2 h 45 : au-dessus de ton plafond de 2 h');
 });
 
-test('AC-4 depuis /?loyer=1200&mer=50, panne « panne-totale » : Rochelleville (17) à vol d’oiseau, « 120 km au plus », « Recalculer avec l’IGN » ; « Trajets indisponibles » nulle part ; Portmer 70, Quaibleu 32, Grandeville 26 ; fiche de Grandeville « Rochelleville (17) : 88 km à vol d’oiseau »', async ({ page }) => {
+test('AC-4 depuis /?loyer=1200&mer-min=60, panne « panne-totale » : Rochelleville (17) à vol d’oiseau, « 120 km au plus », « Recalculer avec l’IGN » ; « Trajets indisponibles » nulle part ; Portmer 68, Quaibleu 29, Grandeville 25 ; fiche de Grandeville « Rochelleville (17) : 88 km à vol d’oiseau »', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page, { ...ZONE_1_S, panne: 'panne-totale' });
@@ -185,9 +185,9 @@ test('AC-4 depuis /?loyer=1200&mer=50, panne « panne-totale » : Rochelleville 
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+    '1 · Portmer (17) · 68 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 29 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 25 · 832 € · 50 min',
   ]);
 
   await choisirSurLaCarte(page, 'B');
@@ -199,7 +199,7 @@ test('AC-4 depuis /?loyer=1200&mer=50, panne « panne-totale » : Rochelleville 
 const pastilles = (page: Page) => page.getByRole('list', { name: 'Temps vers tes proches' });
 const pastille = (page: Page, nom: string) => pastilles(page).getByRole('listitem').filter({ hasText: nom });
 
-test('AC-5 en bureau (1 440 px), panne « panne-totale », Rochelleville (17) à vol d’oiseau : à 90 km, Portmer 67, Grandeville 18 ; pastille « 90 km au plus », puis « 118 km · au-dessus de 90 km » avec Quaibleu ; fiche « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km » ; aucune zone demandée depuis la fin du calcul', async ({ page }, info) => {
+test('AC-5 en bureau (1 440 px), panne « panne-totale », Rochelleville (17) à vol d’oiseau : à 90 km, Portmer 65, Grandeville 17 ; pastille « 90 km au plus », puis « 118 km · au-dessus de 90 km » avec Quaibleu ; fiche « Rochelleville (17) 118 km : au-dessus de ton plafond de 90 km » ; aucune zone demandée depuis la fin du calcul', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'AC-5 : largeur bureau (1 440 px) ; les pastilles n’existent qu’en bureau (AC-16 de proches)');
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
@@ -214,7 +214,7 @@ test('AC-5 en bureau (1 440 px), panne « panne-totale », Rochelleville (17) à
   await regler(page, 'Rochelleville (17)', 'ArrowLeft', 2); // 90 km
   await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '90');
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 18 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 65 · 650 € · 5 min', '2 · Grandeville (33) · 17 · 832 € · 50 min']);
 
   // Le haut de la carte, avant le choix.
   await expect(pastille(page, 'Rochelleville (17)')).toBeVisible();
@@ -264,7 +264,7 @@ const CAS_AC10 = [
 ] as const;
 
 for (const [cas, quoi, [cle, valeur]] of CAS_AC10)
-  test(`AC-10 (${cas}) depuis /?loyer=1200&mer=50, Nantesville (44) gardé ${quoi} par la version précédente, plafond 2 h 15 : « Calcul des trajets depuis Nantesville (44)… », puis prêt à 2 h 15, « Trajets indisponibles » à aucun moment ; Portmer 66, Grandeville 17`, async ({ page }) => {
+  test(`AC-10 (${cas}) depuis /?loyer=1200&mer-min=60, Nantesville (44) gardé ${quoi} par la version précédente, plafond 2 h 15 : « Calcul des trajets depuis Nantesville (44)… », puis prêt à 2 h 15, « Trajets indisponibles » à aucun moment ; Portmer 64, Grandeville 16`, async ({ page }) => {
     // Entrée posée avant l'ouverture (une seule fois), et un guetteur qui note tout texte « Trajets indisponibles » affiché.
     await page.addInitScript(
       ([cle, valeur]) => {
@@ -293,7 +293,7 @@ for (const [cas, quoi, [cle, valeur]] of CAS_AC10)
     expect(demandes.zones).toHaveLength(12);
     await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
     await expect(liste(page)).toContainText('2 communes passent tes critères');
-    expect(await lignes(page)).toEqual(["1 · Portmer (17) · 66 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+    expect(await lignes(page)).toEqual(['1 · Portmer (17) · 64 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
     expect(await page.evaluate(() => (window as unknown as { vuIndisponible: boolean }).vuIndisponible)).toBe(false);
   });
 
@@ -392,7 +392,7 @@ async function finRecalcul(page: Page, nom: string) {
 
 const valeurTexte = async (page: Page, nom: string) => nbsp(await plafond(page, nom).getAttribute('aria-valuetext'));
 
-test('AC-6 (a) depuis /?loyer=1200&mer=50, panne « zones-120-a-180-toujours », ajout de Rochelleville (17) : à vol d’oiseau, « 120 km au plus » ; Portmer 70, Quaibleu 32, Grandeville 26', async ({ page }) => {
+test('AC-6 (a) depuis /?loyer=1200&mer-min=60, panne « zones-120-a-180-toujours », ajout de Rochelleville (17) : à vol d’oiseau, « 120 km au plus » ; Portmer 68, Quaibleu 29, Grandeville 25', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page, { ...ZONE_1_S, panne: 'zones-120-a-180-toujours' });
@@ -402,13 +402,13 @@ test('AC-6 (a) depuis /?loyer=1200&mer=50, panne « zones-120-a-180-toujours »,
   expect(await valeurTexte(page, 'Rochelleville (17)')).toBe('120 km au plus');
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+    '1 · Portmer (17) · 68 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 29 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 25 · 832 € · 50 min',
   ]);
 });
 
-test('AC-6 (b) depuis /?loyer=1200&mer=50, panne « zones-135-a-180-toujours », ajout de Rochelleville (17) : en heures à 2 h, « Au-delà de 2 h : l’IGN n’a pas répondu. », plafond au plus 2 h ; Portmer 69, Quaibleu 36, Grandeville 29 ; Montcher « plus de 2 h : au-dessus de ton plafond de 2 h »', async ({ page }) => {
+test('AC-6 (b) depuis /?loyer=1200&mer-min=60, panne « zones-135-a-180-toujours », ajout de Rochelleville (17) : en heures à 2 h, « Au-delà de 2 h : l’IGN n’a pas répondu. », plafond au plus 2 h ; Portmer 67, Quaibleu 33, Grandeville 28 ; Montcher « plus de 2 h : au-dessus de ton plafond de 2 h »', async ({ page }) => {
   test.setTimeout(60_000);
   await ouvrir(page, DEPART);
   await servirIgn(page, { ...ZONE_1_S, panne: 'zones-135-a-180-toujours' });
@@ -425,16 +425,16 @@ test('AC-6 (b) depuis /?loyer=1200&mer=50, panne « zones-135-a-180-toujours »,
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 69 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 36 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 29 · 832 € · 40 km',
+    '1 · Portmer (17) · 67 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 33 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 28 · 832 € · 50 min',
   ]);
   await choisirSurLaCarte(page, 'C');
   await expect(fiche(page)).toContainText('Montcher (75)');
   expect(await texteFiche(page)).toContain('Rochelleville (17) plus de 2 h : au-dessus de ton plafond de 2 h');
 });
 
-test('AC-6 (c) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 45 km, dernier essai il y a plus de 15 min, panne « zones-120-a-180-toujours » : à la réouverture, en heures à 45 min, « Au-delà de 1 h 45 : l’IGN n’a pas répondu. », plafond au plus 1 h 45 ; Portmer 48 seule', async ({ page }) => {
+test('AC-6 (c) depuis /?loyer=1200&mer-min=60, Rochelleville (17) gardé à vol d’oiseau à 45 km, dernier essai il y a plus de 15 min, panne « zones-120-a-180-toujours » : à la réouverture, en heures à 45 min, « Au-delà de 1 h 45 : l’IGN n’a pas répondu. », plafond au plus 1 h 45 ; Portmer 46 seule', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 45);
   const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zones-120-a-180-toujours' });
@@ -452,10 +452,10 @@ test('AC-6 (c) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’
   await expect(plafond(p, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '45');
   await voirListe(p);
   await expect(liste(p)).toContainText('1 commune passe tes critères');
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 48 · 650 € · moins d'1 km"]);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 46 · 650 € · 5 min']);
 });
 
-test('AC-7 depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, service de trajets rétabli : dès l’ouverture, « Recalcul avec l’IGN… » et Portmer 68, Grandeville 17 ; ensuite prêt à 2 h 30, Portmer 68, Grandeville 20 ; fiche de Grandeville « 2 h 15 en voiture »', async ({ page }) => {
+test('AC-7 depuis /?loyer=1200&mer-min=60, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, service de trajets rétabli : dès l’ouverture, « Recalcul avec l’IGN… » et Portmer 66, Grandeville 16 ; ensuite prêt à 2 h 30, Portmer 66, Grandeville 19 ; fiche de Grandeville « 2 h 15 en voiture »', async ({ page }) => {
   test.setTimeout(90_000);
   await nantesvillePartiel(page);
   const { p, demandes } = await rouvrir(page, 16, ZONE_5_S);
@@ -464,7 +464,7 @@ test('AC-7 depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30
   await expect(nantes.getByRole('button', { name: /Recalculer avec l'IGN/ })).toHaveCount(0); // à la place du lien
   await expect(nantes).toContainText(APPROX); // l'état d'avant reste affiché
   await voirListe(p);
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 66 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
   await voirCriteres(p);
   await expect(nantes).toContainText(RECALCUL); // la liste a été lue pendant le recalcul
 
@@ -475,13 +475,13 @@ test('AC-7 depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30
   await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuemax', '180');
   expect(demandes.zones).toHaveLength(12);
   await voirListe(p);
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 20 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 66 · 650 € · 5 min', '2 · Grandeville (33) · 19 · 832 € · 50 min']);
   await choisirSurLaCarte(p, 'B');
   await expect(fiche(p)).toContainText('Grandeville (33)');
   expect(await texteFiche(p)).toContain('Nantesville (44) : 2 h 15 en voiture');
 });
 
-/** AC-8 (a), (d) : Rochelleville (17) repassé en heures à 1 h 30 ; Portmer 65, Grandeville 22. */
+/** AC-8 (a), (d) : Rochelleville (17) repassé en heures à 1 h 30 ; Portmer 63, Grandeville 21. */
 async function rochellevilleEnHeures(p: Page) {
   const rochelle = ligne(p, 'Rochelleville (17)');
   await expect(rochelle).not.toContainText("À vol d'oiseau");
@@ -489,7 +489,7 @@ async function rochellevilleEnHeures(p: Page) {
   expect(await valeurTexte(p, 'Rochelleville (17)')).toBe('1 h 30 au plus');
   await voirListe(p);
   await expect(liste(p)).toContainText('2 communes passent tes critères');
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 65 · 650 € · moins d'1 km", '2 · Grandeville (33) · 22 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 63 · 650 € · 5 min', '2 · Grandeville (33) · 21 · 832 € · 50 min']);
 }
 
 /** AC-8 (b), (d), (e) : Rochelleville (17) toujours à vol d'oiseau, 90 km. */
@@ -500,7 +500,7 @@ async function rochellevilleA90km(p: Page) {
   await expect(rochelle.getByRole('button', { name: "Recalculer avec l'IGN Rochelleville (17)" })).toBeVisible();
 }
 
-test('AC-8 (a) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, IGN normal : à la réouverture, en heures à 1 h 30 ; Portmer 65, Grandeville 22', async ({ page }) => {
+test('AC-8 (a) depuis /?loyer=1200&mer-min=60, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, IGN normal : à la réouverture, en heures à 1 h 30 ; Portmer 63, Grandeville 21', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 90);
   const { p, demandes } = await rouvrir(page, 16);
@@ -510,7 +510,7 @@ test('AC-8 (a) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’
   expect(demandes.zones).toHaveLength(12);
 });
 
-test('AC-8 (b) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours à vol d’oiseau à 90 km, sans « Temps approximatifs », « Trajets indisponibles » ni message d’erreur ; Portmer 67, Grandeville 18', async ({ page }) => {
+test('AC-8 (b) depuis /?loyer=1200&mer-min=60, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours à vol d’oiseau à 90 km, sans « Temps approximatifs », « Trajets indisponibles » ni message d’erreur ; Portmer 65, Grandeville 17', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 90);
   const { p, demandes } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
@@ -523,10 +523,10 @@ test('AC-8 (b) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’
   await expect(p.getByTestId('message-carte')).toHaveText('');
   await expect(zone(p).getByRole('button', { name: /Réessayer/ })).toHaveCount(0);
   await voirListe(p);
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 67 · 650 € · moins d'1 km", '2 · Grandeville (33) · 18 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 65 · 650 € · 5 min', '2 · Grandeville (33) · 17 · 832 € · 50 min']);
 });
 
-test('AC-8 (c) depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours partiel à 2 h 30, « Temps approximatifs », sans « À vol d’oiseau » ; Portmer 68, Grandeville 17', async ({ page }) => {
+test('AC-8 (c) depuis /?loyer=1200&mer-min=60, Nantesville (44) gardé partiel à 2 h 30, dernier essai il y a plus de 15 min, panne « panne-totale » : après « Recalcul avec l’IGN… », toujours partiel à 2 h 30, « Temps approximatifs », sans « À vol d’oiseau » ; Portmer 66, Grandeville 16', async ({ page }) => {
   test.setTimeout(90_000);
   await nantesvillePartiel(page);
   const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
@@ -538,10 +538,10 @@ test('AC-8 (c) depuis /?loyer=1200&mer=50, Nantesville (44) gardé partiel à 2 
   await expect(plafond(p, 'Nantesville (44)')).toHaveAttribute('aria-valuenow', '150');
   expect(await valeurTexte(p, 'Nantesville (44)')).toBe('2 h 30 au plus');
   await voirListe(p);
-  expect(await lignes(p)).toEqual(["1 · Portmer (17) · 68 · 650 € · moins d'1 km", '2 · Grandeville (33) · 17 · 832 € · 40 km']);
+  expect(await lignes(p)).toEqual(['1 · Portmer (17) · 66 · 650 € · 5 min', '2 · Grandeville (33) · 16 · 832 € · 50 min']);
 });
 
-test('AC-8 (d) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a 5 min, IGN normal : à l’ouverture aucune zone demandée, toujours 90 km ; après « Recalculer avec l’IGN », en heures à 1 h 30 ; Portmer 65, Grandeville 22', async ({ page }) => {
+test('AC-8 (d) depuis /?loyer=1200&mer-min=60, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a 5 min, IGN normal : à l’ouverture aucune zone demandée, toujours 90 km ; après « Recalculer avec l’IGN », en heures à 1 h 30 ; Portmer 63, Grandeville 21', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 90);
   const { p, demandes } = await rouvrir(page, 5);
@@ -558,7 +558,7 @@ test('AC-8 (d) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’
   await rochellevilleEnHeures(p);
 });
 
-test('AC-8 (e) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : le recalcul échoue, toujours 90 km ; seconde réouverture 5 min après la première : aucune zone demandée', async ({ page }) => {
+test('AC-8 (e) depuis /?loyer=1200&mer-min=60, Rochelleville (17) gardé à vol d’oiseau à 90 km, dernier essai il y a plus de 15 min, panne « panne-totale » : le recalcul échoue, toujours 90 km ; seconde réouverture 5 min après la première : aucune zone demandée', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 90);
   const premiere = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'panne-totale' });
@@ -575,7 +575,7 @@ test('AC-8 (e) depuis /?loyer=1200&mer=50, Rochelleville (17) gardé à vol d’
   await rochellevilleA90km(seconde.p);
 });
 
-test('AC-12 (a) depuis /?loyer=1200&mer=50, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 180 km, dernier essai il y a plus de 15 min : reste à vol d’oiseau à 180 km, « Recalculer avec l’IGN », aucun plafond de 2 h 45', async ({ page }) => {
+test('AC-12 (a) depuis /?loyer=1200&mer-min=60, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 180 km, dernier essai il y a plus de 15 min : reste à vol d’oiseau à 180 km, « Recalculer avec l’IGN », aucun plafond de 2 h 45', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 180);
   const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zone-180-toujours-rochelleville' });
@@ -589,7 +589,7 @@ test('AC-12 (a) depuis /?loyer=1200&mer=50, panne « zone-180-toujours-rochellev
   expect(nbsp(await rochelle.innerText())).not.toContain('2 h 45');
 });
 
-test('AC-12 (b) depuis /?loyer=1200&mer=50, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 165 km, dernier essai il y a plus de 15 min : en heures à 2 h 45, « Au-delà de 2 h 45 : l’IGN n’a pas répondu. », plafond au plus 2 h 45', async ({ page }) => {
+test('AC-12 (b) depuis /?loyer=1200&mer-min=60, panne « zone-180-toujours-rochelleville », Rochelleville (17) gardé à vol d’oiseau à 165 km, dernier essai il y a plus de 15 min : en heures à 2 h 45, « Au-delà de 2 h 45 : l’IGN n’a pas répondu. », plafond au plus 2 h 45', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 165);
   const { p } = await rouvrir(page, 16, { ...ZONE_1_S, panne: 'zone-180-toujours-rochelleville' });
@@ -666,7 +666,7 @@ test('recalcul : les zones d’annonce de la page ne changent pas pendant le rec
 const pointDe = (u: string) => new URL(u).searchParams.get('point');
 const POINT = { Nantesville: '-2,3', Toulouseville: '3,-2', Rochelleville: '0.5,0.5' } as const;
 
-test('AC-9 depuis /?loyer=1200&mer=50, Rochelleville (17) à vol d’oiseau à 120 km (AC-4), service de trajets rétabli : après « Recalculer avec l’IGN », « Recalcul avec l’IGN… » et Portmer 70, Quaibleu 32, Grandeville 26 ; ensuite prêt à 2 h, « 3 communes passent tes critères », Portmer 69, Quaibleu 36, Grandeville 29', async ({ page }) => {
+test('AC-9 depuis /?loyer=1200&mer-min=60, Rochelleville (17) à vol d’oiseau à 120 km (AC-4), service de trajets rétabli : après « Recalculer avec l’IGN », « Recalcul avec l’IGN… » et Portmer 68, Quaibleu 29, Grandeville 25 ; ensuite prêt à 2 h, « 3 communes passent tes critères », Portmer 67, Quaibleu 33, Grandeville 28', async ({ page }) => {
   test.setTimeout(90_000);
   await rochellevilleKm(page, 120);
   const demandes = await servirIgn(page, ZONE_5_S); // rétabli : posé après, il gagne
@@ -679,9 +679,9 @@ test('AC-9 depuis /?loyer=1200&mer=50, Rochelleville (17) à vol d’oiseau à 1
   await voirListe(page); // 390 px : la liste est dans son onglet (interface-telephone)
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 70 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 32 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 26 · 832 € · 40 km',
+    '1 · Portmer (17) · 68 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 29 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 25 · 832 € · 50 min',
   ]);
   await voirCriteres(page);
   await expect(rochelle).toContainText(RECALCUL); // la liste a été lue pendant le recalcul
@@ -697,9 +697,9 @@ test('AC-9 depuis /?loyer=1200&mer=50, Rochelleville (17) à vol d’oiseau à 1
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 69 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 36 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 29 · 832 € · 40 km',
+    '1 · Portmer (17) · 67 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 33 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 28 · 832 € · 50 min',
   ]);
 });
 
@@ -713,7 +713,7 @@ async function deuxApproximatifs(page: Page) {
   await expect(plafond(page, 'Rochelleville (17)')).toHaveAttribute('aria-valuenow', '120');
 }
 
-test('AC-11 depuis /?loyer=1200&mer=50, Nantesville (44) partiel puis Rochelleville (17) à vol d’oiseau gardés, dernier essai il y a plus de 15 min, service rétabli : ajout de Toulouseville (31) pendant le recalcul de Nantesville (44) → « En attente… », puis « Calcul des trajets depuis Toulouseville (31)… » ; aucune zone de Rochelleville (17) avant que Toulouseville (31) soit prêt ; les trois prêts, Rochelleville (17) à 2 h', async ({ page }) => {
+test('AC-11 depuis /?loyer=1200&mer-min=60, Nantesville (44) partiel puis Rochelleville (17) à vol d’oiseau gardés, dernier essai il y a plus de 15 min, service rétabli : ajout de Toulouseville (31) pendant le recalcul de Nantesville (44) → « En attente… », puis « Calcul des trajets depuis Toulouseville (31)… » ; aucune zone de Rochelleville (17) avant que Toulouseville (31) soit prêt ; les trois prêts, Rochelleville (17) à 2 h', async ({ page }) => {
   test.setTimeout(120_000);
   await deuxApproximatifs(page);
   // À chaque demande de zone de Rochelleville (17), on note si Toulouseville (31) est déjà prêt (son curseur affiché),

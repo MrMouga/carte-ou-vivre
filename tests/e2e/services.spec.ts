@@ -272,7 +272,7 @@ test('R57 : avec `services` dans l’adresse, la page attend le fichier des temp
 });
 
 test('R54 : avec un proche, le bloc « Services en voiture » vient sous « Tes proches »', async ({ page }) => {
-  await ouvrir(page, '/?loyer=1200&mer=50', { jeu: FIXTURE });
+  await ouvrir(page, '/?loyer=1200&mer-min=60', { jeu: FIXTURE });
   await servirIgn(page);
   await ajouter(page, 'Nantesville');
   await pret(page, 'Nantesville (44)');
