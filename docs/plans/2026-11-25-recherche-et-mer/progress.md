@@ -36,7 +36,10 @@ Corrections 1 : faite — commit d56dee3 — Majeur « liste des suggestions à 
 - Corrections 1, décidé par Claude : avec peu de suggestions, la liste garde la hauteur de son contenu ; elle s'arrête au-dessus du clavier, mesuré à son ouverture ; cette place laissée au clavier ne vaut que pour la recherche (pas pour l'ajout d'un proche).
 
 ## Retours à traiter à la démo
+- Démo (2026-11-26 11:15) : Vincent « tout est bon c'est validé » — pas de pari exprimé ; surbrillance de la première suggestion gardée (H197) ; H184 amendée comme proposé ; temps de la mer gardés tels que servis (Hourtin et Blaye non retirés, H201) ; décisions gardées écrites dans details.md (H197 à H201).
 
 ## Preuves
 
 ## Coût
+
+Terminé 2026-11-26

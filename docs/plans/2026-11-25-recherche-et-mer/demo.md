@@ -72,3 +72,6 @@ La liste complète est dans [progress.md](progress.md#décisions-prises-à-la-pl
   - le relecteur spec a dû être relancé une fois pour écrire son rapport ;
   - la première QA était sans carte ;
   - une question pendant 0b (`slice(9, 11)`, Aspremont).
+
+## Verdict
+2026-11-26 11:15 · **Acceptée** par Vincent (« tout est bon c'est validé »). Décisions gardées dans la spec : H184 amendée, H197 à H201.

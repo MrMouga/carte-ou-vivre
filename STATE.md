@@ -166,6 +166,7 @@ On ajoute des lignes, on ne réécrit jamais les anciennes.
 | 2026-11-25 | Design validé : recherche-et-mer | Piste C (loupe dans le titre en bureau, au bout des onglets au téléphone ; mentions en bas du panneau de réglages) ; choix de Vincent contre l'avis du relecteur (A comme base, loupe jugée Majeur) : critique gardée dans decisions.md |
 | 2026-11-25 | Mer en minutes seulement, partout (D5 révisée de recherche-et-mer) ; anciens liens `mer=` ignorés, `mer-min=` à la place (D9) | Choix de Vincent après essai des pistes. Coût : 58 critères de 7 tranches à recaler en /breakdown. Risque : plus de km pour se replier si la tâche 0 juge les minutes peu crédibles |
 | 2026-11-25 | Plan validé : recherche-et-mer | 8 tâches (0a codes postaux et envoi préparé, 0c tableau de recalage, 1 recherche par nom, 2 par code, 4 mentions, 3a durées, 0b minutes servies, 3b minutes partout et recalage) ; un seul arrêt avant la démo ; au-dessus du cadre perso, choix de Vincent |
+| 2026-11-26 | Tranche construite : recherche-et-mer | Recherche d'une commune par nom ou code postal, mer en minutes en voiture partout (43 communes sans temps, Aspremont retiré), mentions en bas du panneau ; 61 critères de 7 tranches recalés ; démo acceptée par Vincent (« tout est bon »), H184 amendée, H197 à H201 ajoutées ; pas encore en ligne |
 
 ## Hypothèses à vérifier
 
@@ -226,6 +227,7 @@ Autres questions :
 
 ## Documents
 
+- [Plan et construction « Recherche et mer en minutes » — 2026-11-25](docs/plans/2026-11-25-recherche-et-mer/plan.md) · [progression](docs/plans/2026-11-25-recherche-et-mer/progress.md) · [démo](docs/plans/2026-11-25-recherche-et-mer/demo.md) · [crédibilité des minutes](docs/plans/2026-11-25-recherche-et-mer/credibilite-mer.md)
 - [Design « Recherche et mer en minutes » — 2026-11-25](docs/design/recherche-et-mer/README.md) · [décisions](docs/design/recherche-et-mer/decisions.md)
 - [Spec « Recherche et mer en minutes » — 2026-11-25](docs/specs/2026-11-25-recherche-et-mer/spec.md) · [relecture](docs/specs/2026-11-25-recherche-et-mer/relecture.md)
 - [Spec « Services du quotidien » — 2026-11-23](docs/specs/2026-11-23-services/spec.md) · [relecture](docs/specs/2026-11-23-services/relecture.md) · [mesures](docs/specs/2026-11-23-services/mesures.md)
