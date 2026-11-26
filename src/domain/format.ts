@@ -1,4 +1,4 @@
-import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TypeEnv } from './score';
+import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TempsMer, type TypeEnv } from './score';
 import { estGare, estScolarite, filtresServices, libelleService, texteValeur } from './services';
 import { couverture, marque } from '../proches/etat';
 import { RAYON_KM, type LigneMetier } from './emploi';
@@ -32,6 +32,15 @@ export function duree(min: number): string {
   const m = min % 60;
   return `${Math.floor(min / 60)}${NBSP}h${m ? `${NBSP}${String(m).padStart(2, '0')}` : ''}`;
 }
+
+/**
+ * Temps jusqu'à la mer (H191 de recherche-et-mer), en minutes entières : 0 → « moins d'1 min », « 5 min », « 1 h »,
+ * « 1 h 05 », « 2 h 40 », « 7 h » ; aussi les pastilles (R60 : « 15 min », « 30 min », « 1 h », « 1 h 30 »).
+ */
+export const dureeMer = (min: number) => (min === 0 ? `moins d'1${NBSP}min` : duree(min));
+
+/** Liste et raisons (R62, H192) : le temps de la mer, précédé de « ≈ » s'il est compté d'après les km (« ≈ 7 h »). */
+export const tempsMerTexte = (t: TempsMer) => `${t.dapresKm ? `≈${NBSP}` : ''}${dureeMer(t.minutes)}`;
 
 /**
  * Temps d'une commune pour un proche (R34, H96 de proches-fiables) : `fin` est la fin de la plus petite zone obtenue qui

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chiffresListe, compte, euros, eurosM2, km, LIBELLE_TAILLE, LIBELLE_TYPE, ligneListe, loyerTexte, merFiche, merTexte, montagneFiche, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, typeTexte } from './format';
+import { chiffresListe, compte, dureeMer, euros, eurosM2, km, LIBELLE_TAILLE, LIBELLE_TYPE, ligneListe, loyerTexte, merFiche, merTexte, montagneFiche, nomAffiche, population, plafondLoyer, raisonTexte, rangTexte, resumeCadre, tempsMerTexte, typeTexte } from './format';
 
 // H3 : les tests comparent après avoir remplacé les espaces insécables par des espaces.
 const s = (t: string) => t.replace(/ /g, ' ');
@@ -150,5 +150,36 @@ describe('R27, H75 — le type d’environnement', () => {
       '1 taille · 2 types · Mer 50 km · Montagne 30 km',
     );
     expect(resumeCadre({ loyer: 1200, mer: null, tailles: [], types: [] })).toBe('Peu importe');
+  });
+});
+
+describe('R61, H191, H192 — la mer en minutes (spec recherche-et-mer)', () => {
+  it('H191 : 0 → « moins d’1 min », « 5 min », « 50 min », « 1 h », « 1 h 05 », « 2 h 40 », « 7 h »', () => {
+    expect(s(dureeMer(0))).toBe("moins d'1 min");
+    expect(s(dureeMer(5))).toBe('5 min');
+    expect(s(dureeMer(14))).toBe('14 min');
+    expect(s(dureeMer(50))).toBe('50 min');
+    expect(s(dureeMer(60))).toBe('1 h');
+    expect(s(dureeMer(65))).toBe('1 h 05');
+    expect(s(dureeMer(135))).toBe('2 h 15');
+    expect(s(dureeMer(160))).toBe('2 h 40');
+    expect(s(dureeMer(420))).toBe('7 h');
+  });
+
+  it('R60 : les pastilles 15, 30, 60, 90 s’écrivent « 15 min », « 30 min », « 1 h », « 1 h 30 »', () => {
+    expect([15, 30, 60, 90].map((m) => s(dureeMer(m)))).toEqual(['15 min', '30 min', '1 h', '1 h 30']);
+  });
+
+  it('H3 : espaces insécables dans la durée (jamais coupée en fin de ligne)', () => {
+    expect(dureeMer(0)).toBe("moins d'1 min");
+    expect(dureeMer(65)).toBe('1 h 05');
+  });
+
+  it('H192 : un temps compté d’après les km s’écrit avec « ≈ » (Rhinval, 420 km → « ≈ 7 h ») ; un temps calculé, sans', () => {
+    expect(s(tempsMerTexte({ minutes: 420, dapresKm: true }))).toBe('≈ 7 h');
+    expect(tempsMerTexte({ minutes: 420, dapresKm: true })).toBe('≈ 7 h');
+    expect(s(tempsMerTexte({ minutes: 1, dapresKm: true }))).toBe('≈ 1 min');
+    expect(s(tempsMerTexte({ minutes: 160, dapresKm: false }))).toBe('2 h 40');
+    expect(s(tempsMerTexte({ minutes: 0, dapresKm: false }))).toBe("moins d'1 min");
   });
 });

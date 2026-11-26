@@ -24,6 +24,9 @@ export type Commune = {
   loyerM2: number | null;
   estimationPropre: boolean;
   merKm: number | null;
+  // Spec recherche-et-mer (R61, H191, H196) : temps en voiture jusqu'à la mer, minutes entières déjà arrondies une fois
+  // (0 = « moins d'1 min ») ; absent ou null = sans temps, compté d'après les km (D7, `tempsMer`).
+  merMin?: number | null;
   // Spec immobilier (tâche 0) : un champ absent (jeu de test sans ces valeurs) vaut inconnu.
   loyerM2Maison?: number | null;
   estimationPropreMaison?: boolean | null;
@@ -213,6 +216,30 @@ export const kmCompare = (km: number) => Math.max(1, Math.round(km));
 const merComparee = (c: Commune) => (c.merKm == null ? null : kmCompare(c.merKm));
 /** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
 const montagneComparee = (c: Commune) => (c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : kmCompare(c.montagneKm));
+
+/**
+ * Temps d'une commune jusqu'à la mer (R61 de recherche-et-mer) : `minutes` telles qu'affichées (0 = « moins d'1 min ») ;
+ * `dapresKm` : sans temps, compté d'après les km (D7, écrit « ≈ », H192).
+ */
+export type TempsMer = { minutes: number; dapresKm: boolean };
+
+/**
+ * R61, D7 : la valeur servie, telle quelle (la page ne recalcule rien, H191) ; sans temps, les km affichés comptés comme
+ * minutes (1 km = 1 min, « moins d'1 km » = 1 min) ; sans km ni temps, null (mer inconnue).
+ */
+export function tempsMer(c: Pick<Commune, 'merKm' | 'merMin'>): TempsMer | null {
+  if (c.merMin != null) return { minutes: c.merMin, dapresKm: false };
+  return c.merKm == null ? null : { minutes: kmCompare(c.merKm), dapresKm: true };
+}
+
+/**
+ * R61, R62 : minutes comparées et notées, celles affichées ; « moins d'1 min » vaut 1 min ; null = mer inconnue.
+ * À brancher en tâche 3b à la place de `merComparee`.
+ */
+export function merMinComparee(c: Pick<Commune, 'merKm' | 'merMin'>): number | null {
+  const t = tempsMer(c);
+  return t == null ? null : Math.max(1, t.minutes);
+}
 
 /**
  * H74 : moyenne exacte des notes, moitié vers le haut. Une note en virgule flottante peut tomber juste sous la moitié

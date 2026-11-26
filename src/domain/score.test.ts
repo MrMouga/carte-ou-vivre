@@ -3,9 +3,10 @@ import { describe, expect, it } from 'vitest';
 import acceptance from '../../docs/specs/2026-10-12-loyer-mer/acceptance.json';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
-import { merFiche, montagneFiche } from './format';
+import rechercheEtMer from '../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json';
+import { merFiche, montagneFiche, tempsMerTexte } from './format';
 import { PRIX_DEPART } from './prix';
-import { communeDeLigne, evaluer, palier, REGLAGES_DEPART, tailleDe, type Commune, type LigneCommunes, type Reglages } from './score';
+import { communeDeLigne, evaluer, merMinComparee, palier, REGLAGES_DEPART, tailleDe, tempsMer, type Commune, type LigneCommunes, type Reglages } from './score';
 
 // Fixture « 5 communes » d'acceptance.json, au format du domaine.
 const fixture: Commune[] = acceptance.fixture.items.map((it) => ({
@@ -374,5 +375,71 @@ describe('R27 — le type d’environnement (spec cadre-de-vie)', () => {
   it('H83 : raisons dans l’ordre prix, mer, montagne, taille, type', () => {
     const v = ev({ loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'] });
     expect(v.by('C').raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille', 'type']);
+  });
+});
+
+// Tranche recherche-et-mer, tâche 3a : le temps jusqu'à la mer d'une commune (R61, D7), et la valeur comparée (R62).
+// Pas encore branché sur `evaluer` (tâche 3b). Fixture « 6 communes » de recherche-et-mer : mer_min par code INSEE ; les
+// km servis sont ceux de la fixture d'immobilier (A 0,9, B 39,9, C 148,2, D 180,3, E 7, F 420), joints par code INSEE.
+describe('R61, R62, D7 — la mer en minutes (spec recherche-et-mer)', () => {
+  const merMin = new Map(rechercheEtMer.fixture.items.map((it) => [it.code_insee, it.mer_min]));
+  const six: Commune[] = immobilier.fixture.items.map((it) => ({
+    code: it.code_insee,
+    nom: it.nom,
+    dep: it.dep,
+    population: it.population,
+    loyerM2: it.loyer_m2,
+    estimationPropre: it.estimation_propre,
+    merKm: it.mer_km,
+    merMin: merMin.get(it.code_insee) ?? null,
+  }));
+  const par = (nom: string) => six.find((c) => c.nom === nom)!;
+
+  it('R61 : la valeur servie est le temps, telle quelle (Portmer 5, Grandeville 50, Montcher 135, Terrebasse 160, Quaibleu 14)', () => {
+    expect(['Portmer', 'Grandeville', 'Montcher', 'Terrebasse', 'Quaibleu'].map((n) => tempsMer(par(n)))).toEqual([
+      { minutes: 5, dapresKm: false },
+      { minutes: 50, dapresKm: false },
+      { minutes: 135, dapresKm: false },
+      { minutes: 160, dapresKm: false },
+      { minutes: 14, dapresKm: false },
+    ]);
+    expect(['Portmer', 'Grandeville', 'Montcher', 'Terrebasse', 'Quaibleu'].map((n) => merMinComparee(par(n)))).toEqual([5, 50, 135, 160, 14]);
+  });
+
+  it('D7, H192 : Rhinval (420 km, sans temps) → 420 min comptées d’après les km, « ≈ 7 h »', () => {
+    const rhinval = par('Rhinval');
+    expect(rhinval).toMatchObject({ merKm: 420, merMin: null });
+    expect(tempsMer(rhinval)).toEqual({ minutes: 420, dapresKm: true });
+    expect(merMinComparee(rhinval)).toBe(420);
+    expect(tempsMerTexte(tempsMer(rhinval)!).replace(/ /g, ' ')).toBe('≈ 7 h');
+  });
+
+  it('D7 : sans temps, les km affichés comptent comme minutes (39,9 km → 40 ; 148,5 → 149) ; « moins d’1 km » (0,9) = 1 min', () => {
+    const sansTemps = (merKm: number): Commune => ({ ...par('Portmer'), merKm, merMin: null });
+    expect(tempsMer(sansTemps(39.9))).toEqual({ minutes: 40, dapresKm: true });
+    expect(tempsMer(sansTemps(148.5))).toEqual({ minutes: 149, dapresKm: true });
+    expect(tempsMer(sansTemps(0.9))).toEqual({ minutes: 1, dapresKm: true });
+    expect(merMinComparee(sansTemps(0.9))).toBe(1);
+  });
+
+  it('D7 : une commune sans champ `merMin` (écrite avant la tranche) est sans temps, comptée d’après ses km', () => {
+    const { merMin: _, ...ancienne } = par('Grandeville');
+    expect(tempsMer(ancienne)).toEqual({ minutes: 40, dapresKm: true });
+  });
+
+  it('R61 : « moins d’1 min » (0 servi) s’affiche 0 et se compare comme 1 min', () => {
+    const tout = { ...par('Portmer'), merMin: 0 };
+    expect(tempsMer(tout)).toEqual({ minutes: 0, dapresKm: false });
+    expect(merMinComparee(tout)).toBe(1);
+  });
+
+  it('R61 : sans km ni temps, la mer est inconnue (null)', () => {
+    const inconnue = { ...par('Portmer'), merKm: null, merMin: null };
+    expect(tempsMer(inconnue)).toBeNull();
+    expect(merMinComparee(inconnue)).toBeNull();
+  });
+
+  it('la page ne recalcule rien : rien n’est arrondi à nouveau sur la valeur servie, ni les km pris quand un temps existe', () => {
+    expect(tempsMer({ ...par('Grandeville'), merKm: 39.9, merMin: 50 })).toEqual({ minutes: 50, dapresKm: false });
   });
 });
