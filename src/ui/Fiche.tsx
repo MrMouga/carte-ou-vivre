@@ -93,7 +93,8 @@ export function Fiche({ evaluation: e, total, prix, proches, index, emploi, meti
         <p className="text-texte tabular-nums">{prixFiche(c, prix)}</p>
         {estimation && <p className="text-secondaire text-muted-foreground">{estimation}</p>}
       </div>
-      <p className="text-texte tabular-nums">{merFiche(c.merKm)}</p>
+      {/* Recherche-et-mer, R63 : le temps en voiture jusqu'à la mer, sans km. */}
+      <p className="text-texte tabular-nums">{merFiche(c)}</p>
       {/* Cadre-de-vie, R30 : la montagne sous la mer. */}
       <p className="text-texte tabular-nums">{montagneFiche(c.montagneKm)}</p>
       {/* Mairies, R40 (D6, H112) : la mairie élue en 2026 sous la montagne, toujours affichée, sans mise en avant. */}

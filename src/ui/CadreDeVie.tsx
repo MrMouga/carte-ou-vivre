@@ -1,6 +1,6 @@
 import { useId } from 'react';
-import { LIBELLE_TAILLE, LIBELLE_TYPE, resumeCadre } from '@/domain/format';
-import { CHOIX_MER, type Reglages, type TypeEnv } from '@/domain/score';
+import { dureeMer, LIBELLE_TAILLE, LIBELLE_TYPE, resumeCadre } from '@/domain/format';
+import { CHOIX_MER, CHOIX_MONTAGNE, type Reglages, type TypeEnv } from '@/domain/score';
 import { ORDRE_TAILLES, ORDRE_TYPES } from '@/domain/url';
 import { cn } from '@/lib/cn';
 import { Categorie } from './Categorie';
@@ -8,8 +8,8 @@ import { Categorie } from './Categorie';
 // Catégorie « Cadre de vie » (spec cadre-de-vie, design F : docs/design/cadre-de-vie/README.md). Elle remplace les
 // catégories « Mer » et « Taille de ville ». Groupes, dans l'ordre : « Taille de la commune » (Cases séparées, choix
 // multiple, aria-pressed), « Type d'environnement » (Rangée qui défile, choix multiple, aria-pressed), puis « Proximité avec
-// la nature », qui porte « Mer à moins de » et, dessous, « Montagne à moins de » (Cases collées, boutons à bascule
-// exclusifs, D12). Noms pour les lecteurs d'écran : H76.
+// la nature », qui porte « Mer à moins de » (en minutes, R60 de recherche-et-mer) et, dessous, « Montagne à moins de »
+// (en km) (Cases collées, boutons à bascule exclusifs, D12). Noms pour les lecteurs d'écran : H76.
 
 type Props = { reglages: Reglages; onChange: (r: Reglages) => void; disabled?: boolean };
 
@@ -20,17 +20,18 @@ const CASE =
 /** Coche ou décoche `x` parmi `cochees` (taille, type) : le résultat suit l'ordre de l'adresse, `ordre`. */
 const basculer = <T,>(ordre: T[], cochees: T[], x: T) => ordre.filter((y) => (y === x ? !cochees.includes(x) : cochees.includes(y)));
 
-/** R28, R29, H69 (révisée par D12) : les distances, les mêmes pour la mer et la montagne ; aucune cochée = Peu importe. */
-const CHOIX: { valeur: number; libelle: string }[] = [
-  ...CHOIX_MER.map((d) => ({ valeur: d, libelle: `${d} km` })),
-];
+type Choix = { valeur: number; libelle: string }[];
+/** R60 de recherche-et-mer : les temps de la mer, « 15 min », « 30 min », « 1 h », « 1 h 30 », sans bascule (D5 révisée). */
+const CHOIX_MER_MIN: Choix = CHOIX_MER.map((m) => ({ valeur: m, libelle: dureeMer(m) }));
+/** R29, H69 (révisée par D12) : les distances de la montagne, en km ; aucune cochée = Peu importe. */
+const CHOIX_MONTAGNE_KM: Choix = CHOIX_MONTAGNE.map((d) => ({ valeur: d, libelle: `${d} km` }));
 
 /**
  * Cases collées (contrat du système), révisées par D12 de cadre-de-vie : sans case « Peu importe ». Boutons à bascule
  * exclusifs (H76) : cocher une case décoche l'autre, toucher la case cochée la décoche (`null` = Peu importe). Au clavier,
  * Tab de case en case, comme les tailles.
  */
-function CasesCollees({ titre, valeur, onChange, disabled }: { titre: string; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
+function CasesCollees({ titre, choix, valeur, onChange, disabled }: { titre: string; choix: Choix; valeur: number | null; onChange: (v: number | null) => void; disabled: boolean }) {
   const id = useId();
   return (
     <div className="flex flex-col gap-1">
@@ -39,7 +40,7 @@ function CasesCollees({ titre, valeur, onChange, disabled }: { titre: string; va
       </span>
       {/* Filets d'1 px : l'écart de la grille laisse voir le fond `border`. Pas d'`overflow-hidden` : il couperait le focus. */}
       <div role="group" aria-labelledby={id} className="grid grid-cols-4 gap-px rounded-chip border border-border bg-border">
-        {CHOIX.map((c) => {
+        {choix.map((c) => {
           const cochee = valeur === c.valeur;
           return (
             <button
@@ -137,9 +138,10 @@ export function CadreDeVie({ reglages, onChange, disabled = false }: Props) {
         </div>
         <RangeeTypes types={reglages.types ?? []} onChange={(types) => onChange({ ...reglages, types })} disabled={disabled} />
         <div role="group" aria-label="Proximité avec la nature" className="flex flex-col gap-3">
-          <CasesCollees titre="Mer à moins de" valeur={reglages.mer} onChange={(mer) => onChange({ ...reglages, mer })} disabled={disabled} />
+          <CasesCollees titre="Mer à moins de" choix={CHOIX_MER_MIN} valeur={reglages.mer} onChange={(mer) => onChange({ ...reglages, mer })} disabled={disabled} />
           <CasesCollees
             titre="Montagne à moins de"
+            choix={CHOIX_MONTAGNE_KM}
             valeur={reglages.montagne ?? null}
             onChange={(montagne) => onChange({ ...reglages, montagne })}
             disabled={disabled}

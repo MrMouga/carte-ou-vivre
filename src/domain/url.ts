@@ -1,6 +1,7 @@
 // R7, H7 : les réglages vivent dans l'adresse de la page (D7 : pas la commune choisie).
 // Spec immobilier, R26 : le plafond du prix s'écrit `loyer` (Louer) ou `achat` (Acheter) ; `bien`, `unite` et `surface`
 // n'apparaissent que s'ils diffèrent de leur valeur de départ.
+// Spec recherche-et-mer, R60 et D9 : la mer s'écrit `mer-min`, en minutes ; l'ancien `mer` (en km) est ignoré.
 // Spec cadre-de-vie, R31 : `mer` et `montagne` en cinq choix, écrites seulement si elles diffèrent de Peu importe ; `env`
 // liste les types d'environnement cochés, comme `taille`.
 // Spec mairies, R41 : `mairie` liste les bords cochés, comme `env`, placée après `env`.
@@ -15,19 +16,12 @@ export const BORNES = {
   loyer: bornesPrix(PRIX_DEPART),
 } as const;
 
-/** Ancienne plage du curseur de la mer (H2, H7 et H17 de loyer-mer) : multiples de 5, de 5 à 200 km. */
-const ANCIENNE_MER = { min: 5, max: 200, pas: 5 };
-
 /**
- * R31 : un des cinq choix (10, 30, 50, 100 ; `null` = Peu importe). Une valeur de l'ancienne plage prend le choix juste
- * au-dessus (au-delà de 100 : Peu importe) ; toute autre valeur, absente ou `aucun` : Peu importe.
+ * R60 de recherche-et-mer : `mer-min` vaut 15, 30, 60 ou 90 ; toute autre valeur, absente : Peu importe (`null`). L'ancien
+ * `mer` (en km) n'est pas lu (D9) : il disparaît de l'adresse réécrite.
  */
 function lireMer(v: string | null): number | null {
-  if (v == null || !/^\d+$/.test(v)) return null;
-  const n = Number(v);
-  const { min, max, pas } = ANCIENNE_MER;
-  if (n < min || n > max || (n - min) % pas !== 0) return null;
-  return CHOIX_MER.find((c) => c >= n) ?? null;
+  return CHOIX_MER.find((c) => String(c) === v) ?? null;
 }
 
 /** R31 : `montagne` vaut 10, 30, 50 ou 100 ; toute autre valeur (dont `0`) = Peu importe, rendue absente (`undefined`). */
@@ -144,7 +138,7 @@ export function lireAdresse(search: string, codes?: ReadonlySet<string>): Reglag
   const services = lireServices(q.get('services'));
   return {
     loyer: plafond(q.get(CLE_PRIX[prix.mode]), bornesPrix(prix), plafondDepart(prix)),
-    mer: lireMer(q.get('mer')),
+    mer: lireMer(q.get('mer-min')),
     montagne: lireMontagne(q.get('montagne')),
     tailles: lireListe(q.get('taille'), ORDRE_TAILLES),
     ...(types.length ? { types } : {}),
@@ -155,12 +149,12 @@ export function lireAdresse(search: string, codes?: ReadonlySet<string>): Reglag
 }
 
 /**
- * Ordre de R31, R41, R48 et R55 : plafond du prix, `mer`, `montagne`, `taille`, `env`, `mairie`, `metier`, `services`,
+ * Ordre de R31, R41, R48, R55 et H193 : plafond du prix, `mer-min`, `montagne`, `taille`, `env`, `mairie`, `metier`, `services`,
  * `bien`, `unite`, `surface` ; absents si Peu importe. `services` : les filtres effectifs, écrits s'il en reste un.
  */
 export function ecrireAdresse(r: Reglages, prix: ReglagePrix = PRIX_DEPART): string {
   const parts = [`${CLE_PRIX[prix.mode]}=${r.loyer ?? 'aucun'}`];
-  if (r.mer != null) parts.push(`mer=${r.mer}`);
+  if (r.mer != null) parts.push(`mer-min=${r.mer}`);
   if (r.montagne != null) parts.push(`montagne=${r.montagne}`);
   const tailles = ORDRE_TAILLES.filter((t) => r.tailles.includes(t));
   if (tailles.length) parts.push(`taille=${tailles.join(',')}`);

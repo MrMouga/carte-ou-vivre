@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import mairies from '../../docs/specs/2026-10-18-mairies/acceptance.json';
+import rechercheEtMer from '../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json';
 import vraiesNuances from '../../public/data/nuances.json';
 import { mairieFiche, raisonTexte, resumeVieLocale } from './format';
 import { evaluer, joindreBords, type Bord, type Commune, type MairiesJson, type NuancesJson, type Reglages } from './score';
@@ -28,6 +29,8 @@ const six: Commune[] = joindreBords(
     loyerM2: it.loyer_m2,
     estimationPropre: it.estimation_propre,
     merKm: it.mer_km,
+    // Recherche-et-mer, règle (f) du recalage : le temps jusqu'à la mer, par code INSEE.
+    merMin: rechercheEtMer.fixture.items.find((x) => x.code_insee === it.code_insee)?.mer_min ?? null,
     typeEnv: it.type_env as Commune['typeEnv'],
     montagneKm: it.montagne_km,
   })),
@@ -123,7 +126,7 @@ describe('R38 — le filtre de mairie (fixture « 6 communes », /?loyer=1200)',
 
   it('H113 : raisons dans l’ordre prix, mer, montagne, taille, type, mairie, proches', () => {
     const proche = { nom: 'Nantesville (44)', plafond: 15, temps: new Uint16Array(six.length).fill(180) };
-    const res = evaluer(six, { loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'], mairies: ['droite'] }, [proche]);
+    const res = evaluer(six, { loyer: 1000, mer: 15, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'], mairies: ['droite'] }, [proche]);
     expect(res.parCode.get(code.C)!.raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille', 'type', 'bord', 'proche']);
   });
 
@@ -150,10 +153,10 @@ describe('R41 — `mairie` dans l’adresse', () => {
 
   it('noms de H108, dans l’ordre de R38 ; `mairie` après `env`, avant `bien`, `unite`, `surface`', () => {
     expect(ORDRE_BORDS).toEqual(['gauche', 'divers', 'centre', 'droite', 'extreme-droite', 'sans-etiquette']);
-    const r = lireAdresse('?achat=5000&bien=maison&unite=total&surface=80&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=sans-etiquette,extreme-droite,centre,divers,gauche,droite');
+    const r = lireAdresse('?achat=5000&bien=maison&unite=total&surface=80&mer-min=60&montagne=30&taille=petite-ville&env=ville-dense&mairie=sans-etiquette,extreme-droite,centre,divers,gauche,droite');
     expect(r.mairies).toEqual(ORDRE_BORDS);
     expect(ecrireAdresse(r, { mode: 'acheter', bien: 'maison', unite: 'total', surface: 80 })).toMatch(
-      /^\/\?achat=\d+&mer=50&montagne=30&taille=petite-ville&env=ville-dense&mairie=gauche,divers,centre,droite,extreme-droite,sans-etiquette&bien=maison&unite=total&surface=80$/,
+      /^\/\?achat=\d+&mer-min=60&montagne=30&taille=petite-ville&env=ville-dense&mairie=gauche,divers,centre,droite,extreme-droite,sans-etiquette&bien=maison&unite=total&surface=80$/,
     );
   });
 

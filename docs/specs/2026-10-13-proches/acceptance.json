@@ -1,7 +1,7 @@
 {
   "slice": "proches",
   "fixture": {
-    "description": "Fixture inventée « 5 communes » de loyer-mer (mêmes codes 99xxx, noms, populations, loyers, distances et formes), plus : mairie (point d'arrivée des trajets, au centre de chaque carré) et mer_min (temps en voiture de la mairie à la côte, en minutes, déjà arrondi à la minute). Services simulés : la recherche d'adresse (suggestions par texte tapé ; points de départ loin des carrés) et le calcul de trajets (pour chaque adresse choisie, la fin de la tranche de 15 min de chaque commune, par code INSEE). Les AC vérifient ces tranches telles qu'elles s'affichent ; la façon dont le service simulé les produit (zones ou réponse directe) relève de /breakdown, et la traduction d'une zone en tranche par commune se teste à part. Nom par défaut d'un proche : « commune (département) », par ex. « Nantesville (44) ». Pannes et délais : blocs « pannes » et « délais ». Le navigateur de test part sans proche gardé. Révision cadre-de-vie (2026-10-14) : chaque commune gagne type_env, montagne_classee et montagne_km, valeurs de la fixture « 6 communes · cadre de vie » de la tranche cadre-de-vie.",
+    "description": "Fixture inventée « 5 communes » de loyer-mer (mêmes codes 99xxx, noms, populations, loyers, distances et formes), plus : mairie (point d'arrivée des trajets, au centre de chaque carré) et mer_min (temps en voiture de la mairie à la côte, en minutes, déjà arrondi à la minute). Services simulés : la recherche d'adresse (suggestions par texte tapé ; points de départ loin des carrés) et le calcul de trajets (pour chaque adresse choisie, la fin de la tranche de 15 min de chaque commune, par code INSEE). Les AC vérifient ces tranches telles qu'elles s'affichent ; la façon dont le service simulé les produit (zones ou réponse directe) relève de /breakdown, et la traduction d'une zone en tranche par commune se teste à part. Nom par défaut d'un proche : « commune (département) », par ex. « Nantesville (44) ». Pannes et délais : blocs « pannes » et « délais ». Le navigateur de test part sans proche gardé. Révision cadre-de-vie (2026-10-14) : chaque commune gagne type_env, montagne_classee et montagne_km, valeurs de la fixture « 6 communes · cadre de vie » de la tranche cadre-de-vie. Révision recherche-et-mer (2026-11-25, D5 révisée et D9 de cette tranche-là) : la mer ne s'affiche et ne se règle plus qu'en minutes de voiture ; chaque commune gagne mer_min, pris dans la fixture de recherche-et-mer par code INSEE (Portmer 5 min, Grandeville 50 min, Montcher 2 h 15, Terrebasse 2 h 40, Quaibleu 14 min) ; mer_km reste servi (point de côte, repli de D7) mais ne s'affiche plus ; une adresse `mer=` (km) est ignorée.",
     "items": [
       {
         "id": "A",
@@ -312,42 +312,42 @@
     {
       "id": "AC-1",
       "rule": "R9",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, aucun proche gardé",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, aucun proche gardé",
       "when": "l'utilisateur tape « 1 rue Test », choisit « 1 rue Test 44000 Nantesville », garde le nom proposé et appuie sur « Ajouter »",
-      "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 2 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 65 · 650 € · moins d'1 km » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer=50",
-      "passes": true
+      "then": "le nom proposé est « Nantesville (44) » ; la zone affiche « Calcul des trajets depuis Nantesville (44)… », puis le proche « Nantesville (44) » avec le plafond 2 h ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 63 · 650 € · 5 min » ; Grandeville (33) et Quaibleu (13) ne sont pas colorées ; l'adresse de la page reste /?loyer=1200&mer-min=60",
+      "passes": false
     },
     {
       "id": "AC-2",
       "rule": "R11",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, proche Nantesville (44) prêt avec le plafond 2 h",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, proche Nantesville (44) prêt avec le plafond 2 h",
       "when": "l'utilisateur règle le plafond de Nantesville (44) sur 2 h 15",
-      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 66 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 17 · 832 € · 40 km » (fin de tranche 2 h 15 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
-      "passes": true
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 64 · 650 € · 5 min » et « 2 · Grandeville (33) · 16 · 832 € · 50 min » (fin de tranche 2 h 15 égale au plafond) ; Quaibleu (13) n'est pas colorée ; aucun nouveau calcul de trajets n'est demandé",
+      "passes": false
     },
     {
       "id": "AC-3",
       "rule": "R10",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, proche Nantesville (44) prêt avec le plafond 2 h",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, proche Nantesville (44) prêt avec le plafond 2 h",
       "when": "l'utilisateur choisit Grandeville (33) sur la carte",
-      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » et « 40 km de la mer à vol d'oiseau », sans score ni rang",
-      "passes": true
+      "then": "la fiche affiche « Ne passe pas tes critères », « Nantesville (44) 2 h 15 : au-dessus de ton plafond de 2 h » et « 50 min de la mer en voiture », sans score ni rang",
+      "passes": false
     },
     {
       "id": "AC-4",
       "rule": "R11",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, Nantesville (44) prêt à 2 h 15",
       "when": "l'utilisateur ajoute « 2 place Test 31000 Toulouseville » et règle son plafond sur 2 h 45",
-      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 50 · 650 € · moins d'1 km » et « 2 · Grandeville (33) · 26 · 832 € · 40 km »",
-      "passes": true
+      "then": "la liste montre « 2 communes passent tes critères » puis « 1 · Portmer (17) · 48 · 650 € · 5 min » et « 2 · Grandeville (33) · 25 · 832 € · 50 min »",
+      "passes": false
     },
     {
       "id": "AC-5",
       "rule": "R10",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15 puis Toulouseville (31) prêt à 2 h 45",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, Nantesville (44) prêt à 2 h 15 puis Toulouseville (31) prêt à 2 h 45",
       "when": "l'utilisateur choisit Grandeville (33), puis Quaibleu (13)",
-      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 2 h 15 en voiture » et « Toulouseville (31) : 1 h 15 en voiture », le score 26 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 3 h : au-dessus de ton plafond de 2 h 15 », sans score",
-      "passes": true
+      "then": "la fiche de Grandeville affiche, dans cet ordre, « Nantesville (44) : 2 h 15 en voiture » et « Toulouseville (31) : 1 h 15 en voiture », le score 25 et « 2e sur 2 communes qui passent » ; la fiche de Quaibleu affiche « Nantesville (44) plus de 3 h : au-dessus de ton plafond de 2 h 15 », sans score",
+      "passes": false
     },
     {
       "id": "AC-6",
@@ -360,54 +360,54 @@
     {
       "id": "AC-7",
       "rule": "R9",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, 5 proches prêts : Nantesville (44), Toulouseville (31), Lyonville (69), Brestville (29), Lilleville (59)",
       "when": "la zone « Tes proches » est affichée",
       "then": "le champ de recherche n'est pas proposé et la zone affiche « 5 proches au maximum. Retire-en un pour en ajouter un autre. » ; après « Retirer » sur Lilleville (59), le lien « + Ajouter un proche » revient et ouvre le champ de recherche",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-8",
       "rule": "R12",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt à 2 h 15 et gardé dans ce navigateur",
-      "when": "l'utilisateur ferme la page puis rouvre /?loyer=1200&mer=50",
-      "then": "Nantesville (44) est prêt avec le plafond 2 h 15, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 66 puis Grandeville (33) 17 ; l'adresse de la page est /?loyer=1200&mer=50",
-      "passes": true
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, Nantesville (44) prêt à 2 h 15 et gardé dans ce navigateur",
+      "when": "l'utilisateur ferme la page puis rouvre /?loyer=1200&mer-min=60",
+      "then": "Nantesville (44) est prêt avec le plafond 2 h 15, sans « Calcul des trajets » et sans aucune demande au service de trajets ; la liste montre Portmer (17) 64 puis Grandeville (33) 16 ; l'adresse de la page est /?loyer=1200&mer-min=60",
+      "passes": false
     },
     {
       "id": "AC-9",
       "rule": "R12",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, Nantesville (44) et Toulouseville (31) prêts et gardés dans ce navigateur",
-      "when": "l'utilisateur appuie sur « Effacer mes proches » puis rouvre /?loyer=1200&mer=50",
-      "then": "aucun proche n'est affiché et la zone est dans l'état vide ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 48 et Grandeville (33) 25",
-      "passes": true
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, Nantesville (44) et Toulouseville (31) prêts et gardés dans ce navigateur",
+      "when": "l'utilisateur appuie sur « Effacer mes proches » puis rouvre /?loyer=1200&mer-min=60",
+      "then": "aucun proche n'est affiché et la zone est dans l'état vide ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 69, Quaibleu (13) 43 et Grandeville (33) 24",
+      "passes": false
     },
     {
       "id": "AC-11",
       "rule": "R13",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, service de recherche d'adresse en panne",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, service de recherche d'adresse en panne",
       "when": "l'utilisateur tape « 1 rue Test »",
       "then": "la zone affiche « Recherche d'adresse indisponible. Réessaie dans un moment. », « Ajouter » reste inactif, et la liste montre toujours « 3 communes passent tes critères »",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-14",
       "rule": "R9",
-      "given": "Fixture, page ouverte sur /?loyer=1200&mer=50, aucun proche gardé",
+      "given": "Fixture, page ouverte sur /?loyer=1200&mer-min=60, aucun proche gardé",
       "when": "l'utilisateur choisit « 1 rue Test 44000 Nantesville », remplace le nom par « Parents de Léa », appuie sur « Ajouter », puis choisit Grandeville (33) sur la carte une fois le calcul fini",
       "then": "la zone affiche « Parents de Léa » avec l'adresse « 1 rue Test 44000 Nantesville » ; un repère « Parents de Léa » est sur la carte au point [-2, 3] ; la fiche de Grandeville affiche « Parents de Léa 2 h 15 : au-dessus de ton plafond de 2 h » ; aucune requête envoyée par la page ne contient « Parents de Léa »",
-      "passes": true
+      "passes": false
     },
     {
       "id": "AC-16",
       "rule": "R15",
-      "given": "Fixture, largeur bureau (1 440 px), page ouverte sur /?loyer=1200&mer=50, Nantesville (44) prêt avec le plafond 2 h, aucune commune choisie",
+      "given": "Fixture, largeur bureau (1 440 px), page ouverte sur /?loyer=1200&mer-min=60, Nantesville (44) prêt avec le plafond 2 h, aucune commune choisie",
       "when": "l'utilisateur regarde le haut de la carte, puis choisit Grandeville (33) sur la carte",
       "then": "avant le choix, une pastille affiche « Nantesville (44) » et « 2 h au plus » ; après le choix, la même pastille affiche « 2 h 15 · au-dessus de 2 h » ; un clic sur la pastille ne change rien ; à 390 px, aucune pastille n'est affichée",
-      "passes": true
+      "passes": false
     }
   ],
   "remplaces": {
-    "pourquoi": "D18 (spec proches, 2026-10-16) : l'état « Trajets indisponibles » disparaît ; AC-10 est remplacé par AC-4 de proches-fiables (docs/specs/2026-10-16-proches-fiables/acceptance.json). Gardé ici tel quel, pour la trace. D19 (spec proches, 2026-11-25) : AC-12, AC-13 et AC-15 (mer en minutes, reportés par D14) sont remplacés par AC-6, AC-8 et AC-10 de recherche-et-mer (docs/specs/2026-11-25-recherche-et-mer/acceptance.json).",
+    "pourquoi": "D18 (spec proches, 2026-10-16) : l'état « Trajets indisponibles » disparaît ; AC-10 est remplacé par AC-4 de proches-fiables (docs/specs/2026-10-16-proches-fiables/acceptance.json). Gardé ici tel quel, pour la trace. D19 (spec proches, 2026-11-25) : AC-12, AC-13 et AC-15 (mer en minutes, reportés par D14) sont remplacés par AC-6, AC-8, et AC-6 et AC-10 ensemble, de recherche-et-mer (AC-10 teste les anciens liens, D9 de recherche-et-mer) (docs/specs/2026-11-25-recherche-et-mer/acceptance.json).",
     "criteria": [
       {
         "id": "AC-10",
@@ -443,7 +443,7 @@
         "when": "l'utilisateur repasse la mer sur « km à vol d'oiseau »",
         "then": "le plafond de la mer affiche 60 km ; l'adresse de la page devient /?loyer=1200&mer=60 ; la liste montre « 3 communes passent tes critères » puis Portmer (17) 72, Quaibleu (13) 49 et Grandeville (33) 32",
         "passes": false,
-        "remplace_par": "AC-10 de recherche-et-mer"
+        "remplace_par": "AC-6 et AC-10 de recherche-et-mer"
       }
     ]
   },

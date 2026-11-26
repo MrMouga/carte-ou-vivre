@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
+import rechercheEtMer from '../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json';
 import { compte, estimationTexte, ligneListe, plafondPrix, prixFiche, raisonTexte, rangTexte, resumePrix } from './format';
 import {
   auCran,
@@ -32,6 +33,8 @@ const communes: Commune[] = immobilier.fixture.items.map((it) => ({
   loyerM2: it.loyer_m2,
   estimationPropre: it.estimation_propre,
   merKm: it.mer_km,
+  // Recherche-et-mer, règle (f) du recalage : le temps jusqu'à la mer, par code INSEE (Rhinval sans temps).
+  merMin: rechercheEtMer.fixture.items.find((x) => x.code_insee === it.code_insee)?.mer_min ?? null,
   loyerM2Maison: it.loyer_m2_maison,
   estimationPropreMaison: it.estimation_propre_maison,
   achatAppartement: it.achat_appartement as Achat,
@@ -73,90 +76,90 @@ describe('AC-1 à AC-13 — la même page, calculée par l’évaluation seule',
     expect(s(resumePrix(p, r.loyer))).toBe('Louer · Appartement · 52 m² · 1 200 €');
   });
 
-  it('AC-2 depuis /?loyer=1200&mer=50, surface 72 m² : /?loyer=1200&mer=50&surface=72 ; Portmer 62 · 900 €, Grandeville 12 · 1 152 € ; raison de Quaibleu 1 512 €', () => {
-    const { r, p: p0 } = ouvrir('?loyer=1200&mer=50');
+  it('AC-2 depuis /?loyer=1200&mer-min=60, surface 72 m² : /?loyer=1200&mer-min=60&surface=72 ; Portmer 58 · 900 €, Grandeville 10 · 1 152 € ; raison de Quaibleu 1 512 €', () => {
+    const { r, p: p0 } = ouvrir('?loyer=1200&mer-min=60');
     const p = changerSurface(p0, 72);
     const v = page(r, p);
-    expect(v.adresse).toBe('/?loyer=1200&mer=50&surface=72');
+    expect(v.adresse).toBe('/?loyer=1200&mer-min=60&surface=72');
     expect(v.compte).toBe('2 communes passent tes critères');
-    expect(v.liste).toEqual(["1 · Portmer (17) · 62 · 900 € · moins d'1 km", '2 · Grandeville (33) · 12 · 1 152 € · 40 km']);
+    expect(v.liste).toEqual(['1 · Portmer (17) · 58 · 900 € · 5 min', '2 · Grandeville (33) · 10 · 1 152 € · 50 min']);
     expect(v.prix('B')).toBe('1 152 € par mois pour 72 m² (16,0 €/m²)');
     expect(v.raisons('E')).toContain('Loyer 1 512 € : au-dessus de ton plafond de 1 200 €');
   });
 
-  it('AC-3 Maison depuis 72 m² : surface et plafond gardés ; Portmer 68 · 756 €, Grandeville 21 · 936 € ; Estimation du secteur ; Quaibleu 1 224 €', () => {
-    const { r, p: p0 } = ouvrir('?loyer=1200&mer=50&surface=72');
+  it('AC-3 Maison depuis 72 m² : surface et plafond gardés ; Portmer 64 · 756 €, Grandeville 19 · 936 € ; Estimation du secteur ; Quaibleu 1 224 €', () => {
+    const { r, p: p0 } = ouvrir('?loyer=1200&mer-min=60&surface=72');
     const p = changerBien(p0, 'maison');
     expect([p.surface, r.loyer]).toEqual([72, 1200]);
     const v = page(r, p);
-    expect(v.adresse).toBe('/?loyer=1200&mer=50&bien=maison&surface=72');
+    expect(v.adresse).toBe('/?loyer=1200&mer-min=60&bien=maison&surface=72');
     expect(v.compte).toBe('2 communes passent tes critères');
-    expect(v.liste).toEqual(["1 · Portmer (17) · 68 · 756 € · moins d'1 km", '2 · Grandeville (33) · 21 · 936 € · 40 km']);
+    expect(v.liste).toEqual(['1 · Portmer (17) · 64 · 756 € · 5 min', '2 · Grandeville (33) · 19 · 936 € · 50 min']);
     expect(v.prix('A')).toBe('756 € par mois pour 72 m² (10,5 €/m²)');
     expect(v.estimation('A')).toBe('Estimation du secteur (communes voisines)');
     expect(v.raisons('E')).toContain('Loyer 1 224 € : au-dessus de ton plafond de 1 200 €');
   });
 
-  it('AC-4 depuis /?loyer=1200&mer=50, Au m² puis Total : 23 €/m², /?loyer=23&mer=50&unite=m2, liste au m² ; retour : 1 200 €, 52 m², /?loyer=1200&mer=50', () => {
-    const { r, p: p0 } = ouvrir('?loyer=1200&mer=50');
+  it('AC-4 depuis /?loyer=1200&mer-min=60, Au m² puis Total : 23 €/m², /?loyer=23&mer-min=60&unite=m2, liste au m² ; retour : 1 200 €, 52 m², /?loyer=1200&mer-min=60', () => {
+    const { r, p: p0 } = ouvrir('?loyer=1200&mer-min=60');
     const m2 = changerUnite(p0, r.loyer, 'm2');
     const v = page({ ...r, loyer: m2.plafond }, m2.prix);
     expect(v.plafond).toBe('23 €/m²');
-    expect(v.adresse).toBe('/?loyer=23&mer=50&unite=m2');
+    expect(v.adresse).toBe('/?loyer=23&mer-min=60&unite=m2');
     expect(v.liste).toEqual([
-      "1 · Portmer (17) · 72 · 12,5 €/m² · moins d'1 km",
-      '2 · Quaibleu (13) · 47 · 21,0 €/m² · 7 km',
-      '3 · Grandeville (33) · 25 · 16,0 €/m² · 40 km',
+      '1 · Portmer (17) · 69 · 12,5 €/m² · 5 min',
+      '2 · Quaibleu (13) · 43 · 21,0 €/m² · 14 min',
+      '3 · Grandeville (33) · 24 · 16,0 €/m² · 50 min',
     ]);
     expect(v.prix('B')).toBe('16,0 €/m² par mois');
     const total = changerUnite(m2.prix, m2.plafond, 'total');
     expect([total.plafond, total.prix.surface]).toEqual([1200, 52]);
-    expect(ecrireAdresse({ ...r, loyer: total.plafond }, total.prix)).toBe('/?loyer=1200&mer=50');
+    expect(ecrireAdresse({ ...r, loyer: total.plafond }, total.prix)).toBe('/?loyer=1200&mer-min=60');
   });
 
-  it('AC-5 depuis /?loyer=1200&mer=50, Acheter puis Louer : Au m², 5 000 €/m², /?achat=5000&mer=50, 3 communes ; retour : Total, 52 m², 1 200 €', () => {
-    const { r, p: p0 } = ouvrir('?loyer=1200&mer=50');
+  it('AC-5 depuis /?loyer=1200&mer-min=60, Acheter puis Louer : Au m², 5 000 €/m², /?achat=5000&mer-min=60, 3 communes ; retour : Total, 52 m², 1 200 €', () => {
+    const { r, p: p0 } = ouvrir('?loyer=1200&mer-min=60');
     const achat = changerMode(p0, r.loyer, 'acheter');
     expect(achat.prix.unite).toBe('m2');
     const v = page({ ...r, loyer: achat.plafond }, achat.prix);
     expect(v.plafond).toBe('5 000 €/m²');
-    expect(v.adresse).toBe('/?achat=5000&mer=50');
+    expect(v.adresse).toBe('/?achat=5000&mer-min=60');
     expect(v.compte).toBe('3 communes passent tes critères');
     expect(v.liste).toEqual([
-      "1 · Portmer (17) · 61 · 3 800 €/m² · moins d'1 km",
-      '2 · Quaibleu (13) · 45 · 4 800 €/m² · 7 km',
-      '3 · Grandeville (33) · 16 · 4 400 €/m² · 40 km',
+      '1 · Portmer (17) · 58 · 3 800 €/m² · 5 min',
+      '2 · Quaibleu (13) · 40 · 4 800 €/m² · 14 min',
+      '3 · Grandeville (33) · 14 · 4 400 €/m² · 50 min',
     ]);
     expect(v.prix('B')).toBe("4 400 €/m² à l'achat");
     expect(v.estimation('B')).toBeNull();
     const louer = changerMode(achat.prix, achat.plafond, 'louer');
     expect(louer).toEqual({ prix: PRIX_DEPART, plafond: 1200 });
-    expect(ecrireAdresse({ ...r, loyer: louer.plafond }, louer.prix)).toBe('/?loyer=1200&mer=50');
+    expect(ecrireAdresse({ ...r, loyer: louer.plafond }, louer.prix)).toBe('/?loyer=1200&mer-min=60');
   });
 
-  it('AC-6 Total depuis /?achat=5000&mer=50 : 260 000 €, 52 m², /?achat=260000&mer=50&unite=total ; 198 000 €, 250 000 €, 229 000 €', () => {
-    const { r, p: p0 } = ouvrir('?achat=5000&mer=50');
+  it('AC-6 Total depuis /?achat=5000&mer-min=60 : 260 000 €, 52 m², /?achat=260000&mer-min=60&unite=total ; 198 000 €, 250 000 €, 229 000 €', () => {
+    const { r, p: p0 } = ouvrir('?achat=5000&mer-min=60');
     const t = changerUnite(p0, r.loyer, 'total');
     const v = page({ ...r, loyer: t.plafond }, t.prix);
     expect(v.plafond).toBe('260 000 €');
     expect(t.prix.surface).toBe(52);
-    expect(v.adresse).toBe('/?achat=260000&mer=50&unite=total');
+    expect(v.adresse).toBe('/?achat=260000&mer-min=60&unite=total');
     expect(v.compte).toBe('3 communes passent tes critères');
     expect(v.liste).toEqual([
-      "1 · Portmer (17) · 61 · 198 000 € · moins d'1 km",
-      '2 · Quaibleu (13) · 45 · 250 000 € · 7 km',
-      '3 · Grandeville (33) · 16 · 229 000 € · 40 km',
+      '1 · Portmer (17) · 58 · 198 000 € · 5 min',
+      '2 · Quaibleu (13) · 40 · 250 000 € · 14 min',
+      '3 · Grandeville (33) · 14 · 229 000 € · 50 min',
     ]);
     expect(v.prix('B')).toBe('229 000 € pour 52 m² (4 400 €/m²)');
   });
 
-  it('AC-7 Maison depuis /?achat=5000&mer=50 : /?achat=5000&mer=50&bien=maison&surface=52 ; Portmer 64, Quaibleu 47 ; Grandeville 5 100 €/m²', () => {
-    const { r, p: p0 } = ouvrir('?achat=5000&mer=50');
+  it('AC-7 Maison depuis /?achat=5000&mer-min=60 : /?achat=5000&mer-min=60&bien=maison&surface=52 ; Portmer 61, Quaibleu 42 ; Grandeville 5 100 €/m²', () => {
+    const { r, p: p0 } = ouvrir('?achat=5000&mer-min=60');
     const p = changerBien(p0, 'maison');
     const v = page(r, p);
-    expect(v.adresse).toBe('/?achat=5000&mer=50&bien=maison&surface=52');
+    expect(v.adresse).toBe('/?achat=5000&mer-min=60&bien=maison&surface=52');
     expect(v.compte).toBe('2 communes passent tes critères');
-    expect(v.liste).toEqual(["1 · Portmer (17) · 64 · 3 500 €/m² · moins d'1 km", '2 · Quaibleu (13) · 47 · 4 600 €/m² · 7 km']);
+    expect(v.liste).toEqual(['1 · Portmer (17) · 61 · 3 500 €/m² · 5 min', '2 · Quaibleu (13) · 42 · 4 600 €/m² · 14 min']);
     expect(v.prix('A')).toBe("3 500 €/m² à l'achat");
     expect(v.estimation('A')).toBe('Estimation du secteur (moins de 5 ventes dans la commune)');
     expect(v.raisons('B')).toContain('Achat 5 100 €/m² : au-dessus de ton plafond de 5 000 €/m²');
@@ -169,10 +172,10 @@ describe('AC-1 à AC-13 — la même page, calculée par l’évaluation seule',
     const v = page(r, p);
     expect(v.compte).toBe('4 communes passent tes critères');
     expect(v.liste).toEqual([
-      '1 · Grandeville (33) · 31 · 4 400 €/m² · 40 km',
-      '2 · Quaibleu (13) · 21 · 4 800 €/m² · 7 km',
-      '3 · Terrebasse (23) · 100 · prix inconnu · 180 km',
-      '4 · Rhinval (67) · 99 · prix inconnu · 420 km',
+      '1 · Grandeville (33) · 31 · 4 400 €/m² · 50 min',
+      '2 · Quaibleu (13) · 21 · 4 800 €/m² · 14 min',
+      '3 · Terrebasse (23) · 100 · prix inconnu · 2 h 40',
+      '4 · Rhinval (67) · 99 · prix inconnu · ≈ 7 h',
     ]);
     expect(v.prix('D')).toBe("Prix d'achat inconnu : trop peu de ventes dans le secteur");
     expect(v.ev('D').score).toBe(100);
@@ -199,7 +202,7 @@ describe('AC-1 à AC-13 — la même page, calculée par l’évaluation seule',
     expect(v.plafond).toBe('300 000 €');
     expect(v.adresse).toBe('/?achat=300000&bien=maison&unite=total&surface=100');
     expect(v.compte).toBe('1 commune passe tes critères');
-    expect(v.liste).toEqual(['1 · Terrebasse (23) · 57 · 130 000 € · 180 km']);
+    expect(v.liste).toEqual(['1 · Terrebasse (23) · 57 · 130 000 € · 2 h 40']);
     expect(v.ev('F').sansNote).toBe(true);
     expect(v.raisons('A')).toContain('Achat 350 000 € : au-dessus de ton plafond de 300 000 €');
   });
@@ -221,7 +224,7 @@ describe('AC-1 à AC-13 — la même page, calculée par l’évaluation seule',
     expect(v.plafond).toBe('1 100 €');
     expect(v.adresse).toBe('/?loyer=1100&bien=maison');
     expect(v.compte).toBe('2 communes passent tes critères');
-    expect(v.liste).toEqual(['1 · Terrebasse (23) · 46 · 598 € · 180 km', "2 · Portmer (17) · 12 · 966 € · moins d'1 km"]);
+    expect(v.liste).toEqual(['1 · Terrebasse (23) · 46 · 598 € · 2 h 40', '2 · Portmer (17) · 12 · 966 € · 5 min']);
     expect(v.ev('F')).toMatchObject({ passe: true, sansNote: true, score: null, rang: null });
     expect(v.prix('F')).toBe('Loyer inconnu');
     expect(v.raisons('B')).toContain('Loyer 1 196 € : au-dessus de ton plafond de 1 100 €');

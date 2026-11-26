@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { lireAdresse, lirePrix, ecrireAdresse } from './url';
 
 describe('R7, H7 — réglages dans l’adresse', () => {
-  it('AC-11 /?loyer=800&mer=50 → 800 €, 50 km, peu importe', () => {
-    expect(lireAdresse('?loyer=800&mer=50')).toEqual({ loyer: 800, mer: 50, tailles: [] });
+  it('AC-11 /?loyer=800&mer-min=60 → 800 €, 1 h, peu importe', () => {
+    expect(lireAdresse('?loyer=800&mer-min=60')).toEqual({ loyer: 800, mer: 60, tailles: [] });
   });
 
   it('AC-12 valeurs invalides → valeurs de départ de ces réglages seulement ; adresse réécrite /?loyer=1200', () => {
@@ -34,37 +34,46 @@ describe('R7, H7 — réglages dans l’adresse', () => {
   });
 });
 
-// Spec cadre-de-vie, R31 : la mer en cinq choix ; une valeur de l'ancienne plage (multiple de 5, de 5 à 200) prend le choix
-// juste au-dessus, au-delà de 100 Peu importe ; toute autre valeur = Peu importe ; `mer` absente quand Peu importe.
-describe('R31 — la mer dans l’adresse (spec cadre-de-vie)', () => {
+// Spec cadre-de-vie, R31, révisée par recherche-et-mer (R60, D9, H193) : la mer en quatre choix de minutes, `mer-min` ;
+// toute autre valeur = Peu importe ; `mer-min` absente quand Peu importe ; l'ancien `mer` (en km) est ignoré et disparaît.
+describe('R31, R60 — la mer dans l’adresse (specs cadre-de-vie et recherche-et-mer)', () => {
+  const merMin = (v: string) => lireAdresse(`?loyer=1200&mer-min=${v}`).mer;
   const mer = (v: string) => lireAdresse(`?loyer=1200&mer=${v}`).mer;
 
-  it('AC-9 (adresse) : /?loyer=1200&mer=60 → 100 km, /?loyer=1200&mer=100 ; /?loyer=1200&mer=25 → 30 km, /?loyer=1200&mer=30', () => {
-    expect(mer('60')).toBe(100);
-    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=60'))).toBe('/?loyer=1200&mer=100');
-    expect(mer('25')).toBe(30);
-    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=25'))).toBe('/?loyer=1200&mer=30');
+  it('AC-9 (adresse) : /?loyer=1200&mer-min=90 → 1 h 30, adresse inchangée ; /?loyer=1200&mer-min=30 → 30 min, adresse inchangée', () => {
+    expect(merMin('90')).toBe(90);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer-min=90'))).toBe('/?loyer=1200&mer-min=90');
+    expect(merMin('30')).toBe(30);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer-min=30'))).toBe('/?loyer=1200&mer-min=30');
   });
 
-  it('les cinq choix se lisent tels quels : 10, 30, 50, 100 ; aucun = Peu importe', () => {
-    expect(['10', '30', '50', '100'].map(mer)).toEqual([10, 30, 50, 100]);
-    expect(mer('aucun')).toBeNull();
+  it('les quatre choix se lisent tels quels : 15, 30, 60, 90 ; aucun = Peu importe', () => {
+    expect(['15', '30', '60', '90'].map(merMin)).toEqual([15, 30, 60, 90]);
+    expect(merMin('aucun')).toBeNull();
     expect(lireAdresse('?loyer=1200').mer).toBeNull();
   });
 
-  it('ancienne plage : mer=5 → 10 km, mer=15 → 30, mer=35 → 50, mer=55 → 100, mer=95 → 100 ; mer=105 et mer=200 → Peu importe', () => {
-    expect(['5', '15', '35', '55', '95'].map(mer)).toEqual([10, 30, 50, 100, 100]);
-    expect(['105', '200'].map(mer)).toEqual([null, null]);
+  it('ancien lien (D9) : toute valeur de `mer` (5, 15, 30, 35, 50, 55, 60, 95, 100, 105, 200) = Peu importe, et `mer` disparaît de l’adresse', () => {
+    for (const v of ['5', '15', '30', '35', '50', '55', '60', '95', '100', '105', '200']) {
+      expect(mer(v)).toBeNull();
+      expect(ecrireAdresse(lireAdresse(`?loyer=1200&mer=${v}`))).toBe('/?loyer=1200');
+    }
   });
 
-  it('toute autre valeur = Peu importe : mer=23, mer=0, mer=abc, mer=205, mer=-5, mer=50.0', () => {
+  it('toute autre valeur de `mer-min` = Peu importe (R60) : 50, 0, 23, abc, 60.0, 100, -15, vide', () => {
+    for (const v of ['50', '0', '23', 'abc', '60.0', '100', '-15', '']) expect(merMin(v)).toBeNull();
     for (const v of ['23', '0', 'abc', '205', '-5', '50.0', '']) expect(mer(v)).toBeNull();
   });
 
-  it('Peu importe n’est pas écrite ; une distance l’est, après le plafond du prix', () => {
+  it('Peu importe n’est pas écrite ; un temps l’est, `mer-min`, après le plafond du prix (H193)', () => {
     expect(ecrireAdresse({ loyer: 1200, mer: null, tailles: [] })).toBe('/?loyer=1200');
-    expect(ecrireAdresse({ loyer: 1200, mer: 50, tailles: ['petite-ville'] })).toBe('/?loyer=1200&mer=50&taille=petite-ville');
+    expect(ecrireAdresse({ loyer: 1200, mer: 60, tailles: ['petite-ville'] })).toBe('/?loyer=1200&mer-min=60&taille=petite-ville');
     expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=200'))).toBe('/?loyer=1200');
+  });
+
+  it('recherche-et-mer AC-10 (adresse) : /?loyer=1200&mer=30&mer-min=15 → 15 min, /?loyer=1200&mer-min=15', () => {
+    expect(lireAdresse('?loyer=1200&mer=30&mer-min=15').mer).toBe(15);
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=30&mer-min=15'))).toBe('/?loyer=1200&mer-min=15');
   });
 });
 
@@ -107,8 +116,8 @@ describe('R26, H66 — le réglage du prix dans l’adresse (spec immobilier)', 
   });
 
   it('ordre : plafond du prix, mer, taille, bien, unite, surface', () => {
-    expect(allerRetour('?surface=70&unite=m2&bien=maison&taille=petite-ville&mer=10&loyer=20')).toBe(
-      '/?loyer=20&mer=10&taille=petite-ville&bien=maison&unite=m2&surface=70',
+    expect(allerRetour('?surface=70&unite=m2&bien=maison&taille=petite-ville&mer-min=15&loyer=20')).toBe(
+      '/?loyer=20&mer-min=15&taille=petite-ville&bien=maison&unite=m2&surface=70',
     );
   });
 
@@ -124,8 +133,8 @@ describe('R26, H66 — le réglage du prix dans l’adresse (spec immobilier)', 
   });
 
   it('une adresse de la tranche 1 s’ouvre à l’identique (D1)', () => {
-    expect(lirePrix('?loyer=800&mer=50')).toEqual({ mode: 'louer', bien: 'appartement', unite: 'total', surface: 52 });
-    expect(allerRetour('?loyer=800&mer=50&taille=petite-ville')).toBe('/?loyer=800&mer=50&taille=petite-ville');
+    expect(lirePrix('?loyer=800&mer-min=60')).toEqual({ mode: 'louer', bien: 'appartement', unite: 'total', surface: 52 });
+    expect(allerRetour('?loyer=800&mer-min=60&taille=petite-ville')).toBe('/?loyer=800&mer-min=60&taille=petite-ville');
   });
 });
 
@@ -139,7 +148,7 @@ describe('Spec immobilier, tâche 3 — surface de départ selon le bien (D2, R2
 });
 
 // Spec cadre-de-vie, R31 : `montagne` vaut 10, 30, 50 ou 100 ; toute autre valeur (dont 0) = Peu importe, non écrite ;
-// ordre : plafond du prix, `mer`, `montagne`, `taille`, `bien`, `unite`, `surface`.
+// ordre : plafond du prix, `mer-min` (H193 de recherche-et-mer), `montagne`, `taille`, `bien`, `unite`, `surface`.
 describe('R31 — la montagne dans l’adresse (spec cadre-de-vie)', () => {
   const montagne = (v: string) => lireAdresse(`?loyer=1200&montagne=${v}`).montagne ?? null;
 
@@ -149,7 +158,7 @@ describe('R31 — la montagne dans l’adresse (spec cadre-de-vie)', () => {
 
   it('les quatre distances se lisent telles quelles : 10, 30, 50, 100', () => {
     expect(['10', '30', '50', '100'].map(montagne)).toEqual([10, 30, 50, 100]);
-    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer=100&montagne=50'))).toBe('/?loyer=1200&mer=100&montagne=50');
+    expect(ecrireAdresse(lireAdresse('?loyer=1200&mer-min=90&montagne=50'))).toBe('/?loyer=1200&mer-min=90&montagne=50');
   });
 
   it('montagne=0, montagne=abc et toute autre valeur = Peu importe, et l’adresse ne l’écrit pas', () => {
@@ -160,8 +169,8 @@ describe('R31 — la montagne dans l’adresse (spec cadre-de-vie)', () => {
   });
 
   it('ordre : prix, mer, montagne, taille, bien, unite, surface', () => {
-    const q = '?achat=300000&surface=100&unite=total&bien=maison&taille=petite-ville&montagne=30&mer=50';
-    expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe('/?achat=300000&mer=50&montagne=30&taille=petite-ville&bien=maison&unite=total&surface=100');
+    const q = '?achat=300000&surface=100&unite=total&bien=maison&taille=petite-ville&montagne=30&mer-min=60';
+    expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe('/?achat=300000&mer-min=60&montagne=30&taille=petite-ville&bien=maison&unite=total&surface=100');
   });
 });
 
@@ -196,9 +205,9 @@ describe('R31 — le type d’environnement dans l’adresse (spec cadre-de-vie)
   });
 
   it('ordre : prix, mer, montagne, taille, env, bien, unite, surface', () => {
-    const q = '?achat=300000&surface=100&env=campagne-isolee&unite=total&bien=maison&taille=petite-ville&montagne=30&mer=50';
+    const q = '?achat=300000&surface=100&env=campagne-isolee&unite=total&bien=maison&taille=petite-ville&montagne=30&mer-min=60';
     expect(ecrireAdresse(lireAdresse(q), lirePrix(q))).toBe(
-      '/?achat=300000&mer=50&montagne=30&taille=petite-ville&env=campagne-isolee&bien=maison&unite=total&surface=100',
+      '/?achat=300000&mer-min=60&montagne=30&taille=petite-ville&env=campagne-isolee&bien=maison&unite=total&surface=100',
     );
   });
 });

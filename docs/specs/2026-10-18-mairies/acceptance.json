@@ -1,7 +1,7 @@
 {
   "slice": "mairies",
   "fixture": {
-    "description": "Fixture inventée « 6 communes » de cadre-de-vie, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix, mer, type d'environnement et montagne ; chaque commune gagne sa mairie : mairie_bloc (nom de H108, ou null), mairie_etiquette (texte en clair, ou null), mairie_liste (nom de la liste, ou null) ; sans_resultat vrai pour Rhinval. Au départ (/ : prix 1 200 € pour 52 m², rien de coché), la liste est celle d'AC-1 de cadre-de-vie : Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; Montcher (75) ne passe pas (loyer 1 560 €). L'« extrait du ministère » sert seulement à AC-11 : des lignes inventées au format des fichiers de résultats par commune des deux tours. La précision « (moins de 3 500 habitants) » de D8 est un texte fixe : elle s'affiche pour Terrebasse (4 200 habitants dans la fixture) comme pour toute mairie sans étiquette.",
+    "description": "Fixture inventée « 6 communes » de cadre-de-vie, étendue (une seule fixture, pas de copie) : mêmes codes, noms, départements, populations, formes, loyers, prix, mer, type d'environnement et montagne ; chaque commune gagne sa mairie : mairie_bloc (nom de H108, ou null), mairie_etiquette (texte en clair, ou null), mairie_liste (nom de la liste, ou null) ; sans_resultat vrai pour Rhinval. Au départ (/ : prix 1 200 € pour 52 m², rien de coché), la liste est celle d'AC-1 de cadre-de-vie : Terrebasse (23) 65, Rhinval (67) 52, Portmer (17) 46, Grandeville (33) 31, Quaibleu (13) 9 ; Montcher (75) ne passe pas (loyer 1 560 €). L'« extrait du ministère » sert seulement à AC-11 : des lignes inventées au format des fichiers de résultats par commune des deux tours. La précision « (moins de 3 500 habitants) » de D8 est un texte fixe : elle s'affiche pour Terrebasse (4 200 habitants dans la fixture) comme pour toute mairie sans étiquette. Révision recherche-et-mer (2026-11-25, D5 révisée et D9 de cette tranche-là) : la mer ne s'affiche et ne se règle plus qu'en minutes de voiture ; chaque commune gagne mer_min, pris dans la fixture de recherche-et-mer par code INSEE (Portmer 5 min, Grandeville 50 min, Montcher 2 h 15, Terrebasse 2 h 40, Quaibleu 14 min, Rhinval ≈ 7 h ; Rhinval est sans temps, comptée d'après ses 420 km) ; mer_km reste servi (point de côte, repli de D7) mais ne s'affiche plus ; une adresse `mer=` (km) est ignorée.",
     "items": [
       {
         "id": "A",
@@ -154,16 +154,16 @@
       "rule": "R38",
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Droite », puis décoche « Droite » et coche « Centre »",
-      "then": "avec « Droite » : l'adresse devient /?loyer=1200&mairie=droite ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 46 · 650 € · moins d'1 km » ; Grandeville (33), Terrebasse (23), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la fiche de Grandeville affiche « Mairie : gauche, hors des mairies choisies » et celle de Terrebasse « Mairie : sans étiquette, hors des mairies choisies ». Avec « Centre » seul : l'adresse devient /?loyer=1200&mairie=centre ; aucune commune n'est colorée ; la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
-      "passes": true
+      "then": "avec « Droite » : l'adresse devient /?loyer=1200&mairie=droite ; la liste montre « 1 commune passe tes critères » puis « 1 · Portmer (17) · 46 · 650 € · 5 min » ; Grandeville (33), Terrebasse (23), Quaibleu (13) et Rhinval (67) ne sont pas colorées ; la fiche de Grandeville affiche « Mairie : gauche, hors des mairies choisies » et celle de Terrebasse « Mairie : sans étiquette, hors des mairies choisies ». Avec « Centre » seul : l'adresse devient /?loyer=1200&mairie=centre ; aucune commune n'est colorée ; la liste affiche « Aucune commune ne passe tes critères. Relâche le loyer, la mer ou la taille. »",
+      "passes": false
     },
     {
       "id": "AC-3",
       "rule": "R38",
       "given": "Fixture « 6 communes », page ouverte sur /",
       "when": "l'utilisateur coche « Gauche », puis aussi « Sans étiquette »",
-      "then": "après le premier : la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 40 km ». Après le second : l'adresse devient /?loyer=1200&mairie=gauche,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31 ; sous « Ne passe pas tes critères », la fiche de Rhinval (67) donne la raison « Mairie : aucun résultat en 2026, hors des mairies choisies » et celle de Portmer (17) « Mairie : droite, hors des mairies choisies »",
-      "passes": true
+      "then": "après le premier : la liste montre « 1 commune passe tes critères » puis « 1 · Grandeville (33) · 31 · 832 € · 50 min ». Après le second : l'adresse devient /?loyer=1200&mairie=gauche,sans-etiquette ; la liste montre « 2 communes passent tes critères » puis Terrebasse (23) 65 et Grandeville (33) 31 ; sous « Ne passe pas tes critères », la fiche de Rhinval (67) donne la raison « Mairie : aucun résultat en 2026, hors des mairies choisies » et celle de Portmer (17) « Mairie : droite, hors des mairies choisies »",
+      "passes": false
     },
     {
       "id": "AC-4",

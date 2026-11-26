@@ -50,10 +50,10 @@ describe('R5 — compte et lignes de la liste', () => {
     expect(s(compte(1269))).toBe('1 269 communes passent tes critères');
   });
 
-  it('AC-4 (format) : « 1 · Portmer (17) · 72 · 650 € · moins d’1 km »', () => {
-    const portmer = { nom: 'Portmer', dep: '17', loyerM2: 12.5, merKm: 0.9 };
-    expect(s(ligneListe(1, portmer, 72))).toBe("1 · Portmer (17) · 72 · 650 € · moins d'1 km");
-    expect(s(chiffresListe(portmer))).toBe("650 € · moins d'1 km");
+  it('AC-4 (format) : « 1 · Portmer (17) · 69 · 650 € · 5 min »', () => {
+    const portmer = { nom: 'Portmer', dep: '17', loyerM2: 12.5, merKm: 0.9, merMin: 5 };
+    expect(s(ligneListe(1, portmer, 69))).toBe('1 · Portmer (17) · 69 · 650 € · 5 min');
+    expect(s(chiffresListe(portmer))).toBe('650 € · 5 min');
   });
 });
 
@@ -65,8 +65,8 @@ describe('R4, R6, R1 — textes de la fiche', () => {
     expect(s(typeTexte('campagne-isolee', 310))).toBe('Campagne isolée · 300 habitants');
     expect(s(loyerTexte(16.0))).toBe('832 € par mois pour 52 m² (16,0 €/m²)');
     expect(s(loyerTexte(12.5))).toBe('650 € par mois pour 52 m² (12,5 €/m²)');
-    expect(s(merFiche(39.9))).toBe("40 km de la mer à vol d'oiseau");
-    expect(s(merFiche(0.9))).toBe("moins d'1 km de la mer");
+    expect(s(merFiche({ merKm: 39.9, merMin: 50 }))).toBe('50 min de la mer en voiture');
+    expect(s(merFiche({ merKm: 0.9, merMin: 5 }))).toBe('5 min de la mer en voiture');
   });
 
   it('valeurs inconnues (R30 : type ou population inconnus)', () => {
@@ -74,7 +74,7 @@ describe('R4, R6, R1 — textes de la fiche', () => {
     expect(typeTexte('ville-dense', null)).toBe('Ville dense · population inconnue');
     expect(typeTexte(undefined, null)).toBe("Type d'environnement inconnu · population inconnue");
     expect(loyerTexte(null)).toBe('Loyer inconnu');
-    expect(merFiche(null)).toBe('Distance à la mer inconnue');
+    expect(merFiche({ merKm: null, merMin: null })).toBe('Distance à la mer inconnue');
   });
 
   it('rang (R6) : 1re sur 1 commune qui passe, 3e sur 3 communes qui passent', () => {
@@ -85,7 +85,7 @@ describe('R4, R6, R1 — textes de la fiche', () => {
 
   it('raisons (R1, AC-9, AC-10)', () => {
     expect(s(raisonTexte({ critere: 'loyer', valeur: 1560, plafond: 1200 }))).toBe('Loyer 1 560 € : au-dessus de ton plafond de 1 200 €');
-    expect(s(raisonTexte({ critere: 'mer', valeur: 148, plafond: 50 }))).toBe('Mer 148 km : au-dessus de ton plafond de 50 km');
+    expect(s(raisonTexte({ critere: 'mer', valeur: 135, plafond: 60 }))).toBe('Mer 2 h 15 : au-dessus de ton plafond de 1 h');
     expect(s(raisonTexte({ critere: 'taille', taille: 'grande-ville', population: 260000 }))).toBe('Taille : 260 000 habitants, hors des tailles choisies');
     expect(raisonTexte({ critere: 'loyer-inconnu' })).toBe('Loyer inconnu');
     expect(raisonTexte({ critere: 'mer-inconnue' })).toBe('Distance à la mer inconnue');
@@ -102,9 +102,9 @@ describe('R27, H75 — taille en chiffres, résumé du cadre de vie', () => {
 
   it('H75 : « Peu importe » si rien n’est choisi ; sinon les choix, dans l’ordre des groupes, séparés par « · »', () => {
     expect(resumeCadre({ loyer: 1200, mer: null, tailles: [] })).toBe('Peu importe');
-    expect(s(resumeCadre({ loyer: 1200, mer: 50, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km');
+    expect(s(resumeCadre({ loyer: 1200, mer: 60, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 1 h');
     expect(s(resumeCadre({ loyer: null, mer: null, tailles: ['grande-ville'] }))).toBe('1 taille');
-    expect(s(resumeCadre({ loyer: 1200, mer: 100, tailles: [] }))).toBe('Mer 100 km');
+    expect(s(resumeCadre({ loyer: 1200, mer: 90, tailles: [] }))).toBe('Mer 1 h 30');
   });
 });
 
@@ -127,7 +127,7 @@ describe('R29, R30, H75 — la montagne', () => {
 
   it('H75 : « Montagne 30 km » après la mer', () => {
     expect(s(resumeCadre({ loyer: 1200, mer: null, montagne: 30, tailles: [] }))).toBe('Montagne 30 km');
-    expect(s(resumeCadre({ loyer: 1200, mer: 50, montagne: 30, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 50 km · Montagne 30 km');
+    expect(s(resumeCadre({ loyer: 1200, mer: 60, montagne: 30, tailles: ['petite-ville', 'ville-moyenne'] }))).toBe('2 tailles · Mer 1 h · Montagne 30 km');
     expect(resumeCadre({ loyer: 1200, mer: null, montagne: null, tailles: [] })).toBe('Peu importe');
   });
 });
@@ -146,8 +146,8 @@ describe('R27, H75 — le type d’environnement', () => {
 
   it('H75 : « 1 type » au singulier, « 2 types », après les tailles et avant la mer', () => {
     expect(s(resumeCadre({ loyer: 1200, mer: null, tailles: [], types: ['ville-dense'] }))).toBe('1 type');
-    expect(s(resumeCadre({ loyer: 1200, mer: 50, montagne: 30, tailles: ['petite-ville'], types: ['ville-dense', 'bourg-et-village'] }))).toBe(
-      '1 taille · 2 types · Mer 50 km · Montagne 30 km',
+    expect(s(resumeCadre({ loyer: 1200, mer: 60, montagne: 30, tailles: ['petite-ville'], types: ['ville-dense', 'bourg-et-village'] }))).toBe(
+      '1 taille · 2 types · Mer 1 h · Montagne 30 km',
     );
     expect(resumeCadre({ loyer: 1200, mer: null, tailles: [], types: [] })).toBe('Peu importe');
   });
@@ -181,5 +181,32 @@ describe('R61, H191, H192 — la mer en minutes (spec recherche-et-mer)', () => 
     expect(s(tempsMerTexte({ minutes: 1, dapresKm: true }))).toBe('≈ 1 min');
     expect(s(tempsMerTexte({ minutes: 160, dapresKm: false }))).toBe('2 h 40');
     expect(s(tempsMerTexte({ minutes: 0, dapresKm: false }))).toBe("moins d'1 min");
+  });
+
+  // Tâche 3b : branchement sur la liste, les raisons, la fiche et le résumé (R62, R63, H75).
+  it('R62 : la colonne de la liste en minutes, « ≈ 7 h » d’après les km (Rhinval), « moins d’1 min » ; sans km ni temps, « Distance à la mer inconnue »', () => {
+    const rhinval = { nom: 'Rhinval', dep: '67', loyerM2: 11, merKm: 420, merMin: null };
+    expect(s(chiffresListe(rhinval))).toBe('572 € · ≈ 7 h');
+    expect(s(chiffresListe({ ...rhinval, merMin: 160 }))).toBe('572 € · 2 h 40');
+    expect(s(chiffresListe({ ...rhinval, merMin: 0 }))).toBe("572 € · moins d'1 min");
+    expect(s(chiffresListe({ ...rhinval, merKm: null }))).toBe('572 € · Distance à la mer inconnue');
+  });
+
+  it('R62 : raisons « Mer 2 h 40 : au-dessus de ton plafond de 1 h » ; sans temps « Mer ≈ 7 h : au-dessus de ton plafond de 1 h »', () => {
+    expect(s(raisonTexte({ critere: 'mer', valeur: 160, plafond: 60 }))).toBe('Mer 2 h 40 : au-dessus de ton plafond de 1 h');
+    expect(s(raisonTexte({ critere: 'mer', valeur: 420, plafond: 60, dapresKm: true }))).toBe('Mer ≈ 7 h : au-dessus de ton plafond de 1 h');
+    expect(s(raisonTexte({ critere: 'mer', valeur: 135, plafond: 90 }))).toBe('Mer 2 h 15 : au-dessus de ton plafond de 1 h 30');
+  });
+
+  it('R63 : la fiche « 2 h 40 de la mer en voiture », « moins d’1 min de la mer en voiture » ; sans temps « Temps en voiture jusqu’à la mer inconnu : compté 7 h d’après les km »', () => {
+    expect(s(merFiche({ merKm: 180.3, merMin: 160 }))).toBe('2 h 40 de la mer en voiture');
+    expect(s(merFiche({ merKm: 0.2, merMin: 0 }))).toBe("moins d'1 min de la mer en voiture");
+    expect(s(merFiche({ merKm: 420, merMin: null }))).toBe("Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km");
+    expect(s(merFiche({ merKm: 420 }))).toBe("Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km");
+  });
+
+  it('H75 révisée : le résumé replié dit « Mer 30 min », « Mer 15 min »', () => {
+    expect(s(resumeCadre({ loyer: 1200, mer: 30, tailles: [] }))).toBe('Mer 30 min');
+    expect(s(resumeCadre({ loyer: 1200, mer: 15, tailles: [] }))).toBe('Mer 15 min');
   });
 });

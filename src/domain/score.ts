@@ -8,8 +8,10 @@
 // Spec mairies : le bord de la mairie élue en 2026 filtre sans noter, comme le type (R38) ; raisons dans l'ordre de H113.
 // Le mot « mairie » désigne le point de chaque commune (D18 de loyer-mer) : la mairie élue s'appelle ici `bord`, `nuance`, `liste`.
 // Spec emploi : un métier à niveau coché filtre sans noter, comme le type (R46) ; raisons dans l'ordre de H139.
-// Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer et montagne au km (sous 1 km : comparée
-// comme 1 km ; une commune de montagne, 0, garde 0).
+// Spec recherche-et-mer : la mer filtre et note en minutes de voiture (R60 à R62, D6) ; une commune sans temps est comptée
+// d'après ses km (D7).
+// Tout se compare sur les valeurs affichées : prix selon le réglage (R22), mer à la minute (« moins d'1 min » : comparée
+// comme 1 min), montagne au km (sous 1 km : comparée comme 1 km ; une commune de montagne, 0, garde 0).
 import { PRIX_DEPART, valeurAffichee, type Achat, type ReglagePrix } from './prix';
 import type { Emploi } from './emploi';
 import { filtresServices, raisonService, type RaisonService, type ReglageServices, type Services } from './services';
@@ -106,8 +108,8 @@ export type Taille = 'petite-commune' | 'petite-ville' | 'ville-moyenne' | 'gran
 
 /**
  * Plafonds. `loyer` : plafond du prix, dans le mode et l'unité du réglage du prix (en € ou en €/m², loyer ou achat : nom
- * gardé de loyer-mer), `null` = « Sans limite ». `mer` : un des choix de `CHOIX_MER` en km, `null` = « Peu importe »
- * (R28 de cadre-de-vie). `montagne` : un des choix de `CHOIX_MONTAGNE` en km, absente ou `null` = « Peu importe » (R29 ;
+ * gardé de loyer-mer), `null` = « Sans limite ». `mer` : un des choix de `CHOIX_MER` en minutes, `null` = « Peu importe »
+ * (R60 de recherche-et-mer). `montagne` : un des choix de `CHOIX_MONTAGNE` en km, absente ou `null` = « Peu importe » (R29 ;
  * facultative, pour que les réglages écrits avant la montagne restent valables). `tailles` vide = « Peu importe ».
  * `types` : types d'environnement cochés (R27) ; absent ou vide = « Peu importe » (facultatif, comme `montagne`).
  * `mairies` : bords de mairie cochés (R38 de mairies) ; absent ou vide = « Peu importe » (facultatif, comme `types`).
@@ -132,10 +134,10 @@ export function avecMetiers(r: Reglages, metiers: MetierChoisi[]): Reglages {
   return metiers.length ? { ...reste, metiers } : reste;
 }
 
-/** R28, H69 de cadre-de-vie : les distances de la mer ; aucune cochée = « Peu importe » (D12). */
-export const CHOIX_MER = [10, 30, 50, 100] as const;
-/** R29, H69 : les mêmes distances pour la montagne. */
-export const CHOIX_MONTAGNE = CHOIX_MER;
+/** R60 de recherche-et-mer (D6) : les temps de la mer, en minutes ; aucun coché = « Peu importe » (D12 de cadre-de-vie). */
+export const CHOIX_MER = [15, 30, 60, 90] as const;
+/** R29, H69 de cadre-de-vie : les distances de la montagne, en km (la montagne reste en km, recherche-et-mer). */
+export const CHOIX_MONTAGNE = [10, 30, 50, 100] as const;
 
 /** R32 de cadre-de-vie : le prix de départ d'immobilier (D1), tout le cadre de vie sur Peu importe. */
 export const REGLAGES_DEPART: Reglages = { loyer: 1200, mer: null, tailles: [] };
@@ -160,7 +162,11 @@ export type ProchePret =
 export type Raison =
   /** Prix au-dessus du plafond, selon le mode et l'unité (R24). */
   | { critere: 'loyer' | 'loyer-m2' | 'achat' | 'achat-m2'; valeur: number; plafond: number }
-  | { critere: 'mer'; valeur: number; plafond: number }
+  /**
+   * R62 de recherche-et-mer : `valeur` et `plafond` en minutes, `valeur` celle comparée ; `dapresKm` (présent seulement
+   * quand il est vrai) : sans temps, comptée d'après les km (D7), écrite « ≈ » (H192).
+   */
+  | { critere: 'mer'; valeur: number; plafond: number; dapresKm?: true }
   | { critere: 'montagne'; valeur: number; plafond: number }
   | { critere: 'taille'; taille: Taille; population: number }
   | { critere: 'type'; type: TypeEnv }
@@ -210,11 +216,10 @@ export type Resultat = {
 /** Loyer affiché pour 52 m², à l'euro (fiche de loyer-mer ; ailleurs, `valeurAffichee` de prix.ts). */
 export const loyerPour = (m2: number) => Math.round(m2 * SURFACE_M2);
 /**
- * Distance utilisée pour comparer et noter, au km affiché : « moins d'1 km » vaut 1 km. Pour la mer, la montagne et un
- * proche à vol d'oiseau (R35 de proches-fiables) ; aussi par les pastilles.
+ * Distance utilisée pour comparer et noter, au km affiché : « moins d'1 km » vaut 1 km. Pour la montagne, un proche à vol
+ * d'oiseau (R35 de proches-fiables) et la mer d'une commune sans temps (D7 de recherche-et-mer, `tempsMer`).
  */
 export const kmCompare = (km: number) => Math.max(1, Math.round(km));
-const merComparee = (c: Commune) => (c.merKm == null ? null : kmCompare(c.merKm));
 /** R29 : de même pour la montagne ; une commune de montagne (0) garde 0, donc la note 100. */
 const montagneComparee = (c: Commune) => (c.montagneKm == null ? null : c.montagneKm === 0 ? 0 : kmCompare(c.montagneKm));
 
@@ -233,10 +238,7 @@ export function tempsMer(c: Pick<Commune, 'merKm' | 'merMin'>): TempsMer | null 
   return c.merKm == null ? null : { minutes: kmCompare(c.merKm), dapresKm: true };
 }
 
-/**
- * R61, R62 : minutes comparées et notées, celles affichées ; « moins d'1 min » vaut 1 min ; null = mer inconnue.
- * À brancher en tâche 3b à la place de `merComparee`.
- */
+/** R61, R62 : minutes comparées et notées, celles affichées ; « moins d'1 min » vaut 1 min ; null = mer inconnue. */
 export function merMinComparee(c: Pick<Commune, 'merKm' | 'merMin'>): number | null {
   const t = tempsMer(c);
   return t == null ? null : Math.max(1, t.minutes);
@@ -296,9 +298,10 @@ export function evaluer(communes: Commune[], r: Reglages, proches: ProchePret[] 
       else notes.push(100 * (1 - valeurPrix / r.loyer));
     }
     if (r.mer != null) {
-      const v = merComparee(c);
+      // R61, R62 : en minutes ; sans temps, d'après les km (D7), la raison porte le « ≈ ».
+      const v = merMinComparee(c);
       if (v == null) raisons.push({ critere: 'mer-inconnue' });
-      else if (v > r.mer) raisons.push({ critere: 'mer', valeur: v, plafond: r.mer });
+      else if (v > r.mer) raisons.push({ critere: 'mer', valeur: v, plafond: r.mer, ...(tempsMer(c)!.dapresKm && { dapresKm: true as const }) });
       else notes.push(100 * (1 - v / r.mer));
     }
     if (r.montagne != null) {

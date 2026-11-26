@@ -5,10 +5,11 @@ import immobilier from '../../docs/specs/2026-10-14-immobilier/acceptance.json';
 import cadreDeVie from '../../docs/specs/2026-10-14-cadre-de-vie/acceptance.json';
 import rechercheEtMer from '../../docs/specs/2026-11-25-recherche-et-mer/acceptance.json';
 import { merFiche, montagneFiche, tempsMerTexte } from './format';
-import { PRIX_DEPART } from './prix';
-import { communeDeLigne, evaluer, merMinComparee, palier, REGLAGES_DEPART, tailleDe, tempsMer, type Commune, type LigneCommunes, type Reglages } from './score';
+import { communeDeLigne, evaluer, merMinComparee, palier, REGLAGES_DEPART, tailleDe, tempsMer, type Commune, type LigneCommunes, type ProchePret, type Reglages } from './score';
 
-// Fixture « 5 communes » d'acceptance.json, au format du domaine.
+// Fixture « 5 communes » d'acceptance.json, au format du domaine. Recherche-et-mer, règle (f) du recalage : chaque commune
+// gagne `merMin`, lu dans la fixture de recherche-et-mer par code INSEE, comme `carte.ts` (null = sans temps).
+const merMinParCode = new Map(rechercheEtMer.fixture.items.map((it) => [it.code_insee, it.mer_min]));
 const fixture: Commune[] = acceptance.fixture.items.map((it) => ({
   code: it.code_insee,
   nom: it.nom,
@@ -17,6 +18,7 @@ const fixture: Commune[] = acceptance.fixture.items.map((it) => ({
   loyerM2: it.loyer_m2,
   estimationPropre: it.estimation_propre,
   merKm: it.mer_km,
+  merMin: merMinParCode.get(it.code_insee) ?? null,
 }));
 const code = Object.fromEntries(acceptance.fixture.items.map((it) => [it.id, it.code_insee])) as Record<'A' | 'B' | 'C' | 'D' | 'E', string>;
 
@@ -36,16 +38,16 @@ describe('R1, R2, R3 — passage, score et palier', () => {
     expect(by('C').score).toBeNull();
   });
 
-  it('AC-2 la mer « 50 km » décochée (aucune distance, `mer: null`) : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
+  it('AC-2 la mer « 1 h » décochée (aucune distance, `mer: null`) : D 65, A 46, B 31, E 9 ; seule C ne passe pas', () => {
     const { by } = scores({ loyer: 1200, mer: null, tailles: [] });
     expect([by('D').score, by('A').score, by('B').score, by('E').score]).toEqual([65, 46, 31, 9]);
     expect(['A', 'B', 'C', 'D', 'E'].filter((id) => !by(id as keyof typeof code).passe)).toEqual(['C']);
   });
 
-  it('AC-3 loyer 650 €, mer 50 km : A passe avec 49 (650 € affiché, égal au plafond) ; B, C, D et E ne passent pas', () => {
-    const { by } = scores({ loyer: 650, mer: 50, tailles: [] });
+  it('AC-3 loyer 650 €, mer 1 h : A passe avec 46 (650 € affiché, égal au plafond) ; B, C, D et E ne passent pas', () => {
+    const { by } = scores({ loyer: 650, mer: 60, tailles: [] });
     expect(by('A').passe).toBe(true);
-    expect(by('A').score).toBe(49);
+    expect(by('A').score).toBe(46);
     expect((['B', 'C', 'D', 'E'] as const).map((id) => by(id).passe)).toEqual([false, false, false, false]);
   });
 
@@ -53,25 +55,27 @@ describe('R1, R2, R3 — passage, score et palier', () => {
     expect([0, 19, 20, 39, 40, 59, 60, 79, 80, 100].map(palier)).toEqual([1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
   });
 
-  it('distance sous 1 km comparée comme 1 km (cas limite) : plafond 5 km, A (0,9 km) passe', () => {
-    const { by } = scores({ loyer: null, mer: 5, tailles: [] });
-    expect(by('A').passe).toBe(true);
-    expect(by('A').score).toBe(80); // 100 × (1 − 1 / 5)
+  // Recherche-et-mer, R61 : « moins d'1 min » (0 servi) comparé comme 1 min (remplace « sous 1 km comparée comme 1 km »).
+  it('temps sous 1 min comparé comme 1 min (cas limite) : plafond 15 min, A (« moins d’1 min ») passe', () => {
+    const a = { ...fixture[0], merMin: 0 };
+    const e = evaluer([a], { loyer: null, mer: 15, tailles: [] }).parCode.get(a.code)!;
+    expect(e.passe).toBe(true);
+    expect(e.score).toBe(93); // 100 × (1 − 1 / 15)
   });
 
-  // Cadre-de-vie, règle (1) du recalage : réglage explicite, mer 50 km (le départ n'a plus de mer).
-  const mer50: Reglages = { loyer: 1200, mer: 50, tailles: [] };
+  // Cadre-de-vie, règle (1) du recalage : réglage explicite, mer 1 h (le départ n'a plus de mer) ; recherche-et-mer (a).
+  const mer60: Reglages = { loyer: 1200, mer: 60, tailles: [] };
 
   it('raisons par critère non tenu : Montcher au-dessus des deux plafonds', () => {
-    const { by } = scores(mer50);
+    const { by } = scores(mer60);
     expect(by('C').raisons).toEqual([
       { critere: 'loyer', valeur: 1560, plafond: 1200 },
-      { critere: 'mer', valeur: 148, plafond: 50 },
+      { critere: 'mer', valeur: 135, plafond: 60 },
     ]);
   });
 
   it('classement : communes qui passent, score affiché décroissant, puis loyer croissant, puis nom', () => {
-    const { res } = scores(mer50);
+    const { res } = scores(mer60);
     expect(res.classement.map((c) => c.commune.nom)).toEqual(['Portmer', 'Quaibleu', 'Grandeville']);
     expect(res.classement.map((c) => c.rang)).toEqual([1, 2, 3]);
     expect(res.actif).toBe(true);
@@ -93,9 +97,9 @@ describe('D11 — taille de ville', () => {
     expect(tailleDe(null)).toBeNull();
   });
 
-  it('AC-10 (règle) : mer 50 km, « 10 000 – 50 000 hab. » cochée, seule A passe (72) ; Grandeville a la raison de taille', () => {
-    const { res, by } = scores({ loyer: 1200, mer: 50, tailles: ['petite-ville'] });
-    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 72]]);
+  it('AC-10 (règle) : mer 1 h, « 10 000 – 50 000 hab. » cochée, seule A passe (69) ; Grandeville a la raison de taille', () => {
+    const { res, by } = scores({ loyer: 1200, mer: 60, tailles: ['petite-ville'] });
+    expect(res.classement.map((e) => [e.commune.nom, e.score])).toEqual([['Portmer', 69]]);
     expect(by('B').raisons).toEqual([{ critere: 'taille', taille: 'grande-ville', population: 260000 }]);
   });
 
@@ -124,7 +128,7 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
 
   it('un prix inconnu ne fait pas échouer le critère du prix et ne donne pas de note : le score vient de la mer', () => {
     const e = evaluer([sansLoyer], { loyer: 1200, mer: 60, tailles: [] }).parCode.get('99901')!;
-    expect(e).toMatchObject({ passe: true, sansNote: false, score: 98, raisons: [] }); // 100 × (1 − 1 / 60)
+    expect(e).toMatchObject({ passe: true, sansNote: false, score: 92, raisons: [] }); // 100 × (1 − 5 / 60), Portmer à 5 min
   });
 
   it('commune qui passe sans aucune note : « sans note », ni score, ni rang, hors du compte et du classement', () => {
@@ -142,9 +146,10 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
   });
 
   it('décision de Vincent (2026-10-14) : une commune sans prix vient après toutes celles qui ont un prix, même à 98 contre 83 ; score et couleur inchangés', () => {
-    const avecPrix = { ...fixture[0], code: '1', nom: 'Avecprix', merKm: 7, loyerM2: 5 }; // (100 × (1 − 260 / 1 200) + 88,3) / 2 = 83
-    const sansPrix = { ...fixture[0], code: '2', nom: 'Sansprix', merKm: 0.9, loyerM2: null }; // mer seule : 98
-    const terre = { ...fixture[0], code: '3', nom: 'Terre', merKm: 50, loyerM2: null }; // mer seule : 17
+    // Sans temps (`merMin: null`) : comptées d'après leurs km (D7 de recherche-et-mer), mêmes nombres.
+    const avecPrix = { ...fixture[0], code: '1', nom: 'Avecprix', merKm: 7, merMin: null, loyerM2: 5 }; // (100 × (1 − 260 / 1 200) + 88,3) / 2 = 83
+    const sansPrix = { ...fixture[0], code: '2', nom: 'Sansprix', merKm: 0.9, merMin: null, loyerM2: null }; // mer seule : 98
+    const terre = { ...fixture[0], code: '3', nom: 'Terre', merKm: 50, merMin: null, loyerM2: null }; // mer seule : 17
     const res = evaluer([terre, sansPrix, avecPrix], { loyer: 1200, mer: 60, tailles: [] });
     expect(res.classement.map((e) => [e.commune.nom, e.score, e.palier, e.rang])).toEqual([
       ['Avecprix', 83, 5, 1],
@@ -154,7 +159,7 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
   });
 
   it('à score affiché égal : prix affiché croissant, prix inconnu en dernier, puis nom', () => {
-    const a = { ...fixture[0], merKm: 7 }; // mêmes notes de mer, pas de plafond de prix : scores égaux
+    const a = { ...fixture[0], merKm: 7, merMin: null }; // mêmes notes de mer (d'après les km, D7), pas de plafond de prix : scores égaux
     const communes: Commune[] = [
       { ...a, code: '1', nom: 'Aval', loyerM2: null },
       { ...a, code: '2', nom: 'Zénith', loyerM2: 20 },
@@ -167,27 +172,13 @@ describe('R25, H4 étendue — prix inconnu (spec immobilier, D21 de loyer-mer)'
 });
 
 // Tranche cadre-de-vie, H74 : la moyenne exacte des notes, arrondie moitié vers le haut, sans perte en virgule flottante.
-// Les quatre moitiés de recalage.md (critères recalés à mer 50 km).
+// Recherche-et-mer (recalage.md, « Moitiés exactes ») : les quatre moitiés du recalage de cadre-de-vie (mer en km) sont
+// remplacées par celle de la mer en minutes, qui revient dans proches AC-1, proches-fiables AC-3 et AC-8.
 describe('H74 — moitié exacte arrondie vers le haut (recalage.md)', () => {
-  const mer50 = (loyer: number): Reglages => ({ loyer, mer: 50, tailles: [] });
-  const portmer: Commune = { ...fixture[0], loyerM2Maison: immobilier.fixture.items[0].loyer_m2_maison }; // 10,5 €/m² en maison
-
-  it('Quaibleu à 1 200 € et 50 km : (9 + 86) / 2 = 47,5 → 48', () => {
-    expect(scores(mer50(1200)).by('E').score).toBe(48);
-  });
-
-  it('Portmer en 72 m² : 900 €, (25 + 98) / 2 = 61,5 → 62', () => {
-    const e = evaluer([portmer], mer50(1200), [], { ...PRIX_DEPART, surface: 72 }).parCode.get(portmer.code)!;
-    expect([e.valeurPrix, e.score]).toEqual([900, 62]);
-  });
-
-  it('Portmer en maison 72 m² : 756 €, (37 + 98) / 2 = 67,5 → 68', () => {
-    const e = evaluer([portmer], mer50(1200), [], { ...PRIX_DEPART, bien: 'maison', surface: 72 }).parCode.get(portmer.code)!;
-    expect([e.valeurPrix, e.score]).toEqual([756, 68]);
-  });
-
-  it('Portmer à 1 000 € : (35 + 98) / 2 = 66,5 → 67', () => {
-    expect(scores(mer50(1000)).by('A').score).toBe(67);
+  it('Portmer à 1 200 €, mer 1 h, un proche à 1 h pour un plafond de 2 h : (45,83 + 91,67 + 50) / 3 = 62,5 → 63', () => {
+    const nantesville: ProchePret = { nom: 'Nantesville (44)', plafond: 120, temps: Uint16Array.of(60) };
+    const e = evaluer([fixture[0]], { loyer: 1200, mer: 60, tailles: [] }, [nantesville]).parCode.get(fixture[0].code)!;
+    expect([e.valeurPrix, e.score]).toEqual([650, 63]);
   });
 });
 
@@ -225,11 +216,15 @@ describe('communes.json — type d’environnement et distance à la montagne lu
   });
 
   // Corrections 2 (2026-10-15) : la distance à la mer avait le même double arrondi (100,495 → 100,5 → 101 km).
-  it('R28 non-régression : Tréon (28394, 100,495 km) « 100 km de la mer », passe la mer à 100 km, note 0', () => {
-    const treon = parCode.get('28394')!;
+  // Recherche-et-mer (recalage.md) : la mer ne s'affiche plus en km ; Tréon devient le repli de D7 (sans temps, ses km
+  // affichés comptent comme minutes) : 100 min, pas 101.
+  it('R28 non-régression, repli de D7 : Tréon (28394, 100,495 km) sans temps compte 100 min, « ≈ 1 h 40 », pas 101', () => {
+    const treon = { ...parCode.get('28394')!, merMin: null };
     expect(treon.nom).toBe('Tréon');
-    expect(merFiche(treon.merKm).replace(/ /g, ' ')).toBe("100 km de la mer à vol d'oiseau");
-    expect(evaluer([treon], { loyer: null, mer: 100, tailles: [] }).parCode.get('28394')).toMatchObject({ passe: true, score: 0, raisons: [] });
+    expect(tempsMer(treon)).toEqual({ minutes: 100, dapresKm: true });
+    expect(tempsMerTexte(tempsMer(treon)!).replace(/ /g, ' ')).toBe('≈ 1 h 40');
+    expect(merFiche(treon).replace(/ /g, ' ')).toBe("Temps en voiture jusqu'à la mer inconnu : compté 1 h 40 d'après les km");
+    expect(evaluer([treon], { loyer: null, mer: 90, tailles: [] }).parCode.get('28394')!.raisons).toEqual([{ critere: 'mer', valeur: 100, plafond: 90, dapresKm: true }]);
   });
 
   it('R29 non-régression : /?loyer=1200&montagne=10 sur les vraies données → 8 945 communes passent (compte de la tâche 0, source Cerema)', () => {
@@ -238,7 +233,7 @@ describe('communes.json — type d’environnement et distance à la montagne lu
 
   it('une ligne sans ces colonnes (jeu ancien) : type et distance inconnus (null)', () => {
     const c = communeDeLigne(['99001', 'Portmer', '17', 23000, 12.5, false, 0.9, null, null]);
-    expect(c).toMatchObject({ code: '99001', merKm: 0.9, typeEnv: null, montagneKm: null });
+    expect(c).toMatchObject({ code: '99001', merKm: 0.9, merMin: null, typeEnv: null, montagneKm: null });
   });
 });
 
@@ -254,6 +249,7 @@ describe('R29 — la montagne (spec cadre-de-vie)', () => {
     loyerM2: it.loyer_m2,
     estimationPropre: it.estimation_propre,
     merKm: it.mer_km,
+    merMin: merMinParCode.get(it.code_insee) ?? null,
     typeEnv: it.type_env as Commune['typeEnv'],
     montagneKm: it.montagne_km,
   }));
@@ -276,9 +272,9 @@ describe('R29 — la montagne (spec cadre-de-vie)', () => {
     expect(v.by('A').raisons).toEqual([{ critere: 'montagne', valeur: 140, plafond: 50 }]);
   });
 
-  it('AC-11 (calcul) loyer 1 200 €, mer 100, montagne 50 : seule Grandeville passe, (31 + 60 + 0) / 3 → 30', () => {
-    const v = ev({ loyer: 1200, mer: 100, montagne: 50, tailles: [] });
-    expect(v.classement).toEqual([['Grandeville', 30]]);
+  it('AC-11 (calcul) loyer 1 200 €, mer 1 h 30, montagne 50 : seule Grandeville passe, (31 + 44 + 0) / 3 → 25', () => {
+    const v = ev({ loyer: 1200, mer: 90, montagne: 50, tailles: [] });
+    expect(v.classement).toEqual([['Grandeville', 25]]);
     expect(v.by('E').raisons).toEqual([{ critere: 'montagne', valeur: 62, plafond: 50 }]);
   });
 
@@ -296,7 +292,7 @@ describe('R29 — la montagne (spec cadre-de-vie)', () => {
   });
 
   it('H83 : raisons dans l’ordre prix, mer, montagne, taille', () => {
-    const v = ev({ loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'] });
+    const v = ev({ loyer: 1000, mer: 15, montagne: 10, tailles: ['petite-commune'] });
     expect(v.by('C').raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille']);
   });
 
@@ -328,6 +324,7 @@ describe('R27 — le type d’environnement (spec cadre-de-vie)', () => {
     loyerM2: it.loyer_m2,
     estimationPropre: it.estimation_propre,
     merKm: it.mer_km,
+    merMin: merMinParCode.get(it.code_insee) ?? null,
     typeEnv: it.type_env as Commune['typeEnv'],
     montagneKm: it.montagne_km,
   }));
@@ -373,7 +370,7 @@ describe('R27 — le type d’environnement (spec cadre-de-vie)', () => {
   });
 
   it('H83 : raisons dans l’ordre prix, mer, montagne, taille, type', () => {
-    const v = ev({ loyer: 1000, mer: 10, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'] });
+    const v = ev({ loyer: 1000, mer: 15, montagne: 10, tailles: ['petite-commune'], types: ['campagne-isolee'] });
     expect(v.by('C').raisons.map((r) => r.critere)).toEqual(['loyer', 'mer', 'montagne', 'taille', 'type']);
   });
 });

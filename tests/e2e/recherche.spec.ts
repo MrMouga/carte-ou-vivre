@@ -369,6 +369,125 @@ test('H188 : la loupe est inactive pendant le chargement de la page', async ({ p
   await expect(loupe(page)).toBeEnabled();
 });
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Critères de la tâche 3b : la mer en minutes (R60 à R63, D5 révisée, D6, D7, D9). Les temps servis sont les `mer_min` de
+// la fixture de recherche-et-mer, par code INSEE (tests/e2e/lib/carte.ts) : Portmer 5, Grandeville 50, Montcher 135,
+// Terrebasse 160, Quaibleu 14 ; Rhinval sans temps (420 km, comptés 420 min, D7).
+const liste = (page: Page) => page.getByRole('region', { name: 'Les 10 premières' });
+const lignes = async (page: Page) => (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
+/** « Portmer (17) · 69 » : le nom et le score de chaque ligne de la liste. */
+const scoresListe = async (page: Page) => (await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '));
+const mer = (page: Page) => page.getByRole('group', { name: 'Mer à moins de' });
+const choixMer = (page: Page, nom: string) => mer(page).getByRole('button', { name: nom, exact: true });
+/** La pastille de mer cochée, et elle seule. */
+async function merCochee(page: Page, nom: string) {
+  await expect(choixMer(page, nom)).toHaveAttribute('aria-pressed', 'true');
+  await expect(mer(page).getByRole('button', { pressed: true })).toHaveCount(1);
+}
+/** Aucune pastille de mer cochée (Peu importe). */
+async function merAucune(page: Page) {
+  await expect(mer(page).getByRole('button')).toHaveCount(4);
+  await expect(mer(page).getByRole('button', { pressed: true })).toHaveCount(0);
+}
+/** Choisit une commune par la recherche (R59) : la loupe si le champ n'est pas ouvert, la saisie, la suggestion. */
+async function choisirParRecherche(page: Page, texte: string, nom: string) {
+  if (!(await champ(page).isVisible())) await loupe(page).click();
+  await taper(page, texte);
+  await attendreSuggestions(page, [nom]);
+  await suggestions(page).first().click();
+  await expect(fiche(page)).toContainText(nom);
+}
+
+test('AC-6 depuis /?loyer=1200, « 30 min » : pastilles 15 min, 30 min, 1 h, 1 h 30, sans bascule ; /?loyer=1200&mer-min=30 ; Portmer 65 · 5 min, Quaibleu 31 · 14 min', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200');
+  await merAucune(page);
+  expect((await mer(page).getByRole('button').allInnerTexts()).map((t) => nbsp(t).replace(/\s+/g, ' '))).toEqual(['15 min', '30 min', '1 h', '1 h 30']);
+  for (const nom of ['km', 'min']) {
+    await expect(page.getByRole('button', { name: nom, exact: true })).toHaveCount(0);
+    await expect(page.getByRole('radio', { name: nom, exact: true })).toHaveCount(0);
+  }
+
+  await choixMer(page, '30 min').click();
+  await merCochee(page, '30 min');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=30');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('2 communes passent tes critères');
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 65 · 650 € · 5 min', '2 · Quaibleu (13) · 31 · 1 092 € · 14 min']);
+});
+
+test('AC-7 /?loyer=1200&mer-min=60 : « 1 h » cochée, adresse inchangée ; /?loyer=1200&mer-min=50 : Peu importe, /?loyer=1200, 5 communes en minutes', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=60');
+  await merCochee(page, '1 h');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=60');
+
+  await ouvrirSix(page, '/?loyer=1200&mer-min=50');
+  await merAucune(page);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('5 communes passent tes critères');
+  expect(await lignes(page)).toEqual([
+    '1 · Terrebasse (23) · 65 · 416 € · 2 h 40',
+    '2 · Rhinval (67) · 52 · 572 € · ≈ 7 h',
+    '3 · Portmer (17) · 46 · 650 € · 5 min',
+    '4 · Grandeville (33) · 31 · 832 € · 50 min',
+    '5 · Quaibleu (13) · 9 · 1 092 € · 14 min',
+  ]);
+});
+
+test('AC-8 /?loyer=1200&mer-min=60, aucun proche : Portmer 69, Quaibleu 43, Grandeville 24 ; Terrebasse « Mer 2 h 40 : … de 1 h », « 2 h 40 de la mer en voiture » ; Rhinval « Mer ≈ 7 h : … », « compté 7 h d’après les km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=60');
+  await voirListe(page);
+  await expect(liste(page)).toContainText('3 communes passent tes critères');
+  expect(await scoresListe(page)).toEqual(['Portmer (17) · 69', 'Quaibleu (13) · 43', 'Grandeville (33) · 24']);
+
+  await choisirParRecherche(page, 'terre', 'Terrebasse (23)');
+  let t = await texteFiche(page);
+  expect(t).toContain('Ne passe pas tes critères');
+  expect(t).toContain('Mer 2 h 40 : au-dessus de ton plafond de 1 h');
+  expect(t).toContain('2 h 40 de la mer en voiture');
+
+  await choisirParRecherche(page, 'rhin', 'Rhinval (67)');
+  t = await texteFiche(page);
+  expect(t).toContain('Mer ≈ 7 h : au-dessus de ton plafond de 1 h');
+  expect(t).toContain("Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km");
+});
+
+test('AC-9 depuis /?loyer=1200 : fiche de Grandeville « 50 min de la mer en voiture » puis la montagne, sans « km de la mer » ; Quaibleu « 14 min de la mer en voiture » ; mentions de La Poste et d’openrouteservice', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200');
+  await choisirParRecherche(page, 'grand', 'Grandeville (33)');
+  let t = await texteFiche(page);
+  const iMer = t.indexOf('50 min de la mer en voiture');
+  expect(iMer).toBeGreaterThanOrEqual(0);
+  expect(t.indexOf("50 km de la montagne à vol d'oiseau")).toBeGreaterThan(iMer);
+  expect(t).not.toContain('km de la mer');
+
+  await choisirParRecherche(page, 'quai', 'Quaibleu (13)');
+  t = await texteFiche(page);
+  expect(t).toContain('14 min de la mer en voiture');
+  expect(t).not.toContain('km de la mer');
+
+  await ouvrirSix(page, '/?loyer=1200');
+  const mentions = nbsp(await page.getByRole('contentinfo').filter({ visible: true }).first().textContent());
+  for (const texte of ['Codes postaux', 'La Poste', "Temps jusqu'à la mer", 'openrouteservice']) expect(mentions).toContain(texte);
+});
+
+test('AC-10 anciens liens : /?loyer=1200&mer=30 et /?loyer=1200&mer=60 → Peu importe, /?loyer=1200, 5 communes ; /?loyer=1200&mer=30&mer-min=15 → « 15 min », /?loyer=1200&mer-min=15, Portmer 56, Quaibleu 8', async ({ page }) => {
+  for (const ancien of ['/?loyer=1200&mer=30', '/?loyer=1200&mer=60']) {
+    await ouvrirSix(page, ancien);
+    await merAucune(page);
+    await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
+    await voirListe(page);
+    await expect(liste(page)).toContainText('5 communes passent tes critères');
+    expect((await lignes(page))[0]).toMatch(/^1 · Terrebasse \(23\) · /);
+  }
+
+  await ouvrirSix(page, '/?loyer=1200&mer=30&mer-min=15');
+  await merCochee(page, '15 min');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=15');
+  await voirListe(page);
+  expect(await lignes(page)).toEqual(['1 · Portmer (17) · 56 · 650 € · 5 min', '2 · Quaibleu (13) · 8 · 1 092 € · 14 min']);
+});
+
 test.describe('fenêtre de Safari sur iPhone (390 × 664, toucher)', () => {
   test.use({ viewport: { width: 390, height: 664 }, hasTouch: true });
   // Clavier de l'iPhone : il couvre tout sous y ≈ 342 dans cette fenêtre (tests/e2e/proches-clavier-iphone.spec.ts).

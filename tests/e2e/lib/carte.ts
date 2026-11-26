@@ -38,8 +38,14 @@ export const D_TOUS_BIENS: Jeu = {
 // Type d'environnement et distance à la montagne (cadre-de-vie) : pris dans la fixture « 6 communes · cadre de vie », par
 // code INSEE (A à E ont les mêmes codes dans tous les jeux) ; le jeu « métropole » les sert inconnus (plan, « Fixtures »).
 const cadreParCode = new Map(cadreDeVie.fixture.items.map((it) => [it.code_insee, it]));
+// Temps jusqu'à la mer (recherche-et-mer, plan « Accordé en validant ce plan », tâche 3b) : `mer_min` de la fixture de
+// recherche-et-mer, par code INSEE, pour tous les jeux, « métropole » compris (null = sans temps, Rhinval) ; une commune du
+// jeu absente de cette fixture reçoit ses km servis arrondis à la minute, moitié vers le haut (H191 ; recalage.md :
+// Coin-Sud-Ouest et Coin-Nord-Est, 300 km → 300 min).
+const merMinParCode = new Map(rechercheMer.fixture.items.map((it) => [it.code_insee, it.mer_min]));
+const merMin = (it: Item) => (merMinParCode.has(it.code_insee) ? merMinParCode.get(it.code_insee)! : it.mer_km == null ? null : Math.floor(it.mer_km + 0.5));
 const communesJson = (jeu: Jeu) => ({
-  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km', 'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km'],
+  champs: ['code', 'nom', 'dep', 'population', 'loyer_m2', 'estimation_propre', 'mer_km', 'loyer_maison_m2', 'estimation_propre_maison', 'type_env', 'montagne_km', 'mer_min'],
   communes: jeu.items.map((it) => {
     const cadre = jeu.items === METROPOLE.items ? undefined : cadreParCode.get(it.code_insee);
     return [
@@ -48,6 +54,7 @@ const communesJson = (jeu: Jeu) => ({
       'estimation_propre_maison' in it ? it.estimation_propre_maison : null,
       cadre?.type_env ?? null,
       cadre?.montagne_km ?? null,
+      merMin(it),
     ];
   }),
 });

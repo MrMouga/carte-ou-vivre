@@ -1,4 +1,4 @@
-import { SURFACE_M2, loyerPour, PROCHE, type Bord, type Commune, type Raison, type Reglages, type Taille, type TempsMer, type TypeEnv } from './score';
+import { SURFACE_M2, loyerPour, PROCHE, tempsMer, type Bord, type Commune, type Raison, type Reglages, type Taille, type TempsMer, type TypeEnv } from './score';
 import { estGare, estScolarite, filtresServices, libelleService, texteValeur } from './services';
 import { couverture, marque } from '../proches/etat';
 import { RAYON_KM, type LigneMetier } from './emploi';
@@ -16,7 +16,10 @@ export const eurosM2 = (n: number) => `${(Math.round(n * 10) / 10).toFixed(1).re
 /** Prix d'achat au m² et plafonds au m² : à l'euro (H59, H57). */
 export const eurosM2Entier = (n: number) => `${entier(n)}${NBSP}€/m²`;
 export const km = (n: number) => `${entier(n)}${NBSP}km`;
-/** Distance à la mer : « moins d'1 km » sous 1 km (R4). */
+/**
+ * Distance en km, « moins d'1 km » sous 1 km (R4 de loyer-mer) : celle d'un proche à vol d'oiseau (`distanceProche`) ; la
+ * mer ne s'affiche plus en km (D5 révisée de recherche-et-mer).
+ */
 export const merTexte = (n: number) => (n < 1 ? `moins d'1${NBSP}km` : km(n));
 /** Population au millier dès 10 000 habitants, à la centaine en dessous (H3). */
 export const population = (n: number) => entier(n >= 10000 ? Math.round(n / 1000) * 1000 : Math.round(n / 100) * 100);
@@ -80,7 +83,7 @@ export function compte(n: number): string {
   return n === 1 ? '1 commune passe tes critères' : `${entier(n)} communes passent tes critères`;
 }
 
-type PourListe = { nom: string; dep: string; merKm: number | null } & PrixCommune;
+type PourListe = { nom: string; dep: string } & Pick<Commune, 'merKm' | 'merMin'> & PrixCommune;
 
 /**
  * Message de la liste quand aucune commune ne passe (état **aucune commune**) ; en Acheter, « le prix » remplace « le
@@ -102,11 +105,16 @@ export function prixListe(c: PrixCommune, p: ReglagePrix): string {
   return p.unite === 'total' ? euros(v) : p.mode === 'louer' ? eurosM2(v) : eurosM2Entier(v);
 }
 
-/** Sous-texte d'une ligne : « 650 € · moins d'1 km ». */
-export const chiffresListe = (c: PourListe, p: ReglagePrix = PRIX_DEPART) =>
-  [prixListe(c, p), c.merKm == null ? 'Distance à la mer inconnue' : merTexte(c.merKm)].join(' · ');
+/**
+ * Sous-texte d'une ligne : « 650 € · 5 min » ; la mer toujours en minutes, « ≈ 7 h » d'après les km (R62 de
+ * recherche-et-mer) ; « Distance à la mer inconnue » sans km ni temps (R61).
+ */
+export const chiffresListe = (c: PourListe, p: ReglagePrix = PRIX_DEPART) => {
+  const t = tempsMer(c);
+  return [prixListe(c, p), t == null ? 'Distance à la mer inconnue' : tempsMerTexte(t)].join(' · ');
+};
 
-/** Ligne de liste (R5) : « 1 · Portmer (17) · 72 · 650 € · moins d'1 km ». */
+/** Ligne de liste (R5) : « 1 · Portmer (17) · 69 · 650 € · 5 min ». */
 export const ligneListe = (rang: number, c: PourListe, score: number, p: ReglagePrix = PRIX_DEPART) =>
   `${rang} · ${nomAffiche(c)} · ${score} · ${chiffresListe(c, p)}`;
 
@@ -143,14 +151,14 @@ export const typeTexte = (type: TypeEnv | null | undefined, pop: number | null) 
 
 /**
  * Résumé de la catégorie « Cadre de vie » repliée (H75) : « Peu importe », ou les choix dans l'ordre des groupes,
- * « 1 taille · 2 types · Mer 50 km · Montagne 30 km ».
+ * « 1 taille · 2 types · Mer 1 h · Montagne 30 km » (la mer en minutes, R60 de recherche-et-mer).
  */
 export function resumeCadre(r: Reglages): string {
   const parts: string[] = [];
   const types = r.types?.length ?? 0;
   if (r.tailles.length) parts.push(`${r.tailles.length}${NBSP}taille${r.tailles.length > 1 ? 's' : ''}`);
   if (types) parts.push(`${types}${NBSP}type${types > 1 ? 's' : ''}`);
-  if (r.mer != null) parts.push(`Mer ${km(r.mer)}`);
+  if (r.mer != null) parts.push(`Mer ${dureeMer(r.mer)}`);
   if (r.montagne != null) parts.push(`Montagne ${km(r.montagne)}`);
   return parts.length ? parts.join(' · ') : 'Peu importe';
 }
@@ -207,8 +215,16 @@ export const resumePrix = (p: ReglagePrix, plafond: number | null) =>
     plafondPrix(plafond, p),
   ].join(' · ');
 
-export const merFiche = (k: number | null) =>
-  k == null ? 'Distance à la mer inconnue' : k < 1 ? `moins d'1${NBSP}km de la mer` : `${km(k)} de la mer à vol d'oiseau`;
+/**
+ * Fiche (R63 de recherche-et-mer) : « 50 min de la mer en voiture », « moins d'1 min de la mer en voiture » ; sans temps,
+ * « Temps en voiture jusqu'à la mer inconnu : compté 7 h d'après les km » (D7) ; sans km ni temps, la ligne d'avant.
+ */
+export function merFiche(c: Pick<Commune, 'merKm' | 'merMin'>): string {
+  const t = tempsMer(c);
+  if (t == null) return 'Distance à la mer inconnue';
+  if (t.dapresKm) return `Temps en voiture jusqu'à la mer inconnu : compté ${dureeMer(t.minutes)} d'après les km`;
+  return `${dureeMer(t.minutes)} de la mer en voiture`;
+}
 
 /** Fiche, sous la mer (R30 de cadre-de-vie) : 0 = classée (R29), « moins d'1 km » sous 1 km comme pour la mer. */
 export const montagneFiche = (k: number | null | undefined) =>
@@ -292,7 +308,8 @@ export function raisonTexte(r: Raison): string {
     case 'achat-m2':
       return `Achat ${eurosM2Entier(r.valeur)} : au-dessus de ton plafond de ${eurosM2Entier(r.plafond)}`;
     case 'mer':
-      return `Mer ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
+      // R62 de recherche-et-mer : « Mer 2 h 40 : … de 1 h » ; sans temps, « Mer ≈ 7 h : … » (H192).
+      return `Mer ${tempsMerTexte({ minutes: r.valeur, dapresKm: r.dapresKm === true })} : au-dessus de ton plafond de ${dureeMer(r.plafond)}`;
     case 'montagne':
       return `Montagne ${km(r.valeur)} : au-dessus de ton plafond de ${km(r.plafond)}`;
     case 'taille':
