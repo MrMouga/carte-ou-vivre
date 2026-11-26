@@ -123,7 +123,7 @@ export function Recherche({ index, codes, onFocus, choix, onChoisir, onEffacer, 
     champ.current?.focus();
   };
   // Aux flèches, la suggestion en surbrillance vient dans la vue (le navigateur ne fait pas défiler pour
-  // `aria-activedescendant`) : la liste défile au-delà de `taille-liste-suggestions`.
+  // `aria-activedescendant`) : la liste défile au-delà de sa hauteur.
   const surligner = (i: number) => {
     setActif(i);
     liste.current?.children[i]?.scrollIntoView({ block: 'nearest' });
@@ -207,7 +207,9 @@ export function Recherche({ index, codes, onFocus, choix, onChoisir, onEffacer, 
         // Garde le focus dans le champ pendant l'appui sur une suggestion ou sur la barre de défilement : sur iPhone, il le
         // perdrait avant le clic, et la liste se fermerait.
         onMouseDown={(e) => e.preventDefault()}
-        className="flex max-h-liste-suggestions min-h-0 flex-col overflow-y-auto overscroll-contain rounded-base border border-border bg-card"
+        // En bureau, `taille-liste-suggestions` de haut au plus ; au téléphone, tout le reste de la feuille sous le champ,
+        // jusqu'au clavier (FeuilleMobile) : la liste rétrécit à la place qu'elle a (`min-h-0`) et défile (corrections 1).
+        className="flex min-h-0 flex-col overflow-y-auto overscroll-contain rounded-base border border-border bg-card bureau:max-h-liste-suggestions"
       >
         {suggestions.map(({ commune: c, postal }, i) => (
           <li

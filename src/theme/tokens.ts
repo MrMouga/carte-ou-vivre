@@ -75,8 +75,8 @@ export const size = {
   // 390 px : taille du texte des champs de saisie. Sous 16 px, Safari sur iPhone agrandit la page quand un champ prend le
   // focus ; le style `texte` (15) reste le reste du temps. Classe : `max-bureau:text-(length:--taille-saisie)`.
   'taille-saisie': 16,
-  // Suggestions de communes (recherche-et-mer, contrat « Suggestion de commune ») : hauteur avant défilement. Classe :
-  // `max-h-liste-suggestions`.
+  // Suggestions de communes (recherche-et-mer, contrat « Suggestion de commune ») : hauteur avant défilement, en bureau (au
+  // téléphone, la liste prend le reste de la feuille). Classe : `bureau:max-h-liste-suggestions`.
   'taille-liste-suggestions': 280,
   // Sous 1 024 px : hauteur minimale de la feuille ouverte (D9 et H48 d'interface-telephone), pour que le curseur du prix
   // reste visible à 375 × 548. 272 → 338 (D11 d'interface-telephone, /ui immobilier : le réglage du prix est plus haut ; le

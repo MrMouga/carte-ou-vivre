@@ -145,6 +145,29 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout: ajoutChamp, compte
     rendreFocus.current = false;
     tete.current?.focus();
   }, [repliee]);
+  // Recherche ouverte : le clavier du téléphone couvre le bas de la feuille sans changer la taille de la page (Safari ne
+  // réduit que sa partie visible, `visualViewport`). La recherche s'arrête au-dessus du clavier (marge mesurée), pour que la
+  // liste des suggestions, qui prend la hauteur de la feuille sous le champ, défile jusqu'à la dernière ; le champ, en haut
+  // de la feuille, ne bouge pas (corrections 1 de recherche-et-mer).
+  const [sousClavier, setSousClavier] = useState(0);
+  useLayoutEffect(() => {
+    const vv = window.visualViewport;
+    if (!enRecherche || !vv) return;
+    const mesurer = () => {
+      const f = ref.current;
+      if (!f) return;
+      const basContenu = f.getBoundingClientRect().bottom - parseFloat(getComputedStyle(f).paddingBottom);
+      setSousClavier(Math.max(0, Math.round(basContenu - (vv.offsetTop + vv.height))));
+    };
+    mesurer();
+    vv.addEventListener('resize', mesurer);
+    vv.addEventListener('scroll', mesurer);
+    return () => {
+      vv.removeEventListener('resize', mesurer);
+      vv.removeEventListener('scroll', mesurer);
+    };
+  }, [enRecherche, ref]);
+
   const g = useGlisser({ actif: pret && !ajout, repliee, onChanger: () => changer(!repliee) });
   const glisse = g.dy != null;
   const decalage = `${g.dy ?? 0}px`;
@@ -220,7 +243,11 @@ export function FeuilleMobile({ ref, onglet, onOnglet, ajout: ajoutChamp, compte
       <p role="status" className="sr-only">
         {annonce}
       </p>
-      {enRecherche && <div className="flex min-h-0 flex-1 flex-col px-4 pb-2">{recherche}</div>}
+      {enRecherche && (
+        <div className="flex min-h-0 flex-1 flex-col px-4 pb-2" style={{ marginBottom: sousClavier }}>
+          {recherche}
+        </div>
+      )}
       {/* Contenu : invisible feuille repliée (fin du repli), visible dès un dépli ou un glisser (src/index.css) ; caché
           pendant la recherche, qu'il garde monté (réglages en cours, positions de défilement). */}
       <div className={cn('feuille-contenu flex min-h-0 flex-1 flex-col', enRecherche && 'hidden')}>

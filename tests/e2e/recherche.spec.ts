@@ -525,3 +525,114 @@ test.describe('fenêtre de Safari sur iPhone (390 × 664, toucher)', () => {
     await expect(loupe(page)).toBeFocused();
   });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Corrections 1 (relecture de la spec, review-spec.md ; QA qa-2.md, captures/qa/qa2-390-saisie-01300.png) : à 390 × 844,
+// « 01300 » (22 communes dans les vraies données) ne montrait que 6 suggestions dans une liste de 280 px, la moitié basse
+// de la feuille montée vide. Au téléphone, la liste prend la hauteur de la feuille sous le champ, jusqu'au clavier, et
+// défile ; en bureau, `taille-liste-suggestions` (280 px) au plus. Jeu : les 6 communes, plus 22 communes d'un même code
+// postal (noms du 01300, codes inventés) ; chaque test fixe sa fenêtre et passe donc pareil dans les deux projets.
+const NOMS_01300 = [
+  'Belley', 'Virignin', 'Brégnier-Cordon', 'Peyrieu', 'Chazey-Bons', 'Arboys en Bugey', 'Magnieu', 'Saint-Champ',
+  'Contrevoz', 'Murs-et-Gélignieux', 'Cressin-Rochefort', 'Parves et Nattages', 'Brens', 'Colomieu', 'Izieu',
+  'Massignieu-de-Rives', 'Pollieu', 'Conzieu', 'Andert-et-Condon', 'Prémillieu', 'Saint-Germain-les-Paroisses', 'La Burbanche',
+];
+const VINGT_DEUX: Jeu = {
+  ...SIX,
+  items: [
+    ...SIX.items,
+    ...NOMS_01300.map((nom, i) => ({ ...SIX.items[0], id: `P${i}`, code_insee: String(99101 + i), nom, dep: '01', population: 9000 - i * 350 })),
+  ],
+};
+const CODES_01300 = { '01300': NOMS_01300.map((_, i) => String(99101 + i)) };
+
+/** Ouvre le jeu des 22 communes du 01300, la recherche, et tape « 01300 » : les 22 suggestions par code. */
+async function chercher01300(page: Page, toucher: boolean) {
+  await ouvrir(page, '/', { jeu: VINGT_DEUX });
+  // Posée après celle de la fixture, cette route passe d'abord (Playwright).
+  await page.route('**/data/codes-postaux.json', (r) => r.fulfill({ json: CODES_01300 }));
+  await (toucher ? loupe(page).tap() : loupe(page).click());
+  await expect(champ(page)).toBeFocused();
+  const champAuFocus = (await champ(page).boundingBox())!;
+  await taper(page, '01300');
+  await expect(suggestions(page)).toHaveCount(NOMS_01300.length);
+  await expect(suggestions(page).first()).toHaveAccessibleName('01300 · Belley (01)');
+  await apresRendu(page);
+  return champAuFocus;
+}
+const boite = (page: Page) => page.getByRole('listbox', { name: 'Suggestions de communes' }).boundingBox().then((b) => b!);
+/** Les suggestions entièrement visibles dans la liste (sans défiler). */
+const visibles = (page: Page) =>
+  page.getByRole('listbox', { name: 'Suggestions de communes' }).evaluate((ul) => {
+    const l = ul.getBoundingClientRect();
+    return [...ul.children].filter((li) => li.getBoundingClientRect().top >= l.top - 1 && li.getBoundingClientRect().bottom <= l.bottom + 1).length;
+  });
+const defile = (page: Page) => page.getByRole('listbox', { name: 'Suggestions de communes' }).evaluate((ul) => ul.scrollHeight > ul.clientHeight);
+
+test.describe('téléphone (toucher)', () => {
+  test.use({ hasTouch: true });
+
+  test('390 px : 01300 montre plus de 6 suggestions et la liste remplit la feuille', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const champAuFocus = await chercher01300(page, true);
+    const liste = await boite(page);
+    const feuille = (await page.getByTestId('feuille').boundingBox())!;
+    expect(await visibles(page)).toBeGreaterThan(6);
+    expect(liste.height).toBeGreaterThan(size['taille-liste-suggestions']);
+    // La liste va jusqu'au bas de la feuille (sous elle : la marge `space-2` de la recherche, et celle du geste, nulle ici).
+    expect(feuille.y + feuille.height - (liste.y + liste.height)).toBeLessThanOrEqual(space['space-2'] + 1);
+    expect(await defile(page)).toBe(true);
+    // Le champ n'a pas bougé, et la dernière suggestion se montre en faisant défiler la liste.
+    expect((await champ(page).boundingBox())!.y).toBeCloseTo(champAuFocus.y, 0);
+    await suggestions(page).last().scrollIntoViewIfNeeded();
+    const derniere = (await suggestions(page).last().boundingBox())!;
+    expect(derniere.y + derniere.height).toBeLessThanOrEqual(liste.y + liste.height + 1);
+  });
+
+  test('390 × 664, clavier de l’iPhone ouvert (y = 342) : la liste des 01300 s’arrête au-dessus du clavier, défile jusqu’à la dernière, le champ ne bouge pas', async ({ page }) => {
+    // Le navigateur de test n'a pas de clavier : on le simule comme Safari, par la partie visible de la page
+    // (`visualViewport`), réduite à 342 px de haut sans que la page change de taille (proches-clavier-iphone.spec.ts).
+    const CLAVIER_IPHONE = 342;
+    await page.addInitScript(() => {
+      const vv = Object.assign(new EventTarget(), { width: innerWidth, height: innerHeight, offsetTop: 0, offsetLeft: 0, pageTop: 0, pageLeft: 0, scale: 1 });
+      Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => vv });
+      (window as unknown as { __clavier: (y: number) => void }).__clavier = (y) => {
+        vv.height = y;
+        vv.dispatchEvent(new Event('resize'));
+      };
+    });
+    await page.setViewportSize({ width: 390, height: 664 });
+    await ouvrir(page, '/', { jeu: VINGT_DEUX });
+    await page.route('**/data/codes-postaux.json', (r) => r.fulfill({ json: CODES_01300 }));
+    await loupe(page).tap();
+    await expect(champ(page)).toBeFocused();
+    const champAuFocus = (await champ(page).boundingBox())!;
+    await page.evaluate((y) => (window as unknown as { __clavier: (y: number) => void }).__clavier(y), CLAVIER_IPHONE);
+    await taper(page, '01300');
+    await expect(suggestions(page)).toHaveCount(NOMS_01300.length);
+    await apresRendu(page);
+
+    const liste = await boite(page);
+    expect(liste.y + liste.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+    expect(CLAVIER_IPHONE - (liste.y + liste.height)).toBeLessThanOrEqual(space['space-2'] + 1);
+    expect(await visibles(page)).toBeGreaterThanOrEqual(3);
+    expect(await defile(page)).toBe(true);
+    expect((await champ(page).boundingBox())!.y).toBeCloseTo(champAuFocus.y, 0);
+    await suggestions(page).last().scrollIntoViewIfNeeded();
+    const derniere = (await suggestions(page).last().boundingBox())!;
+    expect(derniere.y + derniere.height).toBeLessThanOrEqual(CLAVIER_IPHONE);
+    // Clavier fermé : la liste reprend toute la hauteur de la feuille.
+    await page.evaluate(() => (window as unknown as { __clavier: (y: number) => void }).__clavier(innerHeight));
+    await apresRendu(page);
+    expect((await boite(page)).y + (await boite(page)).height).toBeGreaterThan(CLAVIER_IPHONE + 100);
+  });
+});
+
+test('bureau : 01300, la liste des suggestions garde 280 px au plus et défile', async ({ page }) => {
+  await page.setViewportSize(BUREAU);
+  await chercher01300(page, false);
+  const liste = await boite(page);
+  expect(liste.height).toBeLessThanOrEqual(size['taille-liste-suggestions']);
+  expect(liste.height).toBeGreaterThan(size['taille-liste-suggestions'] - 2);
+  expect(await defile(page)).toBe(true);
+});
