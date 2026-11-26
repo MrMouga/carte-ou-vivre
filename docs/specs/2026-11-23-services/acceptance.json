@@ -101,7 +101,7 @@
       "given": "L'extrait_carreaux de la fixture",
       "when": "on calcule le temps de chaque commune de l'extrait",
       "then": "commune X, supermarché : l'épicerie (B202) ne compte pas, plus petit temps par carreau entre B104 et B105 9, 7, 10, 30 (c5, population 0, ignoré), moitié de 65 habitants atteinte à 9 → 9 min ; commune Y, médecin : égalité exacte à 50 sur 100 → 2 min ; commune Z, médecin : z3 sans temps ne compte pas, moitié de 20 habitants atteinte à 3 → 3 min ; commune V, médecin : k1 compte pour sa part de 10 habitants, moitié de 30 atteinte à 9 → 9 min ; commune W, lycée : plus petit temps par carreau 8 et 9, moitié de 40 habitants atteinte à 9 → 9 min ; arrondis : 0,4 → 1 min, 4,49 → 4 min, 4,5 → 5 min ; ville à arrondissements : les trois ensemble, moitié de 120 habitants atteinte à 3 → 3 min",
-      "passes": false
+      "passes": true
     },
     {
       "id": "AC-6",
