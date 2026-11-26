@@ -1,0 +1,25 @@
+import * as L from './lib.mjs';
+const mobile=process.argv[2]==='m'; const tag=mobile?'390':'bureau';
+const br=await L.lancer(); const pg=await L.ouvrir(br,mobile);
+const loupe=pg.getByRole('button',{name:'Chercher une commune'});
+const ch=()=>pg.getByRole('combobox',{name:'Chercher une commune'});
+const url=()=>new URL(pg.url()).pathname+new URL(pg.url()).search;
+const etat=async(t)=>L.log(t,'| url',url(),'| actif',await pg.evaluate(()=>{const a=document.activeElement;return a.tagName+':'+(a.getAttribute('aria-label')||a.textContent.slice(0,25))}),'| ad',await ch().count()?await ch().getAttribute('aria-activedescendant').catch(()=>'-'):'-','| val',await ch().count()?await ch().inputValue().catch(()=>'-'):'-');
+const fiche=async()=>L.nb(await pg.evaluate(()=>{const r=[...document.querySelectorAll('section,[role=region],aside,dialog')].filter(e=>/ — |\(\d\w\)/.test(e.getAttribute('aria-label')||''));return r.map(e=>e.getAttribute('aria-label')+' >> '+e.innerText.replace(/\n+/g,' | ')).join(' ##### ')}));
+// clavier seul
+await loupe.focus(); await pg.keyboard.press('Enter'); await pg.waitForTimeout(400);
+await etat('ouvert via Entrée sur loupe');
+await pg.keyboard.type('auch',{delay:20}); await pg.waitForTimeout(200); await etat('auch');
+await pg.keyboard.press('ArrowDown'); await etat('flèche bas 1');
+await pg.keyboard.press('ArrowDown'); await etat('flèche bas 2');
+await pg.keyboard.press('ArrowUp'); await etat('flèche haut');
+await pg.keyboard.press('ArrowUp'); await etat('flèche haut (boucle?)');
+await pg.screenshot({path:`${L.OUT}/qa2-${tag}-clavier-fleche.png`});
+await pg.keyboard.press('Escape'); await etat('Échap 1'); L.log('options',await pg.locator('[role=option]').count());
+await pg.keyboard.press('Escape'); await etat('Échap 2');
+await pg.keyboard.type('auch',{delay:20}); await pg.keyboard.press('Enter'); await pg.waitForTimeout(1800); await etat('Entrée (aucune flèche)');
+await pg.screenshot({path:`${L.OUT}/qa2-${tag}-auch-choisie.png`});
+L.log('FICHE',await fiche());
+L.log('champ visible?',await ch().count(),'loupe',await loupe.count());
+await pg.keyboard.press('Tab'); await etat('Tab 1'); await pg.keyboard.press('Tab'); await etat('Tab 2');
+await br.close();
