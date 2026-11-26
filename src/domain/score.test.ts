@@ -200,7 +200,7 @@ describe('communes.json — type d’environnement et distance à la montagne lu
   const parCode = new Map(fichier.communes.map((l) => [l[0], communeDeLigne(l)]));
 
   it('les deux colonnes lues sont `type_env` et `montagne_km`, à la suite des 9 de loyer-mer et d’immobilier', () => {
-    expect(fichier.champs.slice(9)).toEqual(['type_env', 'montagne_km']);
+    expect(fichier.champs.slice(9, 11)).toEqual(['type_env', 'montagne_km']);
   });
 
   it('vraies données : Bordeaux ville dense à 172,78 km ; Chamonix-Mont-Blanc commune de montagne (0) ; Lacanau bourg et village', () => {

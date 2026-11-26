@@ -7,6 +7,7 @@ aucun service : il écrit des liens d'itinéraire openstreetmap.org que Vincent 
 Usage : python3 -I docs/plans/2026-11-25-recherche-et-mer/captures/T0b-credibilite.py <racine du projet>
 """
 import csv
+import decimal
 import json
 import os
 import sys
@@ -26,7 +27,8 @@ EXPLICATIONS = {
              " immense détour : dans la même requête, les 59 communes mettent toutes de 20 h 44 à 22 h 47 pour ce point,"
              " alors qu'Aspremont met de 25 à 49 min pour les 24 autres points de côte de la requête. 21 h 09 est faux à"
              " coup sûr ; le vrai temps est sans doute proche de 25 min. Cause exacte non trouvée (la réponse ne donne"
-             " pas l'itinéraire). *Proposé : faux, retrait (D8).*",
+             " pas l'itinéraire). **Retiré le 2026-11-26 par décision de Vincent (D8)** : ligne de"
+             " `scripts/data/mer-retraits.csv`, avec cette preuve.",
     '33203': "le point de côte est accroché à 1,4 km de lui (à la plus grande distance permise, 2 km), sur une voie"
              " qu'on ne rejoint que par un détour : dans la même requête, la mairie d'Hourtin est à 16 min de certains"
              " autres points de côte, et ce point est à 58 min ou plus de chacune des 89 communes de la requête."
@@ -77,13 +79,15 @@ def main():
         r.update(nom=info[code]['nom'], dep=info[code]['dep'], km=info[code]['mer_km'],
                  m=None if r['mer_min'] == '' else int(r['mer_min']))
         assert r['m'] == info[code].get('mer_min', r['m']), f'{code} : mer-min.csv et communes.json diffèrent'
+        # Temps calculé par openrouteservice, même retiré (D8) : les bouts du rapport sont ceux du calcul.
+        r['calc'] = r['m'] if r['secondes'] == '' else int((decimal.Decimal(r['secondes']) / 60).to_integral_value(rounding=decimal.ROUND_HALF_UP))
     envois = [json.loads(t) for t in open(os.path.join(RACINE, 'data-raw', 'mer-calcul', 'ors-mer.jsonl'), encoding='utf-8') if t.strip()]
     moteur = envois[0]['reponse']['metadata']['engine']
     dates = sorted(e['envoye_le'] for e in envois)
 
-    fenetre = [r for r in lignes.values() if r['m'] is not None and FENETRE[0] <= r['km'] < FENETRE[1]]
+    fenetre = [r for r in lignes.values() if r['calc'] is not None and FENETRE[0] <= r['km'] < FENETRE[1]]
     for r in fenetre:
-        r['ratio'] = r['m'] / r['km']
+        r['ratio'] = r['calc'] / r['km']
 
     def un_par_point(rangees):
         vus, garde = set(), []
@@ -101,22 +105,26 @@ def main():
 
     print('plus grands rapports minutes / km (1 à 50 km, un par point) :')
     for r in grands:
-        print(f"  {r['code']} {r['nom']} : {r['km']} km, {r['m']} min, {r['ratio']:.2f} min/km, point accroché à {r['accroche_point_m']} m")
+        print(f"  {r['code']} {r['nom']} : {r['km']} km, {r['calc']} min, {r['ratio']:.2f} min/km, point accroché à {r['accroche_point_m']} m"
+              + (' (retiré, D8)' if r['cause'] == 'retrait' else ''))
     print('plus petits :')
     for r in petits:
-        print(f"  {r['code']} {r['nom']} : {r['km']} km, {r['m']} min, {r['ratio']:.2f} min/km, point accroché à {r['accroche_point_m']} m")
+        print(f"  {r['code']} {r['nom']} : {r['km']} km, {r['calc']} min, {r['ratio']:.2f} min/km, point accroché à {r['accroche_point_m']} m")
 
     t = []
     t.append('# Les minutes de la mer sont-elles crédibles ? Communes à confronter à un itinéraire en ligne\n')
     t.append(f"2026-11-26 · tâche 0b de /build recherche-et-mer · **à juger par Vincent, avant la démo s'il le veut** (plan :"
-             f" « jugées à la démo », D8) · Spec : [« Le risque »](../../specs/2026-11-25-recherche-et-mer/spec.md), D4, D7,"
+             f" « jugées à la démo », D8 ; Aspremont déjà retiré par Vincent le 2026-11-26) · Spec : [« Le risque »](../../specs/2026-11-25-recherche-et-mer/spec.md), D4, D7,"
              f" D8, R61 · Mesure : [mesure-tache-0.md](mesure-tache-0.md)\n")
     t.append('## En bref')
     t.append(f'- **{len(rangs)} communes** : les 10 villes du plan, Blaye (les bacs restent), Hourtin (décidé par Claude),'
              ' et les 5 communes de chaque bout du rapport minutes / km.')
-    t.append("- **Un temps est faux à coup sûr** : Aspremont, **21 h 09** pour 10 km de la mer. **Un autre l'est"
-             " probablement** : Hourtin, **58 min** pour 9 km, quand les points de côte voisins sont à 16 à 21 min. Les deux"
-             " viennent d'un point de côte accroché à une voie mal reliée, pas des routes de la commune.")
+    t.append("- **Aspremont est retiré** (décision de Vincent du 2026-11-26, D8) : **21 h 09** calculées pour 10 km de la"
+             " mer, faux à coup sûr. La commune est « sans temps », comptée d'après ses km (« ≈ 10 min », D7) ; preuve"
+             " dans `scripts/data/mer-retraits.csv`.")
+    t.append("- **Un autre temps est probablement faux** : Hourtin, **58 min** pour 9 km, quand d'autres points de côte sont"
+             " à 16 min de sa mairie. Comme Aspremont, il vient d'un point de côte accroché à une voie mal reliée, pas des"
+             " routes de la commune. Il reste à juger, avec Blaye et le reste du tableau, à la démo.")
     t.append('- Je n\'ai ouvert aucun itinéraire : la colonne « Itinéraire en ligne » est à remplir par toi, lien à la main.')
     t.append('')
     t.append('## Comment juger (D8)')
@@ -128,11 +136,14 @@ def main():
              ' de quelques minutes du même côté de toutes les pastilles n\'est pas faux.')
     t.append('- Un temps faux est **retiré** par une ligne de `scripts/data/mer-retraits.csv` (code, preuve), sans changer'
              ' le code. La commune devient « sans temps » et le site la compte d\'après ses km (D7) : « ≈ 10 min »'
-             ' pour Aspremont, par exemple, à la place de 21 h 09.')
+             ' pour Aspremont à la place de 21 h 09.')
     t.append('')
     t.append('## Tes cases')
     for _, r in rangs:
-        t.append(f"- [ ] {r['nom']} ({r['code']}) : juste · [ ] faux → retrait")
+        if r['cause'] == 'retrait':
+            t.append(f"- [x] {r['nom']} ({r['code']}) : faux → **retiré** le 2026-11-26, décision de Vincent (D8)")
+        else:
+            t.append(f"- [ ] {r['nom']} ({r['code']}) : juste · [ ] faux → retrait")
     t.append('')
     t.append('## Le tableau')
     t.append('| Pourquoi | Commune | Km (affiché) | Temps du site | Même côté si | Itinéraire en ligne | Lien (mairie → point de côte) |')
@@ -140,16 +151,18 @@ def main():
     pourquoi = {'ville': 'ville du plan', 'bac': 'bac (Blaye – Lamarque)', 'écart': 'écart à ses voisines',
                 'grand': 'rapport le plus grand', 'petit': 'rapport le plus petit'}
     for genre, r in rangs:
-        temps = 'sans temps' if r['m'] is None else duree(r['m'])
+        retire = r['cause'] == 'retrait'
+        temps = (f"~~{duree(r['calc'])}~~ retiré (sans temps)" if retire else
+                 'sans temps' if r['m'] is None else duree(r['m']))
         cote = '—' if r['m'] is None else meme_cote(r['m'])
         ratio = '' if 'ratio' not in r else f" ({r['ratio']:.2f} min/km)".replace('.', ',')
         t.append(f"| {pourquoi[genre]}{ratio} | {r['nom']} ({r['code']}, {r['dep']}) | {km_affiche(r['km'])} | {temps} |"
-                 f" {cote} | ___ | [itinéraire]({lien(r)}) |")
+                 f" {cote} | {'retiré, D8' if retire else '___'} | [itinéraire]({lien(r)}) |")
     t.append('')
     t.append('## Ce que j\'ai vu dans les réponses (explications proposées, à juger)')
     for code, texte in EXPLICATIONS.items():
         r = lignes[code]
-        t.append(f"- **{r['nom']}** ({code}, {duree(r['m'])}, {km_affiche(r['km'])}) : {texte}")
+        t.append(f"- **{r['nom']}** ({code}, {duree(r['calc'])} calculées, {km_affiche(r['km'])}) : {texte}")
     t.append(f"- **Rapport le plus grand** : on y attend des détours d'estuaire (Seine : Sandouville, Oudalle) et des routes"
              f" de montagne au-dessus de la mer (La Turbie, Barrettali). **Rapport le plus petit** : aucun temps n'est plus"
              f" court que la route ne le permet (aucune commune au-dessous de 0,5 min par km à vol d'oiseau, à partir"

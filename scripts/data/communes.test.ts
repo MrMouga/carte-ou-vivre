@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { communeDeLigne, type LigneCommunes } from '../../src/domain/score';
 
 // Contrôles du fichier servi (tâche 1a) : les chiffres de référence de la discovery, par code INSEE ; distances depuis
 // la mairie depuis D18 (tâche 8).
@@ -73,7 +74,7 @@ describe('public/data/communes.json', () => {
   // distance à la montagne (zonage loi Montagne du Cerema, communes 2019, R29, H81), colonnes ajoutées à la fin.
   const typeEnv = (code: string) => byCode.get(code)![col('type_env')];
   it("D10 : les deux colonnes sont à la fin ; chaque commune a un type d'environnement parmi les 4 de H71 et une distance à la montagne", () => {
-    expect(champs.slice(-2)).toEqual(['type_env', 'montagne_km']);
+    expect(champs.slice(-3)).toEqual(['type_env', 'montagne_km', 'mer_min']);
     expect(communes).toHaveLength(34746);
     const niveaux = new Set(['ville-dense', 'ville-et-peripherie', 'bourg-et-village', 'campagne-isolee']);
     expect(communes.filter((r) => !niveaux.has(r[col('type_env')] as string))).toEqual([]);
@@ -111,6 +112,36 @@ describe('public/data/communes.json', () => {
       expect(typeEnv(code)).toBe('ville-dense');
       expect(get(code, 'montagne_km')).toBeGreaterThan(0);
     }
+  });
+});
+
+// Tranche recherche-et-mer, tâche 0b : temps en voiture jusqu'à la mer (R61, H191, H196), colonne `mer_min` à la fin,
+// minutes entières déjà arrondies une fois ; null = sans temps. Mesures du 2026-11-26 (openrouteservice) : Bordeaux
+// 3 368,44 s → 56 min, Caen 1 059,51 s → 18 min ; Île-de-Sein, île sans route, sans temps ; Aspremont (21 h 09 calculées
+// pour 10 km) retiré par Vincent le 2026-11-26 (D8, mer-retraits.csv), sans temps.
+describe('public/data/communes.json — la mer en minutes (recherche-et-mer)', () => {
+  it('R61 : la colonne `mer_min` est la dernière, lue par communeDeLigne : Bordeaux 56 min, Caen 18 min, Île-de-Sein sans temps (null)', () => {
+    expect(champs.at(-1)).toBe('mer_min');
+    const parCode = new Map(communes.map((r) => [r[0] as string, communeDeLigne(r as LigneCommunes)]));
+    expect(parCode.get('33063')).toMatchObject({ nom: 'Bordeaux', merKm: 39.07, merMin: 56, montagneKm: 172.78 });
+    expect(parCode.get('14118')).toMatchObject({ nom: 'Caen', merMin: 18 });
+    expect(parCode.get('29083')).toMatchObject({ nom: 'Île-de-Sein', merMin: null });
+  });
+
+  it('D8 : Aspremont (06006), temps retiré par une ligne de mer-retraits.csv, est sans temps (null) ; ses km restent', () => {
+    expect(byCode.get('06006')![col('nom')]).toBe('Aspremont');
+    expect(byCode.get('06006')![col('mer_min')]).toBeNull();
+    expect(get('06006', 'mer_km')).toBeGreaterThan(10);
+  });
+
+  it('H191, H196 : chaque temps est un nombre entier de minutes, 0 ou plus ; 2 % des communes au plus sont sans temps', () => {
+    const merMin = communes.map((r) => r[col('mer_min')]);
+    expect(merMin.filter((m) => m !== null && !(Number.isInteger(m) && (m as number) >= 0))).toEqual([]);
+    expect(merMin.filter((m) => m === null).length).toBeLessThanOrEqual(0.02 * communes.length);
+  });
+
+  it('une ligne sans la colonne (jeu ancien) : sans temps (null)', () => {
+    expect(communeDeLigne(['99001', 'Portmer', '17', 23000, 12.5, false, 0.9, null, null, 'ville-dense', 30])).toMatchObject({ merKm: 0.9, merMin: null });
   });
 });
 

@@ -1,16 +1,17 @@
 # Les minutes de la mer sont-elles crédibles ? Communes à confronter à un itinéraire en ligne
 
-2026-11-26 · tâche 0b de /build recherche-et-mer · **à juger par Vincent, avant la démo s'il le veut** (plan : « jugées à la démo », D8) · Spec : [« Le risque »](../../specs/2026-11-25-recherche-et-mer/spec.md), D4, D7, D8, R61 · Mesure : [mesure-tache-0.md](mesure-tache-0.md)
+2026-11-26 · tâche 0b de /build recherche-et-mer · **à juger par Vincent, avant la démo s'il le veut** (plan : « jugées à la démo », D8 ; Aspremont déjà retiré par Vincent le 2026-11-26) · Spec : [« Le risque »](../../specs/2026-11-25-recherche-et-mer/spec.md), D4, D7, D8, R61 · Mesure : [mesure-tache-0.md](mesure-tache-0.md)
 
 ## En bref
 - **22 communes** : les 10 villes du plan, Blaye (les bacs restent), Hourtin (décidé par Claude), et les 5 communes de chaque bout du rapport minutes / km.
-- **Un temps est faux à coup sûr** : Aspremont, **21 h 09** pour 10 km de la mer. **Un autre l'est probablement** : Hourtin, **58 min** pour 9 km, quand les points de côte voisins sont à 16 à 21 min. Les deux viennent d'un point de côte accroché à une voie mal reliée, pas des routes de la commune.
+- **Aspremont est retiré** (décision de Vincent du 2026-11-26, D8) : **21 h 09** calculées pour 10 km de la mer, faux à coup sûr. La commune est « sans temps », comptée d'après ses km (« ≈ 10 min », D7) ; preuve dans `scripts/data/mer-retraits.csv`.
+- **Un autre temps est probablement faux** : Hourtin, **58 min** pour 9 km, quand d'autres points de côte sont à 16 min de sa mairie. Comme Aspremont, il vient d'un point de côte accroché à une voie mal reliée, pas des routes de la commune. Il reste à juger, avec Blaye et le reste du tableau, à la démo.
 - Je n'ai ouvert aucun itinéraire : la colonne « Itinéraire en ligne » est à remplir par toi, lien à la main.
 
 ## Comment juger (D8)
 - Ouvre le lien de la ligne : un itinéraire en voiture sur openstreetmap.org, de la mairie au point de côte qui donne les km (D4). Note son temps.
 - **Faux** (règle proposée, décidée par Claude, comme pour les services) : le temps de l'itinéraire tombe hors de la colonne « Même côté si », donc de l'autre côté d'une des pastilles 15 min, 30 min, 1 h, 1 h 30. La commune passerait alors un choix « Mer à moins de » qu'elle ne devrait pas passer, ou l'inverse. Un écart de quelques minutes du même côté de toutes les pastilles n'est pas faux.
-- Un temps faux est **retiré** par une ligne de `scripts/data/mer-retraits.csv` (code, preuve), sans changer le code. La commune devient « sans temps » et le site la compte d'après ses km (D7) : « ≈ 10 min » pour Aspremont, par exemple, à la place de 21 h 09.
+- Un temps faux est **retiré** par une ligne de `scripts/data/mer-retraits.csv` (code, preuve), sans changer le code. La commune devient « sans temps » et le site la compte d'après ses km (D7) : « ≈ 10 min » pour Aspremont à la place de 21 h 09.
 
 ## Tes cases
 - [ ] Bordeaux (33063) : juste · [ ] faux → retrait
@@ -25,7 +26,7 @@
 - [ ] Lille (59350) : juste · [ ] faux → retrait
 - [ ] Blaye (33058) : juste · [ ] faux → retrait
 - [ ] Hourtin (33203) : juste · [ ] faux → retrait
-- [ ] Aspremont (06006) : juste · [ ] faux → retrait
+- [x] Aspremont (06006) : faux → **retiré** le 2026-11-26, décision de Vincent (D8)
 - [ ] Sandouville (76660) : juste · [ ] faux → retrait
 - [ ] Oudalle (76489) : juste · [ ] faux → retrait
 - [ ] La Turbie (06150) : juste · [ ] faux → retrait
@@ -51,7 +52,7 @@
 | ville du plan | Lille (59350, 59) | 63 km | 1 h 07 | 1 h 01 à 1 h 30 | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=50.6304%2C3.071%3B51.088864%2C2.544295) |
 | bac (Blaye – Lamarque) (3,15 min/km) | Blaye (33058, 33) | 41 km | 2 h 09 | plus de 1 h 30 | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=45.1268%2C-0.663%3B45.165326%2C-1.180875) |
 | écart à ses voisines (6,16 min/km) | Hourtin (33203, 33) | 9 km | 58 min | 31 min à 1 h | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=45.186%2C-1.0573%3B45.198053%2C-1.175976) |
-| rapport le plus grand (125,15 min/km) | Aspremont (06006, 06) | 10 km | 21 h 09 | plus de 1 h 30 | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=43.7846%2C7.2436%3B43.698168%2C7.284175) |
+| rapport le plus grand (125,15 min/km) | Aspremont (06006, 06) | 10 km | ~~21 h 09~~ retiré (sans temps) | — | retiré, D8 | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=43.7846%2C7.2436%3B43.698168%2C7.284175) |
 | rapport le plus grand (17,83 min/km) | Sandouville (76660, 76) | 2 km | 28 min | 16 min à 30 min | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=49.4967%2C0.3193%3B49.483028%2C0.313849) |
 | rapport le plus grand (15,94 min/km) | Oudalle (76489, 76) | 3 km | 40 min | 31 min à 1 h | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=49.5081%2C0.3014%3B49.486152%2C0.293078) |
 | rapport le plus grand (8,13 min/km) | La Turbie (06150, 06) | 2 km | 17 min | 16 min à 30 min | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=43.7453%2C7.3997%3B43.735564%2C7.421924) |
@@ -63,9 +64,9 @@
 | rapport le plus petit (0,84 min/km) | Nécy (61303, 61) | 46 km | 39 min | 31 min à 1 h | ___ | [itinéraire](https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=48.8319%2C-0.1156%3B49.235007%2C-0.270656) |
 
 ## Ce que j'ai vu dans les réponses (explications proposées, à juger)
-- **Aspremont** (06006, 21 h 09, 10 km) : le point de côte, à Nice, est accroché (à 11 m) à une voie que le calcul ne rejoint qu'au prix d'un immense détour : dans la même requête, les 59 communes mettent toutes de 20 h 44 à 22 h 47 pour ce point, alors qu'Aspremont met de 25 à 49 min pour les 24 autres points de côte de la requête. 21 h 09 est faux à coup sûr ; le vrai temps est sans doute proche de 25 min. Cause exacte non trouvée (la réponse ne donne pas l'itinéraire). *Proposé : faux, retrait (D8).*
-- **Hourtin** (33203, 58 min, 9 km) : le point de côte est accroché à 1,4 km de lui (à la plus grande distance permise, 2 km), sur une voie qu'on ne rejoint que par un détour : dans la même requête, la mairie d'Hourtin est à 16 min de certains autres points de côte, et ce point est à 58 min ou plus de chacune des 89 communes de la requête. *Proposé : probablement faux ; à vérifier avec le lien.*
-- **Blaye** (33058, 2 h 09, 41 km) : en face du bac Blaye – Lamarque (les bacs restent, décision de la tâche 0a). Le point de côte est sur la côte atlantique du Médoc (à cet endroit, l'estuaire n'est pas la mer), accroché à 388 m. Dans la même requête, Blaye est à 95 à 135 min des 36 autres points de côte. Hypothèse non vérifiée : le calcul ne prend pas le bac, ou le compte lent. À comparer avec le lien (qui peut, lui, prendre le bac).
+- **Aspremont** (06006, 21 h 09 calculées, 10 km) : le point de côte, à Nice, est accroché (à 11 m) à une voie que le calcul ne rejoint qu'au prix d'un immense détour : dans la même requête, les 59 communes mettent toutes de 20 h 44 à 22 h 47 pour ce point, alors qu'Aspremont met de 25 à 49 min pour les 24 autres points de côte de la requête. 21 h 09 est faux à coup sûr ; le vrai temps est sans doute proche de 25 min. Cause exacte non trouvée (la réponse ne donne pas l'itinéraire). **Retiré le 2026-11-26 par décision de Vincent (D8)** : ligne de `scripts/data/mer-retraits.csv`, avec cette preuve.
+- **Hourtin** (33203, 58 min calculées, 9 km) : le point de côte est accroché à 1,4 km de lui (à la plus grande distance permise, 2 km), sur une voie qu'on ne rejoint que par un détour : dans la même requête, la mairie d'Hourtin est à 16 min de certains autres points de côte, et ce point est à 58 min ou plus de chacune des 89 communes de la requête. *Proposé : probablement faux ; à vérifier avec le lien.*
+- **Blaye** (33058, 2 h 09 calculées, 41 km) : en face du bac Blaye – Lamarque (les bacs restent, décision de la tâche 0a). Le point de côte est sur la côte atlantique du Médoc (à cet endroit, l'estuaire n'est pas la mer), accroché à 388 m. Dans la même requête, Blaye est à 95 à 135 min des 36 autres points de côte. Hypothèse non vérifiée : le calcul ne prend pas le bac, ou le compte lent. À comparer avec le lien (qui peut, lui, prendre le bac).
 - **Rapport le plus grand** : on y attend des détours d'estuaire (Seine : Sandouville, Oudalle) et des routes de montagne au-dessus de la mer (La Turbie, Barrettali). **Rapport le plus petit** : aucun temps n'est plus court que la route ne le permet (aucune commune au-dessous de 0,5 min par km à vol d'oiseau, à partir d'1 km) ; les plus petits rapports sont ceux de communes près d'une voie rapide.
 
 ## Comment le tableau est fait

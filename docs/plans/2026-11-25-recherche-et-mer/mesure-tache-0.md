@@ -128,7 +128,7 @@ Depuis le dossier du projet, `/Users/mouga/git-repository/carte-ou-vivre` :
 - Le lot d'essai et les lots donnent **le même temps** aux trois communes de l'essai (Bordeaux 3 368,44 s, Caen 1 059,51 s, Mont-de-Marsan 5 027,47 s, dans les deux requêtes).
 
 ### Sortie des contrôles de `mer_minutes.py --calculer`
-Commande : `python3 -I scripts/data/mer_minutes.py --calculer` (sans réseau ; 2026-11-26, 03:24 ; copie : `captures/T0b-sortie-calculer.txt`).
+Commande : `python3 -I scripts/data/mer_minutes.py --calculer` (sans réseau ; 2026-11-26, 03:24, avant le retrait d'Aspremont ; la sortie après le retrait, vers 06:50, est dans `captures/T0b-sortie-calculer.txt` et résumée plus bas, « Après le retrait d'Aspremont »).
 ```
   ok   lots.json : sha256 411deeae1f32f4ced732ad8defe867189e3cc270706390258e0d04c8c1834cfd (empreinte retenue : envoi du 2026-11-26)
   ok   ors-mer.jsonl : sha256 13b9f73ee16363e389f283d0a1dfb0ed56c72dba6714ec662780a8b5c705ae21 (empreinte retenue : envoi du 2026-11-26)
@@ -181,7 +181,7 @@ plus petits :
   76705 Tourville-la-Rivière : 46.84 km, 39 min, 0.83 min/km, point accroché à 12.91 m
   61303 Nécy : 46.24 km, 39 min, 0.84 min/km, point accroché à 174.77 m
 ```
-- **Aspremont (06006) a un temps faux à coup sûr : 1 269 min (21 h 09) pour 10 km.** Son point de côte, à Nice, est accroché à une voie que le calcul ne rejoint qu'au prix d'un immense détour : dans la même requête, les 59 communes mettent toutes 20 h 44 à 22 h 47 pour ce point, et Aspremont 25 à 49 min pour les 24 autres points de côte. C'est aussi le temps le plus long de toute la carte. Il n'est pas retiré ici : le retrait (D8) est le jugement de Vincent, à la démo ou avant (`credibilite-mer.md`).
+- **Aspremont (06006) a un temps faux à coup sûr : 1 269 min (21 h 09) pour 10 km.** Son point de côte, à Nice, est accroché à une voie que le calcul ne rejoint qu'au prix d'un immense détour : dans la même requête, les 59 communes mettent toutes 20 h 44 à 22 h 47 pour ce point, et Aspremont 25 à 49 min pour les 24 autres points de côte. C'est aussi le temps le plus long de toute la carte. **Retiré par décision de Vincent le 2026-11-26** (D8, ligne de `mer-retraits.csv` avec cette preuve) : voir « Après le retrait d'Aspremont ».
 - Le plus grand rapport ensuite est un détour d'estuaire (Seine, en face du Havre : Sandouville, Oudalle), puis des routes de montagne au-dessus de la mer (La Turbie, Barrettali).
 - **Aucun temps n'est plus court que la route ne le permet** : aucune commune d'1 km ou plus sous 0,5 min par km à vol d'oiseau (soit 120 km/h en ligne droite). Sur toute la carte, le plus petit rapport est 0,66 min/km (Côte-d'Or, vers la Méditerranée par l'autoroute) ; dans la fenêtre de 1 à 50 km, 0,69 (La Colombe, Manche, par l'A84). Le bac n'apparaît pas comme un temps trop court : à Blaye, c'est l'inverse (ci-dessous).
 - Rapport médian, de 20 km et plus : 0,97 min par km ; 98 % des communes entre 0,71 et 1,90.
@@ -192,7 +192,7 @@ plus petits :
 - **Blaye (33058)** : 129 min (2 h 09) pour 41 km. Son point de côte est sur la côte atlantique du Médoc, de l'autre côté de l'estuaire (qui n'est pas la mer à cet endroit). Hypothèse non vérifiée : le calcul ne prend pas le bac Blaye – Lamarque, ou le compte lent. Ses voisines sur la rive droite ont 123 à 140 min.
 
 ### Le fichier servi : `mer_min` à la fin de `communes.json`
-Commande : `python3 -I scripts/data/communes.py` (2026-11-26, 03:22), contrôles ajoutés. Fichier régénéré et mesuré ; **pas encore committé** au 2026-11-26 03:45 : un test hors critère de `src/domain/score.test.ts` lit la liste des colonnes, et le changer demande un accord (question de `taches/T0b.md`).
+Commande : `python3 -I scripts/data/communes.py` (2026-11-26, 03:22, avant le retrait ; refait vers 06:50 après, plus bas), contrôles ajoutés.
 ```
 Contrôles de la mer en minutes (mer-min.csv, recherche-et-mer)
   ok   chaque commune a sa ligne dans mer-min.csv, aucune en trop (34746 lignes ; absentes : [])
@@ -206,3 +206,9 @@ Contrôles de la mer en minutes (mer-min.csv, recherche-et-mer)
 - **Rien d'autre ne change** : les 11 colonnes d'avant sont identiques sur les 34 746 lignes (comparées une à une avec la copie d'avant), et `achat.json` est le même octet pour octet.
 - **Poids ajouté : 54 834 octets, soit 54,8 Ko en `brotli -q 3`** (876 811 → 931 645 octets ; `brotli -c -q 3 public/data/communes.json | wc -c`), sous la limite de 60 Ko (H195 ; en Ko de 1 000 octets, le plus strict). Les minutes arrivent donc avec les autres données de la commune, à l'ouverture.
 - **Bordeaux : 56 min** (3 368,44 s, soit 56,14 min ; « C'est réussi si » de la spec : « Mer à moins de 30 min » écarte Bordeaux), 39 km. **Caen : 18 min** (1 059,51 s, soit 17,66 min), 10 km : Caen passe « 30 min ». Relus dans le fichier servi : `["33063","Bordeaux",…,"ville-dense",172.78,56]`.
+
+### Après le retrait d'Aspremont (décision de Vincent, 2026-11-26)
+- `scripts/data/mer-retraits.csv` gagne une ligne : `06006`, avec la preuve des trajets croisés de la même requête (lot 0089 : 25 à 49 min d'Aspremont vers les 24 autres points de côte ; 20 h 44 à 22 h 47 des 59 communes vers ce point du port de Nice).
+- `--calculer` refait : **43 communes sans temps sur 34 746 (0,12 %)** : 12 sans route près du point, 30 sans route jusqu'au point, **1 retrait** (06006), 0 sans route près de la mairie, 0 en échec. Le plus long temps de la carte devient 485 min (Montjustin-et-Velotte, Haute-Saône, 434 km). Sortie : `captures/T0b-sortie-calculer.txt`.
+- `communes.py` refait : mêmes contrôles verts, « 43 communes sans temps (0.12 %, au plus 2 %) : {'retrait': 1, 'pas-de-route-jusqu-au-point': 30, 'pas-de-route-pres-du-point': 12} » ; Aspremont `mer_min` = `null` (ses km, 10,14, ne changent pas ; le site le comptera « ≈ 10 min », D7) ; Bordeaux 56, Caen 18, Mont-de-Marsan 84 ; les 11 colonnes d'avant toujours identiques, `achat.json` identique.
+- **Poids final : 931 642 octets en `brotli -q 3`, soit +54 831 octets (54,8 Ko)** par rapport au fichier sans la colonne (limite 60 Ko).
