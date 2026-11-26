@@ -65,20 +65,20 @@ async function montagneAucune(page: Page) {
   await expect(montagne(page).getByRole('button', { pressed: true })).toHaveCount(0);
 }
 
-test('AC-2 depuis /, mer « 50 km » : /?loyer=1200&mer=50 ; 3 communes, Portmer 72, Quaibleu 48, Grandeville 25 ; fiche de Rhinval « Mer 420 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
+test('AC-2 depuis /, mer « 1 h » : /?loyer=1200&mer-min=60 ; 3 communes, Portmer 69, Quaibleu 43, Grandeville 24 ; fiche de Rhinval « Mer ≈ 7 h : au-dessus de ton plafond de 1 h »', async ({ page }) => {
   await ouvrirSix(page);
-  await choixMer(page, '50 km').click();
-  await merCochee(page, '50 km');
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer=50');
+  await choixMer(page, '1 h').click();
+  await merCochee(page, '1 h');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=60');
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    "1 · Portmer (17) · 72 · 650 € · moins d'1 km",
-    '2 · Quaibleu (13) · 48 · 1 092 € · 7 km',
-    '3 · Grandeville (33) · 25 · 832 € · 40 km',
+    '1 · Portmer (17) · 69 · 650 € · 5 min',
+    '2 · Quaibleu (13) · 43 · 1 092 € · 14 min',
+    '3 · Grandeville (33) · 24 · 832 € · 50 min',
   ]);
   await ficheDeCarte(page, 'F', 'Rhinval (67)');
-  expect(await texteFiche(page)).toContain('Mer 420 km : au-dessus de ton plafond de 50 km');
+  expect(await texteFiche(page)).toContain('Mer ≈ 7 h : au-dessus de ton plafond de 1 h');
 });
 
 test('AC-6 depuis /, taille « 10 000 – 50 000 hab. » : pastilles en chiffres dans l’ordre ; /?loyer=1200&taille=petite-ville ; Rhinval 52, Portmer 46 ; fiche de Grandeville « Taille : 260 000 habitants, hors des tailles choisies »', async ({ page }) => {
@@ -100,31 +100,34 @@ test('AC-6 depuis /, taille « 10 000 – 50 000 hab. » : pastilles en chiffres
   expect(await texteFiche(page)).toContain('Taille : 260 000 habitants, hors des tailles choisies');
 });
 
-test('AC-9 /?loyer=1200&mer=60 : mer sur « 100 km », /?loyer=1200&mer=100, Portmer 72, Quaibleu 51, Grandeville 45 ; puis /?loyer=1200&mer=25 : « 30 km », /?loyer=1200&mer=30, Portmer 71, Quaibleu 43', async ({ page }) => {
-  await ouvrirSix(page, '/?loyer=1200&mer=60');
-  await merCochee(page, '100 km');
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer=100');
+// Recalé par recherche-et-mer (recalage.md, critère qui change de sens) : la règle « une ancienne valeur prend le choix
+// juste au-dessus » disparaît (D9) ; le critère vérifie les choix « 1 h 30 » et « 30 min », adresse inchangée.
+test('AC-9 /?loyer=1200&mer-min=90 : mer sur « 1 h 30 », adresse inchangée, Portmer 70, Quaibleu 47, Grandeville 38 ; puis /?loyer=1200&mer-min=30 : « 30 min », adresse inchangée, Portmer 65, Quaibleu 31', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=90');
+  await merCochee(page, '1 h 30');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=90');
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
-  expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 72', 'Quaibleu (13) · 51', 'Grandeville (33) · 45']);
+  expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 70', 'Quaibleu (13) · 47', 'Grandeville (33) · 38']);
 
-  await ouvrirSix(page, '/?loyer=1200&mer=25');
-  await merCochee(page, '30 km');
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer=30');
+  await ouvrirSix(page, '/?loyer=1200&mer-min=30');
+  await merCochee(page, '30 min');
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer-min=30');
   await voirListe(page);
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 71', 'Quaibleu (13) · 43']);
+  expect((await lignes(page)).map((l) => l.split(' · ').slice(1, 3).join(' · '))).toEqual(['Portmer (17) · 65', 'Quaibleu (13) · 31']);
 });
 
-// Hors AC (R31) : les autres valeurs de l'ancienne plage et les valeurs hors plage.
-test('R31 : mer=5 → 10 km ; mer=200, mer=23 et mer=0 → Peu importe, adresse /?loyer=1200', async ({ page }) => {
+// Hors AC (R31, révisée par R60 et D9 de recherche-et-mer, recalage.md : le test change de sens) : un ancien lien `mer=`
+// est ignoré ; `mer-min` hors des quatre choix = Peu importe.
+test('R31, R60 : mer=5 → Peu importe, adresse /?loyer=1200 ; mer-min=200, 23, 0 et 50 → Peu importe, adresse /?loyer=1200', async ({ page }) => {
   await ouvrirSix(page, '/?loyer=1200&mer=5');
-  await merCochee(page, '10 km');
-  await expect.poll(() => adresse(page)).toBe('/?loyer=1200&mer=10');
+  await merAucune(page);
+  await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   // Mêmes données déjà servies ; l'adresse et la case cochée ne dépendent pas de la carte : on n'attend pas qu'elle soit
   // prête (quatre cartes dans un seul test dépassaient les 5 s sous la charge de la suite entière).
-  for (const v of ['200', '23', '0']) {
-    await page.goto(`/?loyer=1200&mer=${v}`);
+  for (const v of ['200', '23', '0', '50']) {
+    await page.goto(`/?loyer=1200&mer-min=${v}`);
     await merAucune(page); // D12 : Peu importe = aucune distance cochée
     await expect.poll(() => adresse(page)).toBe('/?loyer=1200');
   }
@@ -144,7 +147,7 @@ test('R32 : / devient /?loyer=1200 ; aucune distance à la mer cochée, aucune t
 });
 
 // Hors AC (H75) : le résumé de la catégorie repliée.
-test('H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles · Mer 50 km »', async ({ page }) => {
+test('H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles · Mer 1 h »', async ({ page }) => {
   await ouvrirSix(page);
   await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'true');
   await titreCadre(page).click();
@@ -155,9 +158,9 @@ test('H75 : « Cadre de vie » repliée dit « Peu importe », puis « 2 tailles
   await titreCadre(page).click();
   await taille(page).getByRole('button', { name: /^10\s000/ }).click();
   await taille(page).getByRole('button', { name: /^50\s000/ }).click();
-  await choixMer(page, '50 km').click();
+  await choixMer(page, '1 h').click();
   await titreCadre(page).click();
-  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 50 km');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 1 h');
 });
 
 // Hors AC (H76, contrat « Cases séparées » et « Cases collées ») : groupes, noms et états lus par les lecteurs d'écran ; clavier.
@@ -167,7 +170,7 @@ test('H76 : « Taille de la commune » (4 boutons à bascule), « Proximité ave
   await expect(taille(page).getByRole('button')).toHaveCount(4);
   for (const b of await taille(page).getByRole('button').all()) await expect(b).toHaveAttribute('aria-pressed', 'false');
   await expect(nature(page).getByRole('group', { name: 'Mer à moins de' })).toBeVisible();
-  expect((await mer(page).getByRole('button').allInnerTexts()).map(nbsp)).toEqual(['10 km', '30 km', '50 km', '100 km']);
+  expect((await mer(page).getByRole('button').allInnerTexts()).map(nbsp)).toEqual(['15 min', '30 min', '1 h', '1 h 30']);
 
   // Espace sur une taille : cochée, puis décochée.
   const petite = taille(page).getByRole('button', { name: /^Moins de 10\s000/ });
@@ -241,7 +244,7 @@ test('AC-3 depuis /, montagne « 10 km » : /?loyer=1200&montagne=10 ; 2 commune
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&montagne=10');
   await voirListe(page);
   await expect(liste(page)).toContainText('2 communes passent tes critères');
-  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 83 · 416 € · 180 km', '2 · Rhinval (67) · 71 · 572 € · 420 km']);
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 83 · 416 € · 2 h 40', '2 · Rhinval (67) · 71 · 572 € · ≈ 7 h']);
   await ficheDeCarte(page, 'E', 'Quaibleu (13)');
   expect(await texteFiche(page)).toContain('Montagne 62 km : au-dessus de ton plafond de 10 km');
 });
@@ -254,29 +257,29 @@ test('AC-4 depuis /, montagne « 50 km » : /?loyer=1200&montagne=50 ; 3 commune
   await voirListe(page);
   await expect(liste(page)).toContainText('3 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    '1 · Terrebasse (23) · 83 · 416 € · 180 km',
-    '2 · Rhinval (67) · 75 · 572 € · 420 km',
-    '3 · Grandeville (33) · 15 · 832 € · 40 km',
+    '1 · Terrebasse (23) · 83 · 416 € · 2 h 40',
+    '2 · Rhinval (67) · 75 · 572 € · ≈ 7 h',
+    '3 · Grandeville (33) · 15 · 832 € · 50 min',
   ]);
   await ficheDeCarte(page, 'A', 'Portmer (17)');
   expect(await texteFiche(page)).toContain('Montagne 140 km : au-dessus de ton plafond de 50 km');
 });
 
-test('AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30)', async ({ page }) => {
-  await ouvrirSix(page, '/?loyer=1200&mer=50');
+test('AC-7 depuis /?loyer=1200&mer-min=60, Grandeville, Terrebasse puis Rhinval : type et population, mer et montagne dans la fiche (R30)', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=60');
   await ficheDeListe(page, 'Grandeville');
   let t = await texteFiche(page);
   expect(t).toContain('Ville dense · 260 000 habitants');
-  expect(t).toMatch(/\b25\s*\/ 100/);
+  expect(t).toMatch(/\b24\s*\/ 100/);
   expect(t).toContain('3e sur 3 communes qui passent');
-  expect(t).toContain("40 km de la mer à vol d'oiseau");
+  expect(t).toContain('50 min de la mer en voiture');
   expect(t).toContain("50 km de la montagne à vol d'oiseau");
 
   await ficheDeCarte(page, 'D', 'Terrebasse (23)');
   t = await texteFiche(page);
   expect(t).toContain('Bourg et village · 4 200 habitants');
   expect(t).toContain('Commune de montagne');
-  expect(t).toContain('Mer 180 km : au-dessus de ton plafond de 50 km');
+  expect(t).toContain('Mer 2 h 40 : au-dessus de ton plafond de 1 h');
 
   await ficheDeCarte(page, 'F', 'Rhinval (67)');
   t = await texteFiche(page);
@@ -284,13 +287,13 @@ test('AC-7 depuis /?loyer=1200&mer=50, Grandeville, Terrebasse puis Rhinval : ty
   expect(t).toContain("moins d'1 km de la montagne");
 });
 
-test('AC-11 /?loyer=1200&mer=100&montagne=50 : 1 commune, Grandeville 30 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
-  await ouvrirSix(page, '/?loyer=1200&mer=100&montagne=50');
-  await merCochee(page, '100 km');
+test('AC-11 /?loyer=1200&mer-min=90&montagne=50 : 1 commune, Grandeville 25 (49,6 km affiché 50, égal au plafond : note 0) ; fiche de Grandeville « 50 km de la montagne », de Quaibleu « Montagne 62 km : au-dessus de ton plafond de 50 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=90&montagne=50');
+  await merCochee(page, '1 h 30');
   await montagneCochee(page, '50 km');
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 30 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 25 · 832 € · 50 min']);
   await ficheDeListe(page, 'Grandeville');
   expect(await texteFiche(page)).toContain("50 km de la montagne à vol d'oiseau");
   await ficheDeCarte(page, 'E', 'Quaibleu (13)');
@@ -338,11 +341,11 @@ test('sans plafond : /?loyer=aucun&montagne=50 classe 3 communes ; montagne « 5
 });
 
 // Hors AC (H75) : « Montagne 30 km » dans le résumé replié, après la mer.
-test('H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 50 km · Montagne 30 km »', async ({ page }) => {
-  await ouvrirSix(page, '/?loyer=1200&mer=50&montagne=30&taille=petite-ville,ville-moyenne');
+test('H75 : « Cadre de vie » repliée dit « 2 tailles · Mer 1 h · Montagne 30 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=60&montagne=30&taille=petite-ville,ville-moyenne');
   await titreCadre(page).click();
   await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
-  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 50 km · Montagne 30 km');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie2 tailles · Mer 1 h · Montagne 30 km');
 });
 
 // Hors AC (H76 révisée par D12, design F) : « Montagne à moins de » sous la mer, dans « Proximité avec la nature », quatre
@@ -374,11 +377,11 @@ test('D12 : montagne « 10 km » cochée, décochée → aucune distance cochée
 });
 
 // Hors AC (H76 révisée par D12) : au clavier, Tab de pastille en pastille, comme les tailles ; Espace coche puis décoche.
-test('D12, H76 : Tab passe de « 10 km » à « 30 km », « 50 km », « 100 km » de la mer puis à « 10 km » de la montagne ; Espace coche puis décoche', async ({ page }) => {
+test('D12, H76 : Tab passe de « 15 min » à « 30 min », « 1 h », « 1 h 30 » de la mer puis à « 10 km » de la montagne ; Espace coche puis décoche', async ({ page }) => {
   await ouvrirSix(page);
   await voirCriteres(page);
-  await choixMer(page, '10 km').focus();
-  for (const nom of ['30 km', '50 km', '100 km']) {
+  await choixMer(page, '15 min').focus();
+  for (const nom of ['30 min', '1 h', '1 h 30']) {
     await page.keyboard.press('Tab');
     await expect(choixMer(page, nom)).toBeFocused();
   }
@@ -393,7 +396,7 @@ test('D12, H76 : Tab passe de « 10 km » à « 30 km », « 50 km », « 100 km
 });
 
 // Hors AC (H75, D12) : rien de coché au départ, le résumé replié dit « Peu importe » ; une distance cochée puis décochée y revient.
-test('D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repliée dit « Peu importe » ; mer « 50 km » cochée puis décochée : « Peu importe »', async ({ page }) => {
+test('D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repliée dit « Peu importe » ; mer « 1 h » cochée puis décochée : « Peu importe »', async ({ page }) => {
   await ouvrirSix(page);
   await merAucune(page);
   await montagneAucune(page);
@@ -401,11 +404,11 @@ test('D12, H75 : au départ, aucune distance cochée et « Cadre de vie » repli
   await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
   expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de viePeu importe');
   await titreCadre(page).click();
-  await choixMer(page, '50 km').click();
+  await choixMer(page, '1 h').click();
   await titreCadre(page).click();
-  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vieMer 50 km');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vieMer 1 h');
   await titreCadre(page).click();
-  await choixMer(page, '50 km').click();
+  await choixMer(page, '1 h').click();
   await merAucune(page);
   await titreCadre(page).click();
   expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de viePeu importe');
@@ -442,11 +445,11 @@ test('AC-1 ouverture de / : /?loyer=1200 ; aucune distance à la mer ni à la mo
   await voirListe(page);
   await expect(liste(page)).toContainText('5 communes passent tes critères');
   expect(await lignes(page)).toEqual([
-    '1 · Terrebasse (23) · 65 · 416 € · 180 km',
-    '2 · Rhinval (67) · 52 · 572 € · 420 km',
-    "3 · Portmer (17) · 46 · 650 € · moins d'1 km",
-    '4 · Grandeville (33) · 31 · 832 € · 40 km',
-    '5 · Quaibleu (13) · 9 · 1 092 € · 7 km',
+    '1 · Terrebasse (23) · 65 · 416 € · 2 h 40',
+    '2 · Rhinval (67) · 52 · 572 € · ≈ 7 h',
+    '3 · Portmer (17) · 46 · 650 € · 5 min',
+    '4 · Grandeville (33) · 31 · 832 € · 50 min',
+    '5 · Quaibleu (13) · 9 · 1 092 € · 14 min',
   ]);
 });
 
@@ -457,7 +460,7 @@ test('AC-5 depuis /, type « Ville dense » : /?loyer=1200&env=ville-dense ; 1 c
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&env=ville-dense');
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 31 · 832 € · 40 km']);
+  expect(await lignes(page)).toEqual(['1 · Grandeville (33) · 31 · 832 € · 50 min']);
   await ficheDeCarte(page, 'A', 'Portmer (17)');
   expect(await texteFiche(page)).toContain('Environnement : ville et périphérie, hors des types choisis');
 
@@ -480,7 +483,7 @@ test('AC-8 /?mer=200&montagne=0&taille=petite-commune&env=bourg-et-village,villa
   await expect.poll(() => adresse(page)).toBe('/?loyer=1200&taille=petite-commune&env=bourg-et-village');
   await voirListe(page);
   await expect(liste(page)).toContainText('1 commune passe tes critères');
-  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 65 · 416 € · 180 km']);
+  expect(await lignes(page)).toEqual(['1 · Terrebasse (23) · 65 · 416 € · 2 h 40']);
 });
 
 test('AC-10 /?loyer=aucun&env=bourg-et-village : Terrebasse en couleur neutre « sans plafond », les 5 autres non colorées ; message de liste ; fiche de Terrebasse « Commune de montagne » sans score ni rang ; fiche de Portmer « Environnement : ville et périphérie, hors des types choisis »', async ({ page }) => {
@@ -517,11 +520,11 @@ test('R31 : env=campagne-isolee,village,ville-dense,campagne-isolee → /?loyer=
 });
 
 // Hors AC (H75) : « 1 type » dans le résumé replié, entre les tailles et la mer.
-test('H75 : « Cadre de vie » repliée dit « 1 taille · 1 type · Mer 50 km · Montagne 30 km »', async ({ page }) => {
-  await ouvrirSix(page, '/?loyer=1200&mer=50&montagne=30&taille=petite-ville&env=ville-dense');
+test('H75 : « Cadre de vie » repliée dit « 1 taille · 1 type · Mer 1 h · Montagne 30 km »', async ({ page }) => {
+  await ouvrirSix(page, '/?loyer=1200&mer-min=60&montagne=30&taille=petite-ville&env=ville-dense');
   await titreCadre(page).click();
   await expect(titreCadre(page)).toHaveAttribute('aria-expanded', 'false');
-  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie1 taille · 1 type · Mer 50 km · Montagne 30 km');
+  expect(nbsp(await titreCadre(page).textContent())).toBe('Cadre de vie1 taille · 1 type · Mer 1 h · Montagne 30 km');
 });
 
 // Hors AC (H76, design F) : « Type d'environnement » entre la taille et « Proximité avec la nature », quatre boutons à bascule.
