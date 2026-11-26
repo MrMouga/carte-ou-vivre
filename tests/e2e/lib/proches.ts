@@ -13,12 +13,12 @@ export const champ = (page: Page) => zone(page).getByRole('textbox', { name: 'Ad
 export const plafond = (page: Page, nom: string) => page.getByRole('slider', { name: `Plafond de ${nom}` });
 export const ligne = (page: Page, nom: string) => zone(page).getByRole('listitem').filter({ hasText: nom });
 
-/** Lignes de la liste des 10 premières, par leur nom accessible (« 1 · Portmer (17) · 72 · 650 € · moins d'1 km »). */
+/** Lignes de la liste des 10 premières, par leur nom accessible (« 1 · Portmer (17) · 69 · 650 € · 5 min »). */
 export const lignes = async (page: Page) =>
   (await liste(page).getByRole('button').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))).map(nbsp);
 
-/** Liste sans proche sur /?loyer=1200&mer=50 (recalage de cadre-de-vie, D4 et D7) : 72, 48, 25. */
-export const SANS_PROCHE = ["1 · Portmer (17) · 72 · 650 € · moins d'1 km", '2 · Quaibleu (13) · 48 · 1 092 € · 7 km', '3 · Grandeville (33) · 25 · 832 € · 40 km'];
+/** Liste sans proche sur /?loyer=1200&mer-min=60 (recalage de cadre-de-vie, D4 et D7 ; de recherche-et-mer, (a) et (b)) : 69, 43, 24. */
+export const SANS_PROCHE = ['1 · Portmer (17) · 69 · 650 € · 5 min', '2 · Quaibleu (13) · 43 · 1 092 € · 14 min', '3 · Grandeville (33) · 24 · 832 € · 50 min'];
 
 /** Suggestions de la fixture : texte tapé → nom accessible de la suggestion (« Ligne 1, Ligne 2 »). */
 export const ADRESSES = {
