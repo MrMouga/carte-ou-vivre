@@ -1,0 +1,4 @@
+12:38:32 Chamonix-Mont-Blanc (74056) : ["Médecin : 3 min","Urgences : pas de chiffre","Supermarché : 3 min","Crèche : 2 min","École : 2 min","Collège : 4 min","Lycée : 4 min","Supérieur : 58 min","Gare : 2 min","Gare régionale : 5 min","Gare grandes lignes : plus d'une heure"]
+12:38:32   « Urgences : pas de chiffre » présent : true
+12:38:38 Tende (06163) : ["Médecin : 1 min","Urgences : plus d'une heure","Supermarché : pas de chiffre","Crèche : 1 min","École : 1 min","Collège : pas de chiffre","Lycée : plus d'une heure","Supérieur : plus d'une heure","Gare : 1 min","Gare régionale : plus d'une heure","Gare grandes lignes : plus d'une heure"]
+12:38:38   « Supermarché : pas de chiffre » présent : true
