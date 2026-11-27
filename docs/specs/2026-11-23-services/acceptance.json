@@ -164,8 +164,8 @@
       "rule": "R52",
       "given": "Le fichier des temps servi par le site, sur les vraies données",
       "when": "on lit ses lignes par code INSEE",
-      "then": "il a une ligne pour chacune des 34 746 communes de la carte ; dans l'ordre médecin, urgences, supermarché, crèche, école, collège, lycée, supérieur, gare, gare régionale, gare grandes lignes : Auch (32013) : 2, 6, 2, 3, 2, 3, 3, 4, 4, 4, au-delà de 60 ; Bordeaux (33063) : 1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7 ; Mende (48095) : urgences 4, supérieur 2, gare 3, gare régionale au-delà de 60, gare grandes lignes au-delà de 60 ; Saint-Véran (05157) : urgences 55, supermarché 35 ; Chamonix-Mont-Blanc (74056) : urgences 4, supermarché 3 ; Les Sables-d'Olonne (85194) : urgences 7, gare grandes lignes 4 ; L'Île-d'Yeu (85113) : médecin, urgences, lycée, supérieur et les trois gares sans chiffre, supermarché 4 ; les 6 communes de population 0 (55039, 55050, 55139, 55189, 55239, 55307) n'ont aucun temps ; aucune colonne commerce",
-      "passes": true
+      "then": "il a une ligne pour chacune des 34 746 communes de la carte ; dans l'ordre médecin, urgences, supermarché, crèche, école, collège, lycée, supérieur, gare, gare régionale, gare grandes lignes : Auch (32013) : 2, 6, 2, 3, 2, 3, 3, 4, 4, 4, au-delà de 60 ; Bordeaux (33063) : 1, 5, 1, 1, 1, 2, 2, 3, 5, 7, 7 ; Mende (48095) : urgences 4, supérieur 2, gare 3, gare régionale au-delà de 60, gare grandes lignes au-delà de 60 ; Saint-Véran (05157) : urgences 55, supermarché 35 ; Chamonix-Mont-Blanc (74056) : urgences sans chiffre (retrait D12, H210), supermarché 3 ; Les Sables-d'Olonne (85194) : urgences 7, gare grandes lignes 4 ; L'Île-d'Yeu (85113) : médecin, urgences, lycée, supérieur et les trois gares sans chiffre, supermarché 4 ; les 6 communes de population 0 (55039, 55050, 55139, 55189, 55239, 55307) n'ont aucun temps ; aucune colonne commerce",
+      "passes": false
     },
     {
       "id": "AC-14",
