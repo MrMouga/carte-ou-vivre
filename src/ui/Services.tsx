@@ -21,8 +21,8 @@ import { TempsIndisponibles } from './FicheServices';
 // Catégorie « Services » (spec services, R51, H151 à H154, H167, H169 ; design F : docs/design/services/decisions.md,
 // prototype `PisteA` du commit 2f300ae ; révisé le 2026-11-26, D19, D20). La dernière catégorie, après « Tes proches »,
 // ouverte au départ. « Médecin », « Urgences » et « Supermarché » : libellé à gauche, Cases collées à droite ; « Scolarité » :
-// Cases séparées des niveaux, puis le
-// temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare « Scolarité » et « Gare ».
+// Cases séparées des niveaux, puis le temps titré ; « Gare » : Choix souligné du type, puis le temps titré. Un filet sépare
+// « Scolarité » et « Gare ».
 // « Scolarité » : niveaux cumulables et temps commun ; filtre quand l'un et l'autre sont cochés (tâche 3b, R53, H153).
 
 type Props = {

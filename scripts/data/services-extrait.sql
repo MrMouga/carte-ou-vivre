@@ -36,8 +36,9 @@ SELECT count(*) AS fichiers_notes, sum(octets) AS octets,
   FROM fichiers;
 SELECT lu_le AS sources_lues_le FROM read_json('data-raw/services-sources.info.json');
 
--- Les 22 types de H158 (D106, urgences, ajouté par la révision D19 du 2026-11-26, H208 ; B201 et B202 gardés tant que
--- services.py écrit la chaîne provisoire `commerce`).
+-- Les 22 types de H158 (D106, urgences, ajouté par la révision D19 du 2026-11-26, H208). B201 et B202 (l'ancien
+-- `commerce`, retiré par D20) ne sont plus lus par services.py, mais restent dans l'extrait figé du 2026-11-26 : les
+-- retirer d'ici changerait l'extrait et son empreinte, contrôlée par services.py.
 CREATE MACRO lire_region(u) AS TABLE
   SELECT depcom, iris, idSrc, pop, typeeq_id, duree, depcom_equipement
     FROM read_parquet(u)

@@ -96,7 +96,7 @@ describe('valeur d’un service dans la fiche (R54)', () => {
     expect(lu(servi([{ ...SIX[0], temps_services: { ...SIX[0].temps_services, urgences: 60 } }]), c)[1]).toBe('Urgences : 60 min');
   });
 
-  it('le fichier servi peut encore porter `commerce` (jusqu’à la tâche 2 de la révision) : ignoré, les 11 temps sont lus', () => {
+  it('une chaîne hors des 11 services (l’ancien `commerce`, D20) est ignorée : les 11 temps sont lus', () => {
     const json = ecrireServices(SIX.map((it) => ({ code: it.code_insee, temps: it.temps_services, ile_sans_pont: it.ile_sans_pont })));
     const s = lireServices({ ...json, commerce: '1-----' } as typeof json);
     expect(s.temps.get('99001')).toEqual([4, 14, 3, 12, 2, 9, 14, 18, 6, 8, 40]);

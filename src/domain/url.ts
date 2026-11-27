@@ -95,9 +95,9 @@ const NOM_DE_CLE = new Map<ServiceCle, string>(SERVICES.map((s) => [s.cle, s.adr
 
 /**
  * R55 : `medecin:10,ecole:10,gare-regionale:20` → l'état de la catégorie. Une entrée au nom inconnu (dont `commerce`
- * depuis D20, H203 : retirée sans message) ou aux minutes invalides est retirée ; puis seule la première entrée valide est gardée pour un même service, et pour les trois niveaux
- * de gare ensemble ; la première entrée de scolarité valide fixe le temps commun, une autre à un autre temps est retirée.
- * `null` s'il ne reste rien.
+ * depuis D20, H203 : retirée sans message) ou aux minutes invalides est retirée ; puis seule la première entrée valide
+ * est gardée pour un même service, et pour les trois niveaux de gare ensemble ; la première entrée de scolarité valide
+ * fixe le temps commun, une autre à un autre temps est retirée. `null` s'il ne reste rien.
  */
 function lireServices(v: string | null): ReglageServices | null {
   if (v == null) return null;

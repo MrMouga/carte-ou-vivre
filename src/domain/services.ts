@@ -111,11 +111,10 @@ export function lignesServices(s: Services, c: { code: string; dep: string }) {
   return SERVICES.map(({ cle, libelle }) => ({ cle, libelle, valeur: texteValeur(valeurService(s, c, cle)) }));
 }
 
-/** R54 : la phrase de la traversée, pour une île sans pont qui a au moins un temps parmi les huit premiers services. */
+/** R54 : la phrase de la traversée, pour une île sans pont qui a au moins un temps hors des trois gares (médecin à supérieur). */
 export function phraseTraversee(s: Services, c: { code: string }): boolean {
   if (!s.iles.has(c.code)) return false;
-  // Les huit premiers de SERVICES, tous sauf les trois gares : médecin à supérieur.
-  return tempsDe(s, c.code).slice(0, 8).some((m) => m != null);
+  return tempsDe(s, c.code).some((m, i) => m != null && !GARES.includes(SERVICES[i].cle));
 }
 
 /** H159 (révisée par D19, D20, H204) : phrase des limites, toujours affichée ; insécables avant « : » et dans « 100 000 ». */
