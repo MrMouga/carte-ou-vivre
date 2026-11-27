@@ -1,5 +1,5 @@
 # Démo — services, révision D19, D20 (urgences, supermarché)
-2026-11-27 · prête · Plan : [plan.md](plan.md) · Progression : [progress.md](progress.md)
+2026-11-27 · **acceptée** (Vincent, 2026-11-27 ; pari : « tout marche, données justes ») · retouches 1 faites : urgences de Chamonix-Mont-Blanc et supermarché de Tende retirés, « pas de chiffre » (D12, H210, AC-13 amendé ; commit 2189131 ; suite verte, 520 tests) · Plan : [plan.md](plan.md) · Progression : [progress.md](progress.md)
 
 > AC = critère d'acceptation de la spec ; Bloquant / Majeur / Mineur = gravité donnée par un relecteur neuf ; une preuve = capture ou sortie de commande, datée.
 

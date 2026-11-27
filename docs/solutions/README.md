@@ -3,6 +3,7 @@ Généré par studio (`scripts/solutions-index.sh`) — ne pas éditer à la mai
 
 | Date | Leçon | Étiquettes | Revu | Note |
 |---|---|---|---|---|
+| 2026-11-27 | Attendre une machine calme avant une suite Playwright : lire la charge sur 5 minutes, et `vm.loadavg` commence par une accolade | tests, outil | — | [2026-11-27-attendre-une-machine-calme-lire-la-bonne-charge.md](2026-11-27-attendre-une-machine-calme-lire-la-bonne-charge.md) |
 | 2026-11-26 | Urgences (Insee D106, FINESS) : un nom d'hôpital ne dit pas qu'il y a un accueil ; le vérifier sur la page de l'hôpital | data, discovery | — | [2026-11-26-urgences-bpe-un-nom-d-hopital-n-est-pas-un-accueil.md](2026-11-26-urgences-bpe-un-nom-d-hopital-n-est-pas-un-accueil.md) |
 | 2026-11-26 | Amender un `acceptance.json` validé : remplacer le texte, ne pas réécrire le fichier | spec, tests, outil | Revu le 2026-11-26 (relecture du plan) : | [2026-11-26-amender-acceptance-json-sans-le-reformater.md](2026-11-26-amender-acceptance-json-sans-le-reformater.md) |
 | 2026-11-25 | Une nouvelle spec : prendre ses numéros (H-n) et ses valeurs de fixture dans les fichiers, pas dans l'index | spec, tests | — | [2026-11-25-spec-numeros-et-valeurs-deja-pris.md](2026-11-25-spec-numeros-et-valeurs-deja-pris.md) |
