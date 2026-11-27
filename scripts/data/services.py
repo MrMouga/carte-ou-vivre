@@ -114,7 +114,7 @@ AC13 = {
     '48095': {'urgences': 4, 'superieur': 2, 'gare': 3, 'gare_regionale': PLUS_D_UNE_HEURE,
               'gare_grandes_lignes': PLUS_D_UNE_HEURE},
     '05157': {'urgences': 55, 'supermarche': 35},
-    '74056': {'urgences': 4, 'supermarche': 3},
+    '74056': {'urgences': None, 'supermarche': 3},  # urgences retirées (D12, H210)
     '85194': {'urgences': 7, 'gare_grandes_lignes': 4},
     '85113': {'medecin': None, 'urgences': None, 'lycee': None, 'superieur': None, 'gare': None,
               'gare_regionale': None, 'gare_grandes_lignes': None, 'supermarche': 4},
@@ -122,8 +122,9 @@ AC13 = {
 }
 # Comptes des mesures (docs/specs/2026-11-23-services/mesures.md), communes à temps inférieur ou égal au seuil : de /spec
 # (2026-11-23) ; `urgences` : essai de /spec, sans les parts par IRIS (information, écart possible) ; `supermarche` :
-# calculés le 2026-11-26 sur l'extrait figé par cette même règle, contrôlés (SUPERMARCHE, arrêt s'ils diffèrent).
-SUPERMARCHE = {5: 9022, 10: 22329, 15: 30409, 20: 33195, 30: 34415, 45: 34690, 60: 34719, '>60': 12, 'sans': 15}
+# calculés le 2026-11-26 sur l'extrait figé par cette même règle, contrôlés (SUPERMARCHE, arrêt s'ils diffèrent) ;
+# depuis H210 (2026-11-27), Tende passe de « au-delà de 60 » à « sans chiffre » (mesures.md : '>60' 12, 'sans' 15).
+SUPERMARCHE = {5: 9022, 10: 22329, 15: 30409, 20: 33195, 30: 34415, 45: 34690, 60: 34719, '>60': 11, 'sans': 16}
 ANCIENS = {
     'medecin': {5: 14232, 10: 27960, 15: 33135, 30: 34643, '>60': 1, 'sans': 13},
     'urgences': {5: 851, 10: 4025, 15: 9558, 20: 16243, 30: 27415, 45: 33676, 60: 34562, '>60': 174},
@@ -457,7 +458,7 @@ def main():
         cases = [f"{nouveaux[s][k]} / {ANCIENS[s].get(k, '—')}".rjust(15) for k in SEUILS]
         print('  ' + ' | '.join([s.ljust(20)] + cases))
     check(nouveaux['supermarche'] == SUPERMARCHE,
-          f"supermarché : comptes égaux à ceux de mesures.md (révision D19, D20) {nouveaux['supermarche']}")
+          f"supermarché : comptes égaux à ceux de mesures.md (révision D19, D20), Tende retiré (H210) {nouveaux['supermarche']}")
 
     print('Urgences et supermarché : témoins de mesures.md, minutes avant arrondi (information)')
     for c in ['75056', '33063', '76351', '48095', '74056', '32013', '85194', '22016', '05157', '04155', '06163', '85113']:

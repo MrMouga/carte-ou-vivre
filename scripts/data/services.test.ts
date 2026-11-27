@@ -114,7 +114,7 @@ describe('public/data/services.json (R52, vraies données)', () => {
     const veran = valeurs('05157');
     expect([veran.urgences, veran.supermarche]).toEqual([55, 35]);
     const chamonix = valeurs('74056');
-    expect([chamonix.urgences, chamonix.supermarche]).toEqual([4, 3]);
+    expect([chamonix.urgences, chamonix.supermarche]).toEqual([null, 3]); // urgences retirées (D12, H210)
     const sables = valeurs('85194');
     expect([sables.urgences, sables.gare_grandes_lignes]).toEqual([7, 4]);
     const yeu = valeurs('85113');

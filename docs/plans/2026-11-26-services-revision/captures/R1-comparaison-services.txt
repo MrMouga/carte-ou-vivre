@@ -1,0 +1,5 @@
+Fichier : 660493 caractères avant, 660493 après ; 2 caractère(s) différent(s) dans le texte brut
+Différences par chaîne : 2
+  urgences · 74056 : « 4 » → « - »
+  supermarche · 06163 : « z » → « - »
+OK : seuls Chamonix (urgences) et Tende (supermarché) changent, tous deux en « - »
